@@ -4,9 +4,9 @@ Tools to ease the uniformization of stopping criteria in iterative solvers.
 
 When a solver is called on an optimization model, four outcome may happen:
 1. the approximate solution is obtained, the problem is considered solved
-- the problem is declared unbounded
-- the maximum available ressources is not sufficient to compute the solution
-- some algorithm dependent failure happens
+2. the problem is declared unbounded
+3. the maximum available ressources is not sufficient to compute the solution
+4. some algorithm dependent failure happens
 
 This tool eases the first 3 items above. It defines a type
 
