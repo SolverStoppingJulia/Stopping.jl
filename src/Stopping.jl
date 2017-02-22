@@ -1,5 +1,7 @@
 module Stopping
+using NLPModels
+using JuMP
 
-# package code goes here
+include("stopping.jl")
 
 end # module
