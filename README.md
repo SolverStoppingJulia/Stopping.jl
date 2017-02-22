@@ -37,6 +37,7 @@ The tool provides two functions:
 - `stop(s, iter, x, gradf)` verifies if the tolerance is reached for `x` or if the maximum ressources is reached. This function returns booleans optimal, unbounded, tired; moreover, it returns the elapsed time, and fine grain information. Usually, only the four first outputs are used. This function is called at every iteration and, complemented with algorithm specific conditions, is the stopping criterion.
 
 As an example, a naïve version of the steepest descent is provided. Two additionnal conditions are tested within the steepest descent:
+
 1. the direction is a descent direction; not very useful for the steepest descent direction, but the algorithmic pattern could be used to code (quasi) Newton methods and when a computed direction is not a descent, it may be advised to interrupt the algorithm.
 2. the line search fails.
 
