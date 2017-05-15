@@ -2,20 +2,24 @@
 export TStopping, start!, stop
 
 type TStopping
-    nlp :: AbstractNLPModel        # the model
-    atol :: Float64                # absolute tolerance
-    rtol :: Float64                # relative tolerance    
-    unbounded_threshold :: Float64 #
-    max_obj_f :: Int    
-    max_obj_grad :: Int    
-    max_obj_hess :: Int
-    max_obj_hv :: Int
-    max_eval :: Int
-    max_iter :: Int
-    max_time :: Float64
-    start_time :: Float64
-    optimality :: Float64
-    optimality_residual :: Function
+    nlp :: AbstractNLPModel          # the model
+    atol :: Float64                  # absolute tolerance
+    rtol :: Float64                  # relative tolerance    
+    unbounded_threshold :: Float64   # below this value, the problem is declared unbounded
+    # fine grain control on ressources
+    max_obj_f :: Int                 # max objective function (f) evaluations allowed
+    max_obj_grad :: Int              # max objective gradient (g) evaluations allowed
+    max_obj_hess :: Int              # max objective hessian (H) evaluations allowed
+    max_obj_hv :: Int                # max objective H*v (HV) evaluations allowed
+    # global control on ressources
+    max_eval :: Int                  # max evaluations (f+g+H+Hv) allowed
+    max_iter :: Int                  # max iterations allowed
+    max_time :: Float64              # max elapsed time allowed
+    # global information to the stopping manager
+    start_time :: Float64            # starting time of the execution of the method
+    optimality0 :: Float64           # value of the optimality residual at starting point
+    optimality_residual :: Function  # function to compute the optimality residual
+
 
     function TStopping(nlp :: AbstractNLPModel;
                       atol :: Float64 = 1.0e-8,
@@ -38,11 +42,13 @@ type TStopping
 end
 
 
+
+
 function start!(s :: TStopping,
                x₀ :: Array{Float64,1} )
 
-    s.optimality = s.optimality_residual(grad(s.nlp,x₀))
-    s.start_time = time()
+    s.optimality0 = s.optimality_residual(grad(s.nlp,x₀))
+    s.start_time  = time()
     return s
 end
 
@@ -59,8 +65,8 @@ function stop(s :: TStopping,
 
     optimality = s.optimality_residual(∇f)
 
-    optimal = (optimality < s.atol) | (optimality <( s.rtol * s.optimality)) 
-    unbounded =  f < s.unbounded_threshold
+    optimal = (optimality < s.atol) | (optimality <( s.rtol * s.optimality0)) 
+    unbounded =  f <= s.unbounded_threshold
 
 
     # fine grain limits
