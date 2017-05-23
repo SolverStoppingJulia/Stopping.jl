@@ -2,9 +2,8 @@
 export TStopping, start!, stop
 
 type TStopping
-    nlp :: AbstractNLPModel          # the model
     atol :: Float64                  # absolute tolerance
-    rtol :: Float64                  # relative tolerance    
+    rtol :: Float64                  # relative tolerance
     unbounded_threshold :: Float64   # below this value, the problem is declared unbounded
     # fine grain control on ressources
     max_obj_f :: Int                 # max objective function (f) evaluations allowed
@@ -21,12 +20,11 @@ type TStopping
     optimality_residual :: Function  # function to compute the optimality residual
 
 
-    function TStopping(nlp :: AbstractNLPModel;
-                      atol :: Float64 = 1.0e-8,
+    function TStopping(;atol :: Float64 = 1.0e-8,
                       rtol :: Float64 = 1.0e-6,
                       unbounded_threshold :: Float64 = -1.0e50,
-                      max_obj_f :: Int = typemax(Int),    
-                      max_obj_grad :: Int = typemax(Int),   
+                      max_obj_f :: Int = typemax(Int),
+                      max_obj_grad :: Int = typemax(Int),
                       max_obj_hess :: Int = typemax(Int),
                       max_obj_hv :: Int = typemax(Int),
                       max_eval :: Int = 20000,
@@ -35,8 +33,8 @@ type TStopping
                       optimality_residual :: Function = x -> norm(x,Inf)
                      )
 
-        return new(nlp, atol, rtol, unbounded_threshold, 
-                   max_obj_f, max_obj_grad, max_obj_hess, max_obj_hv, max_eval, 
+        return new(atol, rtol, unbounded_threshold,
+                   max_obj_f, max_obj_grad, max_obj_hess, max_obj_hv, max_eval,
                    max_iter, max_time, NaN, Inf, optimality_residual)
     end
 end
@@ -44,28 +42,30 @@ end
 
 
 
-function start!(s :: TStopping,
+function start!(nlp :: AbstractNLPModel,
+               s :: TStopping,
                x₀ :: Array{Float64,1} )
 
-    s.optimality0 = s.optimality_residual(grad(s.nlp,x₀))
+    s.optimality0 = s.optimality_residual(grad(nlp,x₀))
     s.start_time  = time()
     return s
 end
 
 
-function stop(s :: TStopping,
+function stop(nlp :: AbstractNLPModel,
+              s :: TStopping,
               iter :: Int,
               x :: Array{Float64,1},
               f :: Float64,
               ∇f :: Array{Float64,1},
               )
 
-    counts = s.nlp.counters
+    counts = nlp.counters
     calls = [counts.neval_obj,  counts.neval_grad, counts.neval_hess, counts.neval_hprod]
 
     optimality = s.optimality_residual(∇f)
 
-    optimal = (optimality < s.atol) | (optimality <( s.rtol * s.optimality0)) 
+    optimal = (optimality < s.atol) | (optimality <( s.rtol * s.optimality0))
     unbounded =  f <= s.unbounded_threshold
 
 
@@ -91,6 +91,6 @@ function stop(s :: TStopping,
 
     # return everything. Most users will use only the first four fields, but return
     # the fine grained information nevertheless.
-    return optimal, unbounded, tired, elapsed_time, 
+    return optimal, unbounded, tired, elapsed_time,
            max_obj_f, max_obj_g, max_obj_H, max_obj_Hv, max_total, max_iter, max_time
 end
