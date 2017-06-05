@@ -12,7 +12,6 @@ When a solver is called on an optimization model, four outcome may happen:
 This tool eases the first 3 items above. It defines a type
 
     type TStopping
-        nlp :: AbstractNLPModel         # the model
         atol :: Float64            
         rtol :: Float64
         unbounded_threshold :: Float64
@@ -33,8 +32,8 @@ which provides default tolerances and maximum ressources. The function `optimali
 Fine grained limits may be specified, namely the maximum number of functions, gradients, hessians and hessian-vector products. Most users will be satisfied with the total, specified by `max_eval`.
 
 The tool provides two functions:
-- `start!(s,x0)` initializes the time counter and the tolerance at the starting point. This function is called once at the beginning of an algorithm.
-- `stop(s, iter, x, gradf)` verifies if the tolerance is reached for `x` or if the maximum ressources is reached. This function returns booleans optimal, unbounded, tired; moreover, it returns the elapsed time, and fine grain information. Usually, only the four first outputs are used. This function is called at every iteration and, complemented with algorithm specific conditions, is the stopping criterion.
+- `start!(nlp,s,x0)` initializes the time counter and the tolerance at the starting point. This function is called once at the beginning of an algorithm.
+- `stop(nlp,s, iter, x, gradf)` verifies if the tolerance is reached for `x` or if the maximum ressources is reached. This function returns booleans optimal, unbounded, tired; moreover, it returns the elapsed time, and fine grain information. Usually, only the four first outputs are used. This function is called at every iteration and, complemented with algorithm specific conditions, is the stopping criterion.
 
 As an example, a naïve version of the steepest descent is provided. Two additionnal conditions are tested within the steepest descent:
 
