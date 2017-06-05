@@ -1,6 +1,6 @@
-export steepestS
+export steepest
 
-function steepestS(nlp :: AbstractNLPModel;
+function steepest(nlp :: AbstractNLPModel;
                   s :: TStopping = TStopping(),
                   verbose :: Bool=true,
                   linesearch :: Function = Newarmijo_wolfe,
