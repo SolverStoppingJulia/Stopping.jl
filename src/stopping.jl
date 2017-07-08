@@ -21,18 +21,18 @@ type TStopping
 
 
     function TStopping(;atol :: Float64 = 1.0e-8,
-                      rtol :: Float64 = 1.0e-6,
-                      unbounded_threshold :: Float64 = -1.0e50,
-                      max_obj_f :: Int = typemax(Int),
-                      max_obj_grad :: Int = typemax(Int),
-                      max_obj_hess :: Int = typemax(Int),
-                      max_obj_hv :: Int = typemax(Int),
-                      max_eval :: Int = 20000,
-                      max_iter :: Int = 5000,
-                      max_time :: Float64 = 600.0, # 10 minutes
-                      optimality_residual :: Function = x -> norm(x,Inf),
-                      kwargs...)
-
+                       rtol :: Float64 = 1.0e-6,
+                       unbounded_threshold :: Float64 = -1.0e50,
+                       max_obj_f :: Int = typemax(Int),
+                       max_obj_grad :: Int = typemax(Int),
+                       max_obj_hess :: Int = typemax(Int),
+                       max_obj_hv :: Int = typemax(Int),
+                       max_eval :: Int = 20000,
+                       max_iter :: Int = 5000,
+                       max_time :: Float64 = 600.0, # 10 minutes
+                       optimality_residual :: Function = x -> norm(x,Inf),
+                       kwargs...)
+        
         return new(atol, rtol, unbounded_threshold,
                    max_obj_f, max_obj_grad, max_obj_hess, max_obj_hv, max_eval,
                    max_iter, max_time, NaN, Inf, optimality_residual)
@@ -46,9 +46,10 @@ function start!(nlp :: AbstractNLPModel,
                 s :: TStopping,
                 x₀ :: Array{Float64,1} )
 
-    s.optimality0 = s.optimality_residual(grad(nlp,x₀))
+    ∇f₀ = grad(nlp,x₀)
+    s.optimality0 = s.optimality_residual(∇f₀)
     s.start_time  = time()
-    return s
+    return s, ∇f₀
 end
 
 
@@ -65,8 +66,8 @@ function stop(nlp :: AbstractNLPModel,
 
     optimality = s.optimality_residual(∇f)
 
-    #optimal = (optimality < s.atol) | (optimality <( s.rtol * s.optimality0))
-    optimal = optimality < s.atol +s.rtol*s.optimality0
+    optimal = (optimality < s.atol) | (optimality <( s.rtol * s.optimality0))
+    #optimal = optimality < s.atol +s.rtol*s.optimality0
     unbounded =  f <= s.unbounded_threshold
 
 
