@@ -61,8 +61,9 @@ function stop(nlp :: AbstractNLPModel,
               ∇f :: Array{Float64,1},
               )
 
-    counts = nlp.counters
-    calls = [counts.neval_obj,  counts.neval_grad, counts.neval_hess, counts.neval_hprod]
+    #counts = nlp.counters
+    #calls = [counts.neval_obj,  counts.neval_grad, counts.neval_hess, counts.neval_hprod]
+    calls = [neval_obj(nlp), neval_grad(nlp), neval_hess(nlp), neval_hprod(nlp)]
 
     optimality = s.optimality_residual(∇f)
 
