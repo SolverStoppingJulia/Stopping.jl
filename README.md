@@ -14,7 +14,7 @@ When a solver is called on an optimization model, six outcome may happen:
 This tool eases the first five items above. It defines a type
 
      type TStoppingB <: AbstractStopping
-     	  atol :: Float64                  # absolute tolerance
+     	 atol :: Float64                  # absolute tolerance
 	      rtol :: Float64                  # relative tolerance
 	      unbounded_threshold :: Float64   # below this value, the problem is declared unbounded
     	  stalled_x_threshold :: Float64
