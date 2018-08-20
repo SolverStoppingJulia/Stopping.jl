@@ -1,0 +1,1009 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="statprofiler.css">
+
+    <title>StatProfilerHTML.jl: /home/dussault/import/julia-d386e40c17/bin/../share/julia/base/./simdloop.jl</title>
+  </head>
+  <body>
+<div class="report-header">
+  <div class="backlink"><a href="index.html">Report index</a></div>
+  <div class="report-title">StatProfilerHTML.jl report</div>
+  <div class="generated-on">Generated on ven 17 aoû 2018 15:43:37 EDT</div>
+</div>
+
+    <div id="body-content">
+      <table>
+        <caption>File source code</caption>
+        <tr>
+          <th>Line</td>
+          <th>Exclusive</th>
+          <th>Inclusive</th>
+          <th>Code</th>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-1"></a>1</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># This file is a part of Julia. License is MIT: https://julialang.org/license
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-2"></a>2</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-3"></a>3</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># Support for @simd for
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-4"></a>4</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-5"></a>5</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">module SimdLoop
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-6"></a>6</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-7"></a>7</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">export @simd, simd_outer_range, simd_inner_length, simd_index
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-8"></a>8</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-9"></a>9</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># Error thrown from ill-formed uses of @simd
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-10"></a>10</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">mutable struct SimdError &lt;: Exception
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-11"></a>11</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    msg::String
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-12"></a>12</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-13"></a>13</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-14"></a>14</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># Parse iteration space expression
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-15"></a>15</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">#       symbol &#39;=&#39; range
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-16"></a>16</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">#       symbol &#39;in&#39; range
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-17"></a>17</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function parse_iteration_space(x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-18"></a>18</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    (isa(x, Expr) &amp;&amp; (x.head == :(=) || x.head == :in)) || throw(SimdError(&quot;= or in expected&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-19"></a>19</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    length(x.args) == 2 || throw(SimdError(&quot;simd range syntax is wrong&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-20"></a>20</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    isa(x.args[1], Symbol) || throw(SimdError(&quot;simd loop index must be a symbol&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-21"></a>21</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    x.args # symbol, range
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-22"></a>22</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-23"></a>23</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-24"></a>24</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># reject invalid control flow statements in @simd loop body
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-25"></a>25</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function check_body!(x::Expr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-26"></a>26</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if x.head === :break || x.head == :continue
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-27"></a>27</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        throw(SimdError(&quot;$(x.head) is not allowed inside a @simd loop body&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-28"></a>28</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    elseif x.head === :macrocall &amp;&amp; x.args[1] === Symbol(&quot;@goto&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-29"></a>29</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        throw(SimdError(&quot;$(x.args[1]) is not allowed inside a @simd loop body&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-30"></a>30</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-31"></a>31</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for arg in x.args
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-32"></a>32</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        check_body!(arg)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-33"></a>33</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-34"></a>34</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-35"></a>35</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-36"></a>36</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">check_body!(x::QuoteNode) = check_body!(x.value)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-37"></a>37</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">check_body!(x) = true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-38"></a>38</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-39"></a>39</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># @simd splits a for loop into two loops: an outer scalar loop and
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-40"></a>40</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># an inner loop marked with :simdloop. The simd_... functions define
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-41"></a>41</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># the splitting.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-42"></a>42</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-43"></a>43</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># Get range for outer loop.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-44"></a>44</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">simd_outer_range(r) = 0:0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-45"></a>45</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-46"></a>46</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># Get trip count for inner loop.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-47"></a>47</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">@inline simd_inner_length(r,j::Int) = length(r)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-48"></a>48</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-49"></a>49</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># Construct user-level element from original range, outer loop index j, and inner loop index i.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-50"></a>50</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">@inline simd_index(r,j::Int,i) = (@inbounds ret = r[i+1]; ret)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-51"></a>51</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-52"></a>52</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># Compile Expr x in context of @simd.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-53"></a>53</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function compile(x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-54"></a>54</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    (isa(x, Expr) &amp;&amp; x.head == :for) || throw(SimdError(&quot;for loop expected&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-55"></a>55</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    length(x.args) == 2 || throw(SimdError(&quot;1D for loop expected&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-56"></a>56</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    check_body!(x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-57"></a>57</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-58"></a>58</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    var,range = parse_iteration_space(x.args[1])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-59"></a>59</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    r = gensym(&quot;r&quot;) # Range value
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-60"></a>60</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    j = gensym(&quot;i&quot;) # Iteration variable for outer loop
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-61"></a>61</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    n = gensym(&quot;n&quot;) # Trip count for inner loop
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-62"></a>62</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    i = gensym(&quot;i&quot;) # Trip index for inner loop
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-63"></a>63</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    quote
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-64"></a>64</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # Evaluate range value once, to enhance type and data flow analysis by optimizers.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-65"></a>65</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        let $r = $range
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-66"></a>66</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            for $j in Base.simd_outer_range($r)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-67"></a>67</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                let $n = Base.simd_inner_length($r,$j)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-68"></a>68</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                    if zero($n) &lt; $n
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-69"></a>69</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        # Lower loop in way that seems to work best for LLVM 3.3 vectorizer.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-70"></a>70</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        let $i = zero($n)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-71"></a>71</td>
+          <td>1 (0.10%)</td>
+          <td>1 (0.10%)</td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-simdloop-jl-macro-expansion-71"></a>
+              1 (0.10%) samples spent in macro expansion<br />
+              1 (100.00%) (ex.),
+              1 (100.00%) (incl.)
+              when called from
+              macro expansion
+              <a href="broadcast-jl-ff3c64448e61e2bf5190-line.html#Lbroadcast-jl-ff3c64448e61e2bf5190-line.html-176">line 176</a><br />
+            </div>
+            <span class="code">                            while $i &lt; $n
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-72"></a>72</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                                local $var = Base.simd_index($r,$j,$i)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-73"></a>73</td>
+          <td></td>
+          <td>171 (16.62%)</td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-simdloop-jl-macro-expansion-73"></a>
+              171 (16.62%) samples spent in macro expansion<br />
+              0 (ex.),
+              16 (9.36%) (incl.)
+              when called from
+              macro expansion
+              <a href="broadcast-jl-ff3c64448e61e2bf5190-line.html#Lbroadcast-jl-ff3c64448e61e2bf5190-line.html-176">line 176</a><br />
+              0 (ex.),
+              155 (90.64%) (incl.)
+              when called from
+              macro expansion
+              <a href="broadcast-jl-ff3c64448e61e2bf5190-line.html#Lbroadcast-jl-ff3c64448e61e2bf5190-line.html-149">line 149</a><br />
+            </div>
+            <div class="callees">
+              6 (3.51%)
+              samples spent calling
+              <a href="broadcast-jl-ff3c64448e61e2bf5190-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-broadcast-jl-macro-expansion-180">macro expansion</a><br />
+              15 (8.77%)
+              samples spent calling
+              <a href="broadcast-jl-ff3c64448e61e2bf5190-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-broadcast-jl-macro-expansion-156">macro expansion</a><br />
+              1 (0.58%)
+              samples spent calling
+              <a href="broadcast-jl-ff3c64448e61e2bf5190-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-broadcast-jl-macro-expansion-185">macro expansion</a><br />
+              70 (40.94%)
+              samples spent calling
+              <a href="broadcast-jl-ff3c64448e61e2bf5190-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-broadcast-jl-macro-expansion-153">macro expansion</a><br />
+              68 (39.77%)
+              samples spent calling
+              <a href="broadcast-jl-ff3c64448e61e2bf5190-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-broadcast-jl-macro-expansion-155">macro expansion</a><br />
+              2 (1.17%)
+              samples spent calling
+              <a href="multidimensional-jl-52601e83a4ff2296e661-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-multidimensional-jl-macro-expansion-300">macro expansion</a><br />
+              9 (5.26%)
+              samples spent calling
+              <a href="broadcast-jl-ff3c64448e61e2bf5190-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-broadcast-jl-macro-expansion-182">macro expansion</a><br />
+            </div>
+            <span class="code">                                $(x.args[2])        # Body of loop
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-74"></a>74</td>
+          <td>12 (1.17%)</td>
+          <td>12 (1.17%)</td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-simdloop-jl-macro-expansion-74"></a>
+              12 (1.17%) samples spent in macro expansion<br />
+              3 (25.00%) (ex.),
+              3 (25.00%) (incl.)
+              when called from
+              macro expansion
+              <a href="broadcast-jl-ff3c64448e61e2bf5190-line.html#Lbroadcast-jl-ff3c64448e61e2bf5190-line.html-176">line 176</a><br />
+              9 (75.00%) (ex.),
+              9 (75.00%) (incl.)
+              when called from
+              macro expansion
+              <a href="broadcast-jl-ff3c64448e61e2bf5190-line.html#Lbroadcast-jl-ff3c64448e61e2bf5190-line.html-149">line 149</a><br />
+            </div>
+            <span class="code">                                $i += 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-75"></a>75</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                                $(Expr(:simdloop))  # Mark loop as SIMD loop
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-76"></a>76</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                            end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-77"></a>77</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-78"></a>78</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        # Set index to last value just like a regular for loop would
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-79"></a>79</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        $var = last($r)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-80"></a>80</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-81"></a>81</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-82"></a>82</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-83"></a>83</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-84"></a>84</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        nothing
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-85"></a>85</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-86"></a>86</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-87"></a>87</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-88"></a>88</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">macro simd(forloop)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-89"></a>89</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    esc(compile(forloop))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-90"></a>90</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-91"></a>91</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lsimdloop-jl-002fad40c638bb457b99-line.html-92"></a>92</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end # module SimdLoop
+</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="statprofiler.css">
+
+    <title>StatProfilerHTML.jl: /home/dussault/import/julia-d386e40c17/bin/../share/julia/base/./libuv.jl</title>
+  </head>
+  <body>
+<div class="report-header">
+  <div class="backlink"><a href="index.html">Report index</a></div>
+  <div class="report-title">StatProfilerHTML.jl report</div>
+  <div class="generated-on">Generated on jeu 16 aoû 2018 21:59:49 EDT</div>
+</div>
+
+    <div id="body-content">
+      <table>
+        <caption>File source code</caption>
+        <tr>
+          <th>Line</td>
+          <th>Exclusive</th>
+          <th>Inclusive</th>
+          <th>Code</th>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-1"></a>1</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># This file is a part of Julia. License is MIT: https://julialang.org/license
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-2"></a>2</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-3"></a>3</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># Core definitions for interacting with the libuv library from Julia
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-4"></a>4</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-5"></a>5</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">include(string(length(Core.ARGS)&gt;=2?Core.ARGS[2]:&quot;&quot;,&quot;uv_constants.jl&quot;))  # include($BUILDROOT/base/uv_constants.jl)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-6"></a>6</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-7"></a>7</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># convert UV handle data to julia object, checking for null
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-8"></a>8</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function uv_sizeof_handle(handle)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-9"></a>9</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if !(UV_UNKNOWN_HANDLE &lt; handle &lt; UV_HANDLE_TYPE_MAX)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-10"></a>10</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        throw(DomainError())
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-11"></a>11</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-12"></a>12</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ccall(:uv_handle_size,Csize_t,(Int32,),handle)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-13"></a>13</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-14"></a>14</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-15"></a>15</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function uv_sizeof_req(req)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-16"></a>16</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if !(UV_UNKNOWN_REQ &lt; req &lt; UV_REQ_TYPE_MAX)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-17"></a>17</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        throw(DomainError())
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-18"></a>18</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-19"></a>19</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ccall(:uv_req_size,Csize_t,(Int32,),req)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-20"></a>20</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-21"></a>21</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-22"></a>22</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">for h in uv_handle_types
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-23"></a>23</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">@eval const $(Symbol(&quot;_sizeof_&quot;,lowercase(string(h)))) = uv_sizeof_handle($h)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-24"></a>24</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-25"></a>25</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">for r in uv_req_types
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-26"></a>26</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">@eval const $(Symbol(&quot;_sizeof_&quot;,lowercase(string(r)))) = uv_sizeof_req($r)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-27"></a>27</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-28"></a>28</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-29"></a>29</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">uv_handle_data(handle) = ccall(:jl_uv_handle_data,Ptr{Void},(Ptr{Void},),handle)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-30"></a>30</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">uv_req_data(handle) = ccall(:jl_uv_req_data,Ptr{Void},(Ptr{Void},),handle)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-31"></a>31</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">uv_req_set_data(req,data) = ccall(:jl_uv_req_set_data,Void,(Ptr{Void},Any),req,data)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-32"></a>32</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">uv_req_set_data(req,data::Ptr{Void}) = ccall(:jl_uv_req_set_data,Void,(Ptr{Void},Ptr{Void}),req,data)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-33"></a>33</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-34"></a>34</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">macro handle_as(hand, typ)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-35"></a>35</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    quote
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-36"></a>36</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        data = uv_handle_data($(esc(hand)))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-37"></a>37</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        data == C_NULL &amp;&amp; return
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-38"></a>38</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        unsafe_pointer_to_objref(data)::($(esc(typ)))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-39"></a>39</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-40"></a>40</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-41"></a>41</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-42"></a>42</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">associate_julia_struct(handle::Ptr{Void}, jlobj::ANY) =
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-43"></a>43</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ccall(:jl_uv_associate_julia_struct, Void, (Ptr{Void}, Any), handle, jlobj)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-44"></a>44</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">disassociate_julia_struct(uv) = disassociate_julia_struct(uv.handle)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-45"></a>45</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">disassociate_julia_struct(handle::Ptr{Void}) =
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-46"></a>46</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    handle != C_NULL &amp;&amp; ccall(:jl_uv_disassociate_julia_struct, Void, (Ptr{Void},), handle)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-47"></a>47</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-48"></a>48</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># A dict of all libuv handles that are being waited on somewhere in the system
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-49"></a>49</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># and should thus not be garbage collected
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-50"></a>50</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const uvhandles = ObjectIdDict()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-51"></a>51</td>
+          <td></td>
+          <td>1 (0.02%)</td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-libuv-jl-preserve_handle-51"></a>
+              1 (0.02%) samples spent in preserve_handle<br />
+              0 (ex.),
+              1 (100.00%) (incl.)
+              when called from
+              uv_write
+              <a href="stream-jl-374402cfa11300063557-line.html#Lstream-jl-374402cfa11300063557-line.html-808">line 808</a><br />
+            </div>
+            <div class="callees">
+              1 (100.00%)
+              samples spent calling
+              <a href="associative-jl-5d40460a650ee0a51343-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-associative-jl-setindex-425">setindex!</a><br />
+            </div>
+            <span class="code">preserve_handle(x) = uvhandles[x] = get(uvhandles,x,0)::Int+1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-52"></a>52</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">unpreserve_handle(x) = (v = uvhandles[x]::Int; v == 1 ? pop!(uvhandles,x) : (uvhandles[x] = v-1); nothing)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-53"></a>53</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-54"></a>54</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">## Libuv error handling ##
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-55"></a>55</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-56"></a>56</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">mutable struct UVError &lt;: Exception
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-57"></a>57</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    prefix::AbstractString
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-58"></a>58</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    code::Int32
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-59"></a>59</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    UVError(p::AbstractString,code::Integer)=new(p,code)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-60"></a>60</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-61"></a>61</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-62"></a>62</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">struverror(err::Int32) = unsafe_string(ccall(:uv_strerror,Cstring,(Int32,),err))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-63"></a>63</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">struverror(err::UVError) = struverror(err.code)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-64"></a>64</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">uverrorname(err::Int32) = unsafe_string(ccall(:uv_err_name,Cstring,(Int32,),err))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-65"></a>65</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">uverrorname(err::UVError) = uverrorname(err.code)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-66"></a>66</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-67"></a>67</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">uv_error(prefix::Symbol, c::Integer) = uv_error(string(prefix),c)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-68"></a>68</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">uv_error(prefix::AbstractString, c::Integer) = c &lt; 0 ? throw(UVError(prefix,c)) : nothing
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-69"></a>69</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">show(io::IO, e::UVError) = print(io, e.prefix*&quot;: &quot;*struverror(e)*&quot; (&quot;*uverrorname(e)*&quot;)&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-70"></a>70</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-71"></a>71</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">## event loop ##
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-72"></a>72</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-73"></a>73</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">eventloop() = uv_eventloop::Ptr{Void}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-74"></a>74</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">#mkNewEventLoop() = ccall(:jl_new_event_loop,Ptr{Void},()) # this would probably be fine, but is nowhere supported
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-75"></a>75</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-76"></a>76</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function run_event_loop()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-77"></a>77</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ccall(:jl_run_event_loop,Void,(Ptr{Void},),eventloop())
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-78"></a>78</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-79"></a>79</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function process_events(block::Bool)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-80"></a>80</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    loop = eventloop()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-81"></a>81</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if block
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-82"></a>82</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        return ccall(:jl_run_once,Int32,(Ptr{Void},),loop)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-83"></a>83</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    else
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-84"></a>84</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        return ccall(:jl_process_events,Int32,(Ptr{Void},),loop)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-85"></a>85</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-86"></a>86</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-87"></a>87</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-88"></a>88</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function reinit_stdio()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-89"></a>89</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    global uv_jl_alloc_buf     = cfunction(uv_alloc_buf, Void, Tuple{Ptr{Void}, Csize_t, Ptr{Void}})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-90"></a>90</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    global uv_jl_readcb        = cfunction(uv_readcb, Void, Tuple{Ptr{Void}, Cssize_t, Ptr{Void}})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-91"></a>91</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    global uv_jl_connectioncb  = cfunction(uv_connectioncb, Void, Tuple{Ptr{Void}, Cint})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-92"></a>92</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    global uv_jl_connectcb     = cfunction(uv_connectcb, Void, Tuple{Ptr{Void}, Cint})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-93"></a>93</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    global uv_jl_writecb_task  = cfunction(uv_writecb_task, Void, Tuple{Ptr{Void}, Cint})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-94"></a>94</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    global uv_jl_getaddrinfocb = cfunction(uv_getaddrinfocb, Void, Tuple{Ptr{Void}, Cint, Ptr{Void}})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-95"></a>95</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    global uv_jl_recvcb        = cfunction(uv_recvcb, Void, Tuple{Ptr{Void}, Cssize_t, Ptr{Void}, Ptr{Void}, Cuint})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-96"></a>96</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    global uv_jl_sendcb        = cfunction(uv_sendcb, Void, Tuple{Ptr{Void}, Cint})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-97"></a>97</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    global uv_jl_return_spawn  = cfunction(uv_return_spawn, Void, Tuple{Ptr{Void}, Int64, Int32})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-98"></a>98</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    global uv_jl_asynccb       = cfunction(uv_asynccb, Void, Tuple{Ptr{Void}})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-99"></a>99</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    global uv_jl_timercb       = cfunction(uv_timercb, Void, Tuple{Ptr{Void}})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-100"></a>100</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-101"></a>101</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    global uv_eventloop = ccall(:jl_global_event_loop, Ptr{Void}, ())
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-102"></a>102</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    global STDIN = init_stdio(ccall(:jl_stdin_stream, Ptr{Void}, ()))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-103"></a>103</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    global STDOUT = init_stdio(ccall(:jl_stdout_stream, Ptr{Void}, ()))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-104"></a>104</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    global STDERR = init_stdio(ccall(:jl_stderr_stream, Ptr{Void}, ()))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-105"></a>105</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-106"></a>106</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-107"></a>107</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-108"></a>108</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    STDIN
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-109"></a>109</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-110"></a>110</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Global variable referring to the standard input stream.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-111"></a>111</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-112"></a>112</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">:STDIN
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-113"></a>113</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-114"></a>114</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-115"></a>115</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    STDOUT
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-116"></a>116</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-117"></a>117</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Global variable referring to the standard out stream.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-118"></a>118</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-119"></a>119</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">:STDOUT
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-120"></a>120</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-121"></a>121</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-122"></a>122</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    STDERR
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-123"></a>123</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-124"></a>124</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Global variable referring to the standard error stream.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-125"></a>125</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibuv-jl-48946a38389259f92281-line.html-126"></a>126</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">:STDERR
+</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

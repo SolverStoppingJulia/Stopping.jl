@@ -1,23 +1,23 @@
-export Newarmijo_wolfe
+export Proj_LS
 
-function Newarmijo_wolfe(h :: LineModel,
-                         h₀ :: Float64,
-                         slope :: Float64,
-                         g :: Array{Float64,1};
-                         τ₀ :: Float64=1.0e-4,
-                         τ₁ :: Float64=0.9999,
-                         bk_max :: Int=50,
-                         nbWM :: Int=50,
-                         verboseLS :: Bool=false,
-                         check_slope :: Bool = false,
-                         kwargs...)
-
+function Proj_LS(h :: LineModel,
+                 h₀ :: Float64,
+                 slope :: Float64,
+                 g :: Array{Float64,1};
+                 τ₀ :: Float64=1.0e-4,
+                 τ₁ :: Float64=0.9999,
+                 bk_max :: Int=50,
+                 nbWM :: Int=50,
+                 verboseLS :: Bool=false,
+                 check_slope :: Bool = false,
+                 kwargs...)
+    
     if check_slope
-      (abs(slope - grad(h, 0.0)) < 1e-4) || warn("wrong slope")
-      verboseLS && @show h₀ obj(h, 0.0) slope grad(h,0.0)
+        (abs(slope - grad(h, 0.0)) < 1e-4) || warn("wrong slope")
+        verboseLS && @show h₀ obj(h, 0.0) slope grad(h,0.0)
     end
-
-    # Perform improved Armijo linesearch.
+    
+    # Perform improved Armijo projected linesearch.
     nbk = 0
     nbW = 0
     t = 1.0
@@ -31,7 +31,7 @@ function Newarmijo_wolfe(h :: LineModel,
         slope_t = grad!(h, t, g)
 
         nbW += 1
-        verboseLS && @printf(" W  %4d  slope  %4d slopet %4d\n", nbW, slope, slope_t);
+        verboseLS && @printf(" W  %4d  slope  %4d slope_t %4d\n", nbW, slope, slope_t);
     end
 
     hgoal = h₀ + slope * t * τ₀;
@@ -66,5 +66,5 @@ function Newarmijo_wolfe(h :: LineModel,
     verboseLS && @printf("  %4d %4d %8e\n", nbk, nbW, t);
     stalled = (nbk == bk_max)
     @assert (t > 0.0) && (!isnan(t)) "invalid step"
-    return (t, good_grad, ht, nbk, nbW, stalled)#,h.f_eval,h.g_eval,h.h_eval)
+    return (t, t, good_grad, ht, nbk, nbW, stalled)#,h.f_eval,h.g_eval,h.h_eval)
 end

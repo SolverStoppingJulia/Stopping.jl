@@ -1,0 +1,363 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="statprofiler.css">
+
+    <title>StatProfilerHTML.jl: /home/dussault/import/julia-d386e40c17/bin/../share/julia/base/./coreio.jl</title>
+  </head>
+  <body>
+<div class="report-header">
+  <div class="backlink"><a href="index.html">Report index</a></div>
+  <div class="report-title">StatProfilerHTML.jl report</div>
+  <div class="generated-on">Generated on jeu 16 aoû 2018 21:59:49 EDT</div>
+</div>
+
+    <div id="body-content">
+      <table>
+        <caption>File source code</caption>
+        <tr>
+          <th>Line</td>
+          <th>Exclusive</th>
+          <th>Inclusive</th>
+          <th>Code</th>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-1"></a>1</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># This file is a part of Julia. License is MIT: https://julialang.org/license
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-2"></a>2</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-3"></a>3</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">show(x) = show(STDOUT::IO, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-4"></a>4</td>
+          <td></td>
+          <td></td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-coreio-jl-println-4"></a>
+              1 (0.02%) samples spent in println<br />
+              0 (ex.),
+              1 (100.00%) (incl.)
+              when called from
+              #TSlbfgsB#82
+              <a href="lbfgsB-jl-f6c34058abe991bab4ab-line.html#LlbfgsB-jl-f6c34058abe991bab4ab-line.html-147">line 147</a><br />
+            </div>
+            <span class="code">print(xs...)   = print(STDOUT::IO, xs...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-5"></a>5</td>
+          <td></td>
+          <td>1 (0.02%)</td>
+          <td>
+            <div class="callees">
+              1 (100.00%)
+              samples spent calling
+              <a href="io-jl-b6ad1e57a5a54324231d-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-strings-io-jl-println-53">println</a><br />
+            </div>
+            <span class="code">println(xs...) = println(STDOUT::IO, xs...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-6"></a>6</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">println(io::IO) = print(io, &#39;\n&#39;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-7"></a>7</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-8"></a>8</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">struct DevNullStream &lt;: IO end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-9"></a>9</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const DevNull = DevNullStream()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-10"></a>10</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">isreadable(::DevNullStream) = false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-11"></a>11</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">iswritable(::DevNullStream) = true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-12"></a>12</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">isopen(::DevNullStream) = true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-13"></a>13</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">read(::DevNullStream, ::Type{UInt8}) = throw(EOFError())
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-14"></a>14</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">write(::DevNullStream, ::UInt8) = 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-15"></a>15</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">unsafe_write(::DevNullStream, ::Ptr{UInt8}, n::UInt)::Int = n
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-16"></a>16</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">close(::DevNullStream) = nothing
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-17"></a>17</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">flush(::DevNullStream) = nothing
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-18"></a>18</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">wait_connected(::DevNullStream) = nothing
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-19"></a>19</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">wait_readnb(::DevNullStream) = wait()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-20"></a>20</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">wait_readbyte(::DevNullStream) = wait()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-21"></a>21</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">wait_close(::DevNullStream) = wait()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-22"></a>22</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">eof(::DevNullStream) = true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-23"></a>23</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-24"></a>24</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">let CoreIO = Union{Core.CoreSTDOUT, Core.CoreSTDERR}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-25"></a>25</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    global write, unsafe_write
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-26"></a>26</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    write(io::CoreIO, x::UInt8) = Core.write(io, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-27"></a>27</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    unsafe_write(io::CoreIO, x::Ptr{UInt8}, nb::UInt) = Core.unsafe_write(io, x, nb)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-28"></a>28</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-29"></a>29</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-30"></a>30</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">STDIN = DevNull
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-31"></a>31</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">STDOUT = Core.STDOUT
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcoreio-jl-ed174b5ecfdfaae1dccc-line.html-32"></a>32</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">STDERR = Core.STDERR
+</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,4320 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="statprofiler.css">
+
+    <title>StatProfilerHTML.jl: /home/dussault/import/julia-d386e40c17/bin/../share/julia/base/./cartesian.jl</title>
+  </head>
+  <body>
+<div class="report-header">
+  <div class="backlink"><a href="index.html">Report index</a></div>
+  <div class="report-title">StatProfilerHTML.jl report</div>
+  <div class="generated-on">Generated on ven 17 aoû 2018 15:43:37 EDT</div>
+</div>
+
+    <div id="body-content">
+      <table>
+        <caption>File source code</caption>
+        <tr>
+          <th>Line</td>
+          <th>Exclusive</th>
+          <th>Inclusive</th>
+          <th>Code</th>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-1"></a>1</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># This file is a part of Julia. License is MIT: https://julialang.org/license
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-2"></a>2</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-3"></a>3</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">module Cartesian
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-4"></a>4</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-5"></a>5</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">export @nloops, @nref, @ncall, @nexprs, @nextract, @nall, @nany, @ntuple, @nif
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-6"></a>6</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-7"></a>7</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">### Cartesian-specific macros
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-8"></a>8</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-9"></a>9</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-10"></a>10</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @nloops N itersym rangeexpr bodyexpr
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-11"></a>11</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @nloops N itersym rangeexpr preexpr bodyexpr
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-12"></a>12</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @nloops N itersym rangeexpr preexpr postexpr bodyexpr
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-13"></a>13</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-14"></a>14</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Generate `N` nested loops, using `itersym` as the prefix for the iteration variables.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-15"></a>15</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">`rangeexpr` may be an anonymous-function expression, or a simple symbol `var` in which case
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-16"></a>16</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">the range is `indices(var, d)` for dimension `d`.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-17"></a>17</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-18"></a>18</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Optionally, you can provide &quot;pre&quot; and &quot;post&quot; expressions. These get executed first and last,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-19"></a>19</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">respectively, in the body of each loop. For example:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-20"></a>20</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-21"></a>21</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @nloops 2 i A d -&gt; j_d = min(i_d, 5) begin
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-22"></a>22</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        s += @nref 2 A j
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-23"></a>23</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-24"></a>24</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-25"></a>25</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">would generate:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-26"></a>26</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-27"></a>27</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for i_2 = indices(A, 2)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-28"></a>28</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        j_2 = min(i_2, 5)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-29"></a>29</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        for i_1 = indices(A, 1)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-30"></a>30</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            j_1 = min(i_1, 5)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-31"></a>31</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            s += A[j_1, j_2]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-32"></a>32</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-33"></a>33</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-34"></a>34</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-35"></a>35</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">If you want just a post-expression, supply `nothing` for the pre-expression. Using
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-36"></a>36</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">parentheses and semicolons, you can supply multi-statement expressions.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-37"></a>37</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-38"></a>38</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">macro nloops(N, itersym, rangeexpr, args...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-39"></a>39</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    _nloops(N, itersym, rangeexpr, args...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-40"></a>40</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-41"></a>41</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-42"></a>42</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function _nloops(N::Int, itersym::Symbol, arraysym::Symbol, args::Expr...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-43"></a>43</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @gensym d
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-44"></a>44</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    _nloops(N, itersym, :($d-&gt;indices($arraysym, $d)), args...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-45"></a>45</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-46"></a>46</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-47"></a>47</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function _nloops(N::Int, itersym::Symbol, rangeexpr::Expr, args::Expr...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-48"></a>48</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if rangeexpr.head != :-&gt;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-49"></a>49</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        throw(ArgumentError(&quot;second argument must be an anonymous function expression to compute the range&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-50"></a>50</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-51"></a>51</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if !(1 &lt;= length(args) &lt;= 3)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-52"></a>52</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        throw(ArgumentError(&quot;number of arguments must be 1 â¤ length(args) â¤ 3, got $nargs&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-53"></a>53</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-54"></a>54</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    body = args[end]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-55"></a>55</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ex = Expr(:escape, body)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-56"></a>56</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for dim = 1:N
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-57"></a>57</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        itervar = inlineanonymous(itersym, dim)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-58"></a>58</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        rng = inlineanonymous(rangeexpr, dim)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-59"></a>59</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        preexpr = length(args) &gt; 1 ? inlineanonymous(args[1], dim) : (:(nothing))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-60"></a>60</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        postexpr = length(args) &gt; 2 ? inlineanonymous(args[2], dim) : (:(nothing))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-61"></a>61</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        ex = quote
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-62"></a>62</td>
+          <td>47 (4.57%)</td>
+          <td>47 (4.57%)</td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-cartesian-jl-macro-expansion-62"></a>
+              47 (4.57%) samples spent in macro expansion<br />
+              47 (100.00%) (ex.),
+              47 (100.00%) (incl.)
+              when called from
+              macro expansion
+              <a href="multidimensional-jl-52601e83a4ff2296e661-line.html#Lmultidimensional-jl-52601e83a4ff2296e661-line.html-525">line 525</a><br />
+            </div>
+            <span class="code">            for $(esc(itervar)) = $(esc(rng))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-63"></a>63</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                $(esc(preexpr))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-64"></a>64</td>
+          <td></td>
+          <td>127 (12.34%)</td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-cartesian-jl-macro-expansion-64"></a>
+              127 (12.34%) samples spent in macro expansion<br />
+              0 (ex.),
+              3 (2.36%) (incl.)
+              when called from
+              macro expansion
+              <a href="multidimensional-jl-52601e83a4ff2296e661-line.html#Lmultidimensional-jl-52601e83a4ff2296e661-line.html-556">line 556</a><br />
+              0 (ex.),
+              124 (97.64%) (incl.)
+              when called from
+              macro expansion
+              <a href="multidimensional-jl-52601e83a4ff2296e661-line.html#Lmultidimensional-jl-52601e83a4ff2296e661-line.html-525">line 525</a><br />
+            </div>
+            <div class="callees">
+              124 (97.64%)
+              samples spent calling
+              <a href="multidimensional-jl-52601e83a4ff2296e661-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-multidimensional-jl-macro-expansion-527">macro expansion</a><br />
+              3 (2.36%)
+              samples spent calling
+              <a href="multidimensional-jl-52601e83a4ff2296e661-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-multidimensional-jl-macro-expansion-557">macro expansion</a><br />
+            </div>
+            <span class="code">                $ex
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-65"></a>65</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                $(esc(postexpr))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-66"></a>66</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-67"></a>67</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-68"></a>68</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-69"></a>69</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ex
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-70"></a>70</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-71"></a>71</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-72"></a>72</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-73"></a>73</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @nref N A indexexpr
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-74"></a>74</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-75"></a>75</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Generate expressions like `A[i_1, i_2, ...]`. `indexexpr` can either be an iteration-symbol
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-76"></a>76</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">prefix, or an anonymous-function expression.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-77"></a>77</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-78"></a>78</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```jldoctest
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-79"></a>79</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; @macroexpand Base.Cartesian.@nref 3 A i
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-80"></a>80</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">:(A[i_1, i_2, i_3])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-81"></a>81</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-82"></a>82</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-83"></a>83</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">macro nref(N, A, sym)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-84"></a>84</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    _nref(N, A, sym)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-85"></a>85</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-86"></a>86</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-87"></a>87</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function _nref(N::Int, A::Symbol, ex)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-88"></a>88</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    vars = [ inlineanonymous(ex,i) for i = 1:N ]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-89"></a>89</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    Expr(:escape, Expr(:ref, A, vars...))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-90"></a>90</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-91"></a>91</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-92"></a>92</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-93"></a>93</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @ncall N f sym...
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-94"></a>94</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-95"></a>95</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Generate a function call expression. `sym` represents any number of function arguments, the
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-96"></a>96</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">last of which may be an anonymous-function expression and is expanded into `N` arguments.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-97"></a>97</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-98"></a>98</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">For example `@ncall 3 func a` generates
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-99"></a>99</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-100"></a>100</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    func(a_1, a_2, a_3)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-101"></a>101</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-102"></a>102</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">while `@ncall 2 func a b i-&gt;c[i]` yields
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-103"></a>103</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-104"></a>104</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    func(a, b, c[1], c[2])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-105"></a>105</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-106"></a>106</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-107"></a>107</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">macro ncall(N, f, sym...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-108"></a>108</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    _ncall(N, f, sym...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-109"></a>109</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-110"></a>110</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-111"></a>111</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function _ncall(N::Int, f, args...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-112"></a>112</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    pre = args[1:end-1]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-113"></a>113</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ex = args[end]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-114"></a>114</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    vars = [ inlineanonymous(ex,i) for i = 1:N ]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-115"></a>115</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    Expr(:escape, Expr(:call, f, pre..., vars...))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-116"></a>116</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-117"></a>117</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-118"></a>118</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-119"></a>119</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @nexprs N expr
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-120"></a>120</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-121"></a>121</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Generate `N` expressions. `expr` should be an anonymous-function expression.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-122"></a>122</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-123"></a>123</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```jldoctest
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-124"></a>124</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; @macroexpand Base.Cartesian.@nexprs 4 i -&gt; y[i] = A[i+j]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-125"></a>125</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">quote
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-126"></a>126</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    y[1] = A[1 + j]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-127"></a>127</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    y[2] = A[2 + j]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-128"></a>128</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    y[3] = A[3 + j]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-129"></a>129</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    y[4] = A[4 + j]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-130"></a>130</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-131"></a>131</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-132"></a>132</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-133"></a>133</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">macro nexprs(N, ex)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-134"></a>134</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    _nexprs(N, ex)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-135"></a>135</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-136"></a>136</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-137"></a>137</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function _nexprs(N::Int, ex::Expr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-138"></a>138</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    exs = [ inlineanonymous(ex,i) for i = 1:N ]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-139"></a>139</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    Expr(:escape, Expr(:block, exs...))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-140"></a>140</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-141"></a>141</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-142"></a>142</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-143"></a>143</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @nextract N esym isym
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-144"></a>144</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-145"></a>145</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Generate `N` variables `esym_1`, `esym_2`, ..., `esym_N` to extract values from `isym`.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-146"></a>146</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">`isym` can be either a `Symbol` or anonymous-function expression.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-147"></a>147</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-148"></a>148</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">`@nextract 2 x y` would generate
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-149"></a>149</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-150"></a>150</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    x_1 = y[1]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-151"></a>151</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    x_2 = y[2]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-152"></a>152</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-153"></a>153</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">while `@nextract 3 x d-&gt;y[2d-1]` yields
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-154"></a>154</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-155"></a>155</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    x_1 = y[1]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-156"></a>156</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    x_2 = y[3]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-157"></a>157</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    x_3 = y[5]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-158"></a>158</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-159"></a>159</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-160"></a>160</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">macro nextract(N, esym, isym)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-161"></a>161</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    _nextract(N, esym, isym)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-162"></a>162</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-163"></a>163</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-164"></a>164</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function _nextract(N::Int, esym::Symbol, isym::Symbol)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-165"></a>165</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    aexprs = [Expr(:escape, Expr(:(=), inlineanonymous(esym, i), :(($isym)[$i]))) for i = 1:N]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-166"></a>166</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    Expr(:block, aexprs...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-167"></a>167</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-168"></a>168</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-169"></a>169</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function _nextract(N::Int, esym::Symbol, ex::Expr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-170"></a>170</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    aexprs = [Expr(:escape, Expr(:(=), inlineanonymous(esym, i), inlineanonymous(ex,i))) for i = 1:N]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-171"></a>171</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    Expr(:block, aexprs...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-172"></a>172</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-173"></a>173</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-174"></a>174</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-175"></a>175</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @nall N expr
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-176"></a>176</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-177"></a>177</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Check whether all of the expressions generated by the anonymous-function expression `expr`
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-178"></a>178</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">evaluate to `true`.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-179"></a>179</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-180"></a>180</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">`@nall 3 d-&gt;(i_d &gt; 1)` would generate the expression `(i_1 &gt; 1 &amp;&amp; i_2 &gt; 1 &amp;&amp; i_3 &gt; 1)`. This
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-181"></a>181</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">can be convenient for bounds-checking.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-182"></a>182</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-183"></a>183</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">macro nall(N, criterion)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-184"></a>184</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    _nall(N, criterion)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-185"></a>185</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-186"></a>186</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-187"></a>187</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function _nall(N::Int, criterion::Expr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-188"></a>188</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if criterion.head != :-&gt;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-189"></a>189</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        throw(ArgumentError(&quot;second argument must be an anonymous function expression yielding the criterion&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-190"></a>190</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-191"></a>191</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    conds = [Expr(:escape, inlineanonymous(criterion, i)) for i = 1:N]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-192"></a>192</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    Expr(:&amp;&amp;, conds...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-193"></a>193</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-194"></a>194</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-195"></a>195</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-196"></a>196</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @nany N expr
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-197"></a>197</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-198"></a>198</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Check whether any of the expressions generated by the anonymous-function expression `expr`
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-199"></a>199</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">evaluate to `true`.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-200"></a>200</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-201"></a>201</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">`@nany 3 d-&gt;(i_d &gt; 1)` would generate the expression `(i_1 &gt; 1 || i_2 &gt; 1 || i_3 &gt; 1)`.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-202"></a>202</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-203"></a>203</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">macro nany(N, criterion)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-204"></a>204</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    _nany(N, criterion)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-205"></a>205</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-206"></a>206</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-207"></a>207</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function _nany(N::Int, criterion::Expr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-208"></a>208</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if criterion.head != :-&gt;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-209"></a>209</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        error(&quot;Second argument must be an anonymous function expression yielding the criterion&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-210"></a>210</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-211"></a>211</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    conds = [Expr(:escape, inlineanonymous(criterion, i)) for i = 1:N]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-212"></a>212</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    Expr(:||, conds...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-213"></a>213</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-214"></a>214</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-215"></a>215</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-216"></a>216</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @ntuple N expr
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-217"></a>217</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-218"></a>218</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Generates an `N`-tuple. `@ntuple 2 i` would generate `(i_1, i_2)`, and `@ntuple 2 k-&gt;k+1`
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-219"></a>219</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">would generate `(2,3)`.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-220"></a>220</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-221"></a>221</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">macro ntuple(N, ex)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-222"></a>222</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    _ntuple(N, ex)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-223"></a>223</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-224"></a>224</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-225"></a>225</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function _ntuple(N::Int, ex)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-226"></a>226</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    vars = [ inlineanonymous(ex,i) for i = 1:N ]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-227"></a>227</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    Expr(:escape, Expr(:tuple, vars...))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-228"></a>228</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-229"></a>229</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-230"></a>230</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-231"></a>231</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @nif N conditionexpr expr
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-232"></a>232</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @nif N conditionexpr expr elseexpr
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-233"></a>233</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-234"></a>234</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Generates a sequence of `if ... elseif ... else ... end` statements. For example:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-235"></a>235</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-236"></a>236</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @nif 3 d-&gt;(i_d &gt;= size(A,d)) d-&gt;(error(&quot;Dimension &quot;, d, &quot; too big&quot;)) d-&gt;println(&quot;All OK&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-237"></a>237</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-238"></a>238</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">would generate:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-239"></a>239</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-240"></a>240</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if i_1 &gt; size(A, 1)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-241"></a>241</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        error(&quot;Dimension &quot;, 1, &quot; too big&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-242"></a>242</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    elseif i_2 &gt; size(A, 2)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-243"></a>243</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        error(&quot;Dimension &quot;, 2, &quot; too big&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-244"></a>244</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    else
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-245"></a>245</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        println(&quot;All OK&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-246"></a>246</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-247"></a>247</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-248"></a>248</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">macro nif(N, condition, operation...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-249"></a>249</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # Handle the final &quot;else&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-250"></a>250</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ex = esc(inlineanonymous(length(operation) &gt; 1 ? operation[2] : operation[1], N))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-251"></a>251</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # Make the nested if statements
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-252"></a>252</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for i = N-1:-1:1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-253"></a>253</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        ex = Expr(:if, esc(inlineanonymous(condition,i)), esc(inlineanonymous(operation[1],i)), ex)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-254"></a>254</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-255"></a>255</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ex
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-256"></a>256</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-257"></a>257</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-258"></a>258</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">## Utilities
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-259"></a>259</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-260"></a>260</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># Simplify expressions like :(d-&gt;3:size(A,d)-3) given an explicit value for d
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-261"></a>261</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function inlineanonymous(ex::Expr, val)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-262"></a>262</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if ex.head != :-&gt;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-263"></a>263</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        throw(ArgumentError(&quot;not an anonymous function&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-264"></a>264</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-265"></a>265</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if !isa(ex.args[1], Symbol)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-266"></a>266</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        throw(ArgumentError(&quot;not a single-argument anonymous function&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-267"></a>267</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-268"></a>268</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    sym = ex.args[1]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-269"></a>269</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ex = ex.args[2]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-270"></a>270</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    exout = lreplace(ex, sym, val)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-271"></a>271</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    exout = poplinenum(exout)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-272"></a>272</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    exprresolve(exout)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-273"></a>273</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-274"></a>274</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-275"></a>275</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># Given :i and 3, this generates :i_3
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-276"></a>276</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">inlineanonymous(base::Symbol, ext) = Symbol(base,&#39;_&#39;,ext)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-277"></a>277</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-278"></a>278</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># Replace a symbol by a value or a &quot;coded&quot; symbol
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-279"></a>279</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># E.g., for d = 3,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-280"></a>280</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">#    lreplace(:d, :d, 3) -&gt; 3
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-281"></a>281</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">#    lreplace(:i_d, :d, 3) -&gt; :i_3
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-282"></a>282</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">#    lreplace(:i_{d-1}, :d, 3) -&gt; :i_2
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-283"></a>283</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># This follows LaTeX notation.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-284"></a>284</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">struct LReplace{S&lt;:AbstractString}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-285"></a>285</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    pat_sym::Symbol
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-286"></a>286</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    pat_str::S
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-287"></a>287</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    val::Int
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-288"></a>288</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-289"></a>289</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">LReplace(sym::Symbol, val::Integer) = LReplace(sym, string(sym), val)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-290"></a>290</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-291"></a>291</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">lreplace(ex, sym::Symbol, val) = lreplace!(copy(ex), LReplace(sym, val))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-292"></a>292</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-293"></a>293</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function lreplace!(sym::Symbol, r::LReplace)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-294"></a>294</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    sym == r.pat_sym &amp;&amp; return r.val
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-295"></a>295</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    Symbol(lreplace!(string(sym), r))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-296"></a>296</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-297"></a>297</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-298"></a>298</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function lreplace!(str::AbstractString, r::LReplace)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-299"></a>299</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    i = start(str)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-300"></a>300</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    pat = r.pat_str
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-301"></a>301</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    j = start(pat)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-302"></a>302</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    matching = false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-303"></a>303</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    while !done(str, i)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-304"></a>304</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        cstr, i = next(str, i)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-305"></a>305</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if !matching
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-306"></a>306</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            if cstr != &#39;_&#39; || done(str, i)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-307"></a>307</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                continue
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-308"></a>308</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-309"></a>309</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            istart = i
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-310"></a>310</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            cstr, i = next(str, i)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-311"></a>311</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-312"></a>312</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if !done(pat, j)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-313"></a>313</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            cr, j = next(pat, j)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-314"></a>314</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            if cstr == cr
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-315"></a>315</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                matching = true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-316"></a>316</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            else
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-317"></a>317</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                matching = false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-318"></a>318</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                j = start(pat)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-319"></a>319</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                i = istart
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-320"></a>320</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                continue
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-321"></a>321</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-322"></a>322</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-323"></a>323</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if matching &amp;&amp; done(pat, j)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-324"></a>324</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            if done(str, i) || next(str, i)[1] == &#39;_&#39;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-325"></a>325</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                # We have a match
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-326"></a>326</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                return string(str[1:prevind(str, istart)], r.val, lreplace!(str[i:end], r))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-327"></a>327</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-328"></a>328</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            matching = false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-329"></a>329</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            j = start(pat)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-330"></a>330</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            i = istart
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-331"></a>331</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-332"></a>332</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-333"></a>333</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    str
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-334"></a>334</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-335"></a>335</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-336"></a>336</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function lreplace!(ex::Expr, r::LReplace)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-337"></a>337</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # Curly-brace notation, which acts like parentheses
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-338"></a>338</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if ex.head == :curly &amp;&amp; length(ex.args) == 2 &amp;&amp; isa(ex.args[1], Symbol) &amp;&amp; endswith(string(ex.args[1]), &quot;_&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-339"></a>339</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        excurly = exprresolve(lreplace!(ex.args[2], r))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-340"></a>340</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if isa(excurly, Number)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-341"></a>341</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            return Symbol(ex.args[1],excurly)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-342"></a>342</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        else
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-343"></a>343</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            ex.args[2] = excurly
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-344"></a>344</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            return ex
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-345"></a>345</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-346"></a>346</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-347"></a>347</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for i in 1:length(ex.args)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-348"></a>348</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        ex.args[i] = lreplace!(ex.args[i], r)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-349"></a>349</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-350"></a>350</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ex
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-351"></a>351</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-352"></a>352</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-353"></a>353</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">lreplace!(arg, r::LReplace) = arg
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-354"></a>354</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-355"></a>355</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-356"></a>356</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">poplinenum(arg) = arg
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-357"></a>357</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function poplinenum(ex::Expr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-358"></a>358</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if ex.head == :block
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-359"></a>359</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if length(ex.args) == 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-360"></a>360</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            return ex.args[1]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-361"></a>361</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        elseif length(ex.args) == 2 &amp;&amp; isa(ex.args[1], LineNumberNode)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-362"></a>362</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            return ex.args[2]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-363"></a>363</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        elseif (length(ex.args) == 2 &amp;&amp; isa(ex.args[1], Expr) &amp;&amp; ex.args[1].head == :line)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-364"></a>364</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            return ex.args[2]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-365"></a>365</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-366"></a>366</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-367"></a>367</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ex
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-368"></a>368</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-369"></a>369</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-370"></a>370</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">## Resolve expressions at parsing time ##
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-371"></a>371</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-372"></a>372</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const exprresolve_arith_dict = Dict{Symbol,Function}(:+ =&gt; +,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-373"></a>373</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    :- =&gt; -, :* =&gt; *, :/ =&gt; /, :^ =&gt; ^, :div =&gt; div)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-374"></a>374</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const exprresolve_cond_dict = Dict{Symbol,Function}(:(==) =&gt; ==,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-375"></a>375</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    :(&lt;) =&gt; &lt;, :(&gt;) =&gt; &gt;, :(&lt;=) =&gt; &lt;=, :(&gt;=) =&gt; &gt;=)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-376"></a>376</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-377"></a>377</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function exprresolve_arith(ex::Expr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-378"></a>378</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if ex.head == :call &amp;&amp; haskey(exprresolve_arith_dict, ex.args[1]) &amp;&amp; all([isa(ex.args[i], Number) for i = 2:length(ex.args)])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-379"></a>379</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        return true, exprresolve_arith_dict[ex.args[1]](ex.args[2:end]...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-380"></a>380</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-381"></a>381</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    false, 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-382"></a>382</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-383"></a>383</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">exprresolve_arith(arg) = false, 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-384"></a>384</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-385"></a>385</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">exprresolve_conditional(b::Bool) = true, b
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-386"></a>386</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function exprresolve_conditional(ex::Expr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-387"></a>387</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if ex.head == :call &amp;&amp; ex.args[1] â keys(exprresolve_cond_dict) &amp;&amp; isa(ex.args[2], Number) &amp;&amp; isa(ex.args[3], Number)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-388"></a>388</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        return true, exprresolve_cond_dict[ex.args[1]](ex.args[2], ex.args[3])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-389"></a>389</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-390"></a>390</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    false, false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-391"></a>391</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-392"></a>392</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">exprresolve_conditional(arg) = false, false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-393"></a>393</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-394"></a>394</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">exprresolve(arg) = arg
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-395"></a>395</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function exprresolve(ex::Expr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-396"></a>396</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for i = 1:length(ex.args)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-397"></a>397</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        ex.args[i] = exprresolve(ex.args[i])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-398"></a>398</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-399"></a>399</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # Handle simple arithmetic
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-400"></a>400</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    can_eval, result = exprresolve_arith(ex)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-401"></a>401</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if can_eval
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-402"></a>402</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        return result
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-403"></a>403</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    elseif ex.head == :call &amp;&amp; (ex.args[1] == :+ || ex.args[1] == :-) &amp;&amp; length(ex.args) == 3 &amp;&amp; ex.args[3] == 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-404"></a>404</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # simplify x+0 and x-0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-405"></a>405</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        return ex.args[2]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-406"></a>406</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-407"></a>407</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # Resolve array references
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-408"></a>408</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if ex.head == :ref &amp;&amp; isa(ex.args[1], Array)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-409"></a>409</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        for i = 2:length(ex.args)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-410"></a>410</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            if !isa(ex.args[i], Real)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-411"></a>411</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                return ex
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-412"></a>412</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-413"></a>413</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-414"></a>414</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        return ex.args[1][ex.args[2:end]...]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-415"></a>415</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-416"></a>416</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # Resolve conditionals
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-417"></a>417</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if ex.head == :if
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-418"></a>418</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        can_eval, tf = exprresolve_conditional(ex.args[1])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-419"></a>419</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if can_eval
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-420"></a>420</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            ex = tf?ex.args[2]:ex.args[3]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-421"></a>421</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-422"></a>422</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-423"></a>423</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ex
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-424"></a>424</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-425"></a>425</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lcartesian-jl-36b55cd79f654c70994d-line.html-426"></a>426</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

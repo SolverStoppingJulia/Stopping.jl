@@ -1,0 +1,2698 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="statprofiler.css">
+
+    <title>StatProfilerHTML.jl: /home/dussault/import/julia-d386e40c17/bin/../share/julia/base/./libdl.jl</title>
+  </head>
+  <body>
+<div class="report-header">
+  <div class="backlink"><a href="index.html">Report index</a></div>
+  <div class="report-title">StatProfilerHTML.jl report</div>
+  <div class="generated-on">Generated on ven 17 aoû 2018 15:43:37 EDT</div>
+</div>
+
+    <div id="body-content">
+      <table>
+        <caption>File source code</caption>
+        <tr>
+          <th>Line</td>
+          <th>Exclusive</th>
+          <th>Inclusive</th>
+          <th>Code</th>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-1"></a>1</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># This file is a part of Julia. License is MIT: https://julialang.org/license
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-2"></a>2</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-3"></a>3</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">module Libdl
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-4"></a>4</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-5"></a>5</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">export DL_LOAD_PATH, RTLD_DEEPBIND, RTLD_FIRST, RTLD_GLOBAL, RTLD_LAZY, RTLD_LOCAL,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-6"></a>6</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    RTLD_NODELETE, RTLD_NOLOAD, RTLD_NOW, dlclose, dlopen, dlopen_e, dlsym, dlsym_e,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-7"></a>7</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    dlpath, find_library, dlext, dllist
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-8"></a>8</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-9"></a>9</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-10"></a>10</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    DL_LOAD_PATH
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-11"></a>11</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-12"></a>12</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">When calling [`dlopen`](@ref), the paths in this list will be searched first, in
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-13"></a>13</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">order, before searching the system locations for a valid library handle.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-14"></a>14</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-15"></a>15</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const DL_LOAD_PATH = String[]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-16"></a>16</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">if is_apple()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-17"></a>17</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    push!(DL_LOAD_PATH, &quot;@loader_path/julia&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-18"></a>18</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    push!(DL_LOAD_PATH, &quot;@loader_path&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-19"></a>19</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-20"></a>20</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-21"></a>21</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># note: constants to match JL_RTLD_* in src/julia.h, translated
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-22"></a>22</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">#       to system-specific values by JL_RTLD macro in src/dlload.c
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-23"></a>23</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const RTLD_LOCAL     = 0x00000001
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-24"></a>24</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const RTLD_GLOBAL    = 0x00000002
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-25"></a>25</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const RTLD_LAZY      = 0x00000004
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-26"></a>26</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const RTLD_NOW       = 0x00000008
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-27"></a>27</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const RTLD_NODELETE  = 0x00000010
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-28"></a>28</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const RTLD_NOLOAD    = 0x00000020
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-29"></a>29</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const RTLD_DEEPBIND  = 0x00000040
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-30"></a>30</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const RTLD_FIRST     = 0x00000080
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-31"></a>31</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-32"></a>32</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">@doc &quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-33"></a>33</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    RTLD_DEEPBIND
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-34"></a>34</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    RTLD_FIRST
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-35"></a>35</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    RTLD_GLOBAL
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-36"></a>36</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    RTLD_LAZY
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-37"></a>37</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    RTLD_LOCAL
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-38"></a>38</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    RTLD_NODELETE
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-39"></a>39</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    RTLD_NOLOAD
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-40"></a>40</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    RTLD_NOW
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-41"></a>41</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-42"></a>42</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Enum constant for [`dlopen`](@ref). See your platform man page for details, if
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-43"></a>43</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">applicable.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-44"></a>44</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot; -&gt;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-45"></a>45</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">(RTLD_DEEPBIND, RTLD_FIRST, RTLD_GLOBAL, RTLD_LAZY, RTLD_LOCAL, RTLD_NODELETE, RTLD_NOLOAD, RTLD_NOW)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-46"></a>46</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-47"></a>47</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-48"></a>48</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-49"></a>49</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    dlsym(handle, sym)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-50"></a>50</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-51"></a>51</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Look up a symbol from a shared library handle, return callable function pointer on success.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-52"></a>52</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-53"></a>53</td>
+          <td></td>
+          <td></td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-libdl-jl-dlsym-53"></a>
+              2 (0.19%) samples spent in dlsym<br />
+              2 (100.00%) (ex.),
+              2 (100.00%) (incl.)
+              when called from
+              objcons!
+              <a href="julia_interface-jl-4ca84e846ef080af1365-line.html#Ljulia_interface-jl-4ca84e846ef080af1365-line.html-26">line 26</a><br />
+            </div>
+            <span class="code">function dlsym(hnd::Ptr, s::Union{Symbol,AbstractString})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-54"></a>54</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    hnd == C_NULL &amp;&amp; throw(ArgumentError(&quot;NULL library handle&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-55"></a>55</td>
+          <td>2 (0.19%)</td>
+          <td>2 (0.19%)</td>
+          <td>
+            <span class="code">    ccall(:jl_dlsym, Ptr{Void}, (Ptr{Void}, Cstring), hnd, s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-56"></a>56</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-57"></a>57</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-58"></a>58</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-59"></a>59</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    dlsym_e(handle, sym)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-60"></a>60</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-61"></a>61</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Look up a symbol from a shared library handle, silently return `NULL` pointer on lookup failure.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-62"></a>62</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-63"></a>63</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function dlsym_e(hnd::Ptr, s::Union{Symbol,AbstractString})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-64"></a>64</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    hnd == C_NULL &amp;&amp; throw(ArgumentError(&quot;NULL library handle&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-65"></a>65</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ccall(:jl_dlsym_e, Ptr{Void}, (Ptr{Void}, Cstring), hnd, s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-66"></a>66</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-67"></a>67</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-68"></a>68</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-69"></a>69</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    dlopen(libfile::AbstractString [, flags::Integer])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-70"></a>70</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-71"></a>71</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Load a shared library, returning an opaque handle.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-72"></a>72</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-73"></a>73</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">The extension given by the constant `dlext` (`.so`, `.dll`, or `.dylib`)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-74"></a>74</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">can be omitted from the `libfile` string, as it is automatically appended
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-75"></a>75</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">if needed.   If `libfile` is not an absolute path name, then the paths
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-76"></a>76</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">in the array `DL_LOAD_PATH` are searched for `libfile`, followed by the
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-77"></a>77</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">system load path.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-78"></a>78</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-79"></a>79</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">The optional flags argument is a bitwise-or of zero or more of `RTLD_LOCAL`, `RTLD_GLOBAL`,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-80"></a>80</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">`RTLD_LAZY`, `RTLD_NOW`, `RTLD_NODELETE`, `RTLD_NOLOAD`, `RTLD_DEEPBIND`, and `RTLD_FIRST`.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-81"></a>81</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">These are converted to the corresponding flags of the POSIX (and/or GNU libc and/or MacOS)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-82"></a>82</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">dlopen command, if possible, or are ignored if the specified functionality is not available
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-83"></a>83</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">on the current platform. The default flags are platform specific. On MacOS the default
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-84"></a>84</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">`dlopen` flags are `RTLD_LAZY|RTLD_DEEPBIND|RTLD_GLOBAL` while on other platforms the
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-85"></a>85</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">defaults are `RTLD_LAZY|RTLD_DEEPBIND|RTLD_LOCAL`. An important usage of these flags is to
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-86"></a>86</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">specify non default behavior for when the dynamic library loader binds library references to
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-87"></a>87</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">exported symbols and if the bound references are put into process local or global scope. For
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-88"></a>88</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">instance `RTLD_LAZY|RTLD_DEEPBIND|RTLD_GLOBAL` allows the library&#39;s symbols to be available
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-89"></a>89</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">for usage in other shared libraries, addressing situations where there are dependencies
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-90"></a>90</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">between shared libraries.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-91"></a>91</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-92"></a>92</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function dlopen end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-93"></a>93</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-94"></a>94</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">dlopen(s::Symbol, flags::Integer = RTLD_LAZY | RTLD_DEEPBIND) =
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-95"></a>95</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    dlopen(string(s), flags)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-96"></a>96</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-97"></a>97</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">dlopen(s::AbstractString, flags::Integer = RTLD_LAZY | RTLD_DEEPBIND) =
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-98"></a>98</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ccall(:jl_load_dynamic_library, Ptr{Void}, (Cstring,UInt32), s, flags)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-99"></a>99</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-100"></a>100</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-101"></a>101</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    dlopen_e(libfile::AbstractString [, flags::Integer])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-102"></a>102</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-103"></a>103</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Similar to [`dlopen`](@ref), except returns a `NULL` pointer instead of raising errors.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-104"></a>104</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-105"></a>105</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function dlopen_e end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-106"></a>106</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-107"></a>107</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">dlopen_e(s::Symbol, flags::Integer = RTLD_LAZY | RTLD_DEEPBIND) =
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-108"></a>108</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    dlopen_e(string(s), flags)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-109"></a>109</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-110"></a>110</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">dlopen_e(s::AbstractString, flags::Integer = RTLD_LAZY | RTLD_DEEPBIND) =
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-111"></a>111</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ccall(:jl_load_dynamic_library_e, Ptr{Void}, (Cstring,UInt32), s, flags)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-112"></a>112</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-113"></a>113</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-114"></a>114</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    dlclose(handle)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-115"></a>115</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-116"></a>116</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Close shared library referenced by handle.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-117"></a>117</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-118"></a>118</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function dlclose(p::Ptr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-119"></a>119</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    0 == ccall(:jl_dlclose, Cint, (Ptr{Void},), p)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-120"></a>120</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-121"></a>121</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-122"></a>122</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-123"></a>123</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    find_library(names, locations)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-124"></a>124</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-125"></a>125</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Searches for the first library in `names` in the paths in the `locations` list,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-126"></a>126</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">`DL_LOAD_PATH`, or system library paths (in that order) which can successfully be dlopen&#39;d.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-127"></a>127</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">On success, the return value will be one of the names (potentially prefixed by one of the
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-128"></a>128</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">paths in locations). This string can be assigned to a `global const` and used as the library
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-129"></a>129</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">name in future `ccall`&#39;s. On failure, it returns the empty string.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-130"></a>130</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-131"></a>131</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function find_library(libnames, extrapaths=String[])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-132"></a>132</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for lib in libnames
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-133"></a>133</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        for path in extrapaths
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-134"></a>134</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            l = joinpath(path, lib)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-135"></a>135</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            p = dlopen_e(l, RTLD_LAZY)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-136"></a>136</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            if p != C_NULL
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-137"></a>137</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                dlclose(p)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-138"></a>138</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                return l
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-139"></a>139</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-140"></a>140</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-141"></a>141</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        p = dlopen_e(lib, RTLD_LAZY)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-142"></a>142</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if p != C_NULL
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-143"></a>143</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            dlclose(p)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-144"></a>144</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            return lib
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-145"></a>145</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-146"></a>146</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-147"></a>147</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return &quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-148"></a>148</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-149"></a>149</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">find_library(libname::Union{Symbol,AbstractString}, extrapaths=String[]) =
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-150"></a>150</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    find_library([string(libname)], extrapaths)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-151"></a>151</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-152"></a>152</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function dlpath(handle::Ptr{Void})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-153"></a>153</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    p = ccall(:jl_pathname_for_handle, Cstring, (Ptr{Void},), handle)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-154"></a>154</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    s = unsafe_string(p)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-155"></a>155</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    is_windows() &amp;&amp; Libc.free(p)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-156"></a>156</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return s
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-157"></a>157</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-158"></a>158</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-159"></a>159</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function dlpath(libname::Union{AbstractString, Symbol})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-160"></a>160</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    handle = dlopen(libname)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-161"></a>161</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    path = dlpath(handle)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-162"></a>162</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    dlclose(handle)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-163"></a>163</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return path
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-164"></a>164</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-165"></a>165</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-166"></a>166</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">if is_apple()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-167"></a>167</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    const dlext = &quot;dylib&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-168"></a>168</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">elseif is_windows()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-169"></a>169</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    const dlext = &quot;dll&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-170"></a>170</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">else
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-171"></a>171</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    #assume is_linux, or similar
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-172"></a>172</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    const dlext = &quot;so&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-173"></a>173</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-174"></a>174</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-175"></a>175</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-176"></a>176</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    dlext
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-177"></a>177</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-178"></a>178</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">File extension for dynamic libraries (e.g. dll, dylib, so) on the current platform.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-179"></a>179</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-180"></a>180</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">dlext
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-181"></a>181</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-182"></a>182</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">if is_linux()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-183"></a>183</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    struct dl_phdr_info
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-184"></a>184</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # Base address of object
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-185"></a>185</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        addr::Cuint
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-186"></a>186</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-187"></a>187</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # Null-terminated name of object
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-188"></a>188</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        name::Ptr{UInt8}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-189"></a>189</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-190"></a>190</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # Pointer to array of ELF program headers for this object
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-191"></a>191</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        phdr::Ptr{Void}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-192"></a>192</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-193"></a>193</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # Number of program headers for this object
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-194"></a>194</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        phnum::Cshort
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-195"></a>195</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-196"></a>196</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-197"></a>197</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # This callback function called by dl_iterate_phdr() on Linux
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-198"></a>198</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    function dl_phdr_info_callback(di::dl_phdr_info, size::Csize_t, dynamic_libraries::Array{AbstractString,1})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-199"></a>199</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # Skip over objects without a path (as they represent this own object)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-200"></a>200</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        name = unsafe_string(di.name)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-201"></a>201</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if !isempty(name)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-202"></a>202</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            push!(dynamic_libraries, name)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-203"></a>203</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-204"></a>204</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        return convert(Cint, 0)::Cint
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-205"></a>205</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-206"></a>206</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end # linux-only
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-207"></a>207</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-208"></a>208</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">if is_bsd() &amp;&amp; !is_apple()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-209"></a>209</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # DL_ITERATE_PHDR(3) on freebsd
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-210"></a>210</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    struct dl_phdr_info
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-211"></a>211</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # Base address of object
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-212"></a>212</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        addr::Cuint
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-213"></a>213</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-214"></a>214</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # Null-terminated name of object
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-215"></a>215</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        name::Ptr{UInt8}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-216"></a>216</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-217"></a>217</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # Pointer to array of ELF program headers for this object
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-218"></a>218</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        phdr::Ptr{Void}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-219"></a>219</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-220"></a>220</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # Number of program headers for this object
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-221"></a>221</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        phnum::Cshort
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-222"></a>222</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-223"></a>223</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-224"></a>224</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    function dl_phdr_info_callback(di::dl_phdr_info, size::Csize_t, dy_libs::Vector{AbstractString})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-225"></a>225</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        name = unsafe_string(di.name)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-226"></a>226</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if !isempty(name)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-227"></a>227</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            push!(dy_libs, name)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-228"></a>228</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-229"></a>229</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        return convert(Cint, 0)::Cint
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-230"></a>230</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-231"></a>231</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end # bsd family
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-232"></a>232</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-233"></a>233</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function dllist()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-234"></a>234</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    dynamic_libraries = Vector{AbstractString}(0)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-235"></a>235</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-236"></a>236</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @static if is_linux()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-237"></a>237</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        const callback = cfunction(dl_phdr_info_callback, Cint,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-238"></a>238</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                                   Tuple{Ref{dl_phdr_info}, Csize_t, Ref{Vector{AbstractString}}})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-239"></a>239</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        ccall(:dl_iterate_phdr, Cint, (Ptr{Void}, Ref{Vector{AbstractString}}), callback, dynamic_libraries)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-240"></a>240</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-241"></a>241</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-242"></a>242</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @static if is_apple()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-243"></a>243</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        numImages = ccall(:_dyld_image_count, Cint, ())
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-244"></a>244</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-245"></a>245</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # start at 1 instead of 0 to skip self
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-246"></a>246</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        for i in 1:numImages-1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-247"></a>247</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            name = unsafe_string(ccall(:_dyld_get_image_name, Cstring, (UInt32,), i))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-248"></a>248</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            push!(dynamic_libraries, name)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-249"></a>249</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-250"></a>250</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-251"></a>251</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-252"></a>252</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @static if is_windows()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-253"></a>253</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        ccall(:jl_dllist, Cint, (Any,), dynamic_libraries)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-254"></a>254</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-255"></a>255</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-256"></a>256</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @static if is_bsd() &amp;&amp; !is_apple()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-257"></a>257</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        const callback = cfunction(dl_phdr_info_callback, Cint,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-258"></a>258</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                                   Tuple{Ref{dl_phdr_info}, Csize_t, Ref{Vector{AbstractString}}})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-259"></a>259</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        ccall(:dl_iterate_phdr, Cint, (Ptr{Void}, Ref{Vector{AbstractString}}), callback, dynamic_libraries)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-260"></a>260</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        shift!(dynamic_libraries)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-261"></a>261</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-262"></a>262</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-263"></a>263</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return dynamic_libraries
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-264"></a>264</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-265"></a>265</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Llibdl-jl-5fc122fb639824dd40da-line.html-266"></a>266</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end # module
+</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

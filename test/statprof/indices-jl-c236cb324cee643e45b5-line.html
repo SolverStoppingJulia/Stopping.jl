@@ -1,0 +1,2543 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="statprofiler.css">
+
+    <title>StatProfilerHTML.jl: /home/dussault/import/julia-d386e40c17/bin/../share/julia/base/./indices.jl</title>
+  </head>
+  <body>
+<div class="report-header">
+  <div class="backlink"><a href="index.html">Report index</a></div>
+  <div class="report-title">StatProfilerHTML.jl report</div>
+  <div class="generated-on">Generated on ven 17 aoû 2018 15:43:37 EDT</div>
+</div>
+
+    <div id="body-content">
+      <table>
+        <caption>File source code</caption>
+        <tr>
+          <th>Line</td>
+          <th>Exclusive</th>
+          <th>Inclusive</th>
+          <th>Code</th>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-1"></a>1</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># This file is a part of Julia. License is MIT: https://julialang.org/license
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-2"></a>2</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-3"></a>3</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Dims{N} = NTuple{N,Int}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-4"></a>4</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">DimsInteger{N} = NTuple{N,Integer}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-5"></a>5</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Indices{N} = NTuple{N,AbstractUnitRange}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-6"></a>6</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-7"></a>7</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># array shape rules
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-8"></a>8</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-9"></a>9</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">promote_shape(::Tuple{}, ::Tuple{}) = ()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-10"></a>10</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-11"></a>11</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function promote_shape(a::Tuple{Int,}, b::Tuple{Int,})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-12"></a>12</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if a[1] != b[1]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-13"></a>13</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        throw(DimensionMismatch(&quot;dimensions must match&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-14"></a>14</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-15"></a>15</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return a
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-16"></a>16</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-17"></a>17</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-18"></a>18</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function promote_shape(a::Tuple{Int,Int}, b::Tuple{Int,})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-19"></a>19</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if a[1] != b[1] || a[2] != 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-20"></a>20</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        throw(DimensionMismatch(&quot;dimensions must match&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-21"></a>21</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-22"></a>22</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return a
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-23"></a>23</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-24"></a>24</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-25"></a>25</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">promote_shape(a::Tuple{Int,}, b::Tuple{Int,Int}) = promote_shape(b, a)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-26"></a>26</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-27"></a>27</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function promote_shape(a::Tuple{Int, Int}, b::Tuple{Int, Int})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-28"></a>28</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if a[1] != b[1] || a[2] != b[2]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-29"></a>29</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        throw(DimensionMismatch(&quot;dimensions must match&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-30"></a>30</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-31"></a>31</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return a
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-32"></a>32</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-33"></a>33</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-34"></a>34</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-35"></a>35</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    promote_shape(s1, s2)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-36"></a>36</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-37"></a>37</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Check two array shapes for compatibility, allowing trailing singleton dimensions, and return
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-38"></a>38</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">whichever shape has more dimensions.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-39"></a>39</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-40"></a>40</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```jldoctest
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-41"></a>41</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; a = ones(3,4,1,1,1);
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-42"></a>42</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-43"></a>43</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; b = ones(3,4);
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-44"></a>44</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-45"></a>45</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; promote_shape(a,b)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-46"></a>46</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">(Base.OneTo(3), Base.OneTo(4), Base.OneTo(1), Base.OneTo(1), Base.OneTo(1))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-47"></a>47</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-48"></a>48</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; promote_shape((2,3,1,4), (2, 3, 1, 4, 1))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-49"></a>49</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">(2, 3, 1, 4, 1)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-50"></a>50</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-51"></a>51</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-52"></a>52</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function promote_shape(a::Dims, b::Dims)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-53"></a>53</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if length(a) &lt; length(b)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-54"></a>54</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        return promote_shape(b, a)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-55"></a>55</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-56"></a>56</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for i=1:length(b)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-57"></a>57</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if a[i] != b[i]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-58"></a>58</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            throw(DimensionMismatch(&quot;dimensions must match&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-59"></a>59</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-60"></a>60</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-61"></a>61</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for i=length(b)+1:length(a)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-62"></a>62</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if a[i] != 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-63"></a>63</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            throw(DimensionMismatch(&quot;dimensions must match&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-64"></a>64</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-65"></a>65</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-66"></a>66</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return a
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-67"></a>67</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-68"></a>68</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-69"></a>69</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function promote_shape(a::AbstractArray, b::AbstractArray)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-70"></a>70</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    promote_shape(indices(a), indices(b))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-71"></a>71</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-72"></a>72</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-73"></a>73</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function promote_shape(a::Indices, b::Indices)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-74"></a>74</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if length(a) &lt; length(b)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-75"></a>75</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        return promote_shape(b, a)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-76"></a>76</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-77"></a>77</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for i=1:length(b)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-78"></a>78</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if a[i] != b[i]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-79"></a>79</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            throw(DimensionMismatch(&quot;dimensions must match&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-80"></a>80</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-81"></a>81</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-82"></a>82</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for i=length(b)+1:length(a)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-83"></a>83</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if a[i] != 1:1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-84"></a>84</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            throw(DimensionMismatch(&quot;dimensions must match&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-85"></a>85</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-86"></a>86</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-87"></a>87</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return a
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-88"></a>88</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-89"></a>89</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-90"></a>90</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function throw_setindex_mismatch(X, I)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-91"></a>91</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if length(I) == 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-92"></a>92</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        throw(DimensionMismatch(&quot;tried to assign $(length(X)) elements to $(I[1]) destinations&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-93"></a>93</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    else
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-94"></a>94</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        throw(DimensionMismatch(&quot;tried to assign $(dims2string(size(X))) array to $(dims2string(I)) destination&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-95"></a>95</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-96"></a>96</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-97"></a>97</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-98"></a>98</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># check for valid sizes in A[I...] = X where X &lt;: AbstractArray
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-99"></a>99</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># we want to allow dimensions that are equal up to permutation, but only
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-100"></a>100</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># for permutations that leave array elements in the same linear order.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-101"></a>101</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># those are the permutations that preserve the order of the non-singleton
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-102"></a>102</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># dimensions.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-103"></a>103</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function setindex_shape_check(X::AbstractArray, I::Integer...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-104"></a>104</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    li = ndims(X)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-105"></a>105</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    lj = length(I)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-106"></a>106</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    i = j = 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-107"></a>107</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    while true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-108"></a>108</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        ii = length(indices(X,i))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-109"></a>109</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        jj = I[j]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-110"></a>110</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if i == li || j == lj
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-111"></a>111</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            while i &lt; li
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-112"></a>112</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                i += 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-113"></a>113</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                ii *= length(indices(X,i))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-114"></a>114</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-115"></a>115</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            while j &lt; lj
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-116"></a>116</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                j += 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-117"></a>117</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                jj *= I[j]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-118"></a>118</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-119"></a>119</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            if ii != jj
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-120"></a>120</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                throw_setindex_mismatch(X, I)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-121"></a>121</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-122"></a>122</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            return
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-123"></a>123</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-124"></a>124</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if ii == jj
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-125"></a>125</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            i += 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-126"></a>126</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            j += 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-127"></a>127</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        elseif ii == 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-128"></a>128</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            i += 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-129"></a>129</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        elseif jj == 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-130"></a>130</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            j += 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-131"></a>131</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        else
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-132"></a>132</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            throw_setindex_mismatch(X, I)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-133"></a>133</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-134"></a>134</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-135"></a>135</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-136"></a>136</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-137"></a>137</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">setindex_shape_check(X::AbstractArray) =
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-138"></a>138</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    (_length(X)==1 || throw_setindex_mismatch(X,()))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-139"></a>139</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-140"></a>140</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">setindex_shape_check(X::AbstractArray, i::Integer) =
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-141"></a>141</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    (_length(X)==i || throw_setindex_mismatch(X, (i,)))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-142"></a>142</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-143"></a>143</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">setindex_shape_check(X::AbstractArray{&lt;:Any,1}, i::Integer) =
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-144"></a>144</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    (_length(X)==i || throw_setindex_mismatch(X, (i,)))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-145"></a>145</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-146"></a>146</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">setindex_shape_check(X::AbstractArray{&lt;:Any,1}, i::Integer, j::Integer) =
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-147"></a>147</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    (_length(X)==i*j || throw_setindex_mismatch(X, (i,j)))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-148"></a>148</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-149"></a>149</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function setindex_shape_check(X::AbstractArray{&lt;:Any,2}, i::Integer, j::Integer)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-150"></a>150</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if length(X) != i*j
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-151"></a>151</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        throw_setindex_mismatch(X, (i,j))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-152"></a>152</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-153"></a>153</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    sx1 = length(indices(X,1))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-154"></a>154</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if !(i == 1 || i == sx1 || sx1 == 1)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-155"></a>155</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        throw_setindex_mismatch(X, (i,j))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-156"></a>156</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-157"></a>157</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-158"></a>158</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">setindex_shape_check(X, I...) = nothing # Non-arrays broadcast to all idxs
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-159"></a>159</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-160"></a>160</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># convert to a supported index type (array or Int)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-161"></a>161</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-162"></a>162</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    to_index(A, i)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-163"></a>163</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-164"></a>164</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Convert index `i` to an `Int` or array of indices to be used as an index into array `A`.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-165"></a>165</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-166"></a>166</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Custom array types may specialize `to_index(::CustomArray, i)` to provide
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-167"></a>167</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">special indexing behaviors. Note that some index types (like `Colon`) require
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-168"></a>168</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">more context in order to transform them into an array of indices; those get
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-169"></a>169</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">converted in the more complicated `to_indices` function. By default, this
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-170"></a>170</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">simply calls the generic `to_index(i)`. This must return either an `Int` or an
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-171"></a>171</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">`AbstractArray` of scalar indices that are supported by `A`.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-172"></a>172</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-173"></a>173</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">to_index(A, i) = to_index(i)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-174"></a>174</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-175"></a>175</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-176"></a>176</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    to_index(i)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-177"></a>177</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-178"></a>178</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Convert index `i` to an `Int` or array of `Int`s to be used as an index for all arrays.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-179"></a>179</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-180"></a>180</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Custom index types may specialize `to_index(::CustomIndex)` to provide special
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-181"></a>181</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">indexing behaviors. This must return either an `Int` or an `AbstractArray` of
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-182"></a>182</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">`Int`s.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-183"></a>183</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-184"></a>184</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">to_index(i::Integer) = convert(Int,i)::Int
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-185"></a>185</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">to_index(I::AbstractArray{Bool}) = LogicalIndex(I)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-186"></a>186</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">to_index(I::AbstractArray) = I
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-187"></a>187</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">to_index(I::AbstractArray{&lt;:Union{AbstractArray, Colon}}) = throw(ArgumentError(&quot;invalid index: $I&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-188"></a>188</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">to_index(::Colon) = throw(ArgumentError(&quot;colons must be converted by to_indices(...)&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-189"></a>189</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">to_index(i) = throw(ArgumentError(&quot;invalid index: $i&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-190"></a>190</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-191"></a>191</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># The general to_indices is mostly defined in multidimensional.jl, but this
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-192"></a>192</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># definition is required for bootstrap:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-193"></a>193</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-194"></a>194</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    to_indices(A, I::Tuple)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-195"></a>195</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-196"></a>196</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Convert the tuple `I` to a tuple of indices for use in indexing into array `A`.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-197"></a>197</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-198"></a>198</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">The returned tuple must only contain either `Int`s or `AbstractArray`s of
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-199"></a>199</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">scalar indices that are supported by array `A`. It will error upon encountering
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-200"></a>200</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">a novel index type that it does not know how to process.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-201"></a>201</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-202"></a>202</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">For simple index types, it defers to the unexported `Base.to_index(A, i)` to
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-203"></a>203</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">process each index `i`. While this internal function is not intended to be
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-204"></a>204</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">called directly, `Base.to_index` may be extended by custom array or index types
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-205"></a>205</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">to provide custom indexing behaviors.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-206"></a>206</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-207"></a>207</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">More complicated index types may require more context about the dimension into
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-208"></a>208</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">which they index. To support those cases, `to_indices(A, I)` calls
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-209"></a>209</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">`to_indices(A, indices(A), I)`, which then recursively walks through both the
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-210"></a>210</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">given tuple of indices and the dimensional indices of `A` in tandem. As such,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-211"></a>211</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">not all index types are guaranteed to propagate to `Base.to_index`.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-212"></a>212</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-213"></a>213</td>
+          <td>15 (1.46%)</td>
+          <td>167 (16.23%)</td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-indices-jl-to_indices-213"></a>
+              167 (16.23%) samples spent in to_indices<br />
+              2 (13.33%) (ex.),
+              21 (12.57%) (incl.)
+              when called from
+              setindex!
+              <a href="abstractarray-jl-5d558341ccfd5297c878-line.html#Labstractarray-jl-5d558341ccfd5297c878-line.html-968">line 968</a><br />
+              13 (86.67%) (ex.),
+              146 (87.43%) (incl.)
+              when called from
+              getindex
+              <a href="abstractarray-jl-5d558341ccfd5297c878-line.html#Labstractarray-jl-5d558341ccfd5297c878-line.html-883">line 883</a><br />
+            </div>
+            <div class="callees">
+              1 (0.60%)
+              samples spent calling
+              <a href="indices-jl-c236cb324cee643e45b5-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-indices-jl-to_indices-215">to_indices</a><br />
+              1 (0.60%)
+              samples spent calling
+              <a href="multidimensional-jl-52601e83a4ff2296e661-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-multidimensional-jl-to_indices-469">to_indices</a><br />
+              150 (89.82%)
+              samples spent calling
+              <a href="tuple-jl-29cb02907b430e54be97-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-tuple-jl-map-158">map</a><br />
+            </div>
+            <span class="code">to_indices(A, I::Tuple) = (@_inline_meta; to_indices(A, indices(A), I))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-214"></a>214</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">to_indices(A, inds, ::Tuple{}) = ()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-215"></a>215</td>
+          <td>1 (0.10%)</td>
+          <td>1 (0.10%)</td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-indices-jl-to_indices-215"></a>
+              1 (0.10%) samples spent in to_indices<br />
+              1 (100.00%) (ex.),
+              1 (100.00%) (incl.)
+              when called from
+              to_indices
+              <a href="indices-jl-c236cb324cee643e45b5-line.html#Lindices-jl-c236cb324cee643e45b5-line.html-213">line 213</a><br />
+            </div>
+            <span class="code">to_indices(A, inds, I::Tuple{Any, Vararg{Any}}) =
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-216"></a>216</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    (@_inline_meta; (to_index(A, I[1]), to_indices(A, _maybetail(inds), tail(I))...))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-217"></a>217</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-218"></a>218</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">_maybetail(::Tuple{}) = ()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-219"></a>219</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">_maybetail(t::Tuple) = tail(t)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-220"></a>220</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-221"></a>221</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-222"></a>222</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">   Slice(indices)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-223"></a>223</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-224"></a>224</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Represent an AbstractUnitRange of indices as a vector of the indices themselves.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-225"></a>225</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-226"></a>226</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Upon calling `to_indices()`, Colons are converted to Slice objects to represent
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-227"></a>227</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">the indices over which the Colon spans. Slice objects are themselves unit
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-228"></a>228</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">ranges with the same indices as those they wrap. This means that indexing into
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-229"></a>229</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Slice objects with an integer always returns that exact integer, and they
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-230"></a>230</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">iterate over all the wrapped indices, even supporting offset indices.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-231"></a>231</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-232"></a>232</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">struct Slice{T&lt;:AbstractUnitRange} &lt;: AbstractUnitRange{Int}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-233"></a>233</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    indices::T
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-234"></a>234</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-235"></a>235</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">indices(S::Slice) = (S.indices,)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-236"></a>236</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">unsafe_indices(S::Slice) = (S.indices,)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-237"></a>237</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">indices1(S::Slice) = S.indices
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-238"></a>238</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">first(S::Slice) = first(S.indices)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-239"></a>239</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">last(S::Slice) = last(S.indices)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-240"></a>240</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">errmsg(A) = error(&quot;size not supported for arrays with indices $(indices(A)); see https://docs.julialang.org/en/latest/devdocs/offset-arrays/&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-241"></a>241</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">size(S::Slice) = first(S.indices) == 1 ? (length(S.indices),) : errmsg(S)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-242"></a>242</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">length(S::Slice) = first(S.indices) == 1 ? length(S.indices) : errmsg(S)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-243"></a>243</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">unsafe_length(S::Slice) = first(S.indices) == 1 ? unsafe_length(S.indices) : errmsg(S)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-244"></a>244</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">getindex(S::Slice, i::Int) = (@_inline_meta; @boundscheck checkbounds(S, i); i)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-245"></a>245</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">show(io::IO, r::Slice) = print(io, &quot;Base.Slice(&quot;, r.indices, &quot;)&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-246"></a>246</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">start(S::Slice) = start(S.indices)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-247"></a>247</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">next(S::Slice, s) = next(S.indices, s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lindices-jl-c236cb324cee643e45b5-line.html-248"></a>248</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">done(S::Slice, s) = done(S.indices, s)
+</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

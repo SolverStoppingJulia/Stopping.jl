@@ -1,0 +1,4822 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="statprofiler.css">
+
+    <title>StatProfilerHTML.jl: /home/dussault/import/julia-d386e40c17/bin/../share/julia/base/./associative.jl</title>
+  </head>
+  <body>
+<div class="report-header">
+  <div class="backlink"><a href="index.html">Report index</a></div>
+  <div class="report-title">StatProfilerHTML.jl report</div>
+  <div class="generated-on">Generated on jeu 16 aoû 2018 21:59:49 EDT</div>
+</div>
+
+    <div id="body-content">
+      <table>
+        <caption>File source code</caption>
+        <tr>
+          <th>Line</td>
+          <th>Exclusive</th>
+          <th>Inclusive</th>
+          <th>Code</th>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-1"></a>1</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># This file is a part of Julia. License is MIT: https://julialang.org/license
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-2"></a>2</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-3"></a>3</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># generic operations on associative collections
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-4"></a>4</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-5"></a>5</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const secret_table_token = :__c782dbf1cf4d6a2e5e3865d7e95634f2e09b5902__
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-6"></a>6</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-7"></a>7</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">haskey(d::Associative, k) = in(k,keys(d))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-8"></a>8</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-9"></a>9</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function in(p::Pair, a::Associative, valcmp=(==))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-10"></a>10</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    v = get(a,p[1],secret_table_token)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-11"></a>11</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if v !== secret_table_token
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-12"></a>12</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        valcmp(v, p[2]) &amp;&amp; return true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-13"></a>13</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-14"></a>14</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-15"></a>15</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-16"></a>16</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-17"></a>17</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function in(p, a::Associative)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-18"></a>18</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    error(&quot;&quot;&quot;Associative collections only contain Pairs;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-19"></a>19</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">             Either look for e.g. A=&gt;B instead, or use the `keys` or `values`
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-20"></a>20</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">             function if you are looking for a key or value respectively.&quot;&quot;&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-21"></a>21</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-22"></a>22</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-23"></a>23</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function summary(t::Associative)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-24"></a>24</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    n = length(t)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-25"></a>25</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return string(typeof(t), &quot; with &quot;, n, (n==1 ? &quot; entry&quot; : &quot; entries&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-26"></a>26</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-27"></a>27</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-28"></a>28</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">struct KeyIterator{T&lt;:Associative}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-29"></a>29</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    dict::T
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-30"></a>30</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-31"></a>31</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">struct ValueIterator{T&lt;:Associative}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-32"></a>32</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    dict::T
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-33"></a>33</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-34"></a>34</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-35"></a>35</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">summary{T&lt;:Union{KeyIterator,ValueIterator}}(iter::T) =
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-36"></a>36</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    string(T.name, &quot; for a &quot;, summary(iter.dict))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-37"></a>37</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-38"></a>38</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">show(io::IO, iter::Union{KeyIterator,ValueIterator}) = show(io, collect(iter))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-39"></a>39</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-40"></a>40</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">length(v::Union{KeyIterator,ValueIterator}) = length(v.dict)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-41"></a>41</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">isempty(v::Union{KeyIterator,ValueIterator}) = isempty(v.dict)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-42"></a>42</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">_tt1(::Type{Pair{A,B}}) where {A,B} = A
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-43"></a>43</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">_tt2(::Type{Pair{A,B}}) where {A,B} = B
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-44"></a>44</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">eltype(::Type{KeyIterator{D}}) where {D} = _tt1(eltype(D))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-45"></a>45</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">eltype(::Type{ValueIterator{D}}) where {D} = _tt2(eltype(D))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-46"></a>46</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-47"></a>47</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">start(v::Union{KeyIterator,ValueIterator}) = start(v.dict)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-48"></a>48</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">done(v::Union{KeyIterator,ValueIterator}, state) = done(v.dict, state)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-49"></a>49</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-50"></a>50</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function next(v::KeyIterator, state)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-51"></a>51</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    n = next(v.dict, state)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-52"></a>52</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    n[1][1], n[2]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-53"></a>53</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-54"></a>54</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-55"></a>55</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function next(v::ValueIterator, state)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-56"></a>56</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    n = next(v.dict, state)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-57"></a>57</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    n[1][2], n[2]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-58"></a>58</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-59"></a>59</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-60"></a>60</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">in(k, v::KeyIterator) = get(v.dict, k, secret_table_token) !== secret_table_token
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-61"></a>61</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-62"></a>62</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-63"></a>63</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-64"></a>64</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    keys(a::Associative)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-65"></a>65</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-66"></a>66</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Return an iterator over all keys in a collection.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-67"></a>67</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">`collect(keys(a))` returns an array of keys.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-68"></a>68</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Since the keys are stored internally in a hash table,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-69"></a>69</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">the order in which they are returned may vary.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-70"></a>70</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">But `keys(a)` and `values(a)` both iterate `a` and
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-71"></a>71</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">return the elements in the same order.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-72"></a>72</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-73"></a>73</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```jldoctest
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-74"></a>74</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; a = Dict(&#39;a&#39;=&gt;2, &#39;b&#39;=&gt;3)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-75"></a>75</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Dict{Char,Int64} with 2 entries:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-76"></a>76</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &#39;b&#39; =&gt; 3
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-77"></a>77</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &#39;a&#39; =&gt; 2
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-78"></a>78</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-79"></a>79</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; collect(keys(a))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-80"></a>80</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">2-element Array{Char,1}:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-81"></a>81</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"> &#39;b&#39;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-82"></a>82</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"> &#39;a&#39;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-83"></a>83</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-84"></a>84</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-85"></a>85</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">keys(a::Associative) = KeyIterator(a)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-86"></a>86</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">eachindex(a::Associative) = KeyIterator(a)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-87"></a>87</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-88"></a>88</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-89"></a>89</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    values(a::Associative)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-90"></a>90</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-91"></a>91</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Return an iterator over all values in a collection.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-92"></a>92</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">`collect(values(a))` returns an array of values.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-93"></a>93</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Since the values are stored internally in a hash table,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-94"></a>94</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">the order in which they are returned may vary.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-95"></a>95</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">But `keys(a)` and `values(a)` both iterate `a` and
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-96"></a>96</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">return the elements in the same order.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-97"></a>97</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-98"></a>98</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```jldoctest
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-99"></a>99</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; a = Dict(&#39;a&#39;=&gt;2, &#39;b&#39;=&gt;3)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-100"></a>100</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Dict{Char,Int64} with 2 entries:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-101"></a>101</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &#39;b&#39; =&gt; 3
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-102"></a>102</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &#39;a&#39; =&gt; 2
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-103"></a>103</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-104"></a>104</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; collect(values(a))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-105"></a>105</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">2-element Array{Int64,1}:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-106"></a>106</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"> 3
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-107"></a>107</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"> 2
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-108"></a>108</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-109"></a>109</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-110"></a>110</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">values(a::Associative) = ValueIterator(a)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-111"></a>111</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-112"></a>112</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function copy(a::Associative)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-113"></a>113</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    b = similar(a)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-114"></a>114</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for (k,v) in a
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-115"></a>115</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        b[k] = v
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-116"></a>116</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-117"></a>117</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return b
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-118"></a>118</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-119"></a>119</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-120"></a>120</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-121"></a>121</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    merge!(d::Associative, others::Associative...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-122"></a>122</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-123"></a>123</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Update collection with pairs from the other collections.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-124"></a>124</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">See also [`merge`](@ref).
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-125"></a>125</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-126"></a>126</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```jldoctest
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-127"></a>127</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; d1 = Dict(1 =&gt; 2, 3 =&gt; 4);
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-128"></a>128</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-129"></a>129</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; d2 = Dict(1 =&gt; 4, 4 =&gt; 5);
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-130"></a>130</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-131"></a>131</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; merge!(d1, d2);
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-132"></a>132</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-133"></a>133</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; d1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-134"></a>134</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Dict{Int64,Int64} with 3 entries:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-135"></a>135</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  4 =&gt; 5
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-136"></a>136</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  3 =&gt; 4
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-137"></a>137</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  1 =&gt; 4
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-138"></a>138</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-139"></a>139</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-140"></a>140</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function merge!(d::Associative, others::Associative...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-141"></a>141</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for other in others
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-142"></a>142</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        for (k,v) in other
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-143"></a>143</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            d[k] = v
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-144"></a>144</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-145"></a>145</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-146"></a>146</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return d
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-147"></a>147</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-148"></a>148</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-149"></a>149</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-150"></a>150</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    merge!(combine, d::Associative, others::Associative...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-151"></a>151</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-152"></a>152</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Update collection with pairs from the other collections.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-153"></a>153</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Values with the same key will be combined using the
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-154"></a>154</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">combiner function.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-155"></a>155</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-156"></a>156</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```jldoctest
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-157"></a>157</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; d1 = Dict(1 =&gt; 2, 3 =&gt; 4);
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-158"></a>158</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-159"></a>159</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; d2 = Dict(1 =&gt; 4, 4 =&gt; 5);
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-160"></a>160</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-161"></a>161</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; merge!(+, d1, d2);
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-162"></a>162</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-163"></a>163</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; d1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-164"></a>164</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Dict{Int64,Int64} with 3 entries:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-165"></a>165</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  4 =&gt; 5
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-166"></a>166</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  3 =&gt; 4
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-167"></a>167</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  1 =&gt; 6
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-168"></a>168</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-169"></a>169</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; merge!(-, d1, d1);
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-170"></a>170</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-171"></a>171</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; d1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-172"></a>172</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Dict{Int64,Int64} with 3 entries:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-173"></a>173</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  4 =&gt; 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-174"></a>174</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  3 =&gt; 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-175"></a>175</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  1 =&gt; 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-176"></a>176</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-177"></a>177</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-178"></a>178</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function merge!(combine::Function, d::Associative, others::Associative...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-179"></a>179</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for other in others
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-180"></a>180</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        for (k,v) in other
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-181"></a>181</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            d[k] = haskey(d, k) ? combine(d[k], v) : v
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-182"></a>182</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-183"></a>183</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-184"></a>184</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return d
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-185"></a>185</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-186"></a>186</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-187"></a>187</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># very similar to `merge!`, but accepts any iterable and extends code
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-188"></a>188</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># that would otherwise only use `copy!` with arrays.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-189"></a>189</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function copy!(dest::Union{Associative,AbstractSet}, src)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-190"></a>190</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for x in src
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-191"></a>191</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        push!(dest, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-192"></a>192</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-193"></a>193</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return dest
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-194"></a>194</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-195"></a>195</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-196"></a>196</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-197"></a>197</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    keytype(type)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-198"></a>198</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-199"></a>199</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Get the key type of an associative collection type. Behaves similarly to [`eltype`](@ref).
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-200"></a>200</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-201"></a>201</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```jldoctest
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-202"></a>202</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; keytype(Dict(Int32(1) =&gt; &quot;foo&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-203"></a>203</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Int32
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-204"></a>204</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-205"></a>205</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-206"></a>206</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">keytype(::Type{Associative{K,V}}) where {K,V} = K
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-207"></a>207</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">keytype(a::Associative) = keytype(typeof(a))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-208"></a>208</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">keytype(::Type{A}) where {A&lt;:Associative} = keytype(supertype(A))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-209"></a>209</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-210"></a>210</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-211"></a>211</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    valtype(type)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-212"></a>212</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-213"></a>213</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Get the value type of an associative collection type. Behaves similarly to [`eltype`](@ref).
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-214"></a>214</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-215"></a>215</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```jldoctest
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-216"></a>216</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; valtype(Dict(Int32(1) =&gt; &quot;foo&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-217"></a>217</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">String
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-218"></a>218</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-219"></a>219</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-220"></a>220</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">valtype(::Type{Associative{K,V}}) where {K,V} = V
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-221"></a>221</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">valtype{A&lt;:Associative}(::Type{A}) = valtype(supertype(A))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-222"></a>222</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">valtype(a::Associative) = valtype(typeof(a))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-223"></a>223</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-224"></a>224</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-225"></a>225</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    merge(d::Associative, others::Associative...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-226"></a>226</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-227"></a>227</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Construct a merged collection from the given collections. If necessary, the
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-228"></a>228</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">types of the resulting collection will be promoted to accommodate the types of
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-229"></a>229</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">the merged collections. If the same key is present in another collection, the
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-230"></a>230</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">value for that key will be the value it has in the last collection listed.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-231"></a>231</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-232"></a>232</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```jldoctest
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-233"></a>233</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; a = Dict(&quot;foo&quot; =&gt; 0.0, &quot;bar&quot; =&gt; 42.0)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-234"></a>234</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Dict{String,Float64} with 2 entries:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-235"></a>235</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &quot;bar&quot; =&gt; 42.0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-236"></a>236</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &quot;foo&quot; =&gt; 0.0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-237"></a>237</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-238"></a>238</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; b = Dict(&quot;baz&quot; =&gt; 17, &quot;bar&quot; =&gt; 4711)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-239"></a>239</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Dict{String,Int64} with 2 entries:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-240"></a>240</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &quot;bar&quot; =&gt; 4711
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-241"></a>241</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &quot;baz&quot; =&gt; 17
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-242"></a>242</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-243"></a>243</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; merge(a, b)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-244"></a>244</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Dict{String,Float64} with 3 entries:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-245"></a>245</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &quot;bar&quot; =&gt; 4711.0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-246"></a>246</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &quot;baz&quot; =&gt; 17.0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-247"></a>247</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &quot;foo&quot; =&gt; 0.0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-248"></a>248</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-249"></a>249</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; merge(b, a)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-250"></a>250</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Dict{String,Float64} with 3 entries:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-251"></a>251</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &quot;bar&quot; =&gt; 42.0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-252"></a>252</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &quot;baz&quot; =&gt; 17.0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-253"></a>253</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &quot;foo&quot; =&gt; 0.0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-254"></a>254</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-255"></a>255</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-256"></a>256</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">merge(d::Associative, others::Associative...) =
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-257"></a>257</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    merge!(emptymergedict(d, others...), d, others...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-258"></a>258</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-259"></a>259</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-260"></a>260</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    merge(combine, d::Associative, others::Associative...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-261"></a>261</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-262"></a>262</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Construct a merged collection from the given collections. If necessary, the
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-263"></a>263</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">types of the resulting collection will be promoted to accommodate the types of
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-264"></a>264</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">the merged collections. Values with the same key will be combined using the
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-265"></a>265</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">combiner function.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-266"></a>266</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-267"></a>267</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```jldoctest
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-268"></a>268</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; a = Dict(&quot;foo&quot; =&gt; 0.0, &quot;bar&quot; =&gt; 42.0)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-269"></a>269</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Dict{String,Float64} with 2 entries:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-270"></a>270</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &quot;bar&quot; =&gt; 42.0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-271"></a>271</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &quot;foo&quot; =&gt; 0.0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-272"></a>272</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-273"></a>273</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; b = Dict(&quot;baz&quot; =&gt; 17, &quot;bar&quot; =&gt; 4711)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-274"></a>274</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Dict{String,Int64} with 2 entries:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-275"></a>275</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &quot;bar&quot; =&gt; 4711
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-276"></a>276</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &quot;baz&quot; =&gt; 17
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-277"></a>277</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-278"></a>278</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; merge(+, a, b)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-279"></a>279</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Dict{String,Float64} with 3 entries:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-280"></a>280</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &quot;bar&quot; =&gt; 4753.0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-281"></a>281</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &quot;baz&quot; =&gt; 17.0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-282"></a>282</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  &quot;foo&quot; =&gt; 0.0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-283"></a>283</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-284"></a>284</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-285"></a>285</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">merge(combine::Function, d::Associative, others::Associative...) =
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-286"></a>286</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    merge!(combine, emptymergedict(d, others...), d, others...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-287"></a>287</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-288"></a>288</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">promoteK(K) = K
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-289"></a>289</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">promoteV(V) = V
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-290"></a>290</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">promoteK(K, d, ds...) = promoteK(promote_type(K, keytype(d)), ds...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-291"></a>291</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">promoteV(V, d, ds...) = promoteV(promote_type(V, valtype(d)), ds...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-292"></a>292</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function emptymergedict(d::Associative, others::Associative...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-293"></a>293</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    K = promoteK(keytype(d), others...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-294"></a>294</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    V = promoteV(valtype(d), others...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-295"></a>295</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    Dict{K,V}()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-296"></a>296</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-297"></a>297</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-298"></a>298</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function filter!(f, d::Associative)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-299"></a>299</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    badkeys = Vector{keytype(d)}(0)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-300"></a>300</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for (k,v) in d
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-301"></a>301</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # don&#39;t delete!(d, k) here, since associative types
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-302"></a>302</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # may not support mutation during iteration
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-303"></a>303</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        f(k,v) || push!(badkeys, k)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-304"></a>304</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-305"></a>305</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for k in badkeys
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-306"></a>306</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        delete!(d, k)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-307"></a>307</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-308"></a>308</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return d
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-309"></a>309</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-310"></a>310</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function filter(f, d::Associative)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-311"></a>311</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # don&#39;t just do filter!(f, copy(d)): avoid making a whole copy of d
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-312"></a>312</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    df = similar(d)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-313"></a>313</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for (k,v) in d
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-314"></a>314</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if f(k,v)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-315"></a>315</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            df[k] = v
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-316"></a>316</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-317"></a>317</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-318"></a>318</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return df
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-319"></a>319</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-320"></a>320</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-321"></a>321</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">eltype(::Type{Associative{K,V}}) where {K,V} = Pair{K,V}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-322"></a>322</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-323"></a>323</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function isequal(l::Associative, r::Associative)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-324"></a>324</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    l === r &amp;&amp; return true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-325"></a>325</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if isa(l,ObjectIdDict) != isa(r,ObjectIdDict)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-326"></a>326</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        return false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-327"></a>327</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-328"></a>328</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if length(l) != length(r) return false end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-329"></a>329</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for pair in l
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-330"></a>330</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if !in(pair, r, isequal)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-331"></a>331</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            return false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-332"></a>332</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-333"></a>333</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-334"></a>334</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-335"></a>335</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-336"></a>336</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-337"></a>337</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function ==(l::Associative, r::Associative)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-338"></a>338</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    l === r &amp;&amp; return true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-339"></a>339</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if isa(l,ObjectIdDict) != isa(r,ObjectIdDict)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-340"></a>340</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        return false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-341"></a>341</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-342"></a>342</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if length(l) != length(r) return false end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-343"></a>343</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for pair in l
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-344"></a>344</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if !in(pair, r, ==)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-345"></a>345</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            return false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-346"></a>346</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-347"></a>347</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-348"></a>348</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-349"></a>349</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-350"></a>350</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-351"></a>351</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const hasha_seed = UInt === UInt64 ? 0x6d35bb51952d5539 : 0x952d5539
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-352"></a>352</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function hash(a::Associative, h::UInt)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-353"></a>353</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    hv = hasha_seed
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-354"></a>354</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for (k,v) in a
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-355"></a>355</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        hv â»= hash(k, hash(v))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-356"></a>356</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-357"></a>357</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    hash(hv, h)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-358"></a>358</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-359"></a>359</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-360"></a>360</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function getindex(t::Associative, key)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-361"></a>361</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    v = get(t, key, secret_table_token)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-362"></a>362</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if v === secret_table_token
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-363"></a>363</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        throw(KeyError(key))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-364"></a>364</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-365"></a>365</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return v
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-366"></a>366</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-367"></a>367</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-368"></a>368</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># t[k1,k2,ks...] is syntactic sugar for t[(k1,k2,ks...)].  (Note
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-369"></a>369</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># that we need to avoid dispatch loops if setindex!(t,v,k) is not defined.)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-370"></a>370</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">getindex(t::Associative, k1, k2, ks...) = getindex(t, tuple(k1,k2,ks...))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-371"></a>371</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">setindex!(t::Associative, v, k1, k2, ks...) = setindex!(t, v, tuple(k1,k2,ks...))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-372"></a>372</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-373"></a>373</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">push!(t::Associative, p::Pair) = setindex!(t, p.second, p.first)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-374"></a>374</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">push!(t::Associative, p::Pair, q::Pair) = push!(push!(t, p), q)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-375"></a>375</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">push!(t::Associative, p::Pair, q::Pair, r::Pair...) = push!(push!(push!(t, p), q), r...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-376"></a>376</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-377"></a>377</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># hashing objects by identity
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-378"></a>378</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-379"></a>379</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-380"></a>380</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ObjectIdDict([itr])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-381"></a>381</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-382"></a>382</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">`ObjectIdDict()` constructs a hash table where the keys are (always)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-383"></a>383</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">object identities.  Unlike `Dict` it is not parameterized on its key
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-384"></a>384</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">and value type and thus its `eltype` is always `Pair{Any,Any}`.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-385"></a>385</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-386"></a>386</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">See [`Dict`](@ref) for further help.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-387"></a>387</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-388"></a>388</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">mutable struct ObjectIdDict &lt;: Associative{Any,Any}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-389"></a>389</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ht::Vector{Any}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-390"></a>390</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ndel::Int
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-391"></a>391</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ObjectIdDict() = new(Vector{Any}(32), 0)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-392"></a>392</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-393"></a>393</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    function ObjectIdDict(itr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-394"></a>394</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        d = ObjectIdDict()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-395"></a>395</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        for (k,v) in itr; d[k] = v; end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-396"></a>396</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        d
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-397"></a>397</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-398"></a>398</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-399"></a>399</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    function ObjectIdDict(pairs::Pair...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-400"></a>400</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        d = ObjectIdDict()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-401"></a>401</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        for (k,v) in pairs; d[k] = v; end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-402"></a>402</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        d
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-403"></a>403</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-404"></a>404</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-405"></a>405</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ObjectIdDict(o::ObjectIdDict) = new(copy(o.ht))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-406"></a>406</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-407"></a>407</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-408"></a>408</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">similar(d::ObjectIdDict) = ObjectIdDict()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-409"></a>409</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-410"></a>410</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function rehash!(t::ObjectIdDict, newsz = length(t.ht))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-411"></a>411</td>
+          <td>1 (0.02%)</td>
+          <td>1 (0.02%)</td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-associative-jl-rehash-411"></a>
+              1 (0.02%) samples spent in rehash!<br />
+              1 (100.00%) (ex.),
+              1 (100.00%) (incl.)
+              when called from
+              setindex!
+              <a href="associative-jl-5d40460a650ee0a51343-line.html#Lassociative-jl-5d40460a650ee0a51343-line.html-427">line 427</a><br />
+            </div>
+            <span class="code">    t.ht = ccall(:jl_idtable_rehash, Any, (Any, Csize_t), t.ht, newsz)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-412"></a>412</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    t
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-413"></a>413</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-414"></a>414</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-415"></a>415</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function sizehint!(t::ObjectIdDict, newsz)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-416"></a>416</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    newsz = _tablesz(newsz*2)  # *2 for keys and values in same array
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-417"></a>417</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    oldsz = length(t.ht)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-418"></a>418</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # grow at least 25%
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-419"></a>419</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if newsz &lt; (oldsz*5)&gt;&gt;2
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-420"></a>420</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        return t
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-421"></a>421</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-422"></a>422</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    rehash!(t, newsz)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-423"></a>423</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-424"></a>424</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-425"></a>425</td>
+          <td></td>
+          <td></td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-associative-jl-setindex-425"></a>
+              1 (0.02%) samples spent in setindex!<br />
+              0 (ex.),
+              1 (100.00%) (incl.)
+              when called from
+              preserve_handle
+              <a href="libuv-jl-48946a38389259f92281-line.html#Llibuv-jl-48946a38389259f92281-line.html-51">line 51</a><br />
+            </div>
+            <span class="code">function setindex!(t::ObjectIdDict, v::ANY, k::ANY)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-426"></a>426</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if t.ndel &gt;= ((3*length(t.ht))&gt;&gt;2)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-427"></a>427</td>
+          <td></td>
+          <td>1 (0.02%)</td>
+          <td>
+            <div class="callees">
+              1 (100.00%)
+              samples spent calling
+              <a href="associative-jl-5d40460a650ee0a51343-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-associative-jl-rehash-411">rehash!</a><br />
+            </div>
+            <span class="code">        rehash!(t, max(length(t.ht)&gt;&gt;1, 32))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-428"></a>428</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        t.ndel = 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-429"></a>429</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-430"></a>430</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    t.ht = ccall(:jl_eqtable_put, Array{Any,1}, (Any, Any, Any), t.ht, k, v)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-431"></a>431</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return t
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-432"></a>432</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-433"></a>433</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-434"></a>434</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">get(t::ObjectIdDict, key::ANY, default::ANY) =
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-435"></a>435</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ccall(:jl_eqtable_get, Any, (Any, Any, Any), t.ht, key, default)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-436"></a>436</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-437"></a>437</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function pop!(t::ObjectIdDict, key::ANY, default::ANY)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-438"></a>438</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    val = ccall(:jl_eqtable_pop, Any, (Any, Any, Any), t.ht, key, default)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-439"></a>439</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # TODO: this can underestimate `ndel`
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-440"></a>440</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    val === default || (t.ndel += 1)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-441"></a>441</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return val
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-442"></a>442</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-443"></a>443</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-444"></a>444</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function pop!(t::ObjectIdDict, key::ANY)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-445"></a>445</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    val = pop!(t, key, secret_table_token)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-446"></a>446</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    val !== secret_table_token ? val : throw(KeyError(key))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-447"></a>447</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-448"></a>448</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-449"></a>449</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function delete!(t::ObjectIdDict, key::ANY)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-450"></a>450</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    pop!(t, key, secret_table_token)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-451"></a>451</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    t
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-452"></a>452</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-453"></a>453</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-454"></a>454</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function empty!(t::ObjectIdDict)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-455"></a>455</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    resize!(t.ht, 32)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-456"></a>456</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ccall(:memset, Ptr{Void}, (Ptr{Void}, Cint, Csize_t), t.ht, 0, sizeof(t.ht))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-457"></a>457</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    t.ndel = 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-458"></a>458</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return t
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-459"></a>459</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-460"></a>460</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-461"></a>461</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">_oidd_nextind(a, i) = reinterpret(Int,ccall(:jl_eqtable_nextind, Csize_t, (Any, Csize_t), a, i))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-462"></a>462</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-463"></a>463</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">start(t::ObjectIdDict) = _oidd_nextind(t.ht, 0)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-464"></a>464</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">done(t::ObjectIdDict, i) = (i == -1)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-465"></a>465</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">next(t::ObjectIdDict, i) = (Pair{Any,Any}(t.ht[i+1],t.ht[i+2]), _oidd_nextind(t.ht, i+2))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-466"></a>466</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-467"></a>467</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function length(d::ObjectIdDict)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-468"></a>468</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    n = 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-469"></a>469</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for pair in d
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-470"></a>470</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        n+=1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-471"></a>471</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-472"></a>472</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    n
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-473"></a>473</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-474"></a>474</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-475"></a>475</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">copy(o::ObjectIdDict) = ObjectIdDict(o)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-476"></a>476</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lassociative-jl-5d40460a650ee0a51343-line.html-477"></a>477</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">get!(o::ObjectIdDict, key, default) = (o[key] = get(o, key, default))
+</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

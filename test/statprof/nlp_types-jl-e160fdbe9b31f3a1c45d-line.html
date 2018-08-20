@@ -1,0 +1,2763 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="statprofiler.css">
+
+    <title>StatProfilerHTML.jl: /home/dussault/.julia/v0.6/NLPModels/src/nlp_types.jl</title>
+  </head>
+  <body>
+<div class="report-header">
+  <div class="backlink"><a href="index.html">Report index</a></div>
+  <div class="report-title">StatProfilerHTML.jl report</div>
+  <div class="generated-on">Generated on ven 17 aoû 2018 15:41:47 EDT</div>
+</div>
+
+    <div id="body-content">
+      <table>
+        <caption>File source code</caption>
+        <tr>
+          <th>Line</td>
+          <th>Exclusive</th>
+          <th>Inclusive</th>
+          <th>Code</th>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-1"></a>1</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">export has_bounds, bound_constrained, unconstrained, linearly_constrained,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-2"></a>2</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">      equality_constrained, inequality_constrained
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-3"></a>3</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-4"></a>4</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># Base type for an optimization model.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-5"></a>5</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">abstract type AbstractNLPModel end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-6"></a>6</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-7"></a>7</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">type Counters
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-8"></a>8</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  neval_obj    :: Int  # Number of objective evaluations.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-9"></a>9</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  neval_grad   :: Int  # Number of objective gradient evaluations.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-10"></a>10</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  neval_cons   :: Int  # Number of constraint vector evaluations.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-11"></a>11</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  neval_jcon   :: Int  # Number of individual constraint evaluations.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-12"></a>12</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  neval_jgrad  :: Int  # Number of individual constraint gradient evaluations.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-13"></a>13</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  neval_jac    :: Int  # Number of constraint Jacobian evaluations.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-14"></a>14</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  neval_jprod  :: Int  # Number of Jacobian-vector products.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-15"></a>15</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  neval_jtprod :: Int  # Number of transposed Jacobian-vector products.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-16"></a>16</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  neval_hess   :: Int  # Number of Lagrangian/objective Hessian evaluations.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-17"></a>17</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  neval_hprod  :: Int  # Number of Lagrangian/objective Hessian-vector products.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-18"></a>18</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  neval_jhprod :: Int  # Number of individual constraint Hessian-vector products.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-19"></a>19</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-20"></a>20</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  function Counters()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-21"></a>21</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return new(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-22"></a>22</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-23"></a>23</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-24"></a>24</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-25"></a>25</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># Base type for metadata related to an optimization model.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-26"></a>26</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">abstract type AbstractNLPModelMeta end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-27"></a>27</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-28"></a>28</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">immutable NLPModelMeta &lt;: AbstractNLPModelMeta
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-29"></a>29</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-30"></a>30</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  # A composite type that represents the main features of
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-31"></a>31</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  # the optimization problem
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-32"></a>32</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  #
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-33"></a>33</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  #  optimize   obj(x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-34"></a>34</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  #  subject to lvar â¤    x    â¤ uvar
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-35"></a>35</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  #             lcon â¤ cons(x) â¤ ucon
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-36"></a>36</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  #
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-37"></a>37</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  # where x        is an nvar-dimensional vector,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-38"></a>38</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  #       obj      is the real-valued objective function,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-39"></a>39</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  #       cons     is the vector-valued constraint function,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-40"></a>40</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  #       optimize is either &quot;minimize&quot; or &quot;maximize&quot;.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-41"></a>41</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  #
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-42"></a>42</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  # Here, lvar, uvar, lcon and ucon are vectors. Some of their
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-43"></a>43</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  # components may be infinite to indicate that the corresponding
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-44"></a>44</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  # bound or general constraint is not present.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-45"></a>45</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-46"></a>46</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nvar :: Int               # number of variables
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-47"></a>47</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  x0   :: Array{Float64,1}  # initial guess
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-48"></a>48</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  lvar :: Array{Float64,1}  # vector of lower bounds
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-49"></a>49</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  uvar :: Array{Float64,1}  # vector of upper bounds
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-50"></a>50</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-51"></a>51</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  ifix  :: Array{Int,1}     # indices of fixed variables
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-52"></a>52</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  ilow  :: Array{Int,1}     # indices of variables with lower bound only
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-53"></a>53</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  iupp  :: Array{Int,1}     # indices of variables with upper bound only
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-54"></a>54</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  irng  :: Array{Int,1}     # indices of variables with lower and upper bound (range)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-55"></a>55</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  ifree :: Array{Int,1}     # indices of free variables
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-56"></a>56</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  iinf  :: Array{Int,1}     # indices of infeasible bounds
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-57"></a>57</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-58"></a>58</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nbv   :: Int              # number of linear binary variables
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-59"></a>59</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  niv   :: Int              # number of linear non-binary integer variables
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-60"></a>60</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nlvb  :: Int              # number of nonlinear variables in both objectives and constraints
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-61"></a>61</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nlvo  :: Int              # number of nonlinear variables in objectives (includes nlvb)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-62"></a>62</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nlvc  :: Int              # number of nonlinear variables in constraints (includes nlvb)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-63"></a>63</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nlvbi :: Int              # number of integer nonlinear variables in both objectives and constraints
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-64"></a>64</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nlvci :: Int              # number of integer nonlinear variables in constraints only
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-65"></a>65</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nlvoi :: Int              # number of integer nonlinear variables in objectives only
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-66"></a>66</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nwv   :: Int              # number of linear network (arc) variables
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-67"></a>67</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-68"></a>68</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  ncon :: Int               # number of general constraints
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-69"></a>69</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  y0   :: Array{Float64,1}  # initial Lagrange multipliers
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-70"></a>70</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  lcon :: Array{Float64,1}  # vector of constraint lower bounds
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-71"></a>71</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  ucon :: Array{Float64,1}  # vector of constraint upper bounds
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-72"></a>72</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-73"></a>73</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  jfix  :: Array{Int,1}     # indices of equality constraints
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-74"></a>74</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  jlow  :: Array{Int,1}     # indices of constraints of the form c(x) â¥ cl
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-75"></a>75</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  jupp  :: Array{Int,1}     # indices of constraints of the form c(x) â¤ cu
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-76"></a>76</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  jrng  :: Array{Int,1}     # indices of constraints of the form cl â¤ c(x) â¤ cu
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-77"></a>77</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  jfree :: Array{Int,1}     # indices of &quot;free&quot; constraints (there shouldn&#39;t be any)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-78"></a>78</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  jinf  :: Array{Int,1}     # indices of the visibly infeasible constraints
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-79"></a>79</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-80"></a>80</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nnzo :: Int               # number of nonzeros in all objectives gradients
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-81"></a>81</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nnzj :: Int               # number of nonzeros in the sparse Jacobian
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-82"></a>82</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nnzh :: Int               # number of nonzeros in the sparse Hessian
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-83"></a>83</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-84"></a>84</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nlin  :: Int              # number of linear constraints
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-85"></a>85</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nnln  :: Int              # number of nonlinear general constraints
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-86"></a>86</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nnnet :: Int              # number of nonlinear network constraints
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-87"></a>87</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nlnet :: Int              # number of linear network constraints
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-88"></a>88</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-89"></a>89</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  lin   :: Array{Int,1}     # indices of linear constraints
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-90"></a>90</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nln   :: Array{Int,1}     # indices of nonlinear constraints
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-91"></a>91</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nnet  :: Array{Int,1}     # indices of nonlinear network constraints
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-92"></a>92</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  lnet  :: Array{Int,1}     # indices of linear network constraints
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-93"></a>93</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-94"></a>94</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  minimize :: Bool          # true if optimize == minimize
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-95"></a>95</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nlo  :: Int               # number of nonlinear objectives
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-96"></a>96</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  islp :: Bool              # true if the problem is a linear program
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-97"></a>97</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  name :: String       # problem name
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-98"></a>98</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-99"></a>99</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  function NLPModelMeta(nvar;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-100"></a>100</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        x0=zeros(nvar,),
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-101"></a>101</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        lvar=-Inf * ones(nvar,),
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-102"></a>102</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        uvar=Inf * ones(nvar,),
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-103"></a>103</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        nbv=0,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-104"></a>104</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        niv=0,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-105"></a>105</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        nlvb=nvar,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-106"></a>106</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        nlvo=nvar,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-107"></a>107</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        nlvc=nvar,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-108"></a>108</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        nlvbi=0,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-109"></a>109</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        nlvci=0,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-110"></a>110</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        nlvoi=0,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-111"></a>111</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        nwv=0,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-112"></a>112</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        ncon=0,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-113"></a>113</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        y0=zeros(ncon,),
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-114"></a>114</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        lcon=-Inf * ones(ncon,),
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-115"></a>115</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        ucon=Inf * ones(ncon,),
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-116"></a>116</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        nnzo=nvar,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-117"></a>117</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        nnzj=nvar * ncon,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-118"></a>118</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        nnzh=nvar * (nvar + 1) / 2,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-119"></a>119</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        lin=collect([]),
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-120"></a>120</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        nln=1:ncon,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-121"></a>121</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        nnet=collect([]),
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-122"></a>122</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        lnet=collect([]),
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-123"></a>123</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        nlin=length(lin),
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-124"></a>124</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        nnln=length(nln),
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-125"></a>125</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        nnnet=length(nnet),
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-126"></a>126</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        nlnet=length(lnet),
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-127"></a>127</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        minimize=true,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-128"></a>128</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        nlo=1,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-129"></a>129</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                        islp=false,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-130"></a>130</td>
+          <td></td>
+          <td></td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-julia-v0-6-NLPModels-src-nlp_types-jl-call-1-130"></a>
+              1 (0.10%) samples spent in #call#1<br />
+              0 (ex.),
+              1 (100.00%) (incl.)
+              when called from
+              Type
+              <a href="nothing-0feca720e2c29dafb2c9-line.html#Lnothing-0feca720e2c29dafb2c9-line.html-0">line 0</a><br />
+            </div>
+            <span class="code">                        name=&quot;Generic&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-131"></a>131</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if (nvar &lt; 1) || (ncon &lt; 0)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-132"></a>132</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">      error(&quot;Nonsensical dimensions&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-133"></a>133</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-134"></a>134</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-135"></a>135</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @lencheck nvar x0 lvar uvar
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-136"></a>136</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @lencheck ncon y0 lcon ucon
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-137"></a>137</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @lencheck nlin lin
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-138"></a>138</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @lencheck nnln nln
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-139"></a>139</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @lencheck nnnet nnet
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-140"></a>140</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @lencheck nlnet lnet
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-141"></a>141</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @rangecheck 1 ncon lin nln nnet lnet
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-142"></a>142</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-143"></a>143</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ifix  = find(lvar .== uvar)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-144"></a>144</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ilow  = find((lvar .&gt; -Inf) .&amp; (uvar .== Inf))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-145"></a>145</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    iupp  = find((lvar .== -Inf) .&amp; (uvar .&lt; Inf))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-146"></a>146</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    irng  = find((lvar .&gt; -Inf) .&amp; (uvar .&lt; Inf) .&amp; (lvar .&lt; uvar))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-147"></a>147</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ifree = find((lvar .== -Inf) .&amp; (uvar .== Inf))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-148"></a>148</td>
+          <td></td>
+          <td>1 (0.10%)</td>
+          <td>
+            <div class="callees">
+              1 (100.00%)
+              samples spent calling
+              <a href="broadcast-jl-ff3c64448e61e2bf5190-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-broadcast-jl-broadcast-455">broadcast</a><br />
+            </div>
+            <span class="code">    iinf  = find(lvar .&gt; uvar)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-149"></a>149</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-150"></a>150</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    jfix  = find(lcon .== ucon)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-151"></a>151</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    jlow  = find((lcon .&gt; -Inf) .&amp; (ucon .== Inf))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-152"></a>152</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    jupp  = find((lcon .== -Inf) .&amp; (ucon .&lt; Inf))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-153"></a>153</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    jrng  = find((lcon .&gt; -Inf) .&amp; (ucon .&lt; Inf) .&amp; (lcon .&lt; ucon))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-154"></a>154</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    jfree = find((lcon .== -Inf) .&amp; (ucon .== Inf))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-155"></a>155</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    jinf  = find(lcon .&gt; ucon)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-156"></a>156</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-157"></a>157</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    nnzj = max(0, min(nnzj, nvar * ncon))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-158"></a>158</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    nnzh = max(0, min(nnzh, nvar * nvar))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-159"></a>159</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-160"></a>160</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    new(nvar, x0, lvar, uvar,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-161"></a>161</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        ifix, ilow, iupp, irng, ifree, iinf,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-162"></a>162</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        nbv, niv, nlvb, nlvo, nlvc,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-163"></a>163</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        nlvbi, nlvci, nlvoi, nwv,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-164"></a>164</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        ncon, y0, lcon, ucon,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-165"></a>165</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        jfix, jlow, jupp, jrng, jfree, jinf,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-166"></a>166</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        nnzo, nnzj, nnzh,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-167"></a>167</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        nlin, nnln, nnnet, nlnet, lin, nln, nnet, lnet,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-168"></a>168</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        minimize, nlo, islp, name)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-169"></a>169</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-170"></a>170</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-171"></a>171</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-172"></a>172</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># Displaying NLPModelMeta instances.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-173"></a>173</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-174"></a>174</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">import Base.show, Base.print, Base.println
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-175"></a>175</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function show(io :: IO, nlp :: NLPModelMeta)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-176"></a>176</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  s  = nlp.minimize ? @sprintf(&quot;Minimization &quot;) : @sprintf(&quot;Maximization &quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-177"></a>177</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  s *= @sprintf(&quot;problem %s\n&quot;, nlp.name)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-178"></a>178</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  s *= @sprintf(&quot;nvar = %d, ncon = %d (%d linear)\n&quot;, nlp.nvar, nlp.ncon, nlp.nlin)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-179"></a>179</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  print(io, s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-180"></a>180</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-181"></a>181</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-182"></a>182</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-183"></a>183</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    print(io, meta)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-184"></a>184</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-185"></a>185</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Prints meta information - x0, nvar, ncon, etc.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-186"></a>186</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-187"></a>187</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function print(io :: IO, nlp :: NLPModelMeta)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-188"></a>188</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  nlp.minimize ? @printf(io, &quot;Minimization &quot;) : @printf(io, &quot;Maximization &quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-189"></a>189</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  dsp(x) = length(x) == 0 ? print(io, &quot;â&quot;) :
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-190"></a>190</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    (length(x) &lt;= 5 ? Base.show_delim_array(io, x, &quot;&quot;, &quot;  &quot;, &quot;&quot;, false) :
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-191"></a>191</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">     begin
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-192"></a>192</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">      Base.show_delim_array(io, x[1:4], &quot;&quot;, &quot;  &quot;, &quot;&quot;, false)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-193"></a>193</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">      print(&quot;  â¯  $(x[end])&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-194"></a>194</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-195"></a>195</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  @printf(io, &quot;problem %s\n&quot;, nlp.name)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-196"></a>196</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  @printf(io, &quot;nvar = %d, ncon = %d (%d linear)\n&quot;, nlp.nvar, nlp.ncon, nlp.nlin)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-197"></a>197</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  @printf(io, &quot;lvar = &quot;); dsp(nlp.lvar&#39;); @printf(io, &quot;\n&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-198"></a>198</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  @printf(io, &quot;uvar = &quot;); dsp(nlp.uvar&#39;); @printf(io, &quot;\n&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-199"></a>199</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  @printf(io, &quot;lcon = &quot;); dsp(nlp.lcon&#39;); @printf(io, &quot;\n&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-200"></a>200</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  @printf(io, &quot;ucon = &quot;); dsp(nlp.ucon&#39;); @printf(io, &quot;\n&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-201"></a>201</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  @printf(io, &quot;x0 = &quot;);   dsp(nlp.x0&#39;); @printf(io, &quot;\n&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-202"></a>202</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  @printf(io, &quot;y0 = &quot;);   dsp(nlp.y0&#39;); @printf(io, &quot;\n&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-203"></a>203</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  @printf(io, &quot;nnzh = %d\n&quot;, nlp.nnzh)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-204"></a>204</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  @printf(io, &quot;nnzj = %d\n&quot;, nlp.nnzj)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-205"></a>205</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  if nlp.nlin &gt; 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-206"></a>206</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @printf(io, &quot;linear constraints:    &quot;); dsp(nlp.lin&#39;); @printf(io, &quot;\n&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-207"></a>207</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-208"></a>208</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  if nlp.nnln &gt; 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-209"></a>209</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @printf(io, &quot;nonlinear constraints: &quot;); dsp(nlp.nln&#39;); @printf(io, &quot;\n&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-210"></a>210</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-211"></a>211</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  if nlp.nlnet &gt; 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-212"></a>212</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @printf(io, &quot;linear network constraints:   &quot;); dsp(nlp.lnet&#39;); @printf(io, &quot;\n&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-213"></a>213</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-214"></a>214</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  if nlp.nnnet &gt; 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-215"></a>215</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @printf(io, &quot;nonlinear network constraints:   &quot;); dsp(nlp.nnet&#39;); @printf(io, &quot;\n&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-216"></a>216</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-217"></a>217</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-218"></a>218</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-219"></a>219</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-220"></a>220</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    has_bounds(nlp)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-221"></a>221</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    has_bounds(meta)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-222"></a>222</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-223"></a>223</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Returns whether the problem has bounds on the variables.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-224"></a>224</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-225"></a>225</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">has_bounds(meta::NLPModelMeta) = length(meta.ifree) &lt; meta.nvar
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-226"></a>226</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-227"></a>227</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-228"></a>228</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    bound_constrained(nlp)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-229"></a>229</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    bound_constrained(meta)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-230"></a>230</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-231"></a>231</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Returns whether the problem has bounds on the variables and no other constraints.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-232"></a>232</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-233"></a>233</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">bound_constrained(meta::NLPModelMeta) = meta.ncon == 0 &amp;&amp; has_bounds(meta)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-234"></a>234</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-235"></a>235</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-236"></a>236</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    unconstrained(nlp)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-237"></a>237</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    unconstrained(meta)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-238"></a>238</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-239"></a>239</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Returns whether the problem in unconstrained.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-240"></a>240</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-241"></a>241</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">unconstrained(meta::NLPModelMeta) = meta.ncon == 0 &amp;&amp; !has_bounds(meta)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-242"></a>242</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-243"></a>243</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-244"></a>244</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    linearly_constrained(nlp)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-245"></a>245</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    linearly_constrained(meta)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-246"></a>246</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-247"></a>247</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Returns whether the problem&#39;s constraints are known to be all linear.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-248"></a>248</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-249"></a>249</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">linearly_constrained(meta::NLPModelMeta) = meta.nlin == meta.ncon &gt; 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-250"></a>250</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-251"></a>251</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-252"></a>252</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    equality_constrained(nlp)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-253"></a>253</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    equality_constrained(meta)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-254"></a>254</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-255"></a>255</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Returns whether the problem&#39;s constraints are all equalities.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-256"></a>256</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Unconstrained problems return false.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-257"></a>257</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-258"></a>258</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">equality_constrained(meta::NLPModelMeta) = length(meta.jfix) == meta.ncon &gt; 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-259"></a>259</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-260"></a>260</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-261"></a>261</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    inequality_constrained(nlp)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-262"></a>262</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    inequality_constrained(meta)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-263"></a>263</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-264"></a>264</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Returns whether the problem&#39;s constraints are all inequalities.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-265"></a>265</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Unconstrained problems return true.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-266"></a>266</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-267"></a>267</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">inequality_constrained(meta::NLPModelMeta) = meta.ncon &gt; 0 &amp;&amp; length(meta.jfix) == 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-268"></a>268</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-269"></a>269</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">for meth in (:has_bounds, :bound_constrained, :unconstrained,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-270"></a>270</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    :linearly_constrained, :equality_constrained, :inequality_constrained)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-271"></a>271</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">  @eval $meth(nlp::AbstractNLPModel) = $meth(nlp.meta)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lnlp_types-jl-e160fdbe9b31f3a1c45d-line.html-272"></a>272</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

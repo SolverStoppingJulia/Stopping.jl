@@ -1,0 +1,28 @@
+2 solveurs: mon lbfgsB, le L-BFGS-B "officiel" interfacé
+
+Avant Pkg.upgrade()
+
+prob      dim      obj      ||g||     nf     ng       nH     Iter   Status               time
+MINSURFO  5306   2.51e+00  7.9e-07    646    557       0      556  Optimal               2.300e+00
+MINSURFO  5306   2.51e+00  8.1e-07    435    438       0      433  Optimal               8.357e-01
+
+Je voulais réduire le temps, beaucoup défavorable par rapport à L-BFGS-B... La différence en temps est beaucoup trop importante par rapport à la différence en termes de nf et ng.
+
+J'ai décidé de faire un Pkg.upgrade() pour avoir les versions les plus à jour...
+
+Après Pkg.upgrade()
+
+MINSURFO  5306   2.51e+00  7.9e-07    646    557       0      556  Optimal               6.471e+00
+MINSURFO  5306   2.51e+00  8.1e-07    435    438       0      433  Optimal               3.322e+00
+
+Impossible de revenir en arrière, quel est ce comportement que les temps ont presque triplé et ce pour les deux solveurs???
+
+Je viens de relancer, après dîner, eh ben, beaucoup de bruit dans le calcul du temps: deux exécutions consécutives:
+
+MINSURFO  5306   2.51e+00  7.9e-07    646    557       0      556  Optimal               2.044e+00
+MINSURFO  5306   2.51e+00  8.1e-07    435    438       0      433  Optimal               8.672e-01
+
+MINSURFO  5306   2.51e+00  7.9e-07    646    557       0      556  Optimal               3.398e+00
+MINSURFO  5306   2.51e+00  8.1e-07    435    438       0      433  Optimal               1.678e+00
+
+presque du simple au double???

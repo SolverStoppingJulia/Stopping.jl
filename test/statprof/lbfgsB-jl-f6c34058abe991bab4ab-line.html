@@ -1,0 +1,2451 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="statprofiler.css">
+
+    <title>StatProfilerHTML.jl: /home/dussault/.julia/v0.6/Stopping/test/lbfgsB.jl</title>
+  </head>
+  <body>
+<div class="report-header">
+  <div class="backlink"><a href="index.html">Report index</a></div>
+  <div class="report-title">StatProfilerHTML.jl report</div>
+  <div class="generated-on">Generated on ven 17 aoû 2018 14:05:50 EDT</div>
+</div>
+
+    <div id="body-content">
+      <table>
+        <caption>File source code</caption>
+        <tr>
+          <th>Line</td>
+          <th>Exclusive</th>
+          <th>Inclusive</th>
+          <th>Code</th>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-1"></a>1</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">#export lbfgsB
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-2"></a>2</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">using LinearOperators
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-3"></a>3</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-4"></a>4</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-5"></a>5</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-6"></a>6</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function TSlbfgsB(nlp :: AbstractNLPModel;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-7"></a>7</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                #stp :: AbstractStopping=TStoppingB(),
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-8"></a>8</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                stp :: TStoppingB=TStoppingB(),
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-9"></a>9</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                verbose :: Bool=false,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-10"></a>10</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                verboseLS :: Bool = false,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-11"></a>11</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                mem :: Int=5,#######
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-12"></a>12</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                scaling :: Bool = true,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-13"></a>13</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                scaleK :: Float64 = 200000.0, 
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-14"></a>14</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                Î² :: Float64 = 0.15,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-15"></a>15</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                kwargs...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-16"></a>16</td>
+          <td></td>
+          <td></td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-julia-v0-6-Stopping-test-lbfgsB-jl-TSlbfgsB-544-16"></a>
+              3074 (99.61%) samples spent in #TSlbfgsB#544<br />
+              10 (100.00%) (ex.),
+              3073 (99.97%) (incl.)
+              when called from
+              #TSlbfgsB
+              <a href="nothing-0feca720e2c29dafb2c9-line.html#Lnothing-0feca720e2c29dafb2c9-line.html-0">line 0</a><br />
+            </div>
+            <span class="code">    
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-17"></a>17</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    print_h=false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-18"></a>18</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    x = copy(nlp.meta.x0)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-19"></a>19</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    n = nlp.meta.nvar
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-20"></a>20</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-21"></a>21</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    lb = nlp.meta.lvar
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-22"></a>22</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ub = nlp.meta.uvar
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-23"></a>23</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-24"></a>24</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    stp.lb = lb
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-25"></a>25</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    stp.ub = ub
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-26"></a>26</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # project initial point in case of infeasibility
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-27"></a>27</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    x = proj(ub, lb, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-28"></a>28</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-29"></a>29</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    xt = Array{Float64}(n)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-30"></a>30</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    âft = Array{Float64}(n)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-31"></a>31</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    pg = Array{Float64}(n)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-32"></a>32</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-33"></a>33</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    f = obj(nlp, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-34"></a>34</td>
+          <td></td>
+          <td>1 (0.03%)</td>
+          <td>
+            <div class="callees">
+              1 (100.00%)
+              samples spent calling
+              <a href="nothing-0feca720e2c29dafb2c9-line.html#Snothing-InverseLBFGSOperator">#InverseLBFGSOperator</a><br />
+            </div>
+            <span class="code">    H = InverseLBFGSOperator(n, mem, scaling=scaling)########
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-35"></a>35</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-36"></a>36</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    iter = 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-37"></a>37</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-38"></a>38</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    #âf = grad(nlp, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-39"></a>39</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    stp, âf = start!(nlp,stp,x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-40"></a>40</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    âfNorm = BLAS.nrm2(n, âf, 1)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-41"></a>41</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-42"></a>42</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    verbose &amp;&amp; @printf(&quot;%4s  %8s  %7s  %8s  %4s\n&quot;, &quot;iter&quot;, &quot;f&quot;, &quot;ââfâ&quot;, &quot;âf&#39;d&quot;, &quot;bk&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-43"></a>43</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    verbose &amp;&amp; @printf(&quot;%4d  %8.1e  %7.1e&quot;, iter, f, âfNorm)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-44"></a>44</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-45"></a>45</td>
+          <td></td>
+          <td>1 (0.03%)</td>
+          <td>
+            <div class="callees">
+              1 (100.00%)
+              samples spent calling
+              <a href="stoppingB-jl-cf03e603a877ba22f6f0-line.html#S-home-dussault-julia-v0-6-Stopping-src-stoppingB-jl-stop-84">stop</a><br />
+            </div>
+            <span class="code">    optimal, unbounded, tired, elapsed_time = stop(nlp,stp,iter,x,f,âf)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-46"></a>46</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-47"></a>47</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    OK = true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-48"></a>48</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    stalled_linesearch = false;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-49"></a>49</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    bk_max = 300
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-50"></a>50</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-51"></a>51</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    Ïâ = 1.0e-4
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-52"></a>52</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    stalled_ascent_dir = false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-53"></a>53</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-54"></a>54</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    d = zeros(âf)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-55"></a>55</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    h = LineModel(nlp, x, d)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-56"></a>56</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-57"></a>57</td>
+          <td>2 (0.06%)</td>
+          <td>2 (0.06%)</td>
+          <td>
+            <span class="code">    while (OK &amp;&amp; !(optimal || tired || unbounded))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-58"></a>58</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # set up for an Ïµ-active bounds
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-59"></a>59</td>
+          <td></td>
+          <td>186 (6.03%)</td>
+          <td>
+            <div class="callees">
+              52 (27.96%)
+              samples spent calling
+              <a href="arraymath-jl-645266b7ce52d3fc56cc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-arraymath-jl-37">-</a><br />
+              134 (72.04%)
+              samples spent calling
+              <a href="lbfgsB-jl-f6c34058abe991bab4ab-line.html#S-home-dussault-julia-v0-6-Stopping-test-lbfgsB-jl-proj-156">proj</a><br />
+            </div>
+            <span class="code">        pg = gradproj(ub, lb, âf, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-60"></a>60</td>
+          <td></td>
+          <td>62 (2.01%)</td>
+          <td>
+            <div class="callees">
+              12 (19.35%)
+              samples spent calling
+              <a href="arraymath-jl-645266b7ce52d3fc56cc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-arraymath-jl-37">-</a><br />
+              8 (12.90%)
+              samples spent calling
+              <a href="generic-jl-c8bcbad13e34b46c5f9a-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-linalg-generic-jl-vecnorm-442">vecnorm</a><br />
+              42 (67.74%)
+              samples spent calling
+              <a href="reduce-jl-df1b618291d72d5815ba-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-reduce-jl-_mapreduce-261">_mapreduce</a><br />
+            </div>
+            <span class="code">        Ïµ = min( minimum(ub - lb)/scaleK ,  norm(pg))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-61"></a>61</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        #AuÏµ = find((ub - x) .&lt;= Ïµ)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-62"></a>62</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        #AlÏµ = find((x - lb) .&lt;= Ïµ)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-63"></a>63</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        #AÏµ = (AuÏµ âª AlÏµ)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-64"></a>64</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        #IÏµ = setdiff(1:n,  AÏµ)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-65"></a>65</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-66"></a>66</td>
+          <td></td>
+          <td>94 (3.05%)</td>
+          <td>
+            <div class="callees">
+              31 (32.98%)
+              samples spent calling
+              <a href="bitarray-jl-b3f97d57555afeb922d0-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-bitarray-jl-find-1770">find</a><br />
+              17 (18.09%)
+              samples spent calling
+              <a href="arraymath-jl-645266b7ce52d3fc56cc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-arraymath-jl-37">-</a><br />
+              46 (48.94%)
+              samples spent calling
+              <a href="broadcast-jl-ff3c64448e61e2bf5190-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-broadcast-jl-broadcast-455">broadcast</a><br />
+            </div>
+            <span class="code">        AÏµ = find(((ub - x) .&lt;= Ïµ) .|((x - lb) .&lt;= Ïµ))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-67"></a>67</td>
+          <td></td>
+          <td>171 (5.54%)</td>
+          <td>
+            <div class="callees">
+              54 (31.58%)
+              samples spent calling
+              <a href="arraymath-jl-645266b7ce52d3fc56cc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-arraymath-jl-37">-</a><br />
+              81 (47.37%)
+              samples spent calling
+              <a href="broadcast-jl-ff3c64448e61e2bf5190-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-broadcast-jl-broadcast-455">broadcast</a><br />
+              36 (21.05%)
+              samples spent calling
+              <a href="bitarray-jl-b3f97d57555afeb922d0-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-bitarray-jl-find-1770">find</a><br />
+            </div>
+            <span class="code">        IÏµ = find(((ub - x) .&gt; Ïµ) .&amp;((x - lb) .&gt; Ïµ))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-68"></a>68</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # Compute the scaled projection on I
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-69"></a>69</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        #d[IÏµ] = - H[IÏµ, IÏµ] * âf[IÏµ]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-70"></a>70</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        #@views
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-71"></a>71</td>
+          <td>6 (0.19%)</td>
+          <td>1672 (54.18%)</td>
+          <td>
+            <div class="callees">
+              1616 (96.65%)
+              samples spent calling
+              <a href="lbfgsB-jl-f6c34058abe991bab4ab-line.html#S-home-dussault-julia-v0-6-Stopping-test-lbfgsB-jl-lbfgs_multiply-166">lbfgs_multiply</a><br />
+              31 (1.85%)
+              samples spent calling
+              <a href="array-jl-78183e26e49158d26454-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-array-jl-setindex-595">setindex!</a><br />
+              19 (1.14%)
+              samples spent calling
+              <a href="arraymath-jl-645266b7ce52d3fc56cc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-arraymath-jl-29">-</a><br />
+            </div>
+            <span class="code">        d[IÏµ] = - lbfgs_multiply(H.data, âf, IÏµ)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-72"></a>72</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        #@views
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-73"></a>73</td>
+          <td></td>
+          <td>16 (0.52%)</td>
+          <td>
+            <div class="callees">
+              3 (18.75%)
+              samples spent calling
+              <a href="array-jl-78183e26e49158d26454-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-array-jl-setindex-606">setindex!</a><br />
+              8 (50.00%)
+              samples spent calling
+              <a href="abstractarray-jl-5d558341ccfd5297c878-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-abstractarray-jl-getindex-883">getindex</a><br />
+              1 (6.25%)
+              samples spent calling
+              <a href="arraymath-jl-645266b7ce52d3fc56cc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-arraymath-jl-29">-</a><br />
+              3 (18.75%)
+              samples spent calling
+              <a href="array-jl-78183e26e49158d26454-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-array-jl-setindex-607">setindex!</a><br />
+              1 (6.25%)
+              samples spent calling
+              <a href="array-jl-78183e26e49158d26454-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-array-jl-setindex-605">setindex!</a><br />
+            </div>
+            <span class="code">        d[AÏµ] = - âf[AÏµ]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-74"></a>74</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-75"></a>75</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        #d = -âf
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-76"></a>76</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-77"></a>77</td>
+          <td></td>
+          <td>73 (2.37%)</td>
+          <td>
+            <div class="callees">
+              4 (5.48%)
+              samples spent calling
+              <a href="blas-jl-636a28a2ab62d3ff16c9-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-linalg-blas-jl-dot-308">dot</a><br />
+              69 (94.52%)
+              samples spent calling
+              <a href="abstractarray-jl-5d558341ccfd5297c878-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-abstractarray-jl-getindex-883">getindex</a><br />
+            </div>
+            <span class="code">        slope = âf[IÏµ]âd[IÏµ]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-78"></a>78</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if slope &gt; 0.0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-79"></a>79</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            #stalled_ascent_dir =true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-80"></a>80</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            reset!(H);
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-81"></a>81</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            verbose &amp;&amp; @printf(&quot;reset since slope  %8.1e  &gt;0&quot;, slope)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-82"></a>82</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        else
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-83"></a>83</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            # Perform piecewise linesearch.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-84"></a>84</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            #
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-85"></a>85</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            #  TO BE REPLACED by an efficient projected line search
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-86"></a>86</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            #
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-87"></a>87</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            nbk = 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-88"></a>88</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            t = 1.0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-89"></a>89</td>
+          <td>1 (0.03%)</td>
+          <td>126 (4.08%)</td>
+          <td>
+            <div class="callees">
+              12 (9.52%)
+              samples spent calling
+              <a href="arraymath-jl-645266b7ce52d3fc56cc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-arraymath-jl-44">*</a><br />
+              7 (5.56%)
+              samples spent calling
+              <a href="arraymath-jl-645266b7ce52d3fc56cc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-arraymath-jl-37">+</a><br />
+              106 (84.13%)
+              samples spent calling
+              <a href="lbfgsB-jl-f6c34058abe991bab4ab-line.html#S-home-dussault-julia-v0-6-Stopping-test-lbfgsB-jl-proj-156">proj</a><br />
+            </div>
+            <span class="code">            xt = proj(ub, lb, x+t*d)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-90"></a>90</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            verbose &amp;&amp; @printf(&quot; recomp f = %8.1e \n&quot;, obj(nlp,x))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-91"></a>91</td>
+          <td></td>
+          <td>12 (0.39%)</td>
+          <td>
+            <div class="callees">
+              12 (100.00%)
+              samples spent calling
+              <a href="julia_interface-jl-4ca84e846ef080af1365-line.html#S-home-dussault-julia-v0-6-CUTEst-src-julia_interface-jl-obj-66">obj</a><br />
+            </div>
+            <span class="code">            ft = obj(nlp, xt)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-92"></a>92</td>
+          <td></td>
+          <td>36 (1.17%)</td>
+          <td>
+            <div class="callees">
+              2 (5.56%)
+              samples spent calling
+              <a href="blas-jl-636a28a2ab62d3ff16c9-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-linalg-blas-jl-dot-308">dot</a><br />
+              12 (33.33%)
+              samples spent calling
+              <a href="arraymath-jl-645266b7ce52d3fc56cc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-arraymath-jl-37">-</a><br />
+              22 (61.11%)
+              samples spent calling
+              <a href="arraymath-jl-645266b7ce52d3fc56cc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-arraymath-jl-44">*</a><br />
+            </div>
+            <span class="code">            while ( ft  &gt; (f + Ïâ*âfâ(xt - x)) ) &amp;&amp; (nbk &lt; bk_max)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-93"></a>93</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                verbose &amp;&amp; @printf(&quot; it =  %4d  ft = %8.1e  f = %8.1e \n&quot;, nbk,ft,f)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-94"></a>94</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                t *= Î²
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-95"></a>95</td>
+          <td></td>
+          <td>7 (0.23%)</td>
+          <td>
+            <div class="callees">
+              7 (100.00%)
+              samples spent calling
+              <a href="lbfgsB-jl-f6c34058abe991bab4ab-line.html#S-home-dussault-julia-v0-6-Stopping-test-lbfgsB-jl-proj-156">proj</a><br />
+            </div>
+            <span class="code">                xt = proj(ub, lb, x+t*d)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-96"></a>96</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                ft = obj(nlp, xt)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-97"></a>97</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                nbk += 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-98"></a>98</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-99"></a>99</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            stalled_linesearch = (nbk == bk_max)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-100"></a>100</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-101"></a>101</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            verbose &amp;&amp; @printf(&quot;  %4d\n&quot;, nbk)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-102"></a>102</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-103"></a>103</td>
+          <td></td>
+          <td>2 (0.06%)</td>
+          <td>
+            <div class="callees">
+              2 (100.00%)
+              samples spent calling
+              <a href="julia_interface-jl-4ca84e846ef080af1365-line.html#S-home-dussault-julia-v0-6-CUTEst-src-julia_interface-jl-grad-82">grad!</a><br />
+            </div>
+            <span class="code">            âft = grad!(nlp, xt, âft)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-104"></a>104</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-105"></a>105</td>
+          <td></td>
+          <td>35 (1.13%)</td>
+          <td>
+            <div class="callees">
+              35 (100.00%)
+              samples spent calling
+              <a href="arraymath-jl-645266b7ce52d3fc56cc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-arraymath-jl-37">-</a><br />
+            </div>
+            <span class="code">            sk = xt - x
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-106"></a>106</td>
+          <td></td>
+          <td>24 (0.78%)</td>
+          <td>
+            <div class="callees">
+              24 (100.00%)
+              samples spent calling
+              <a href="arraymath-jl-645266b7ce52d3fc56cc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-arraymath-jl-37">-</a><br />
+            </div>
+            <span class="code">            yk = âft - âf
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-107"></a>107</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-108"></a>108</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            # Update L-BFGS approximation.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-109"></a>109</td>
+          <td></td>
+          <td>148 (4.80%)</td>
+          <td>
+            <div class="callees">
+              148 (100.00%)
+              samples spent calling
+              <a href="lbfgs-jl-fc8d8c3155876723ca01-line.html#S-home-dussault-julia-v0-6-LinearOperators-src-lbfgs-jl-push-150">push!</a><br />
+            </div>
+            <span class="code">            push!(H, sk, yk)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-110"></a>110</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-111"></a>111</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            # Move on.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-112"></a>112</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            x = xt
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-113"></a>113</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            f = ft
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-114"></a>114</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            BLAS.blascopy!(n, âft, 1, âf, 1)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-115"></a>115</td>
+          <td></td>
+          <td>122 (3.95%)</td>
+          <td>
+            <div class="callees">
+              78 (63.93%)
+              samples spent calling
+              <a href="lbfgsB-jl-f6c34058abe991bab4ab-line.html#S-home-dussault-julia-v0-6-Stopping-test-lbfgsB-jl-proj-156">proj</a><br />
+              44 (36.07%)
+              samples spent calling
+              <a href="arraymath-jl-645266b7ce52d3fc56cc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-arraymath-jl-37">-</a><br />
+            </div>
+            <span class="code">            pg = gradproj(ub,lb,âft,x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-116"></a>116</td>
+          <td></td>
+          <td>3 (0.10%)</td>
+          <td>
+            <div class="callees">
+              3 (100.00%)
+              samples spent calling
+              <a href="generic-jl-c8bcbad13e34b46c5f9a-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-linalg-generic-jl-vecnorm-442">vecnorm</a><br />
+            </div>
+            <span class="code">            âfNorm =norm(pg)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-117"></a>117</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            iter += 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-118"></a>118</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-119"></a>119</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            verbose &amp;&amp; @printf(&quot;%4d  %8.1e  %7.1e&quot;, iter, f, âfNorm)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-120"></a>120</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            #println(x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-121"></a>121</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            #println(âft)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-122"></a>122</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            #println(d)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-123"></a>123</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            #println(IÏµ)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-124"></a>124</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            #println(AÏµ)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-125"></a>125</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            #println(AuÏµ)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-126"></a>126</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            #println(AlÏµ)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-127"></a>127</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            #println(sk)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-128"></a>128</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            #println(yk)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-129"></a>129</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            #println(Ïµ,&quot; &quot;,t)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-130"></a>130</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-131"></a>131</td>
+          <td>1 (0.03%)</td>
+          <td>277 (8.98%)</td>
+          <td>
+            <div class="callees">
+              1 (0.36%)
+              samples spent calling
+              <a href="reduce-jl-df1b618291d72d5815ba-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-reduce-jl-_mapreduce-261">_mapreduce</a><br />
+              275 (99.28%)
+              samples spent calling
+              <a href="stoppingB-jl-cf03e603a877ba22f6f0-line.html#S-home-dussault-julia-v0-6-Stopping-src-stoppingB-jl-stop-84">stop</a><br />
+            </div>
+            <span class="code">            optimal, unbounded, tired, elapsed_time = stop(nlp,stp,iter,x,f,âf)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-132"></a>132</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-133"></a>133</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        OK = !stalled_linesearch &amp; !stalled_ascent_dir
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-134"></a>134</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-135"></a>135</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    verbose &amp;&amp; @printf(&quot;\n&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-136"></a>136</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-137"></a>137</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if optimal status = :Optimal
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-138"></a>138</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    elseif unbounded status = :Unbounded
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-139"></a>139</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    elseif stalled_linesearch status = :StalledLinesearch
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-140"></a>140</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    elseif stalled_ascent_dir status = :StalledAscentDir
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-141"></a>141</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    else status = :UserLimit
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-142"></a>142</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-143"></a>143</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-144"></a>144</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    AuÏµ = find((ub - x) .&lt;= 0)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-145"></a>145</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    AlÏµ = find((x - lb) .&lt;= 0)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-146"></a>146</td>
+          <td></td>
+          <td>1 (0.03%)</td>
+          <td>
+            <div class="callees">
+              1 (100.00%)
+              samples spent calling
+              <a href="array-jl-78183e26e49158d26454-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-array-jl-union-1953">union</a><br />
+            </div>
+            <span class="code">    AÏµ = (AuÏµ âª AlÏµ)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-147"></a>147</td>
+          <td></td>
+          <td>3 (0.10%)</td>
+          <td>
+            <div class="callees">
+              3 (100.00%)
+              samples spent calling
+              <a href="array-jl-78183e26e49158d26454-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-array-jl-setdiff-1984">setdiff</a><br />
+            </div>
+            <span class="code">    IÏµ = setdiff(1:n,  AÏµ)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-148"></a>148</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-149"></a>149</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    println(&quot;#IÏµ = &quot;, length(IÏµ), &quot; #AÏµ = &quot;, length(AÏµ)) 
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-150"></a>150</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-151"></a>151</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return (x, f, stp.optimality_residual(stp.state), iter, optimal, tired, status, elapsed_time)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-152"></a>152</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-153"></a>153</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-154"></a>154</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-155"></a>155</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-156"></a>156</td>
+          <td></td>
+          <td></td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-julia-v0-6-Stopping-test-lbfgsB-jl-proj-156"></a>
+              325 (10.53%) samples spent in proj<br />
+              0 (ex.),
+              7 (2.15%) (incl.)
+              when called from
+              #TSlbfgsB#544
+              <a href="lbfgsB-jl-f6c34058abe991bab4ab-line.html#LlbfgsB-jl-f6c34058abe991bab4ab-line.html-95">line 95</a><br />
+              0 (ex.),
+              78 (24.00%) (incl.)
+              when called from
+              #TSlbfgsB#544
+              <a href="lbfgsB-jl-f6c34058abe991bab4ab-line.html#LlbfgsB-jl-f6c34058abe991bab4ab-line.html-115">line 115</a><br />
+              0 (ex.),
+              106 (32.62%) (incl.)
+              when called from
+              #TSlbfgsB#544
+              <a href="lbfgsB-jl-f6c34058abe991bab4ab-line.html#LlbfgsB-jl-f6c34058abe991bab4ab-line.html-89">line 89</a><br />
+              0 (ex.),
+              134 (41.23%) (incl.)
+              when called from
+              #TSlbfgsB#544
+              <a href="lbfgsB-jl-f6c34058abe991bab4ab-line.html#LlbfgsB-jl-f6c34058abe991bab4ab-line.html-59">line 59</a><br />
+            </div>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-157"></a>157</td>
+          <td></td>
+          <td>325 (10.53%)</td>
+          <td>
+            <div class="callees">
+              325 (100.00%)
+              samples spent calling
+              <a href="broadcast-jl-ff3c64448e61e2bf5190-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-broadcast-jl-broadcast-455">broadcast</a><br />
+            </div>
+            <span class="code">proj(ub :: Vector, lb :: Vector, x :: Vector) = max.(min.(x,ub),lb)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-158"></a>158</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-159"></a>159</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">gradproj(ub :: Vector, lb :: Vector, g::Vector, x :: Vector) =  x - proj(ub, lb, x-g)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-160"></a>160</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-161"></a>161</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function lbfgs_multiply(data, x :: Array, IÏµ)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-162"></a>162</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # Multiply operator[IÏµ,IÏµ] with a vector.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-163"></a>163</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # See, e.g., Nocedal &amp; Wright, 2nd ed., Procedure 7.4, p. 178.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-164"></a>164</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    #
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-165"></a>165</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # For inactive components.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-166"></a>166</td>
+          <td></td>
+          <td></td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-julia-v0-6-Stopping-test-lbfgsB-jl-lbfgs_multiply-166"></a>
+              1616 (52.37%) samples spent in lbfgs_multiply<br />
+              110 (100.00%) (ex.),
+              1616 (100.00%) (incl.)
+              when called from
+              #TSlbfgsB#544
+              <a href="lbfgsB-jl-f6c34058abe991bab4ab-line.html#LlbfgsB-jl-f6c34058abe991bab4ab-line.html-71">line 71</a><br />
+            </div>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-167"></a>167</td>
+          <td>1 (0.03%)</td>
+          <td>1 (0.03%)</td>
+          <td>
+            <span class="code">    ys = copy(data.ys)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-168"></a>168</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    #if T == eltype(x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-169"></a>169</td>
+          <td>26 (0.84%)</td>
+          <td>26 (0.84%)</td>
+          <td>
+            <span class="code">    qF = copy(x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-170"></a>170</td>
+          <td>1 (0.03%)</td>
+          <td>26 (0.84%)</td>
+          <td>
+            <div class="callees">
+              25 (96.15%)
+              samples spent calling
+              <a href="subarray-jl-fb4f23c0909f7b6cafbc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-subarray-jl-view-113">view</a><br />
+            </div>
+            <span class="code">    q =  @view qF[IÏµ]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-171"></a>171</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-172"></a>172</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    #else
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-173"></a>173</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    #  result_type = promote_type(T, eltype(x))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-174"></a>174</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    #  q = convert(Array{result_type}, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-175"></a>175</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    #end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-176"></a>176</td>
+          <td>5 (0.16%)</td>
+          <td>97 (3.14%)</td>
+          <td>
+            <div class="callees">
+              30 (30.93%)
+              samples spent calling
+              <a href="subarray-jl-fb4f23c0909f7b6cafbc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-subarray-jl-view-112">view</a><br />
+              33 (34.02%)
+              samples spent calling
+              <a href="subarray-jl-fb4f23c0909f7b6cafbc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-subarray-jl-view-113">view</a><br />
+              23 (23.71%)
+              samples spent calling
+              <a href="subarray-jl-fb4f23c0909f7b6cafbc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-subarray-jl-unsafe_view-117">unsafe_view</a><br />
+              6 (6.19%)
+              samples spent calling
+              <a href="subarray-jl-fb4f23c0909f7b6cafbc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-subarray-jl-view-114">view</a><br />
+            </div>
+            <span class="code">    s = @view data.s[IÏµ,:]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-177"></a>177</td>
+          <td>2 (0.06%)</td>
+          <td>101 (3.27%)</td>
+          <td>
+            <div class="callees">
+              4 (3.96%)
+              samples spent calling
+              <a href="subarray-jl-fb4f23c0909f7b6cafbc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-subarray-jl-view-114">view</a><br />
+              55 (54.46%)
+              samples spent calling
+              <a href="subarray-jl-fb4f23c0909f7b6cafbc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-subarray-jl-view-113">view</a><br />
+              15 (14.85%)
+              samples spent calling
+              <a href="subarray-jl-fb4f23c0909f7b6cafbc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-subarray-jl-unsafe_view-117">unsafe_view</a><br />
+              25 (24.75%)
+              samples spent calling
+              <a href="subarray-jl-fb4f23c0909f7b6cafbc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-subarray-jl-view-112">view</a><br />
+            </div>
+            <span class="code">    y = @view data.y[IÏµ,:]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-178"></a>178</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for i = 1 : data.mem
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-179"></a>179</td>
+          <td></td>
+          <td>1 (0.03%)</td>
+          <td>
+            <div class="callees">
+              1 (100.00%)
+              samples spent calling
+              <a href="int-jl-bef4e6df3dc1d2697685-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-int-jl-mod-170">mod</a><br />
+            </div>
+            <span class="code">        k = mod(data.insert - i - 1, data.mem) + 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-180"></a>180</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        #ys[k] = dot(data.y[IÏµ,k], data.s[IÏµ,k])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-181"></a>181</td>
+          <td>30 (0.97%)</td>
+          <td>329 (10.66%)</td>
+          <td>
+            <div class="callees">
+              276 (83.89%)
+              samples spent calling
+              <a href="abstractarray-jl-5d558341ccfd5297c878-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-abstractarray-jl-getindex-880">getindex</a><br />
+              23 (6.99%)
+              samples spent calling
+              <a href="blas-jl-636a28a2ab62d3ff16c9-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-linalg-blas-jl-dot-308">dot</a><br />
+            </div>
+            <span class="code">        ys[k] = dot(y[:,k], s[:,k])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-182"></a>182</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if ys[k] != 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-183"></a>183</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            #data.Î±[k] = dot(data.s[IÏµ,k], q[IÏµ]) / ys[k]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-184"></a>184</td>
+          <td>14 (0.45%)</td>
+          <td>192 (6.22%)</td>
+          <td>
+            <div class="callees">
+              20 (10.42%)
+              samples spent calling
+              <a href="blas-jl-636a28a2ab62d3ff16c9-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-linalg-blas-jl-dot-308">dot</a><br />
+              121 (63.02%)
+              samples spent calling
+              <a href="abstractarray-jl-5d558341ccfd5297c878-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-abstractarray-jl-getindex-880">getindex</a><br />
+              37 (19.27%)
+              samples spent calling
+              <a href="generic-jl-c8bcbad13e34b46c5f9a-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-linalg-generic-jl-dot-692">dot</a><br />
+            </div>
+            <span class="code">            data.Î±[k] = dot(s[:,k], q) / ys[k]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-185"></a>185</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            #q[IÏµ] -= data.Î±[k] * data.y[IÏµ,k]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-186"></a>186</td>
+          <td>8 (0.26%)</td>
+          <td>296 (9.59%)</td>
+          <td>
+            <div class="callees">
+              95 (32.09%)
+              samples spent calling
+              <a href="arraymath-jl-645266b7ce52d3fc56cc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-arraymath-jl-37">-</a><br />
+              71 (23.99%)
+              samples spent calling
+              <a href="arraymath-jl-645266b7ce52d3fc56cc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-arraymath-jl-44">*</a><br />
+              122 (41.22%)
+              samples spent calling
+              <a href="abstractarray-jl-5d558341ccfd5297c878-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-abstractarray-jl-getindex-880">getindex</a><br />
+            </div>
+            <span class="code">            q -= data.Î±[k] * y[:,k]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-187"></a>187</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-188"></a>188</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-189"></a>189</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-190"></a>190</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    k = mod(data.insert - 2, data.mem) + 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-191"></a>191</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if ys[k] != 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-192"></a>192</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        #scaling_factor = ys[k] / dot(data.y[IÏµ,k], data.y[IÏµ,k])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-193"></a>193</td>
+          <td>3 (0.10%)</td>
+          <td>49 (1.59%)</td>
+          <td>
+            <div class="callees">
+              44 (89.80%)
+              samples spent calling
+              <a href="abstractarray-jl-5d558341ccfd5297c878-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-abstractarray-jl-getindex-880">getindex</a><br />
+              2 (4.08%)
+              samples spent calling
+              <a href="blas-jl-636a28a2ab62d3ff16c9-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-linalg-blas-jl-dot-308">dot</a><br />
+            </div>
+            <span class="code">        scaling_factor = ys[k] / dot(y[:,k], y[:,k])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-194"></a>194</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        #data.scaling &amp;&amp; (q[IÏµ] *= scaling_factor)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-195"></a>195</td>
+          <td></td>
+          <td>18 (0.58%)</td>
+          <td>
+            <div class="callees">
+              18 (100.00%)
+              samples spent calling
+              <a href="arraymath-jl-645266b7ce52d3fc56cc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-arraymath-jl-47">*</a><br />
+            </div>
+            <span class="code">        data.scaling &amp;&amp; (q *= scaling_factor)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-196"></a>196</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-197"></a>197</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-198"></a>198</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for i = 1 : data.mem
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-199"></a>199</td>
+          <td></td>
+          <td>1 (0.03%)</td>
+          <td>
+            <div class="callees">
+              1 (100.00%)
+              samples spent calling
+              <a href="int-jl-bef4e6df3dc1d2697685-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-int-jl-mod-171">mod</a><br />
+            </div>
+            <span class="code">        k = mod(data.insert + i - 2, data.mem) + 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-200"></a>200</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if ys[k] != 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-201"></a>201</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            #Î² = dot(data.y[IÏµ,k], q[IÏµ]) / ys[k]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-202"></a>202</td>
+          <td>7 (0.23%)</td>
+          <td>169 (5.48%)</td>
+          <td>
+            <div class="callees">
+              28 (16.57%)
+              samples spent calling
+              <a href="blas-jl-636a28a2ab62d3ff16c9-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-linalg-blas-jl-dot-308">dot</a><br />
+              134 (79.29%)
+              samples spent calling
+              <a href="abstractarray-jl-5d558341ccfd5297c878-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-abstractarray-jl-getindex-880">getindex</a><br />
+            </div>
+            <span class="code">            Î² = dot(y[:,k], q) / ys[k]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-203"></a>203</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            #q[IÏµ] += (data.Î±[k] - Î²) * data.s[IÏµ,k]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-204"></a>204</td>
+          <td>13 (0.42%)</td>
+          <td>310 (10.05%)</td>
+          <td>
+            <div class="callees">
+              79 (25.48%)
+              samples spent calling
+              <a href="arraymath-jl-645266b7ce52d3fc56cc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-arraymath-jl-44">*</a><br />
+              102 (32.90%)
+              samples spent calling
+              <a href="abstractarray-jl-5d558341ccfd5297c878-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-abstractarray-jl-getindex-880">getindex</a><br />
+              116 (37.42%)
+              samples spent calling
+              <a href="arraymath-jl-645266b7ce52d3fc56cc-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-arraymath-jl-37">+</a><br />
+            </div>
+            <span class="code">            q += (data.Î±[k] - Î²) * s[:,k]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-205"></a>205</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-206"></a>206</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-207"></a>207</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-208"></a>208</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    #return q[IÏµ]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-209"></a>209</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return q
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="LlbfgsB-jl-f6c34058abe991bab4ab-line.html-210"></a>210</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

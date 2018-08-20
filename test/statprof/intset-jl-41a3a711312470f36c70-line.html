@@ -1,0 +1,2509 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="statprofiler.css">
+
+    <title>StatProfilerHTML.jl: /home/dussault/import/julia-d386e40c17/bin/../share/julia/base/./intset.jl</title>
+  </head>
+  <body>
+<div class="report-header">
+  <div class="backlink"><a href="index.html">Report index</a></div>
+  <div class="report-title">StatProfilerHTML.jl report</div>
+  <div class="generated-on">Generated on jeu 16 aoû 2018 18:39:34 EDT</div>
+</div>
+
+    <div id="body-content">
+      <table>
+        <caption>File source code</caption>
+        <tr>
+          <th>Line</td>
+          <th>Exclusive</th>
+          <th>Inclusive</th>
+          <th>Code</th>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-1"></a>1</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># This file is a part of Julia. License is MIT: https://julialang.org/license
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-2"></a>2</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-3"></a>3</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">struct IntSet &lt;: AbstractSet{Int}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-4"></a>4</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    bits::BitVector
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-5"></a>5</td>
+          <td>2 (0.0065%)</td>
+          <td>70 (0.23%)</td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-intset-jl-Type-5"></a>
+              70 (0.23%) samples spent in Type<br />
+              0 (ex.),
+              14 (20.00%) (incl.)
+              when called from
+              find_ssavalue_uses
+              <a href="inference-jl-e86b70899751db55a7a9-line.html#Linference-jl-e86b70899751db55a7a9-line.html-2328">line 2328</a><br />
+              2 (100.00%) (ex.),
+              56 (80.00%) (incl.)
+              when called from
+              Type
+              <a href="inference-jl-e86b70899751db55a7a9-line.html#Linference-jl-e86b70899751db55a7a9-line.html-246">line 246</a><br />
+            </div>
+            <div class="callees">
+              67 (95.71%)
+              samples spent calling
+              <a href="bitarray-jl-b3f97d57555afeb922d0-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-bitarray-jl-Type-11">Type</a><br />
+              1 (1.43%)
+              samples spent calling
+              <a href="bitarray-jl-b3f97d57555afeb922d0-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-bitarray-jl-fill-347">fill!</a><br />
+            </div>
+            <span class="code">    IntSet() = new(falses(256))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-6"></a>6</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-7"></a>7</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">IntSet(itr) = union!(IntSet(), itr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-8"></a>8</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-9"></a>9</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">eltype(::Type{IntSet}) = Int
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-10"></a>10</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">similar(s::IntSet) = IntSet()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-11"></a>11</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">copy(s1::IntSet) = copy!(IntSet(), s1)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-12"></a>12</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function copy!(dest::IntSet, src::IntSet)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-13"></a>13</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    resize!(dest.bits, length(src.bits))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-14"></a>14</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    copy!(dest.bits, src.bits)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-15"></a>15</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    dest
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-16"></a>16</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-17"></a>17</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">eltype(s::IntSet) = Int
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-18"></a>18</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">sizehint!(s::IntSet, n::Integer) = (_resize0!(s.bits, max(n, length(s.bits))); s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-19"></a>19</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-20"></a>20</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># An internal function for setting the inclusion bit for a given integer n &gt;= 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-21"></a>21</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">@inline function _setint!(s::IntSet, idx::Integer, b::Bool)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-22"></a>22</td>
+          <td>4 (0.01%)</td>
+          <td>4 (0.01%)</td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-intset-jl-_setint-22"></a>
+              4 (0.01%) samples spent in _setint!<br />
+              4 (100.00%) (ex.),
+              4 (100.00%) (incl.)
+              when called from
+              _delete!
+              <a href="intset-jl-41a3a711312470f36c70-line.html#Lintset-jl-41a3a711312470f36c70-line.html-82">line 82</a><br />
+            </div>
+            <span class="code">    if idx &gt; length(s.bits)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-23"></a>23</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        b || return s # setting a bit to zero outside the set&#39;s bits is a no-op
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-24"></a>24</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        newlen = Int(idx) + Int(idx)&gt;&gt;1 # This operation may overflow; we want saturation
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-25"></a>25</td>
+          <td></td>
+          <td>1 (0.0033%)</td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-intset-jl-_setint-25"></a>
+              1 (0.0033%) samples spent in _setint!<br />
+              0 (ex.),
+              1 (100.00%) (incl.)
+              when called from
+              push!
+              <a href="intset-jl-41a3a711312470f36c70-line.html#Lintset-jl-41a3a711312470f36c70-line.html-69">line 69</a><br />
+            </div>
+            <div class="callees">
+              1 (100.00%)
+              samples spent calling
+              <a href="bitarray-jl-b3f97d57555afeb922d0-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-bitarray-jl-fill-347">fill!</a><br />
+            </div>
+            <span class="code">        _resize0!(s.bits, ifelse(newlen&lt;0, typemax(Int), newlen))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-26"></a>26</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-27"></a>27</td>
+          <td>2 (0.0065%)</td>
+          <td>6 (0.02%)</td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-intset-jl-_setint-27"></a>
+              6 (0.02%) samples spent in _setint!<br />
+              0 (ex.),
+              2 (33.33%) (incl.)
+              when called from
+              _delete!
+              <a href="intset-jl-41a3a711312470f36c70-line.html#Lintset-jl-41a3a711312470f36c70-line.html-82">line 82</a><br />
+              2 (100.00%) (ex.),
+              4 (66.67%) (incl.)
+              when called from
+              push!
+              <a href="intset-jl-41a3a711312470f36c70-line.html#Lintset-jl-41a3a711312470f36c70-line.html-69">line 69</a><br />
+            </div>
+            <div class="callees">
+              4 (66.67%)
+              samples spent calling
+              <a href="bitarray-jl-b3f97d57555afeb922d0-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-bitarray-jl-setindex-682">setindex!</a><br />
+            </div>
+            <span class="code">    @inbounds s.bits[idx] = b
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-28"></a>28</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    s
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-29"></a>29</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-30"></a>30</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-31"></a>31</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># An internal function to resize a bitarray and ensure the newly allocated
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-32"></a>32</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># elements are zeroed (will become unnecessary if this behavior changes)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-33"></a>33</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">@inline function _resize0!(b::BitVector, newlen::Integer)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-34"></a>34</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    len = length(b)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-35"></a>35</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    resize!(b, newlen)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-36"></a>36</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    len &lt; newlen &amp;&amp; @inbounds b[len+1:newlen] = false # resize! gives dirty memory
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-37"></a>37</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    b
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-38"></a>38</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-39"></a>39</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-40"></a>40</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># An internal function that takes a pure function `f` and maps across two BitArrays
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-41"></a>41</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># allowing the lengths to be different and altering b1 with the result
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-42"></a>42</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function _matched_map!(f, b1::BitArray, b2::BitArray)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-43"></a>43</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    l1, l2 = length(b1), length(b2)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-44"></a>44</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if l1 == l2
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-45"></a>45</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        map!(f, b1, b1, b2)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-46"></a>46</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    elseif l1 &lt; l2
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-47"></a>47</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        _resize0!(b1, l2)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-48"></a>48</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        map!(f, b1, b1, b2)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-49"></a>49</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    elseif l1 &gt; l2
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-50"></a>50</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if f(false, false) == f(true, false) == false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-51"></a>51</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            # We don&#39;t need to worry about the trailing bits â they&#39;re all false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-52"></a>52</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            resize!(b1, l2)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-53"></a>53</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            map!(f, b1, b1, b2)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-54"></a>54</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        else
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-55"></a>55</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            # We transiently extend b2 â as IntSet internal storage this is unobservable
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-56"></a>56</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            _resize0!(b2, l1)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-57"></a>57</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            map!(f, b1, b1, b2)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-58"></a>58</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            resize!(b2, l2)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-59"></a>59</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-60"></a>60</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-61"></a>61</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    b1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-62"></a>62</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-63"></a>63</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-64"></a>64</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">@noinline _throw_intset_bounds_err() = throw(ArgumentError(&quot;elements of IntSet must be between 1 and typemax(Int)&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-65"></a>65</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">@noinline _throw_keyerror(n) = throw(KeyError(n))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-66"></a>66</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-67"></a>67</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">@inline function push!(s::IntSet, n::Integer)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-68"></a>68</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    0 &lt; n &lt;= typemax(Int) || _throw_intset_bounds_err()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-69"></a>69</td>
+          <td></td>
+          <td>5 (0.02%)</td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-intset-jl-push-69"></a>
+              5 (0.02%) samples spent in push!<br />
+              0 (ex.),
+              1 (20.00%) (incl.)
+              when called from
+              typeinf_work
+              <a href="inference-jl-e86b70899751db55a7a9-line.html#Linference-jl-e86b70899751db55a7a9-line.html-2716">line 2716</a><br />
+              0 (ex.),
+              1 (20.00%) (incl.)
+              when called from
+              record_ssa_assign
+              <a href="inference-jl-e86b70899751db55a7a9-line.html#Linference-jl-e86b70899751db55a7a9-line.html-2859">line 2859</a><br />
+              0 (ex.),
+              1 (20.00%) (incl.)
+              when called from
+              find_ssavalue_uses
+              <a href="inference-jl-e86b70899751db55a7a9-line.html#Linference-jl-e86b70899751db55a7a9-line.html-2319">line 2319</a><br />
+              0 (ex.),
+              2 (40.00%) (incl.)
+              when called from
+              Type
+              <a href="inference-jl-e86b70899751db55a7a9-line.html#Linference-jl-e86b70899751db55a7a9-line.html-247">line 247</a><br />
+            </div>
+            <div class="callees">
+              4 (80.00%)
+              samples spent calling
+              <a href="intset-jl-41a3a711312470f36c70-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-intset-jl-_setint-27">_setint!</a><br />
+              1 (20.00%)
+              samples spent calling
+              <a href="intset-jl-41a3a711312470f36c70-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-intset-jl-_setint-25">_setint!</a><br />
+            </div>
+            <span class="code">    _setint!(s, n, true)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-70"></a>70</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-71"></a>71</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">push!(s::IntSet, ns::Integer...) = (for n in ns; push!(s, n); end; s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-72"></a>72</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-73"></a>73</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">@inline function pop!(s::IntSet)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-74"></a>74</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    pop!(s, last(s))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-75"></a>75</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-76"></a>76</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">@inline function pop!(s::IntSet, n::Integer)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-77"></a>77</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    n in s ? (_delete!(s, n); n) : _throw_keyerror(n)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-78"></a>78</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-79"></a>79</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">@inline function pop!(s::IntSet, n::Integer, default)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-80"></a>80</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    n in s ? (_delete!(s, n); n) : default
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-81"></a>81</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-82"></a>82</td>
+          <td></td>
+          <td>6 (0.02%)</td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-intset-jl-_delete-82"></a>
+              6 (0.02%) samples spent in _delete!<br />
+              0 (ex.),
+              6 (100.00%) (incl.)
+              when called from
+              delete!
+              <a href="intset-jl-41a3a711312470f36c70-line.html#Lintset-jl-41a3a711312470f36c70-line.html-83">line 83</a><br />
+            </div>
+            <div class="callees">
+              2 (33.33%)
+              samples spent calling
+              <a href="intset-jl-41a3a711312470f36c70-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-intset-jl-_setint-27">_setint!</a><br />
+              4 (66.67%)
+              samples spent calling
+              <a href="intset-jl-41a3a711312470f36c70-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-intset-jl-_setint-22">_setint!</a><br />
+            </div>
+            <span class="code">@inline _delete!(s::IntSet, n::Integer) = _setint!(s, n, false)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-83"></a>83</td>
+          <td></td>
+          <td>6 (0.02%)</td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-intset-jl-delete-83"></a>
+              6 (0.02%) samples spent in delete!<br />
+              0 (ex.),
+              6 (100.00%) (incl.)
+              when called from
+              typeinf_work
+              <a href="inference-jl-e86b70899751db55a7a9-line.html#Linference-jl-e86b70899751db55a7a9-line.html-2659">line 2659</a><br />
+            </div>
+            <div class="callees">
+              6 (100.00%)
+              samples spent calling
+              <a href="intset-jl-41a3a711312470f36c70-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-intset-jl-_delete-82">_delete!</a><br />
+            </div>
+            <span class="code">@inline delete!(s::IntSet, n::Integer) = n &lt; 0 ? s : _delete!(s, n)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-84"></a>84</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">shift!(s::IntSet) = pop!(s, first(s))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-85"></a>85</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-86"></a>86</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">empty!(s::IntSet) = (fill!(s.bits, false); s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-87"></a>87</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">isempty(s::IntSet) = !any(s.bits)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-88"></a>88</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-89"></a>89</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># Mathematical set functions: union!, intersect!, setdiff!, symdiff!
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-90"></a>90</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-91"></a>91</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">union(s::IntSet) = copy(s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-92"></a>92</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">union(s1::IntSet, s2::IntSet) = union!(copy(s1), s2)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-93"></a>93</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">union(s1::IntSet, ss::IntSet...) = union(s1, union(ss...))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-94"></a>94</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">union(s::IntSet, ns) = union!(copy(s), ns)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-95"></a>95</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">union!(s::IntSet, ns) = (for n in ns; push!(s, n); end; s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-96"></a>96</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function union!(s1::IntSet, s2::IntSet)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-97"></a>97</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    _matched_map!(|, s1.bits, s2.bits)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-98"></a>98</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    s1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-99"></a>99</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-100"></a>100</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-101"></a>101</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">intersect(s1::IntSet) = copy(s1)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-102"></a>102</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">intersect(s1::IntSet, ss::IntSet...) = intersect(s1, intersect(ss...))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-103"></a>103</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function intersect(s1::IntSet, ns)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-104"></a>104</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    s = IntSet()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-105"></a>105</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for n in ns
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-106"></a>106</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        n in s1 &amp;&amp; push!(s, n)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-107"></a>107</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-108"></a>108</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    s
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-109"></a>109</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-110"></a>110</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">intersect(s1::IntSet, s2::IntSet) =
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-111"></a>111</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    (length(s1.bits) &gt;= length(s2.bits) ? intersect!(copy(s1), s2) : intersect!(copy(s2), s1))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-112"></a>112</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-113"></a>113</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    intersect!(s1::IntSet, s2::IntSet)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-114"></a>114</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-115"></a>115</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Intersects sets `s1` and `s2` and overwrites the set `s1` with the result. If needed, `s1`
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-116"></a>116</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">will be expanded to the size of `s2`.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-117"></a>117</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-118"></a>118</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function intersect!(s1::IntSet, s2::IntSet)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-119"></a>119</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    _matched_map!(&amp;, s1.bits, s2.bits)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-120"></a>120</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    s1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-121"></a>121</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-122"></a>122</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-123"></a>123</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">setdiff(s::IntSet, ns) = setdiff!(copy(s), ns)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-124"></a>124</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">setdiff!(s::IntSet, ns) = (for n in ns; _delete!(s, n); end; s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-125"></a>125</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function setdiff!(s1::IntSet, s2::IntSet)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-126"></a>126</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    _matched_map!(&gt;, s1.bits, s2.bits)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-127"></a>127</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    s1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-128"></a>128</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-129"></a>129</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-130"></a>130</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">symdiff(s::IntSet, ns) = symdiff!(copy(s), ns)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-131"></a>131</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-132"></a>132</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    symdiff!(s, itr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-133"></a>133</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-134"></a>134</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">For each element in `itr`, destructively toggle its inclusion in set `s`.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-135"></a>135</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-136"></a>136</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">symdiff!(s::IntSet, ns) = (for n in ns; symdiff!(s, n); end; s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-137"></a>137</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-138"></a>138</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    symdiff!(s, n)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-139"></a>139</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-140"></a>140</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">The set `s` is destructively modified to toggle the inclusion of integer `n`.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-141"></a>141</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-142"></a>142</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function symdiff!(s::IntSet, n::Integer)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-143"></a>143</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    0 &lt; n &lt; typemax(Int) || _throw_intset_bounds_err()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-144"></a>144</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    val = !(n in s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-145"></a>145</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    _setint!(s, n, val)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-146"></a>146</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    s
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-147"></a>147</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-148"></a>148</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function symdiff!(s1::IntSet, s2::IntSet)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-149"></a>149</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    _matched_map!(xor, s1.bits, s2.bits)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-150"></a>150</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    s1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-151"></a>151</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-152"></a>152</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-153"></a>153</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">@inline function in(n::Integer, s::IntSet)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-154"></a>154</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if 1 &lt;= n &lt;= length(s.bits)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-155"></a>155</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        @inbounds b = s.bits[n]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-156"></a>156</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    else
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-157"></a>157</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        b = false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-158"></a>158</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-159"></a>159</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    b
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-160"></a>160</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-161"></a>161</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-162"></a>162</td>
+          <td></td>
+          <td></td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-intset-jl-start-162"></a>
+              2 (0.0065%) samples spent in start<br />
+              0 (ex.),
+              2 (100.00%) (incl.)
+              when called from
+              record_ssa_assign
+              <a href="inference-jl-e86b70899751db55a7a9-line.html#Linference-jl-e86b70899751db55a7a9-line.html-2854">line 2854</a><br />
+            </div>
+            <span class="code"># Use the next-set index as the state to prevent looking it up again in done
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-163"></a>163</td>
+          <td></td>
+          <td>2 (0.0065%)</td>
+          <td>
+            <div class="callees">
+              2 (100.00%)
+              samples spent calling
+              <a href="intset-jl-41a3a711312470f36c70-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-intset-jl-next-165">next</a><br />
+            </div>
+            <span class="code">start(s::IntSet) = next(s, 0)[2]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-164"></a>164</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function next(s::IntSet, i)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-165"></a>165</td>
+          <td></td>
+          <td>5 (0.02%)</td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-intset-jl-next-165"></a>
+              5 (0.02%) samples spent in next<br />
+              0 (ex.),
+              2 (40.00%) (incl.)
+              when called from
+              start
+              <a href="intset-jl-41a3a711312470f36c70-line.html#Lintset-jl-41a3a711312470f36c70-line.html-163">line 163</a><br />
+              0 (ex.),
+              3 (60.00%) (incl.)
+              when called from
+              typeinf_work
+              <a href="inference-jl-e86b70899751db55a7a9-line.html#Linference-jl-e86b70899751db55a7a9-line.html-2652">line 2652</a><br />
+            </div>
+            <div class="callees">
+              5 (100.00%)
+              samples spent calling
+              <a href="bitarray-jl-b3f97d57555afeb922d0-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-bitarray-jl-findnext-1621">findnext</a><br />
+            </div>
+            <span class="code">    nextidx = i == typemax(Int) ? 0 : findnext(s.bits, i+1)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-166"></a>166</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    (i, nextidx)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-167"></a>167</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-168"></a>168</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">done(s::IntSet, i) = i &lt;= 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-169"></a>169</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-170"></a>170</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-171"></a>171</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">@noinline _throw_intset_notempty_error() = throw(ArgumentError(&quot;collection must be non-empty&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-172"></a>172</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function last(s::IntSet)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-173"></a>173</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    idx = findprev(s.bits, length(s.bits))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-174"></a>174</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    idx == 0 ? _throw_intset_notempty_error() : idx
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-175"></a>175</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-176"></a>176</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-177"></a>177</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">length(s::IntSet) = sum(s.bits)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-178"></a>178</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-179"></a>179</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function show(io::IO, s::IntSet)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-180"></a>180</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    print(io, &quot;IntSet([&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-181"></a>181</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    first = true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-182"></a>182</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for n in s
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-183"></a>183</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        !first &amp;&amp; print(io, &quot;, &quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-184"></a>184</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        print(io, n)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-185"></a>185</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        first = false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-186"></a>186</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-187"></a>187</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    print(io, &quot;])&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-188"></a>188</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-189"></a>189</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-190"></a>190</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function ==(s1::IntSet, s2::IntSet)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-191"></a>191</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    l1 = length(s1.bits)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-192"></a>192</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    l2 = length(s2.bits)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-193"></a>193</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # If the lengths are the same, simply punt to bitarray comparison
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-194"></a>194</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    l1 == l2 &amp;&amp; return s1.bits == s2.bits
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-195"></a>195</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-196"></a>196</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # Swap so s1 is always longer
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-197"></a>197</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if l1 &lt; l2
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-198"></a>198</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        s2, s1 = s1, s2
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-199"></a>199</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        l2, l1 = l1, l2
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-200"></a>200</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-201"></a>201</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # Iteratively check the chunks of the bitarrays
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-202"></a>202</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    c1 = s1.bits.chunks
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-203"></a>203</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    c2 = s2.bits.chunks
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-204"></a>204</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @inbounds for i in 1:length(c2)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-205"></a>205</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        c1[i] == c2[i] || return false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-206"></a>206</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-207"></a>207</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # Ensure remaining chunks are zero
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-208"></a>208</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @inbounds for i in length(c2)+1:length(c1)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-209"></a>209</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        c1[i] == UInt64(0) || return false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-210"></a>210</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-211"></a>211</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-212"></a>212</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-213"></a>213</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-214"></a>214</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">issubset(a::IntSet, b::IntSet) = isequal(a, intersect(a,b))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-215"></a>215</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&lt;(a::IntSet, b::IntSet) = (a&lt;=b) &amp;&amp; !isequal(a,b)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-216"></a>216</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&lt;=(a::IntSet, b::IntSet) = issubset(a, b)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-217"></a>217</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-218"></a>218</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const hashis_seed = UInt === UInt64 ? 0x88989f1fc7dea67d : 0xc7dea67d
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-219"></a>219</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function hash(s::IntSet, h::UInt)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-220"></a>220</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    h â»= hashis_seed
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-221"></a>221</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    bc = s.bits.chunks
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-222"></a>222</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    i = length(bc)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-223"></a>223</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    while i &gt; 0 &amp;&amp; bc[i] == UInt64(0)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-224"></a>224</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # Skip trailing empty bytes to prevent extra space from changing the hash
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-225"></a>225</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        i -= 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-226"></a>226</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-227"></a>227</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    while i &gt; 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-228"></a>228</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        h = hash(bc[i], h)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-229"></a>229</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        i -= 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-230"></a>230</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-231"></a>231</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    h
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lintset-jl-41a3a711312470f36c70-line.html-232"></a>232</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

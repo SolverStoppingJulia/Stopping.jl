@@ -1,0 +1,633 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="statprofiler.css">
+
+    <title>StatProfilerHTML.jl: ./profile.jl</title>
+  </head>
+  <body>
+<div class="report-header">
+  <div class="backlink"><a href="index.html">Report index</a></div>
+  <div class="report-title">StatProfilerHTML.jl report</div>
+  <div class="generated-on">Generated on ven 17 aoû 2018 15:43:37 EDT</div>
+</div>
+
+    <div id="body-content">
+      <table>
+        <caption>File source code</caption>
+        <tr>
+          <th>Line</td>
+          <th>Exclusive</th>
+          <th>Inclusive</th>
+          <th>Code</th>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-1"></a>1</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">using Stopping
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-2"></a>2</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">#include(&quot;../src/Stopping.jl&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-3"></a>3</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">using Base.Test
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-4"></a>4</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-5"></a>5</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># write your own tests here
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-6"></a>6</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">using NLPModels
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-7"></a>7</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">using JuMP
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-8"></a>8</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-9"></a>9</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-10"></a>10</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">include(&quot;CUTEstProblemsB.jl&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-11"></a>11</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">probs = sort(open(readlines,&quot;CUTEstBound.list&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-12"></a>12</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-13"></a>13</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-14"></a>14</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">include(&quot;line_model.jl&quot;)  # For LineFunction  definition
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-15"></a>15</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">#include(&quot;woods.jl&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-16"></a>16</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">#nlp = MathProgNLPModel(woods(), name=&quot;woods&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-17"></a>17</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">#include(&quot;genrose.jl&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-18"></a>18</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">#nlp = MathProgNLPModel(genrose(800), name=&quot;genrose&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-19"></a>19</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-20"></a>20</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">#nlp = CUTEstModel(probs[6])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-21"></a>21</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-22"></a>22</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-23"></a>23</td>
+          <td></td>
+          <td>1029 (100.00%)</td>
+          <td>
+            <div class="call-sites">
+              <a name="S-profile-jl-macro-expansion-23"></a>
+              1029 (100.00%) samples spent in macro expansion<br />
+              0 (ex.),
+              1029 (100.00%) (incl.)
+              when called from
+              anonymous
+              <a href="nothing-0feca720e2c29dafb2c9-line.html#Lnothing-0feca720e2c29dafb2c9-line.html--1">line -1</a><br />
+            </div>
+            <div class="callees">
+              1029 (100.00%)
+              samples spent calling
+              <a href="nothing-0feca720e2c29dafb2c9-line.html#Snothing-lbfgsB">#lbfgsB</a><br />
+            </div>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-24"></a>24</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-25"></a>25</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># bounded
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-26"></a>26</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">include(&quot;lbfgsB.jl&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-27"></a>27</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-28"></a>28</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">#test_probs = (CUTEstModel(p)  for p in probs)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-29"></a>29</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-30"></a>30</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">#for nlp in test_probs
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-31"></a>31</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">nlp = CUTEstModel(&quot;MINSURFO&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-32"></a>32</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    n = nlp.meta.nvar
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-33"></a>33</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-34"></a>34</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    sB = TStoppingB(nlp, atol=1.0e-6, rtol = 0.0, max_eval = 100000, max_iter = 10000, max_time = 8.0)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-35"></a>35</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-36"></a>36</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">(x, f, gNorm, iter, optimal, tired, status, Stime) =  TSlbfgsB(nlp, stp=sB, verbose=false, mem = 5, scaling = true)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-37"></a>37</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @printf(&quot;%-5s  %3d  %9.2e  %7.1e  %5d  %5d  %6d   %6d  %-20s  %7.3e\n&quot;,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-38"></a>38</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            nlp.meta.name, nlp.meta.nvar, f, gNorm,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-39"></a>39</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            nlp.counters.neval_obj, nlp.counters.neval_grad,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-40"></a>40</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            nlp.counters.neval_hprod, iter, status, Stime) 
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-41"></a>41</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-42"></a>42</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-43"></a>43</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">reset!(nlp)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-44"></a>44</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-45"></a>45</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Profile.init(n = 10^7)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-46"></a>46</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Profile.clear()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-47"></a>47</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">@profile (x, f, gNorm, iter, optimal, tired, status, Stime) =  TSlbfgsB(nlp, stp=sB, verbose=false, mem = 5, scaling = true)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-48"></a>48</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-49"></a>49</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @printf(&quot;%-5s  %3d  %9.2e  %7.1e  %5d  %5d  %6d   %6d  %-20s  %7.3e\n&quot;,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-50"></a>50</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            nlp.meta.name, nlp.meta.nvar, f, gNorm,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-51"></a>51</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            nlp.counters.neval_obj, nlp.counters.neval_grad,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-52"></a>52</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            nlp.counters.neval_hprod, iter, status, Stime) 
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-53"></a>53</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-54"></a>54</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-55"></a>55</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    finalize(nlp)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-56"></a>56</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">#end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-57"></a>57</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">#using StatProfilerHTML
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-58"></a>58</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">#statprofilehtml()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lprofile-jl-3577f2581ef21e6549fb-line.html-59"></a>59</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

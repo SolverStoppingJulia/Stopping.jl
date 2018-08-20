@@ -1,0 +1,15 @@
+2 solveurs: mon lbfgsB, le L-BFGS-B "officiel"
+
+Avant Pkg.upgrade()
+
+prob      dim      obj      ||g||     nf     ng       nH     Iter   Status               time
+MINSURFO  5306   2.51e+00  7.9e-07    646    557       0      556  Optimal               2.300e+00
+MINSURFO  5306   2.51e+00  8.1e-07    435    438       0      433  Optimal               8.357e-01
+
+Je voulais réduire le temps, beaucoup défavorable par rapport à L-BFGS-B... J'ai décidé de faire un Pkg.upgrade() pour avoir les versions les plus à jour...
+
+Après Pkg.upgrade()
+
+MINSURFO  5306   2.51e+00  7.9e-07    646    557       0      556  Optimal               6.471e+00
+MINSURFO  5306   2.51e+00  8.1e-07    435    438       0      433  Optimal               3.322e+00
+

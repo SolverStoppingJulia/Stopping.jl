@@ -1,0 +1,3777 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="statprofiler.css">
+
+    <title>StatProfilerHTML.jl: /home/dussault/import/julia-d386e40c17/bin/../share/julia/base/./task.jl</title>
+  </head>
+  <body>
+<div class="report-header">
+  <div class="backlink"><a href="index.html">Report index</a></div>
+  <div class="report-title">StatProfilerHTML.jl report</div>
+  <div class="generated-on">Generated on jeu 19 jui 2018 09:16:40 EDT</div>
+</div>
+
+    <div id="body-content">
+      <table>
+        <caption>File source code</caption>
+        <tr>
+          <th>Line</td>
+          <th>Exclusive</th>
+          <th>Inclusive</th>
+          <th>Code</th>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-1"></a>1</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># This file is a part of Julia. License is MIT: https://julialang.org/license
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-2"></a>2</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-3"></a>3</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">## basic task functions and TLS
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-4"></a>4</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-5"></a>5</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># Container for a captured exception and its backtrace. Can be serialized.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-6"></a>6</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">mutable struct CapturedException &lt;: Exception
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-7"></a>7</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ex::Any
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-8"></a>8</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    processed_bt::Vector{Any}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-9"></a>9</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-10"></a>10</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    function CapturedException(ex, bt_raw::Vector{Ptr{Void}})
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-11"></a>11</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # bt_raw MUST be an Array of code pointers than can be processed by jl_lookup_code_address
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-12"></a>12</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # Typically the result of a catch_backtrace()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-13"></a>13</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-14"></a>14</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        # Process bt_raw so that it can be safely serialized
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-15"></a>15</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        bt_lines = Any[]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-16"></a>16</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        process_func(args...) = push!(bt_lines, args)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-17"></a>17</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        process_backtrace(process_func, bt_raw, 100) # Limiting this to 100 lines.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-18"></a>18</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-19"></a>19</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        CapturedException(ex, bt_lines)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-20"></a>20</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-21"></a>21</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-22"></a>22</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    CapturedException(ex, processed_bt::Vector{Any}) = new(ex, processed_bt)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-23"></a>23</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-24"></a>24</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-25"></a>25</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function showerror(io::IO, ce::CapturedException)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-26"></a>26</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    showerror(io, ce.ex, ce.processed_bt, backtrace=true)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-27"></a>27</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-28"></a>28</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-29"></a>29</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">mutable struct CompositeException &lt;: Exception
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-30"></a>30</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    exceptions::Vector{Any}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-31"></a>31</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    CompositeException() = new(Any[])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-32"></a>32</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    CompositeException(exceptions) = new(exceptions)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-33"></a>33</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-34"></a>34</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">length(c::CompositeException) = length(c.exceptions)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-35"></a>35</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">push!(c::CompositeException, ex) = push!(c.exceptions, ex)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-36"></a>36</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">isempty(c::CompositeException) = isempty(c.exceptions)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-37"></a>37</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">start(c::CompositeException) = start(c.exceptions)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-38"></a>38</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">next(c::CompositeException, state) = next(c.exceptions, state)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-39"></a>39</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">done(c::CompositeException, state) = done(c.exceptions, state)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-40"></a>40</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-41"></a>41</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function showerror(io::IO, ex::CompositeException)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-42"></a>42</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if !isempty(ex)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-43"></a>43</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        showerror(io, ex.exceptions[1])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-44"></a>44</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        remaining = length(ex) - 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-45"></a>45</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if remaining &gt; 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-46"></a>46</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            print(io, string(&quot;\n\n...and &quot;, remaining, &quot; more exception(s).\n&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-47"></a>47</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-48"></a>48</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    else
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-49"></a>49</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        print(io, &quot;CompositeException()\n&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-50"></a>50</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-51"></a>51</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-52"></a>52</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-53"></a>53</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function show(io::IO, t::Task)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-54"></a>54</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    print(io, &quot;Task ($(t.state)) @0x$(hex(convert(UInt, pointer_from_objref(t)), Sys.WORD_SIZE&gt;&gt;2))&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-55"></a>55</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-56"></a>56</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-57"></a>57</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-58"></a>58</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @task
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-59"></a>59</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-60"></a>60</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Wrap an expression in a [`Task`](@ref) without executing it, and return the [`Task`](@ref). This only
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-61"></a>61</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">creates a task, and does not run it.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-62"></a>62</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-63"></a>63</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```jldoctest
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-64"></a>64</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; a1() = det(rand(1000, 1000));
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-65"></a>65</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-66"></a>66</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; b = @task a1();
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-67"></a>67</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-68"></a>68</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; istaskstarted(b)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-69"></a>69</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-70"></a>70</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-71"></a>71</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; schedule(b);
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-72"></a>72</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-73"></a>73</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; yield();
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-74"></a>74</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-75"></a>75</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; istaskdone(b)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-76"></a>76</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-77"></a>77</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-78"></a>78</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-79"></a>79</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">macro task(ex)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-80"></a>80</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    :(Task(()-&gt;$(esc(ex))))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-81"></a>81</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-82"></a>82</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-83"></a>83</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-84"></a>84</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    current_task()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-85"></a>85</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-86"></a>86</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Get the currently running [`Task`](@ref).
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-87"></a>87</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-88"></a>88</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">current_task() = ccall(:jl_get_current_task, Ref{Task}, ())
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-89"></a>89</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-90"></a>90</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-91"></a>91</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    istaskdone(t::Task) -&gt; Bool
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-92"></a>92</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-93"></a>93</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Determine whether a task has exited.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-94"></a>94</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-95"></a>95</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```jldoctest
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-96"></a>96</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; a2() = det(rand(1000, 1000));
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-97"></a>97</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-98"></a>98</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; b = Task(a2);
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-99"></a>99</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-100"></a>100</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; istaskdone(b)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-101"></a>101</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-102"></a>102</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-103"></a>103</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; schedule(b);
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-104"></a>104</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-105"></a>105</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; yield();
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-106"></a>106</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-107"></a>107</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; istaskdone(b)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-108"></a>108</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-109"></a>109</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-110"></a>110</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-111"></a>111</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">istaskdone(t::Task) = ((t.state == :done) | istaskfailed(t))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-112"></a>112</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-113"></a>113</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-114"></a>114</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    istaskstarted(t::Task) -&gt; Bool
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-115"></a>115</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-116"></a>116</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Determine whether a task has started executing.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-117"></a>117</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-118"></a>118</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```jldoctest
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-119"></a>119</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; a3() = det(rand(1000, 1000));
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-120"></a>120</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-121"></a>121</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; b = Task(a3);
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-122"></a>122</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-123"></a>123</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; istaskstarted(b)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-124"></a>124</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-125"></a>125</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-126"></a>126</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-127"></a>127</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">istaskstarted(t::Task) = ccall(:jl_is_task_started, Cint, (Any,), t) != 0
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-128"></a>128</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-129"></a>129</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">istaskfailed(t::Task) = (t.state == :failed)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-130"></a>130</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-131"></a>131</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">task_result(t::Task) = t.result
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-132"></a>132</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-133"></a>133</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">task_local_storage() = get_task_tls(current_task())
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-134"></a>134</td>
+          <td></td>
+          <td></td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-task-jl-get_task_tls-134"></a>
+              1 (0.02%) samples spent in get_task_tls<br />
+              1 (100.00%) (ex.),
+              1 (100.00%) (incl.)
+              when called from
+              tic
+              <a href="util-jl-4fcde736300a40739065-line.html#Lutil-jl-4fcde736300a40739065-line.html-98">line 98</a><br />
+            </div>
+            <span class="code">function get_task_tls(t::Task)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-135"></a>135</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if t.storage === nothing
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-136"></a>136</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        t.storage = ObjectIdDict()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-137"></a>137</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-138"></a>138</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    (t.storage)::ObjectIdDict
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-139"></a>139</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-140"></a>140</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-141"></a>141</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-142"></a>142</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    task_local_storage(key)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-143"></a>143</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-144"></a>144</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Look up the value of a key in the current task&#39;s task-local storage.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-145"></a>145</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-146"></a>146</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">task_local_storage(key) = task_local_storage()[key]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-147"></a>147</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-148"></a>148</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-149"></a>149</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    task_local_storage(key, value)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-150"></a>150</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-151"></a>151</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Assign a value to a key in the current task&#39;s task-local storage.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-152"></a>152</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-153"></a>153</td>
+          <td>9 (0.15%)</td>
+          <td>12 (0.21%)</td>
+          <td>
+            <div class="call-sites">
+              <a name="S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-task-jl-task_local_storage-153"></a>
+              12 (0.21%) samples spent in task_local_storage<br />
+              3 (33.33%) (ex.),
+              4 (33.33%) (incl.)
+              when called from
+              tic
+              <a href="util-jl-4fcde736300a40739065-line.html#Lutil-jl-4fcde736300a40739065-line.html-98">line 98</a><br />
+              6 (66.67%) (ex.),
+              8 (66.67%) (incl.)
+              when called from
+              toq
+              <a href="util-jl-4fcde736300a40739065-line.html#Lutil-jl-4fcde736300a40739065-line.html-125">line 125</a><br />
+            </div>
+            <div class="callees">
+              3 (25.00%)
+              samples spent calling
+              <a href="associative-jl-5d40460a650ee0a51343-line.html#S-home-dussault-import-julia-d386e40c17-bin-share-julia-base-associative-jl-setindex-425">setindex!</a><br />
+            </div>
+            <span class="code">task_local_storage(key, val) = (task_local_storage()[key] = val)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-154"></a>154</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-155"></a>155</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-156"></a>156</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    task_local_storage(body, key, value)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-157"></a>157</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-158"></a>158</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Call the function `body` with a modified task-local storage, in which `value` is assigned to
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-159"></a>159</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">`key`; the previous value of `key`, or lack thereof, is restored afterwards. Useful
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-160"></a>160</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">for emulating dynamic scoping.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-161"></a>161</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-162"></a>162</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function task_local_storage(body::Function, key, val)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-163"></a>163</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    tls = task_local_storage()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-164"></a>164</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    hadkey = haskey(tls,key)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-165"></a>165</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    old = get(tls,key,nothing)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-166"></a>166</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    tls[key] = val
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-167"></a>167</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    try body()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-168"></a>168</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    finally
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-169"></a>169</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        hadkey ? (tls[key] = old) : delete!(tls,key)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-170"></a>170</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-171"></a>171</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-172"></a>172</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-173"></a>173</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># NOTE: you can only wait for scheduled tasks
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-174"></a>174</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function wait(t::Task)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-175"></a>175</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if !istaskdone(t)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-176"></a>176</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if t.donenotify === nothing
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-177"></a>177</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            t.donenotify = Condition()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-178"></a>178</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-179"></a>179</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-180"></a>180</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    while !istaskdone(t)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-181"></a>181</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        wait(t.donenotify)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-182"></a>182</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-183"></a>183</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if istaskfailed(t)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-184"></a>184</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        throw(t.exception)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-185"></a>185</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-186"></a>186</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return task_result(t)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-187"></a>187</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-188"></a>188</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-189"></a>189</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">suppress_excp_printing(t::Task) = isa(t.storage, ObjectIdDict) ? get(get_task_tls(t), :SUPPRESS_EXCEPTION_PRINTING, false) : false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-190"></a>190</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-191"></a>191</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function register_taskdone_hook(t::Task, hook)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-192"></a>192</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    tls = get_task_tls(t)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-193"></a>193</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    push!(get!(tls, :TASKDONE_HOOKS, []), hook)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-194"></a>194</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    t
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-195"></a>195</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-196"></a>196</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-197"></a>197</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># runtime system hook called when a task finishes
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-198"></a>198</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function task_done_hook(t::Task)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-199"></a>199</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # `finish_task` sets `sigatomic` before entering this function
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-200"></a>200</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    err = istaskfailed(t)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-201"></a>201</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    result = task_result(t)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-202"></a>202</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    handled = false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-203"></a>203</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if err
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-204"></a>204</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        t.backtrace = catch_backtrace()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-205"></a>205</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-206"></a>206</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-207"></a>207</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    q = t.consumers
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-208"></a>208</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    t.consumers = nothing
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-209"></a>209</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-210"></a>210</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if isa(t.donenotify, Condition) &amp;&amp; !isempty(t.donenotify.waitq)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-211"></a>211</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        handled = true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-212"></a>212</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        notify(t.donenotify, result, true, err)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-213"></a>213</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-214"></a>214</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-215"></a>215</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # Execute any other hooks registered in the TLS
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-216"></a>216</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if isa(t.storage, ObjectIdDict) &amp;&amp; haskey(t.storage, :TASKDONE_HOOKS)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-217"></a>217</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        foreach(hook -&gt; hook(t), t.storage[:TASKDONE_HOOKS])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-218"></a>218</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        delete!(t.storage, :TASKDONE_HOOKS)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-219"></a>219</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        handled = true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-220"></a>220</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-221"></a>221</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-222"></a>222</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    #### un-optimized version
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-223"></a>223</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    #isa(q,Condition) &amp;&amp; notify(q, result, error=err)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-224"></a>224</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if isa(q,Task)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-225"></a>225</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        handled = true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-226"></a>226</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        nexttask = q
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-227"></a>227</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        nexttask.state = :runnable
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-228"></a>228</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if err
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-229"></a>229</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            nexttask.exception = result
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-230"></a>230</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-231"></a>231</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        yieldto(nexttask, result) # this terminates the task
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-232"></a>232</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    elseif isa(q,Condition) &amp;&amp; !isempty(q.waitq)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-233"></a>233</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        handled = true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-234"></a>234</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        notify(q, result, error=err)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-235"></a>235</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-236"></a>236</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-237"></a>237</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if err &amp;&amp; !handled
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-238"></a>238</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if isa(result,InterruptException) &amp;&amp; isdefined(Base,:active_repl_backend) &amp;&amp;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-239"></a>239</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            active_repl_backend.backend_task.state == :runnable &amp;&amp; isempty(Workqueue) &amp;&amp;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-240"></a>240</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            active_repl_backend.in_eval
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-241"></a>241</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            throwto(active_repl_backend.backend_task, result) # this terminates the task
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-242"></a>242</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-243"></a>243</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if !suppress_excp_printing(t)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-244"></a>244</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            let bt = t.backtrace
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-245"></a>245</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                # run a new task to print the error for us
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-246"></a>246</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                @schedule with_output_color(Base.error_color(), STDERR) do io
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-247"></a>247</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                    print(io, &quot;ERROR (unhandled task failure): &quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-248"></a>248</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                    showerror(io, result, bt)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-249"></a>249</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                    println(io)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-250"></a>250</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-251"></a>251</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-252"></a>252</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-253"></a>253</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-254"></a>254</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    # Clear sigatomic before waiting
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-255"></a>255</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    sigatomic_end()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-256"></a>256</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    wait() # this will not return
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-257"></a>257</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-258"></a>258</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-259"></a>259</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-260"></a>260</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">## dynamically-scoped waiting for multiple items
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-261"></a>261</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">sync_begin() = task_local_storage(:SPAWNS, ([], get(task_local_storage(), :SPAWNS, ())))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-262"></a>262</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-263"></a>263</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function sync_end()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-264"></a>264</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    spawns = get(task_local_storage(), :SPAWNS, ())
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-265"></a>265</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if spawns === ()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-266"></a>266</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        error(&quot;sync_end() without sync_begin()&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-267"></a>267</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-268"></a>268</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    refs = spawns[1]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-269"></a>269</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    task_local_storage(:SPAWNS, spawns[2])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-270"></a>270</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-271"></a>271</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    c_ex = CompositeException()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-272"></a>272</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for r in refs
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-273"></a>273</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        try
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-274"></a>274</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            wait(r)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-275"></a>275</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        catch ex
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-276"></a>276</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            if !isa(r, Task) || (isa(r, Task) &amp;&amp; !istaskfailed(r))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-277"></a>277</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                rethrow(ex)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-278"></a>278</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-279"></a>279</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        finally
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-280"></a>280</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            if isa(r, Task) &amp;&amp; istaskfailed(r)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-281"></a>281</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                push!(c_ex, CapturedException(task_result(r), r.backtrace))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-282"></a>282</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-283"></a>283</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-284"></a>284</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-285"></a>285</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-286"></a>286</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if !isempty(c_ex)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-287"></a>287</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        throw(c_ex)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-288"></a>288</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-289"></a>289</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    nothing
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-290"></a>290</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-291"></a>291</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-292"></a>292</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-293"></a>293</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @sync
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-294"></a>294</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-295"></a>295</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Wait until all dynamically-enclosed uses of `@async`, `@spawn`, `@spawnat` and `@parallel`
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-296"></a>296</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">are complete. All exceptions thrown by enclosed async operations are collected and thrown as
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-297"></a>297</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">a `CompositeException`.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-298"></a>298</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-299"></a>299</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">macro sync(block)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-300"></a>300</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    quote
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-301"></a>301</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        sync_begin()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-302"></a>302</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        v = $(esc(block))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-303"></a>303</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        sync_end()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-304"></a>304</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        v
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-305"></a>305</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-306"></a>306</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-307"></a>307</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-308"></a>308</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function sync_add(r)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-309"></a>309</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    spawns = get(task_local_storage(), :SPAWNS, ())
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-310"></a>310</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if spawns !== ()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-311"></a>311</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        push!(spawns[1], r)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-312"></a>312</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if isa(r, Task)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-313"></a>313</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            tls_r = get_task_tls(r)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-314"></a>314</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            tls_r[:SUPPRESS_EXCEPTION_PRINTING] = true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-315"></a>315</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-316"></a>316</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-317"></a>317</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    r
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-318"></a>318</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-319"></a>319</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-320"></a>320</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function async_run_thunk(thunk)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-321"></a>321</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    t = Task(thunk)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-322"></a>322</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    sync_add(t)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-323"></a>323</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    enq_work(t)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-324"></a>324</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    t
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-325"></a>325</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-326"></a>326</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-327"></a>327</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-328"></a>328</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    @async
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-329"></a>329</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-330"></a>330</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Like `@schedule`, `@async` wraps an expression in a `Task` and adds it to the local
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-331"></a>331</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">machine&#39;s scheduler queue. Additionally it adds the task to the set of items that the
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-332"></a>332</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">nearest enclosing `@sync` waits for.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-333"></a>333</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-334"></a>334</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">macro async(expr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-335"></a>335</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    thunk = esc(:(()-&gt;($expr)))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-336"></a>336</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    :(async_run_thunk($thunk))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-337"></a>337</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-338"></a>338</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-339"></a>339</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-340"></a>340</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-341"></a>341</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    timedwait(testcb::Function, secs::Float64; pollint::Float64=0.1)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-342"></a>342</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-343"></a>343</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Waits until `testcb` returns `true` or for `secs` seconds, whichever is earlier.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-344"></a>344</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">`testcb` is polled every `pollint` seconds.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-345"></a>345</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-346"></a>346</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function timedwait(testcb::Function, secs::Float64; pollint::Float64=0.1)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-347"></a>347</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    pollint &gt; 0 || throw(ArgumentError(&quot;cannot set pollint to $pollint seconds&quot;))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-348"></a>348</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    start = time()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-349"></a>349</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    done = Channel(1)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-350"></a>350</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    timercb(aw) = begin
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-351"></a>351</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        try
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-352"></a>352</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            if testcb()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-353"></a>353</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                put!(done, :ok)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-354"></a>354</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            elseif (time() - start) &gt; secs
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-355"></a>355</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                put!(done, :timed_out)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-356"></a>356</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-357"></a>357</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        catch e
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-358"></a>358</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            put!(done, :error)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-359"></a>359</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        finally
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-360"></a>360</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            isready(done) &amp;&amp; close(aw)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-361"></a>361</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-362"></a>362</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-363"></a>363</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-364"></a>364</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if !testcb()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-365"></a>365</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        t = Timer(timercb, pollint, pollint)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-366"></a>366</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        ret = fetch(done)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-367"></a>367</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        close(t)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-368"></a>368</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    else
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-369"></a>369</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        ret = :ok
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-370"></a>370</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-371"></a>371</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    ret
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Ltask-jl-3baedc1936fc37707754-line.html-372"></a>372</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,2589 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="statprofiler.css">
+
+    <title>StatProfilerHTML.jl: /home/dussault/import/julia-d386e40c17/bin/../share/julia/base/./set.jl</title>
+  </head>
+  <body>
+<div class="report-header">
+  <div class="backlink"><a href="index.html">Report index</a></div>
+  <div class="report-title">StatProfilerHTML.jl report</div>
+  <div class="generated-on">Generated on ven 17 aoû 2018 15:43:37 EDT</div>
+</div>
+
+    <div id="body-content">
+      <table>
+        <caption>File source code</caption>
+        <tr>
+          <th>Line</td>
+          <th>Exclusive</th>
+          <th>Inclusive</th>
+          <th>Code</th>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-1"></a>1</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># This file is a part of Julia. License is MIT: https://julialang.org/license
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-2"></a>2</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-3"></a>3</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">mutable struct Set{T} &lt;: AbstractSet{T}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-4"></a>4</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    dict::Dict{T,Void}
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-5"></a>5</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-6"></a>6</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    Set{T}() where {T} = new(Dict{T,Void}())
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-7"></a>7</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    Set{T}(itr) where {T} = union!(new(Dict{T,Void}()), itr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-8"></a>8</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-9"></a>9</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Set() = Set{Any}()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-10"></a>10</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Set(itr) = Set{eltype(itr)}(itr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-11"></a>11</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function Set(g::Generator)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-12"></a>12</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    T = _default_eltype(typeof(g))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-13"></a>13</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    (isleaftype(T) || T === Union{}) || return grow_to!(Set{T}(), g)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-14"></a>14</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return Set{T}(g)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-15"></a>15</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-16"></a>16</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-17"></a>17</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">eltype(::Type{Set{T}}) where {T} = T
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-18"></a>18</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">similar(s::Set{T}) where {T} = Set{T}()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-19"></a>19</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">similar(s::Set, T::Type) = Set{T}()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-20"></a>20</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-21"></a>21</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function show(io::IO, s::Set)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-22"></a>22</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    print(io,&quot;Set&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-23"></a>23</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if isempty(s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-24"></a>24</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        print(io,&quot;{&quot;,eltype(s),&quot;}()&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-25"></a>25</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        return
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-26"></a>26</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-27"></a>27</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    print(io,&quot;(&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-28"></a>28</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    show_vector(io,s,&quot;[&quot;,&quot;]&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-29"></a>29</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    print(io,&quot;)&quot;)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-30"></a>30</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-31"></a>31</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-32"></a>32</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">isempty(s::Set) = isempty(s.dict)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-33"></a>33</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">length(s::Set)  = length(s.dict)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-34"></a>34</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">in(x, s::Set) = haskey(s.dict, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-35"></a>35</td>
+          <td>1 (0.10%)</td>
+          <td>1 (0.10%)</td>
+          <td>
+            <span class="code">push!(s::Set, x) = (s.dict[x] = nothing; s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-36"></a>36</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">pop!(s::Set, x) = (pop!(s.dict, x); x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-37"></a>37</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">pop!(s::Set, x, deflt) = x in s ? pop!(s, x) : deflt
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-38"></a>38</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">pop!(s::Set) = (idx = start(s.dict); val = s.dict.keys[idx]; _delete!(s.dict, idx); val)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-39"></a>39</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">delete!(s::Set, x) = (delete!(s.dict, x); s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-40"></a>40</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-41"></a>41</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">copy(s::Set) = union!(similar(s), s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-42"></a>42</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-43"></a>43</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">sizehint!(s::Set, newsz) = (sizehint!(s.dict, newsz); s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-44"></a>44</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">empty!(s::Set) = (empty!(s.dict); s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-45"></a>45</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">rehash!(s::Set) = (rehash!(s.dict); s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-46"></a>46</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-47"></a>47</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">start(s::Set)       = start(s.dict)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-48"></a>48</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">done(s::Set, state) = done(s.dict, state)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-49"></a>49</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"># NOTE: manually optimized to take advantage of Dict representation
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-50"></a>50</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">next(s::Set, i)     = (s.dict.keys[i], skip_deleted(s.dict,i+1))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-51"></a>51</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-52"></a>52</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">union() = Set()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-53"></a>53</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">union(s::Set) = copy(s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-54"></a>54</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function union(s::Set, sets::Set...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-55"></a>55</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    u = Set{join_eltype(s, sets...)}()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-56"></a>56</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    union!(u,s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-57"></a>57</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for t in sets
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-58"></a>58</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        union!(u,t)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-59"></a>59</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-60"></a>60</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return u
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-61"></a>61</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-62"></a>62</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const âª = union
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-63"></a>63</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">union!(s::Set, xs) = (for x=xs; push!(s,x); end; s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-64"></a>64</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">union!(s::Set, xs::AbstractArray) = (sizehint!(s,length(xs));for x=xs; push!(s,x); end; s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-65"></a>65</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">join_eltype() = Bottom
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-66"></a>66</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">join_eltype(v1, vs...) = typejoin(eltype(v1), join_eltype(vs...))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-67"></a>67</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-68"></a>68</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">intersect(s::Set) = copy(s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-69"></a>69</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function intersect(s::Set, sets::Set...)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-70"></a>70</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    i = similar(s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-71"></a>71</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for x in s
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-72"></a>72</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        inall = true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-73"></a>73</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        for t in sets
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-74"></a>74</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            if !in(x,t)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-75"></a>75</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                inall = false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-76"></a>76</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                break
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-77"></a>77</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-78"></a>78</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-79"></a>79</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        inall &amp;&amp; push!(i, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-80"></a>80</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-81"></a>81</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return i
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-82"></a>82</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-83"></a>83</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const â© = intersect
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-84"></a>84</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-85"></a>85</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function setdiff(a::Set, b::Set)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-86"></a>86</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    d = similar(a)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-87"></a>87</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for x in a
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-88"></a>88</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if !(x in b)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-89"></a>89</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            push!(d, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-90"></a>90</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-91"></a>91</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-92"></a>92</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    d
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-93"></a>93</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-94"></a>94</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">setdiff!(s::Set, xs) = (for x=xs; delete!(s,x); end; s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-95"></a>95</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-96"></a>96</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">==(l::Set, r::Set) = (length(l) == length(r)) &amp;&amp; (l &lt;= r)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-97"></a>97</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&lt;( l::Set, r::Set) = (length(l) &lt; length(r)) &amp;&amp; (l &lt;= r)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-98"></a>98</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&lt;=(l::Set, r::Set) = issubset(l, r)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-99"></a>99</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-100"></a>100</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function issubset(l, r)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-101"></a>101</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for elt in l
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-102"></a>102</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if !in(elt, r)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-103"></a>103</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            return false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-104"></a>104</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-105"></a>105</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-106"></a>106</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-107"></a>107</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-108"></a>108</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const â = issubset
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-109"></a>109</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">â(l::Set, r::Set) = &lt;(l, r)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-110"></a>110</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">â(l::Set, r::Set) = !â(l, r)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-111"></a>111</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">â(l, r) = issubset(r, l)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-112"></a>112</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">â(l::Set, r::Set) = !â(l, r)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-113"></a>113</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">â(l::Set, r::Set) = &lt;(r, l)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-114"></a>114</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-115"></a>115</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-116"></a>116</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    unique(itr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-117"></a>117</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-118"></a>118</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Returns an array containing one value from `itr` for each unique value,
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-119"></a>119</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">as determined by [`isequal`](@ref).
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-120"></a>120</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-121"></a>121</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```jldoctest
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-122"></a>122</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; unique([1; 2; 2; 6])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-123"></a>123</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">3-element Array{Int64,1}:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-124"></a>124</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"> 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-125"></a>125</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"> 2
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-126"></a>126</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"> 6
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-127"></a>127</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-128"></a>128</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-129"></a>129</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function unique(itr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-130"></a>130</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    T = _default_eltype(typeof(itr))
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-131"></a>131</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    out = Vector{T}()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-132"></a>132</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    seen = Set{T}()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-133"></a>133</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    i = start(itr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-134"></a>134</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if done(itr, i)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-135"></a>135</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        return out
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-136"></a>136</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-137"></a>137</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    x, i = next(itr, i)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-138"></a>138</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    if !isleaftype(T)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-139"></a>139</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        S = typeof(x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-140"></a>140</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        return _unique_from(itr, S[x], Set{S}((x,)), i)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-141"></a>141</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-142"></a>142</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    push!(seen, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-143"></a>143</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    push!(out, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-144"></a>144</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return unique_from(itr, out, seen, i)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-145"></a>145</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-146"></a>146</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-147"></a>147</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">_unique_from(itr, out, seen, i) = unique_from(itr, out, seen, i)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-148"></a>148</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">@inline function unique_from{T}(itr, out::Vector{T}, seen, i)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-149"></a>149</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    while !done(itr, i)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-150"></a>150</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        x, i = next(itr, i)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-151"></a>151</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        S = typeof(x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-152"></a>152</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if !(S === T || S &lt;: T)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-153"></a>153</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            R = typejoin(S, T)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-154"></a>154</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            seenR = convert(Set{R}, seen)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-155"></a>155</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            outR = convert(Vector{R}, out)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-156"></a>156</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            if !in(x, seenR)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-157"></a>157</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                push!(seenR, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-158"></a>158</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">                push!(outR, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-159"></a>159</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-160"></a>160</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            return _unique_from(itr, outR, seenR, i)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-161"></a>161</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-162"></a>162</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if !in(x, seen)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-163"></a>163</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            push!(seen, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-164"></a>164</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            push!(out, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-165"></a>165</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-166"></a>166</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-167"></a>167</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return out
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-168"></a>168</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-169"></a>169</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-170"></a>170</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-171"></a>171</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    unique(f, itr)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-172"></a>172</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-173"></a>173</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Returns an array containing one value from `itr` for each unique value produced by `f`
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-174"></a>174</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">applied to elements of `itr`.
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-175"></a>175</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-176"></a>176</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```jldoctest
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-177"></a>177</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; unique(isodd, [1; 2; 2; 6])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-178"></a>178</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">2-element Array{Int64,1}:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-179"></a>179</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"> 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-180"></a>180</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"> 2
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-181"></a>181</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-182"></a>182</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-183"></a>183</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function unique(f::Callable, C)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-184"></a>184</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    out = Vector{eltype(C)}()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-185"></a>185</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    seen = Set()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-186"></a>186</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for x in C
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-187"></a>187</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        y = f(x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-188"></a>188</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if !in(y, seen)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-189"></a>189</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            push!(seen, y)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-190"></a>190</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            push!(out, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-191"></a>191</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-192"></a>192</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-193"></a>193</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    out
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-194"></a>194</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-195"></a>195</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-196"></a>196</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-197"></a>197</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    allunique(itr) -&gt; Bool
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-198"></a>198</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-199"></a>199</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">Return `true` if all values from `itr` are distinct when compared with [`isequal`](@ref).
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-200"></a>200</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-201"></a>201</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```jldoctest
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-202"></a>202</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; a = [1; 2; 3]
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-203"></a>203</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">3-element Array{Int64,1}:
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-204"></a>204</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"> 1
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-205"></a>205</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"> 2
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-206"></a>206</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code"> 3
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-207"></a>207</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-208"></a>208</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">julia&gt; allunique([a, a])
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-209"></a>209</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-210"></a>210</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">```
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-211"></a>211</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">&quot;&quot;&quot;
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-212"></a>212</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function allunique(C)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-213"></a>213</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    seen = Set{eltype(C)}()
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-214"></a>214</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for x in C
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-215"></a>215</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if in(x, seen)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-216"></a>216</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            return false
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-217"></a>217</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        else
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-218"></a>218</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            push!(seen, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-219"></a>219</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-220"></a>220</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-221"></a>221</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-222"></a>222</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-223"></a>223</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-224"></a>224</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">allunique(::Set) = true
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-225"></a>225</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-226"></a>226</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">allunique(r::Range{T}) where {T} = (step(r) != zero(T)) || (length(r) &lt;= 1)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-227"></a>227</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-228"></a>228</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function filter(f, s::Set)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-229"></a>229</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    u = similar(s)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-230"></a>230</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for x in s
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-231"></a>231</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if f(x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-232"></a>232</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            push!(u, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-233"></a>233</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-234"></a>234</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-235"></a>235</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return u
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-236"></a>236</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-237"></a>237</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function filter!(f, s::Set)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-238"></a>238</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for x in s
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-239"></a>239</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        if !f(x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-240"></a>240</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">            delete!(s, x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-241"></a>241</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-242"></a>242</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-243"></a>243</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return s
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-244"></a>244</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-245"></a>245</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-246"></a>246</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">const hashs_seed = UInt === UInt64 ? 0x852ada37cfe8e0ce : 0xcfe8e0ce
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-247"></a>247</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">function hash(s::Set, h::UInt)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-248"></a>248</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    h = hash(hashs_seed, h)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-249"></a>249</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    for x in s
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-250"></a>250</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">        h â»= hash(x)
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-251"></a>251</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-252"></a>252</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">    return h
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-253"></a>253</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">end
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-254"></a>254</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-255"></a>255</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">convert(::Type{Set{T}}, s::Set{T}) where {T} = s
+</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><a name="Lset-jl-3d45dbab62fc928434ac-line.html-256"></a>256</td>
+          <td></td>
+          <td></td>
+          <td>
+            <span class="code">convert(::Type{Set{T}}, x::Set) where {T} = Set{T}(x)
+</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
