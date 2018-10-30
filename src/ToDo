@@ -1,2 +1,0 @@
-stop devrait retourner des quantités comme le résidu d'optimalité (dans notre cas sans contrainte,
-ça veut dire la norme utilisée pour le gradient).
