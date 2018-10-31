@@ -84,8 +84,6 @@ function stop!(stp      :: AbstractStopping)
  x = rst_at_x.x
  time = rst_at_x.start_time
 
- stp.meta.nb_of_stop += 1
-
  # Optimality check
  stp.meta.optimal = _null_test(stp,_optimality_check(stp))
 
