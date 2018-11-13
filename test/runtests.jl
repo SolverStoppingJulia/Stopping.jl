@@ -8,10 +8,12 @@ using NLPModels
 using State
 using Stopping
 using CUTEst
+using Printf
+using LinearAlgebra
 
 include("test-unitaire-stopping-meta.jl")
-print_with_color(:green, "StoppingMeta tests passed \n")
+printstyled("StoppingMeta tests passed \n", color = :green)
 include("test-unitaire-ls-stopping.jl")
-print_with_color(:green, "LineSearch stopping tests passed \n")
-include("test-unitaire-nlp-stopping.jl")
-print_with_color(:green, "Unconsmin test passed \n")
+printstyled("LineSearch stopping tests passed \n", color = :green)
+# include("test-unitaire-nlp-stopping.jl")
+# printstyled("Unconsmin test passed \n", color = :green)

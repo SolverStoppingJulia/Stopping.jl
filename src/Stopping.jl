@@ -6,8 +6,8 @@ using State
 
 abstract type AbstractStopping end
 
-const StoppingOrNothing = Union{AbstractStopping, Void}
-const Iterate           = Union{Float64,Vector, Void}
+const StoppingOrNothing = Union{AbstractStopping, Nothing}
+const Iterate           = Union{Float64,Vector, Nothing}
 
 include("StoppingMetamod.jl")
 include("GenericStoppingmod.jl")

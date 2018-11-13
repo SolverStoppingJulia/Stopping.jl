@@ -42,12 +42,11 @@ end
 """ Check if a step size is admissible according to the "Shamanskii" criteria.
 Inputs: Any, #LineModel and LSAtT. Outpus: admissibility in the "Shamanskii" sense (Bool).
 More documentation needed."""
-function shamanskii_stop(h 	:: Any, #LineModel,
+function shamanskii_stop(h 		:: Any, #LineModel,
 			   	   		 h_at_t :: LSAtT;
-			   	   		 τ₀ 	:: Float64 = 0.0001,
-			   	   		 τ₁ 	:: Float64 = 0.9999)
+			   	   		 τ₀ 	:: Float64 = 0.0001)
 
-	admissible = (h_at_t.ht) <= (h_at_t.h₀ - τ₀ * (h_at_t.x)^3 * norm(h.d)^3) # s'assurer qu'il y ait un using LinearAlgebra en quelque part
+	admissible = (h_at_t.ht) <= (h_at_t.h₀ - τ₀ * (h_at_t.x)^3 * BLAS.nrm2(h.d)^3) # s'assurer qu'il y ait un using LinearAlgebra en quelque part
 	positive = h_at_t.x > 0.0   # on veut que le pas de déplacement soit positif
 	return admissible && positive
 end
