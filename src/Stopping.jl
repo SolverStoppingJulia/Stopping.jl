@@ -3,6 +3,7 @@ export AbstractStopping
 
 using NLPModels
 using State
+using LinearAlgebra
 
 abstract type AbstractStopping end
 
