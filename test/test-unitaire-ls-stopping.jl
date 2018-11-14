@@ -1,4 +1,5 @@
 using LineSearch
+using LinearAlgebra
 
 # On crée notre problème
 nlp = CUTEstModel("ARWHEAD")
