@@ -44,7 +44,7 @@ Inputs: Any, #LineModel and LSAtT. Outpus: admissibility in the "Shamanskii" sen
 More documentation needed."""
 function shamanskii_stop(h 		:: Any, #LineModel,
 			   	   		 h_at_t :: LSAtT;
-			   	   		 τ₀ 	:: Float64 = 0.0001)
+			   	   		 τ₀ 	:: Float64 = 1.0e-09)
 
 	admissible = (h_at_t.ht) <= (h_at_t.h₀ - τ₀ * (h_at_t.x)^3 * BLAS.nrm2(h.d)^3) # s'assurer qu'il y ait un using LinearAlgebra en quelque part
 	positive = h_at_t.x > 0.0   # on veut que le pas de déplacement soit positif
