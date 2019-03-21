@@ -2,12 +2,7 @@
 
 export AbstractStoppingMeta, StoppingMeta, add_stop!
 ################################################################################
-# Paramètre d'arrêt commun à tout les algos d'optim (1D, line search, sans
-# contraintes, etc.)
-# On a dit à la dernière rencontre qu'on voulait splitter le Meta en plusieurs
-# petits meta. Comment on le split? En attendant j'ai juste ajouter le x
-# dans les trucs du stoppingMeta
-# Sam
+# Common stopping parameters to all optimization algorithms
 ################################################################################
 
 """Common stopping criterion for "all" optimization algorithms such as:
@@ -21,14 +16,14 @@ mutable struct StoppingMeta <: AbstractStoppingMeta # mutable ? ou immutable?
                                                     # veut-on changer la tolérance
                                                     # en cours de route?
 	# problem tolerances
-    atol :: Float64                # absolute tolerance
-    rtol :: Float64                # relative tolerance
+    atol :: FloatBigFloat                # absolute tolerance
+    rtol :: FloatBigFloat                # relative tolerance
 
-    unbounded_threshold :: Float64 # below this value, the problem is declared unbounded
-    unbounded_x         :: Float64 # beyond this value, x is unbounded
+    unbounded_threshold :: FloatBigFloat # below this value, the problem is declared unbounded
+    unbounded_x         :: FloatBigFloat # beyond this value, x is unbounded
 
-    rtol_x              :: Float64 # algorithm is stalled move is beyond this value
-    rtol_f              :: Float64 # algorithm is stalled move is beyond this value
+    rtol_x              :: FloatBigFloat # algorithm is stalled move is beyond this value
+    rtol_f              :: FloatBigFloat # algorithm is stalled move is beyond this value
 
     # fine grain control on ressources
     max_f           :: Int     # max function evaluations allowed
@@ -36,7 +31,7 @@ mutable struct StoppingMeta <: AbstractStoppingMeta # mutable ? ou immutable?
     # global control on ressources
     max_eval            :: Int     # max evaluations (f+g+H+Hv) allowed
     max_iter            :: Int     # max iterations allowed
-    max_time            :: Float64 # max elapsed time allowed
+    max_time            :: FloatBigFloat # max elapsed time allowed
 
     #intern Counters
     nb_of_stop :: Int
@@ -52,14 +47,14 @@ mutable struct StoppingMeta <: AbstractStoppingMeta # mutable ? ou immutable?
     # Information on the problem at the current iterate
     #nlp_at_x :: InterfaceResult
 
-	function StoppingMeta(;atol                :: Float64  = 1.0e-6,
-						   rtol                :: Float64  = 1.0e-15,
-						   unbounded_threshold :: Float64  = -1.0e50,
-						   unbounded_x         :: Float64  = 1.0e50,
+	function StoppingMeta(;atol                :: FloatBigFloat  = 1.0e-6,
+						   rtol                :: FloatBigFloat  = 1.0e-15,
+						   unbounded_threshold :: FloatBigFloat  = -1.0e50,
+						   unbounded_x         :: FloatBigFloat  = 1.0e50,
 						   max_f               :: Int      = typemax(Int),
 						   max_eval            :: Int      = 20000,
 						   max_iter            :: Int      = 5000,
-						   max_time            :: Float64  = 300.0,
+						   max_time            :: FloatBigFloat  = 300.0,
 					       kwargs...)
 		stalled_linesearch = false
 		unbounded = false
@@ -68,7 +63,7 @@ mutable struct StoppingMeta <: AbstractStoppingMeta # mutable ? ou immutable?
 		optimal   = false
 
 		rtol_x    = rtol
-		rtol_f    = -eps(Float64) #desactivate by default
+		rtol_f    = -eps(typeof(rtol_x)) #desactivate by default
 
         nb_of_stop = 0
 

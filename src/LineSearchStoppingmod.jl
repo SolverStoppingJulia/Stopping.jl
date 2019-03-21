@@ -1,36 +1,24 @@
 export LS_Stopping
 
 ################################################################################
-#  LS_Stopping est un sous-type de AbstractStopping
-#  Est-ce qu'on doit ajouter lower_bound dans le LS_Stopping?
-#  Car on l'utilise dans optimality_check qui est une fonction de LS_Stopping
-#  donc une fonction de LS_Stopping doit appeler un param de LS_Stopping....
+# Line search stopping module
 ################################################################################
-
-################################################################################
-# Si on veut ajouter le ls_at_t ou peut importe son nom a LS_Stopping
-# Sam
-################################################################################
-# import LSAtTmod.LSAtT
-# import StoppingMetamod.StoppingMeta
-# import LineModel2mod.LineModel
 
 mutable struct LS_Stopping <: AbstractStopping
-	# probleme
-	pb :: Any       # si on met LineModel il faut l'importer...
-					# ou peut-être AffineModel éventuellement
-	                # pas juste un AbstractNLPModel, car pb.d nécessaire.
+	# problem
+	pb :: Any       # hard to define a proper type to avoid circular dependencies
+					# I don't know the right solution to this situation...
 
-	# critère d'arrêt propre au Line search
-	optimality_check :: Function # critère qu'on va mettre dans optimality_check
+	# stopping criterion proper to linesearch
+	optimality_check :: Function
 
-	# information que le line search a en commun avec les autres stopping
+	# shared information with linesearch and other stopping
 	meta :: StoppingMeta
 
-	# information courante sur le Line search
+	# current information on linesearch
 	current_state :: LSAtT
 
-	function LS_Stopping(pb         	:: Any,             # LineModel pose problème car on doit l'importer
+	function LS_Stopping(pb         	:: Any,
 						 admissible 	:: Function,
 						 current_state 	:: LSAtT;
 						 meta       	:: StoppingMeta = StoppingMeta())
@@ -55,10 +43,6 @@ function _unbounded_check!(stp  :: LS_Stopping,
  return stp
 end
 
-#### Pourquoi on avait fait ça?
-#### Un linesearch peut piétinner et c'est mal... peut-être que la fonction
-#### de base est pas adapté mais celle la fait rien :/
-# import GenericStoppingmod._stalled_check!
 # """_stalled_check. Checks if the optimization algorithm is stalling."""
 # function _stalled_check!(stp    :: LS_Stopping,
 #                          x      :: Iterate;
@@ -72,14 +56,12 @@ end
 
 function _optimality_check(stp  :: LS_Stopping)
 
- # print_with_color(:red, "on passe par ici dans le _optimality_check de LineSearch \n")
-
  optimality = stp.optimality_check(stp.pb, stp.current_state)
 
- return 1. - optimality # A MODIFIER QUAND ON AURA TRANSFORMER LES ADMISSIBLES EN TEST A 0
+ return 1. - optimality # TO CHANGE. Should change admissible functions
 end
 
 ################################################################################
-# Différentes fonctions de conditions d'admissibilité
+# line search admissibility functions
 ################################################################################
 include("admissible_functions.jl")

@@ -1,15 +1,7 @@
 export NLPStopping, unconstrained, fill_in!
 
 ################################################################################
-#  LS_Stopping est un sous-type de AbstractStopping
-#  Est-ce qu'on doit ajouter lower_bound dans le LS_Stopping?
-#  Car on l'utilise dans optimality_check qui est une fonction de LS_Stopping
-#  donc une fonction de LS_Stopping doit appeler un param de LS_Stopping....
-################################################################################
-
-################################################################################
-# Si on veut ajouter le ls_at_t ou peut importe son nom a LS_Stopping
-# Sam
+# Specific stopping module for non linear problems
 ################################################################################
 
 """Stopping structure for non-linear (unconstrained?) programming problems.
@@ -18,16 +10,16 @@ Inputs:
  - a stopping criterion through an admissibility function
  - the current state of the problem (i.e an NLPAtX)"""
 mutable struct NLPStopping <: AbstractStopping
-	# probleme
+	# problem
 	pb :: AbstractNLPModel
 
-	# critère d'arrêt propre au Line search
-	optimality_check :: Function # critère qu'on va mettre dans optimality_check
+	# stopping criterion
+	optimality_check :: Function # will be put in optimality_check
 
-	# information que le line search a en commun avec les autres stopping
+	# common line search parameters
 	meta :: StoppingMeta
 
-	# information courante sur le Line search
+	# current state of the line search Algorithm
 	current_state :: NLPAtX
 
 	function NLPStopping(pb         	:: AbstractNLPModel,
@@ -77,6 +69,6 @@ function _optimality_check(stp  :: NLPStopping)
 end
 
 ################################################################################
-# Différentes fonctions de conditions d'admissibilité
+# non linear problems admissibility functions
 ################################################################################
 include("nlp_admissible_functions.jl")

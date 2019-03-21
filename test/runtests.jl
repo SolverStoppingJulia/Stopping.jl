@@ -4,10 +4,11 @@ else
     using Test
 end
 
+# Should we use NLPModels?
+
 using NLPModels
 using State
 using Stopping
-using CUTEst
 using Printf
 using LinearAlgebra
 

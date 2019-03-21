@@ -1,8 +1,6 @@
 export GenericStopping,  start!, stop!, update_and_start!, update_and_stop!
 export _stalled_check!, fill_in!
 
-# abstract type AbstractStopping end
-
 """
  Type : GenericStopping
  Methods : start!, stop!
@@ -100,8 +98,8 @@ end
 """_stalled_check. Checks if the optimization algorithm is stalling."""
 function _stalled_check!(stp    :: AbstractStopping,
                          x      :: Iterate;
-                         dx     :: Iterate = Float64[],
-                         df     :: Iterate = Float64[])
+                         dx     :: Iterate = FloatBigFloat[],
+                         df     :: Iterate = FloatBigFloat[])
 
  # Stalled iterates
  stalled_x = norm(stp.current_state.dx,Inf) <= norm(x, Inf)*stp.meta.rtol_x
@@ -119,7 +117,7 @@ been running too long)
 """
 function _tired_check!(stp    :: AbstractStopping,
                        x      :: Iterate;
-                       time_t :: Float64 = NaN)
+                       time_t :: FloatBigFloat = NaN)
 
  # Time check
  if !isnan(time_t)
@@ -169,7 +167,7 @@ end
 """
 check if the optimality value is null (up to some precisions found in the meta).
 """
-function _null_test(stp  :: AbstractStopping, optimality :: Float64)
+function _null_test(stp  :: AbstractStopping, optimality :: FloatBigFloat)
 
  atol, rtol = stp.meta.atol, stp.meta.rtol
  # print_with_color(:blue, "optimality = $optimality atol = $atol rtol = $rtol \n")

@@ -3,15 +3,14 @@ export armijo, wolfe, goldstein, shamanskii_stop
 """ Check if a step size is admissible according to the Armijo criteria.
 Inputs: Any, #LineModel and LSAtT. Outpus: admissibility in the armijo sense (Bool)
 Armijo criterion: f(x + θd) - f(x) < τ₀∇f(x+θd)d"""
-function armijo(h      :: Any, #LineModel,  # on s'en sert nulle part...
+function armijo(h      :: Any, #LineModel,  # never used?
 				h_at_t :: LSAtT;
 				τ₀ 	   :: Float64 = 0.01)
-	# print_with_color(:bold, "on est dans armijo!!! \n")
 	fact = -0.8
   	Eps = 1e-10
     hgoal = h_at_t.h₀ + h_at_t.g₀ * h_at_t.x * τ₀
     Armijo_HZ = (h_at_t.ht <= hgoal) || ((h_at_t.ht <= h_at_t.h₀ + Eps * abs(h_at_t.h₀)) & (h_at_t.gt <= fact * h_at_t.g₀))
-	positive = h_at_t.x > 0.0   # on veut que le pas de déplacement soit positif
+	positive = h_at_t.x > 0.0   # positive step
     return Armijo_HZ && positive
 end
 
@@ -23,7 +22,7 @@ function wolfe(h 	:: Any, #LineModel,
 			   τ₁ 	:: Float64 = 0.99)
 
 	wolfe = (abs(h_at_t.gt) <= -τ₁*h_at_t.g₀)
-	positive = h_at_t.x > 0.0   # on veut que le pas de déplacement soit positif
+	positive = h_at_t.x > 0.0   # positive step
     return wolfe  && positive
 end
 
@@ -35,7 +34,7 @@ function goldstein(h 	:: Any, #LineModel,
 			   	   τ₁ 	:: Float64 = 0.9999)
 
 	goldstein = (h_at_t.h₀ + h_at_t.x * (1 - τ₀) * h_at_t.g₀) <= (h_at_t.ht) && (h_at_t.ht) <= (h_at_t.h₀ + h_at_t.x *  τ₀ * h_at_t.g₀)
-	positive = h_at_t.x > 0.0   # on veut que le pas de déplacement soit positif
+	positive = h_at_t.x > 0.0   # positive step
 	return goldstein && positive
 end
 
@@ -44,9 +43,8 @@ Inputs: Any, #LineModel and LSAtT. Outpus: admissibility in the "Shamanskii" sen
 More documentation needed."""
 function shamanskii_stop(h 		:: Any, #LineModel,
 			   	   		 h_at_t :: LSAtT;
-			   	   		 τ₀ 	:: Float64 = 1.0e-03)
-	printstyled("dans shamanskii_stop: h_at_t.ht = $(h_at_t.ht) et h_at_t.h₀ = $(h_at_t.h₀)  BLAS.nrm2(h.d) = $( BLAS.nrm2(h.d)) \n", color = :cyan)
+			   	   		 τ₀ 	:: Float64 = 1.0e-09)
 	admissible = (h_at_t.ht) <= (h_at_t.h₀ - τ₀ * (h_at_t.x)^3 * BLAS.nrm2(h.d)^3)
-	positive = h_at_t.x > 0.0   # on veut que le pas de déplacement soit positif
+	positive = h_at_t.x > 0.0   # positive step
 	return admissible && positive
 end

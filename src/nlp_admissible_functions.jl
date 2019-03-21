@@ -1,4 +1,6 @@
 import NLPModels: grad
+
+export unconstrained
 """
 unconstrained: return the infinite norm of the gradient of the objective function
 """
@@ -6,10 +8,8 @@ function unconstrained(pb    :: AbstractNLPModel,
 	                   state :: NLPAtX;
 					   pnorm :: Float64 = Inf)
 
-	# print_with_color(:blue, "on rentre dans unconstrained \n")
-
-    if state.gx == nothing #vide il faut remplir
-		update!(state, gx = grad(pb, state.x)) #utiliser la fonction fill_in ?
+    if state.gx == nothing # should be filled if empty
+		update!(state, gx = grad(pb, state.x))
 	end
 
 	res = norm(state.gx, pnorm)
