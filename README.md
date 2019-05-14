@@ -7,7 +7,7 @@ Tools to ease the uniformization of stopping criteria in iterative solvers.
 When a solver is called on an optimization model, four outcome may happen:
 
 1. the approximate solution is obtained, the problem is considered solved
-2. the problem is declared unbounded
+2. the problem is unsolvable (unboundedness, infeasibility, ...)
 3. the maximum available ressources is not sufficient to compute the solution
 4. some algorithm dependent failure happens
 
@@ -20,9 +20,9 @@ This tool eases the first 3 items above. It defines a type
 
 The StoppingMeta provides default tolerances, maximum ressources, ...  
 
-We provide some specialization of the GenericStopping for instance :
+We provide some specialization of the GenericStopping for instance:
   * for non-linear programming (NLPStopping);
-  * or for 1d optimization (LineSearchStopping). 
+  * for 1d optimization (LineSearchStopping). 
 In these examples, the function `optimality_residual` computes the residual of the optimality conditions is an additional attribute of the type.
 
 ## Functions
