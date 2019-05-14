@@ -46,13 +46,12 @@ Note that the package [State.jl](https://github.com/Goysa2/State.jl) is required
 ```
 ## Example
 
-As an example, a naïve version of the Newton method is provided. First we get the packages we need:
+As an example, a naïve version of the Newton method is provided. First we import the packages:
 ```
 using NLPModels, State, Stopping
 ```
 
-
-We create a simple function to test (in this instance a quadratic function)
+We create an uncontrained quadratic optimization problem using [NLPModels](https://github.com/JuliaSmoothOptimizers/NLPModels.jl):
 ```
 A = rand(5, 5); Q = A' * A;
 
@@ -60,7 +59,7 @@ f(x) = 0.5 * x' * Q * x
 nlp = ADNLPModel(f,  ones(5))
 ```
 
-We put it in an NLPModel to use our NLPStopping structure. Now we create our State and Stopping object.
+We use our NLPStopping structure by creating our State and Stopping:
 
 ```
 nlp_at_x = NLPAtX(ones(5))
@@ -93,9 +92,9 @@ stop_nlp = newton(stop_nlp)
 
 We can look at the meta to know what happened
 ```
-@show stop_nlp.meta.tired
-@show stop_nlp.meta.unbounded
-@show stop_nlp.meta.optimal
+@show stop_nlp.meta.tired #ans: false
+@show stop_nlp.meta.unbounded #ans: false
+@show stop_nlp.meta.optimal #ans: true
 ```
 
 We reached optimality!
