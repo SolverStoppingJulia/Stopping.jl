@@ -98,8 +98,8 @@ end
 """_stalled_check. Checks if the optimization algorithm is stalling."""
 function _stalled_check!(stp    :: AbstractStopping,
                          x      :: Iterate;
-                         dx     :: Iterate = FloatBigFloat[],
-                         df     :: Iterate = FloatBigFloat[])
+                         dx     :: Iterate = Number[],
+                         df     :: Iterate = Number[])
 
  # Stalled iterates
  stalled_x = norm(stp.current_state.dx,Inf) <= norm(x, Inf)*stp.meta.rtol_x
@@ -117,7 +117,7 @@ been running too long)
 """
 function _tired_check!(stp    :: AbstractStopping,
                        x      :: Iterate;
-                       time_t :: FloatBigFloat = NaN)
+                       time_t :: Number = NaN)
 
  # Time check
  if !isnan(time_t)
@@ -167,7 +167,7 @@ end
 """
 check if the optimality value is null (up to some precisions found in the meta).
 """
-function _null_test(stp  :: AbstractStopping, optimality :: FloatBigFloat)
+function _null_test(stp  :: AbstractStopping, optimality :: Number)
 
  atol, rtol = stp.meta.atol, stp.meta.rtol
  # print_with_color(:blue, "optimality = $optimality atol = $atol rtol = $rtol \n")

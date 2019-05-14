@@ -16,14 +16,14 @@ mutable struct StoppingMeta <: AbstractStoppingMeta # mutable ? ou immutable?
                                                     # veut-on changer la tolérance
                                                     # en cours de route?
 	# problem tolerances
-    atol :: FloatBigFloat                # absolute tolerance
-    rtol :: FloatBigFloat                # relative tolerance
+    atol :: Number                # absolute tolerance
+    rtol :: Number                # relative tolerance
 
-    unbounded_threshold :: FloatBigFloat # below this value, the problem is declared unbounded
-    unbounded_x         :: FloatBigFloat # beyond this value, x is unbounded
+    unbounded_threshold :: Number # below this value, the problem is declared unbounded
+    unbounded_x         :: Number # beyond this value, x is unbounded
 
-    rtol_x              :: FloatBigFloat # algorithm is stalled move is beyond this value
-    rtol_f              :: FloatBigFloat # algorithm is stalled move is beyond this value
+    rtol_x              :: Number # algorithm is stalled move is beyond this value
+    rtol_f              :: Number # algorithm is stalled move is beyond this value
 
     # fine grain control on ressources
     max_f           :: Int     # max function evaluations allowed
@@ -31,7 +31,7 @@ mutable struct StoppingMeta <: AbstractStoppingMeta # mutable ? ou immutable?
     # global control on ressources
     max_eval            :: Int     # max evaluations (f+g+H+Hv) allowed
     max_iter            :: Int     # max iterations allowed
-    max_time            :: FloatBigFloat # max elapsed time allowed
+    max_time            :: Number # max elapsed time allowed
 
     #intern Counters
     nb_of_stop :: Int
@@ -47,14 +47,14 @@ mutable struct StoppingMeta <: AbstractStoppingMeta # mutable ? ou immutable?
     # Information on the problem at the current iterate
     #nlp_at_x :: InterfaceResult
 
-	function StoppingMeta(;atol                :: FloatBigFloat  = 1.0e-6,
-						   rtol                :: FloatBigFloat  = 1.0e-15,
-						   unbounded_threshold :: FloatBigFloat  = -1.0e50,
-						   unbounded_x         :: FloatBigFloat  = 1.0e50,
+	function StoppingMeta(;atol                :: Number  = 1.0e-6,
+						   rtol                :: Number  = 1.0e-15,
+						   unbounded_threshold :: Number  = -1.0e50,
+						   unbounded_x         :: Number  = 1.0e50,
 						   max_f               :: Int      = typemax(Int),
 						   max_eval            :: Int      = 20000,
 						   max_iter            :: Int      = 5000,
-						   max_time            :: FloatBigFloat  = 300.0,
+						   max_time            :: Number  = 300.0,
 					       kwargs...)
 		stalled_linesearch = false
 		unbounded = false
