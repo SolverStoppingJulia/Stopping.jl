@@ -1,4 +1,4 @@
-### Stopping
+# Stopping
 
 ## Purpose
 
@@ -30,7 +30,9 @@ In these examples, the function `optimality_residual` computes the residual of t
 The tool provides two functions:
 * `start!(nlp,s,x0)` initializes the time counter and the tolerance at the starting point. This function is called once at the beginning of an algorithm.
 * `stop(nlp,s, iter, x, gradf)` verifies if the tolerance is reached for `x` or if the maximum ressources is reached. This function returns booleans optimal, unbounded, tired; moreover, it returns the elapsed time, and fine grain information. Usually, only the four first outputs are used. This function is called at every iteration and, complemented with algorithm specific conditions, is the stopping criterion.
-* start!, stop!, update_and_start!, update_and_stop!
+* start!, stop!, 
+Other functions with multiple calls
+* update_and_start!, update_and_stop!
 
 ## How to install
 
