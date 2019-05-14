@@ -107,6 +107,4 @@ We reached optimality!
 
 ## Long-Term Goals
 
-Future work will address constrained problems. Then, fine grained information will consists in the number of constraint, their gradient etc. evaluation. The optimality conditions will be based on KKT equations. Separate tolerances for optimality and feasibility will be developed.
-
 Future work will adress more sophisticated problems such as mixed integer optimization problems, optimization with uncertainty. The list of suggester optimality functions will be enriched with state of the art conditions.
