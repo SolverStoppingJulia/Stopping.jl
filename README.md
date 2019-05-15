@@ -7,7 +7,7 @@ Tools to ease the uniformization of stopping criteria in iterative solvers.
 When a solver is called on an optimization model, four outcome may happen:
 
 1. the approximate solution is obtained, the problem is considered solved
-2. the problem is declared unbounded
+2. the problem is declared unsolvable (unboundedness, infeasibility ...)
 3. the maximum available ressources is not sufficient to compute the solution
 4. some algorithm dependent failure happens
 
