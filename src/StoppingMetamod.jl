@@ -45,7 +45,7 @@ mutable struct StoppingMeta <: AbstractStoppingMeta # mutable ? ou immutable?
     feasible            :: Bool
 
     # Information on the problem at the current iterate
-    #nlp_at_x :: InterfaceResult
+    #nlp_at_x :: AbstractState
 
 	function StoppingMeta(;atol                :: Number  = 1.0e-6,
 						   rtol                :: Number  = 1.0e-15,

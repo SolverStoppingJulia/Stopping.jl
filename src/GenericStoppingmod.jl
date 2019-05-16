@@ -20,10 +20,10 @@ mutable struct GenericStopping <: AbstractStopping
 	meta :: StoppingMeta
 
 	# information courante sur le Line search
-	current_state :: AbstractResult
+	current_state :: AbstractState
 
 	function GenericStopping(pb               :: Any,
-							 current_state    :: AbstractResult;
+							 current_state    :: AbstractState;
                              meta             :: StoppingMeta = StoppingMeta())
 
         return new(pb, meta, current_state)
@@ -39,7 +39,7 @@ function update_and_start!(stp :: AbstractStopping; kwargs...)
 end
 
 """
-fill_in! : A function that fill in the unspecified values of the AbstractResult.
+fill_in! : A function that fill in the unspecified values of the AbstractState.
 """
 function fill_in!(stp :: AbstractStopping, x :: Iterate)
  return throw(error("NotImplemented function"))
