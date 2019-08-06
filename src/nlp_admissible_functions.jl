@@ -66,7 +66,7 @@ function KKT(pb    :: AbstractNLPModel,
 	  n = length(state.x)
 	  Jc = hcat(eye(n),state.Jx)
 	  l = pinv(Jc) * (- state.gx)
-	  state.mu, state.lambda = l[1:n], l[n:length(l)]
+	  state.mu, state.lambda = l[1:n], l[n+1:length(l)]
 	  gLagx = Jc*l
     end
 
