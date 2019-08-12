@@ -144,7 +144,7 @@ end
 """_unbounded_check! If x gets too big it is likely that the problem is unbounded"""
 function _unbounded_check!(stp  :: AbstractStopping,
                            x    :: Iterate)
-print_with_color(:yellow, "unbounded  ✓ \n")
+printstyled("unbounded  ✓ \n", color=:yellow
  # check if x is too large
  x_too_large = norm(x,Inf) >= stp.meta.unbounded_x
 
