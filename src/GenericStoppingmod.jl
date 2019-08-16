@@ -169,9 +169,9 @@ check if the optimality value is null (up to some precisions found in the meta).
 """
 function _null_test(stp  :: AbstractStopping, optimality :: Number)
 
- atol, rtol = stp.meta.atol, stp.meta.rtol
- # print_with_color(:blue, "optimality = $optimality atol = $atol rtol = $rtol \n")
- optimal = optimality < atol || optimality < (rtol * optimality)
+	atol, rtol = stp.meta.atol, stp.meta.rtol
+	ϵ = atol + rtol * norm(stp.current_state.g0)
+	optimal = optimality < ϵ
 
- return optimal
+	return optimal
 end
