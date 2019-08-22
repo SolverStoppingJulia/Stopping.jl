@@ -1,5 +1,5 @@
 export GenericStopping,  start!, stop!, update_and_start!, update_and_stop!
-export _stalled_check!, fill_in!
+export _stalled_check!, fill_in!, status
 
 """
  Type : GenericStopping
@@ -11,31 +11,46 @@ export _stalled_check!, fill_in!
  - unbounded problem
  - stalled problem
  - tired problem (measured by the number of evaluations of functions and time)
+
+ Input :
+ 	- pb         : An problem
+	- state      : The information relative to the problem
+	- (opt) meta : Metadata relative to stopping criterion. Can be provided by
+				   the user or created with the Stopping constructor with kwargs
+				   If a specific StoppingMeta is given as well as kwargs are
+				   provided, the kwargs have priority.
 """
 mutable struct GenericStopping <: AbstractStopping
-	# problem
+	# Problem
 	pb :: Any
 
 	# Problem stopping criterion
 	meta :: StoppingMeta
 
-	# information courante sur le Line search
+	# Current information on the problem
 	current_state :: AbstractState
 
 	function GenericStopping(pb               :: Any,
 							 current_state    :: AbstractState;
-                             meta             :: StoppingMeta = StoppingMeta())
+                             meta             :: StoppingMeta = StoppingMeta(),
+							 kwargs...)
+
+		if !(isempty(kwargs))
+			meta = StoppingMeta(;kwargs...)
+		end
 
         return new(pb, meta, current_state)
 	end
 end
 
 """
-update_and_start!: TO DO
+update_and_start!: Update the values in the State and initializes the Stopping
+Returns the optimity status of the problem.
 """
 function update_and_start!(stp :: AbstractStopping; kwargs...)
 	update!(stp.current_state; kwargs...)
 	OK = start!(stp)
+	return OK
 end
 
 """
@@ -65,7 +80,8 @@ function start!(stp      :: AbstractStopping)
 end
 
 """
-update_and_stop!: TO DO
+update_and_stop!: Update the values in the State and returns the optimity status
+of the problem.
 """
 function update_and_stop!(stp :: AbstractStopping; kwargs...)
  update!(stp.current_state; kwargs...)
@@ -107,7 +123,7 @@ function _stalled_check!(stp    :: AbstractStopping,
 
  max_iter = stp.meta.nb_of_stop >= stp.meta.max_iter
 
- stp.meta.stalled = stalled_x || stalled_f || max_iter || stp.meta.stalled_linesearch
+ stp.meta.stalled = stalled_x || stalled_f || max_iter || stp.meta.optimal_sub_pb
 
  return stp
 end
@@ -137,31 +153,26 @@ function _tired_check!(stp    :: AbstractStopping,
  # global user limit diagnostic
  stp.meta.tired = max_time || max_evals
 
- # print_with_color(:yellow, "tired = $(stp.meta.tired) \n")
  return stp
 end
 
 """_unbounded_check! If x gets too big it is likely that the problem is unbounded"""
 function _unbounded_check!(stp  :: AbstractStopping,
                            x    :: Iterate)
-printstyled("unbounded  ✓ \n", color=:yellow)
- # check if x is too large
- x_too_large = norm(x,Inf) >= stp.meta.unbounded_x
+    # check if x is too large
+    x_too_large = norm(x,Inf) >= stp.meta.unbounded_x
 
- stp.meta.unbounded = x_too_large
- # print_with_color(:yellow, "unbounded = $(stp.meta.unbounded) \n")
+    stp.meta.unbounded = x_too_large
 
- return stp
+ 	return stp
 end
 
 """_optimality_check. If we reached a good approximation of an optimum to our
 problem. In it's basic form only checks the norm of the gradient."""
 function _optimality_check(stp  :: AbstractStopping)
+	optimality = Inf
 
- # print_with_color(:red, "on passe dans le _optimality_check de GenericStoppingmod \n")
- optimality = Inf
- # print_with_color(:yellow, "optimal = $optimality \n")
- return optimality
+ 	return optimality
 end
 
 """
@@ -169,9 +180,25 @@ check if the optimality value is null (up to some precisions found in the meta).
 """
 function _null_test(stp  :: AbstractStopping, optimality :: Number)
 
-	atol, rtol = stp.meta.atol, stp.meta.rtol
-	ϵ = atol + rtol * norm(stp.current_state.g0)
-	optimal = optimality < ϵ
+	atol, rtol, opt0 = stp.meta.atol, stp.meta.rtol, stp.meta.optimality0
+	optimal = optimality < atol || optimality < (rtol * opt0)
 
 	return optimal
+end
+
+"""
+to do
+"""
+function status(stp :: AbstractStopping)
+	if stp.meta.optimal
+		return :Optimal
+	elseif stp.meta.unbounded
+		return :Unbounded
+	elseif stp.meta.stalled
+		return :Stalled
+	elseif stp.meta.tired
+		return :Tired
+	elseif !stp.meta.feasible
+		return :Unfeasible
+	end
 end

@@ -20,12 +20,17 @@ mutable struct NLPStopping <: AbstractStopping
 	meta :: StoppingMeta
 
 	# current state of the line search Algorithm
-	current_state :: NLPAtX
+	current_state :: AbstractState
 
 	function NLPStopping(pb         	:: AbstractNLPModel,
 						 admissible 	:: Function,
-						 current_state 	:: NLPAtX;
-						 meta       	:: StoppingMeta = StoppingMeta())
+						 current_state 	:: AbstractState;
+						 meta       	:: StoppingMeta = StoppingMeta(),
+						 kwargs...)
+
+		if !(isempty(kwargs))
+			meta = StoppingMeta(;kwargs...)
+		end
 
 		return new(pb, admissible, meta, current_state)
 	end

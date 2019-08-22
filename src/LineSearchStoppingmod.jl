@@ -21,7 +21,12 @@ mutable struct LS_Stopping <: AbstractStopping
 	function LS_Stopping(pb         	:: Any,
 						 admissible 	:: Function,
 						 current_state 	:: LSAtT;
-						 meta       	:: StoppingMeta = StoppingMeta())
+						 meta       	:: StoppingMeta = StoppingMeta(),
+						 kwargs...)
+
+		if !(isempty(kwargs))
+			meta = StoppingMeta(;kwargs...)
+		end
 
 		return new(pb, admissible, meta, current_state)
 	end
