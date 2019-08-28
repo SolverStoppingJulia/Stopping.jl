@@ -115,11 +115,15 @@ end
 function _stalled_check!(stp    :: AbstractStopping,
                          x      :: Iterate;
                          dx     :: Iterate = Number[],
-                         df     :: Iterate = Number[])
+                         df     :: Iterate = Number[],
+						 tr     :: Bool = true)
 
  # Stalled iterates
  stalled_x = norm(stp.current_state.dx,Inf) <= norm(x, Inf)*stp.meta.rtol_x
  stalled_f = norm(stp.current_state.df,Inf) <= norm(x, Inf)*stp.meta.rtol_f
+ if tr
+	 stalled_x = false; stalled_f = false;
+ end
 
  max_iter = stp.meta.nb_of_stop >= stp.meta.max_iter
 
