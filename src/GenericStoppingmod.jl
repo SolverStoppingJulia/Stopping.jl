@@ -113,17 +113,7 @@ end
 
 """_stalled_check. Checks if the optimization algorithm is stalling."""
 function _stalled_check!(stp    :: AbstractStopping,
-                         x      :: Iterate;
-                         dx     :: Iterate = Number[],
-                         df     :: Iterate = Number[],
-						 tr     :: Bool = true)
-
- # Stalled iterates
- stalled_x = norm(stp.current_state.dx,Inf) <= norm(x, Inf)*stp.meta.rtol_x
- stalled_f = norm(stp.current_state.df,Inf) <= norm(x, Inf)*stp.meta.rtol_f
- if tr
-	 stalled_x = false; stalled_f = false;
- end
+                         x      :: Iterate)
 
  max_iter = stp.meta.nb_of_stop >= stp.meta.max_iter
 
@@ -151,11 +141,13 @@ function _tired_check!(stp    :: AbstractStopping,
   # temporaire, fonctionne seulement pour les NLPModels
   if typeof(stp.pb) <: AbstractNLPModel
 	  max_evals = (neval_obj(stp.pb) + neval_grad(stp.pb) + neval_hprod(stp.pb) + neval_hess(stp.pb)) > stp.meta.max_eval
+	  max_f = neval_obj(stp.pb) > stp.meta.max_f
   else
 	  max_evals = false
+	  max_f = false
   end
  # global user limit diagnostic
- stp.meta.tired = max_time || max_evals
+ stp.meta.tired = max_time || max_evals || max_f
 
  return stp
 end
