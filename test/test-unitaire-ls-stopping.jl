@@ -19,16 +19,6 @@ OK2 = update_and_stop!(stop, ht = 10.0)
 @test stop.current_state.ht == 10.0
 @test stop!(stop) == false
 
-# Check if stalled checked works
-update!(stop.current_state, dx = 0.0,  x = 1.0)
-@test stop!(stop)
-update!(stop.current_state, dx = 1.0, x = 0.0)
-@test !(stop!(stop))
-update!(stop.current_state, df = 0.0)
-@test stop!(stop)
-update!(stop.current_state, df = 1.0, x = 1.0)
-@test !(stop!(stop))
-
 # Check if _tired_check works
 update!(stop.current_state, tmps = 0.0)
 @test stop!(stop)

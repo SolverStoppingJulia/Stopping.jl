@@ -48,17 +48,6 @@ function _unbounded_check!(stp  :: LS_Stopping,
  return stp
 end
 
-# """_stalled_check. Checks if the optimization algorithm is stalling."""
-# function _stalled_check!(stp    :: LS_Stopping,
-#                          x      :: Iterate;
-#                          dx     :: Iterate = Float64[],
-#                          df     :: Iterate = Float64[])
-#
-#  stp.meta.stalled = false
-#
-#  return stp
-# end
-
 function _optimality_check(stp  :: LS_Stopping)
 
  optimality = stp.optimality_check(stp.pb, stp.current_state)

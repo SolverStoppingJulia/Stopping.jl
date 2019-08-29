@@ -94,21 +94,21 @@ Serves the same purpose as start! When in an algorithm, tells us if we
 stop the algorithm (because we have reached optimality or we loop infinitely,
 etc)."""
 function stop!(stp      :: AbstractStopping)
- rst_at_x = stp.current_state
- x = rst_at_x.x
- time = rst_at_x.start_time
+    rst_at_x = stp.current_state
+ 	x = rst_at_x.x
+ 	time = rst_at_x.start_time
 
- # Optimality check
- stp.meta.optimal = _null_test(stp,_optimality_check(stp))
+ 	# Optimality check
+ 	stp.meta.optimal = _null_test(stp,_optimality_check(stp))
 
- # global user limit diagnostic
- _unbounded_check!(stp, x)
- _tired_check!(stp, x, time_t = time)
- _stalled_check!(stp, x)
+ 	# global user limit diagnostic
+ 	_unbounded_check!(stp, x)
+	_tired_check!(stp, x, time_t = time)
+ 	_stalled_check!(stp, x)
 
- OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled || stp.meta.unbounded
- add_stop!(stp.meta)
- return OK
+ 	OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled || stp.meta.unbounded
+ 	add_stop!(stp.meta)
+ 	return OK
 end
 
 """_stalled_check. Checks if the optimization algorithm is stalling."""
@@ -117,7 +117,7 @@ function _stalled_check!(stp    :: AbstractStopping,
 
  max_iter = stp.meta.nb_of_stop >= stp.meta.max_iter
 
- stp.meta.stalled = stalled_x || stalled_f || max_iter || stp.meta.optimal_sub_pb
+ stp.meta.stalled = max_iter || stp.meta.optimal_sub_pb
 
  return stp
 end
