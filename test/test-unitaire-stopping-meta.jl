@@ -1,8 +1,6 @@
 # on vérifie simplement que le constructeur par défaut fait son travail
 test_meta = StoppingMeta()
 
-@test test_meta.atol == 1.0e-6
-@test test_meta.rtol == 1.0e-15
 @test test_meta.optimality0 == 1.0
 @test test_meta.unbounded_threshold == -1.0e50
 @test test_meta.unbounded_x == 1.0e50

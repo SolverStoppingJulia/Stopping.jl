@@ -23,9 +23,6 @@ mutable struct StoppingMeta <: AbstractStoppingMeta # mutable ? ou immutable?
     unbounded_threshold :: Number # below this value, the problem is declared unbounded
     unbounded_x         :: Number # beyond this value, x is unbounded
 
-    rtol_x              :: Number # algorithm is stalled move is beyond this value
-    rtol_f              :: Number # algorithm is stalled move is beyond this value
-
     # fine grain control on ressources
     max_f           :: Int     # max function evaluations allowed
 
@@ -61,15 +58,11 @@ mutable struct StoppingMeta <: AbstractStoppingMeta # mutable ? ou immutable?
 		stalled   = false
 		optimal   = false
 
-		rtol_x    = rtol
-		rtol_f    = -eps(typeof(rtol_x)) #desactivate by default
-
         nb_of_stop = 0
 
 		return new(atol, rtol, optimality0, unbounded_threshold, unbounded_x,
-				   rtol_x, rtol_f, max_f, max_eval, max_iter, max_time,
-                   nb_of_stop, optimal_sub_pb,
-				   unbounded, tired, stalled, optimal)
+				   max_f, max_eval, max_iter, max_time, nb_of_stop,
+				   optimal_sub_pb, unbounded, tired, stalled, optimal)
 	end
 end
 
