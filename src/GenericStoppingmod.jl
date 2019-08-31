@@ -1,5 +1,5 @@
 export GenericStopping,  start!, stop!, update_and_start!, update_and_stop!
-export _stalled_check!, fill_in!, status
+export fill_in!, status, add_stop!
 
 """
  Type : GenericStopping
@@ -67,9 +67,9 @@ end
 """
 function start!(stp      :: AbstractStopping)
 
- rst_at_x = stp.current_state
- x = rst_at_x.x
- rst_at_x.start_time = time()
+ stt_at_x = stp.current_state
+ x = stt_at_x.x
+ stt_at_x.start_time = time()
 
  # Optimality check
  stp.meta.optimal = _null_test(stp,_optimality_check(stp))
@@ -94,9 +94,9 @@ Serves the same purpose as start! When in an algorithm, tells us if we
 stop the algorithm (because we have reached optimality or we loop infinitely,
 etc)."""
 function stop!(stp      :: AbstractStopping)
-    rst_at_x = stp.current_state
- 	x = rst_at_x.x
- 	time = rst_at_x.start_time
+    stt_at_x = stp.current_state
+ 	x = stt_at_x.x
+ 	time = stt_at_x.start_time
 
  	# Optimality check
  	stp.meta.optimal = _null_test(stp,_optimality_check(stp))
