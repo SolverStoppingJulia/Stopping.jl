@@ -49,6 +49,7 @@ Returns the optimity status of the problem.
 """
 function update_and_start!(stp :: AbstractStopping; kwargs...)
 	update!(stp.current_state; kwargs...)
+	stp.meta.optimality0 = norm(grad(stp.pb, stp.pb.meta.x0), Inf)
 	OK = start!(stp)
 	return OK
 end
