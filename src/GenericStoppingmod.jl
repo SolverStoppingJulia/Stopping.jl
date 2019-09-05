@@ -1,5 +1,5 @@
 export GenericStopping,  start!, stop!, update_and_start!, update_and_stop!
-export fill_in!, status, add_stop!
+export fill_in!, status
 
 """
  Type : GenericStopping
