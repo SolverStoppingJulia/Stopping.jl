@@ -1,17 +1,18 @@
 module Stopping
+
 export AbstractStopping
 
+using LinearAlgebra
 using NLPModels
 using State
-using LinearAlgebra
+
+const Iterate = Union{Float64,Vector, Nothing}
 
 abstract type AbstractStopping end
-
-const Iterate           = Union{Float64,Vector, Nothing}
 
 include("StoppingMetamod.jl")
 include("GenericStoppingmod.jl")
 include("LineSearchStoppingmod.jl")
 include("NLPStoppingmod.jl")
 
-end # module
+end # end of module
