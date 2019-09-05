@@ -48,10 +48,10 @@ update_and_start!: Update the values in the State and initializes the Stopping
 Returns the optimity status of the problem.
 """
 function update_and_start!(stp :: AbstractStopping; kwargs...)
-	
+
 	update!(stp.current_state; kwargs...)
 	OK = start!(stp)
-	
+
 	return OK
 end
 
@@ -92,21 +92,21 @@ update_and_stop!: Update the values in the State and returns the optimity status
 of the problem.
 """
 function update_and_stop!(stp :: AbstractStopping; kwargs...)
-	
+
  update!(stp.current_state; kwargs...)
  OK = stop!(stp)
-	
+
  return OK
 end
 
-""" 
+"""
 stop!:
 Inputs: Interface Stopping. Output: optimal or not.
 Serves the same purpose as start! When in an algorithm, tells us if we
 stop the algorithm (because we have reached optimality or we loop infinitely,
 etc)."""
 function stop!(stp :: AbstractStopping)
-	
+
  stt_at_x = stp.current_state
  x        = stt_at_x.x
  time     = stt_at_x.start_time
@@ -120,9 +120,9 @@ function stop!(stp :: AbstractStopping)
  _stalled_check!(stp, x)
 
  OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled || stp.meta.unbounded
-	
+
  add_stop!(stp.meta)
-	
+
  return OK
 end
 
@@ -164,7 +164,7 @@ function _tired_check!(stp    :: AbstractStopping,
 	  max_evals = false
 	  max_f = false
   end
-	
+
  # global user limit diagnostic
  stp.meta.tired = max_time || max_evals || max_f
 
@@ -176,12 +176,12 @@ _unbounded_check!: If x gets too big it is likely that the problem is unbounded
 """
 function _unbounded_check!(stp  :: AbstractStopping,
                            x    :: Iterate)
-    
+
  # check if x is too large
  x_too_large = norm(x,Inf) >= stp.meta.unbounded_x
- 
+
  stp.meta.unbounded = x_too_large
- 
+
  return stp
 end
 
@@ -190,7 +190,7 @@ _optimality_check: If we reached a good approximation of an optimum to our
 problem. In it's basic form only checks the norm of the gradient.
 """
 function _optimality_check(stp  :: AbstractStopping)
-	
+
  optimality = Inf
 
  return optimality
@@ -203,7 +203,7 @@ check if the optimality value is null (up to some precisions found in the meta).
 function _null_test(stp  :: AbstractStopping, optimality :: Number)
 
 	atol, rtol, opt0 = stp.meta.atol, stp.meta.rtol, stp.meta.optimality0
-	
+
 	optimal = optimality < atol || optimality < (rtol * opt0)
 
 	return optimal
@@ -211,7 +211,13 @@ end
 
 """
 status:
-TO DO
+Takes an AbstractStopping as input. Returns the status of the algorithm:
+ 	- Optimal : if we reached an optimal solution
+	- Unbounded : if the problem doesn't have a lower bound
+	- Stalled : if we did too  many iterations of the algorithm
+	- Tired : if we used too many ressources, i.e. too many functions evaluations
+	- Unfeasible : default return value, if nothing is done the problem is
+				   considered unfeasible
 """
 function status(stp :: AbstractStopping)
 	if stp.meta.optimal

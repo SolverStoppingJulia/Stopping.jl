@@ -4,6 +4,11 @@ export AbstractStoppingMeta, StoppingMeta, add_stop!
 # Common stopping parameters to all optimization algorithms
 ################################################################################
 
+"""
+AbstractStoppingMeta
+Abstract type, if specialized meta for stopping were to be implemented they 
+would need to be subtypes of AbstractStoppingMeta
+"""
 abstract type AbstractStoppingMeta end
 
 """
@@ -13,9 +18,15 @@ Common stopping criterion for "all" optimization algorithms such as:
     - threshold for unboundedness
     - time limit to let the algorithm run
     - maximum number of function (and derivatives) evaluations
+
+It's a mutable struct therefore we can modified elements of a StoppingMeta.
+	- The nb_of_stop is incremented everytime stop! or update_and_stop! is called
+	- The optimality0 is modified once at the beginning of the algorithm
+	- The different status optimal_sub_pb, unbounded, tired, stalled, optimal and
+	  feasible are modified according to the data of the algorithm.
 """
-mutable struct StoppingMeta <: AbstractStoppingMeta 
-	
+mutable struct StoppingMeta <: AbstractStoppingMeta
+
  # problem tolerances
  atol                :: Number # absolute tolerance
  rtol                :: Number # relative tolerance
@@ -53,9 +64,9 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
 			max_iter            :: Int      = 5000,
 			max_time            :: Number   = 300.0,
 			kwargs...)
-		
+
    optimal_sub_pb = false
-		
+
    unbounded = false
    tired     = false
    stalled   = false
@@ -75,7 +86,7 @@ Fonction called everytime stop! is called. In theory should be called once every
 iteration of an algorithm
 """
 function add_stop!(meta :: StoppingMeta)
-	
+
 	meta.nb_of_stop += 1
-	
+
 end
