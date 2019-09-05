@@ -1,5 +1,3 @@
-# module StoppingMetamod
-
 export AbstractStoppingMeta, StoppingMeta, add_stop!
 
 ################################################################################
@@ -81,6 +79,3 @@ function add_stop!(meta :: StoppingMeta)
 	meta.nb_of_stop += 1
 	
 end
-
-#end of module
-# end
