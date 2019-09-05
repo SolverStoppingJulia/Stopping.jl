@@ -31,12 +31,12 @@ mutable struct GenericStopping <: AbstractStopping
 	current_state :: AbstractState
 
 	function GenericStopping(pb               :: Any,
-							 current_state    :: AbstractState;
-                             meta             :: StoppingMeta = StoppingMeta(),
-							 kwargs...)
+				 current_state    :: AbstractState;
+                                 meta             :: StoppingMeta = StoppingMeta(),
+				 kwargs...)
 
 		if !(isempty(kwargs))
-			meta = StoppingMeta(;kwargs...)
+			meta = StoppingMeta(; kwargs...)
 		end
 
         return new(pb, meta, current_state)
@@ -48,14 +48,15 @@ update_and_start!: Update the values in the State and initializes the Stopping
 Returns the optimity status of the problem.
 """
 function update_and_start!(stp :: AbstractStopping; kwargs...)
+	
 	update!(stp.current_state; kwargs...)
-	stp.meta.optimality0 = norm(grad(stp.pb, stp.pb.meta.x0), Inf)
 	OK = start!(stp)
+	
 	return OK
 end
 
 """
-fill_in! : A function that fill in the unspecified values of the AbstractState.
+fill_in!: A function that fill in the unspecified values of the AbstractState.
 """
 function fill_in!(stp :: AbstractStopping, x :: Iterate)
  return throw(error("NotImplemented function"))
@@ -65,15 +66,21 @@ end
  start! Inputs: Interface Stopping. Output: optimal or not. Purpose is to
  know if there is a need to even perform an optimization algorithm or if we are
  at an optimal solution from the beginning.
+
+ At the first iteration _null_test consider only the absolute tolerance, then we initialize the meta.optimality0.
 """
-function start!(stp      :: AbstractStopping)
+function start!(stp :: AbstractStopping)
 
  stt_at_x = stp.current_state
- x = stt_at_x.x
+ x        = stt_at_x.x
+
+ #Initialize the time counter
  stt_at_x.start_time = time()
 
  # Optimality check
- stp.meta.optimal = _null_test(stp,_optimality_check(stp))
+ optimality0          = _optimality_check(stp)
+ stp.meta.optimal     = _null_test(stp, optimality0)
+ stp.meta.optimality0 = optimality0
 
  OK = stp.meta.optimal
 
@@ -85,36 +92,45 @@ update_and_stop!: Update the values in the State and returns the optimity status
 of the problem.
 """
 function update_and_stop!(stp :: AbstractStopping; kwargs...)
+	
  update!(stp.current_state; kwargs...)
  OK = stop!(stp)
+	
  return OK
 end
 
-""" stop! Inputs: Interface Stopping. Output: optimal or not.
+""" 
+stop!:
+Inputs: Interface Stopping. Output: optimal or not.
 Serves the same purpose as start! When in an algorithm, tells us if we
 stop the algorithm (because we have reached optimality or we loop infinitely,
 etc)."""
-function stop!(stp      :: AbstractStopping)
-    stt_at_x = stp.current_state
- 	x = stt_at_x.x
- 	time = stt_at_x.start_time
+function stop!(stp :: AbstractStopping)
+	
+ stt_at_x = stp.current_state
+ x        = stt_at_x.x
+ time     = stt_at_x.start_time
 
- 	# Optimality check
- 	stp.meta.optimal = _null_test(stp,_optimality_check(stp))
+ # Optimality check
+ stp.meta.optimal = _null_test(stp,_optimality_check(stp))
 
- 	# global user limit diagnostic
- 	_unbounded_check!(stp, x)
-	_tired_check!(stp, x, time_t = time)
- 	_stalled_check!(stp, x)
+ # global user limit diagnostic
+ _unbounded_check!(stp, x)
+ _tired_check!(stp, x, time_t = time)
+ _stalled_check!(stp, x)
 
- 	OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled || stp.meta.unbounded
- 	add_stop!(stp.meta)
- 	return OK
+ OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled || stp.meta.unbounded
+	
+ add_stop!(stp.meta)
+	
+ return OK
 end
 
-"""_stalled_check. Checks if the optimization algorithm is stalling."""
-function _stalled_check!(stp    :: AbstractStopping,
-                         x      :: Iterate)
+"""
+_stalled_check!: Checks if the optimization algorithm is stalling.
+"""
+function _stalled_check!(stp :: AbstractStopping,
+                         x   :: Iterate)
 
  max_iter = stp.meta.nb_of_stop >= stp.meta.max_iter
 
@@ -123,7 +139,8 @@ function _stalled_check!(stp    :: AbstractStopping,
  return stp
 end
 
-"""_tired_check. Checks if the optimization algorithm is "tired" (i.e.
+"""
+_tired_check!: Checks if the optimization algorithm is "tired" (i.e.
 been running too long)
 """
 function _tired_check!(stp    :: AbstractStopping,
@@ -147,44 +164,54 @@ function _tired_check!(stp    :: AbstractStopping,
 	  max_evals = false
 	  max_f = false
   end
+	
  # global user limit diagnostic
  stp.meta.tired = max_time || max_evals || max_f
 
  return stp
 end
 
-"""_unbounded_check! If x gets too big it is likely that the problem is unbounded"""
+"""
+_unbounded_check!: If x gets too big it is likely that the problem is unbounded
+"""
 function _unbounded_check!(stp  :: AbstractStopping,
                            x    :: Iterate)
-    # check if x is too large
-    x_too_large = norm(x,Inf) >= stp.meta.unbounded_x
-
-    stp.meta.unbounded = x_too_large
-
- 	return stp
-end
-
-"""_optimality_check. If we reached a good approximation of an optimum to our
-problem. In it's basic form only checks the norm of the gradient."""
-function _optimality_check(stp  :: AbstractStopping)
-	optimality = Inf
-
- 	return optimality
+    
+ # check if x is too large
+ x_too_large = norm(x,Inf) >= stp.meta.unbounded_x
+ 
+ stp.meta.unbounded = x_too_large
+ 
+ return stp
 end
 
 """
+_optimality_check: If we reached a good approximation of an optimum to our
+problem. In it's basic form only checks the norm of the gradient.
+"""
+function _optimality_check(stp  :: AbstractStopping)
+	
+ optimality = Inf
+
+ return optimality
+end
+
+"""
+_null_test:
 check if the optimality value is null (up to some precisions found in the meta).
 """
 function _null_test(stp  :: AbstractStopping, optimality :: Number)
 
 	atol, rtol, opt0 = stp.meta.atol, stp.meta.rtol, stp.meta.optimality0
+	
 	optimal = optimality < atol || optimality < (rtol * opt0)
 
 	return optimal
 end
 
 """
-to do
+status:
+TO DO
 """
 function status(stp :: AbstractStopping)
 	if stp.meta.optimal
