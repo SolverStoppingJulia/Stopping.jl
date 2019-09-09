@@ -121,9 +121,21 @@ function stop!(stp :: AbstractStopping)
 
  OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled || stp.meta.unbounded
 
- add_stop!(stp.meta)
+ _add_stop!(stp)
 
  return OK
+end
+
+"""
+_add_stop!:
+Fonction called everytime stop! is called. In theory should be called once every
+iteration of an algorithm
+"""
+function _add_stop!(stp :: AbstractStopping)
+
+ stp.meta.nb_of_stop += 1
+	
+ return stp
 end
 
 """
