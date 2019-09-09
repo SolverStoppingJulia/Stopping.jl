@@ -14,5 +14,3 @@ test_meta = StoppingMeta()
 @test test_meta.stalled == false
 @test test_meta.optimal == false
 @test test_meta.nb_of_stop == 0
-add_stop!(test_meta)
-@test test_meta.nb_of_stop == 1
