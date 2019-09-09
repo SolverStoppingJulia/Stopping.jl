@@ -21,6 +21,7 @@ export fill_in!, status
 				   provided, the kwargs have priority.
 """
 mutable struct GenericStopping <: AbstractStopping
+	
 	# Problem
 	pb :: Any
 
@@ -35,11 +36,11 @@ mutable struct GenericStopping <: AbstractStopping
                                  meta             :: StoppingMeta = StoppingMeta(),
 				 kwargs...)
 
-		if !(isempty(kwargs))
-			meta = StoppingMeta(; kwargs...)
-		end
+	 if !(isempty(kwargs))
+	  meta = StoppingMeta(; kwargs...)
+	 end
 
-        return new(pb, meta, current_state)
+         return new(pb, meta, current_state)
 	end
 end
 
@@ -63,11 +64,13 @@ function fill_in!(stp :: AbstractStopping, x :: Iterate)
 end
 
 """
- start! Inputs: Interface Stopping. Output: optimal or not. Purpose is to
- know if there is a need to even perform an optimization algorithm or if we are
+ start!:
+ Input: Stopping. 
+ Output: optimal or not. 
+ Purpose is to know if there is a need to even perform an optimization algorithm or if we are
  at an optimal solution from the beginning.
 
- At the first iteration _null_test consider only the absolute tolerance, then we initialize the meta.optimality0.
+ Note: start! initialize the start_time (if not done before) and meta.optimality0.
 """
 function start!(stp :: AbstractStopping)
 
@@ -75,12 +78,14 @@ function start!(stp :: AbstractStopping)
  x        = stt_at_x.x
 
  #Initialize the time counter
- stt_at_x.start_time = time()
+ if isnan(stt_at_x.start_time)
+  stt_at_x.start_time = time()
+ end
 
  # Optimality check
  optimality0          = _optimality_check(stp)
- stp.meta.optimal     = _null_test(stp, optimality0)
  stp.meta.optimality0 = optimality0
+ stp.meta.optimal     = _null_test(stp, optimality0)
 
  OK = stp.meta.optimal
 
