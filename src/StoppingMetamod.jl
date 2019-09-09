@@ -79,14 +79,3 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
 	      optimal_sub_pb, unbounded, tired, stalled, optimal)
  end
 end
-
-"""
-add_stop!:
-Fonction called everytime stop! is called. In theory should be called once every
-iteration of an algorithm
-"""
-function add_stop!(meta :: StoppingMeta)
-
-	meta.nb_of_stop += 1
-
-end
