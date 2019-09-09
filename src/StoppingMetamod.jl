@@ -1,4 +1,4 @@
-export AbstractStoppingMeta, StoppingMeta, add_stop!
+export AbstractStoppingMeta, StoppingMeta
 
 ################################################################################
 # Common stopping parameters to all optimization algorithms
@@ -51,6 +51,7 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
  unbounded           :: Bool
  tired               :: Bool
  stalled             :: Bool
+ resources 	     :: Bool
  optimal             :: Bool
  feasible            :: Bool
 
@@ -70,12 +71,13 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
    unbounded = false
    tired     = false
    stalled   = false
+   resources = false
    optimal   = false
 
    nb_of_stop = 0
 
    return new(atol, rtol, optimality0, unbounded_threshold, unbounded_x,
 	      max_f, max_eval, max_iter, max_time, nb_of_stop,
-	      optimal_sub_pb, unbounded, tired, stalled, optimal)
+	      optimal_sub_pb, unbounded, tired, stalled, resources, optimal)
  end
 end
