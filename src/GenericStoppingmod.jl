@@ -189,6 +189,28 @@ function _tired_check!(stp    :: AbstractStopping,
 end
 
 """
+_resources_check!: Checks if the optimization algorithm has exhausted the resources.
+"""
+function _resources_check!(stp    :: AbstractStopping,
+                           x      :: Iterate)
+
+  # Maximum number of function and derivative(s) computation
+  # temporaire, fonctionne seulement pour les NLPModels
+  if typeof(stp.pb) <: AbstractNLPModel
+	  max_evals = (neval_obj(stp.pb) + neval_grad(stp.pb) + neval_hprod(stp.pb) + neval_hess(stp.pb)) > stp.meta.max_eval
+	  max_f = neval_obj(stp.pb) > stp.meta.max_f
+  else
+	  max_evals = false
+	  max_f = false
+  end
+
+ # global user limit diagnostic
+ stp.meta.resources = max_evals || max_f
+
+ return stp
+end
+
+"""
 _unbounded_check!: If x gets too big it is likely that the problem is unbounded
 """
 function _unbounded_check!(stp  :: AbstractStopping,
@@ -232,9 +254,10 @@ Takes an AbstractStopping as input. Returns the status of the algorithm:
  	- Optimal : if we reached an optimal solution
 	- Unbounded : if the problem doesn't have a lower bound
 	- Stalled : if we did too  many iterations of the algorithm
-	- Tired : if we used too many ressources, i.e. too many functions evaluations
+	- Tired : if the algorithm takes too long
+	- MaxResource: if we used too many ressources, i.e. too many functions evaluations
 	- Unfeasible : default return value, if nothing is done the problem is
-				   considered unfeasible
+				   considered unfeasible  
 """
 function status(stp :: AbstractStopping)
 	if stp.meta.optimal
@@ -245,6 +268,8 @@ function status(stp :: AbstractStopping)
 		return :Stalled
 	elseif stp.meta.tired
 		return :Tired
+	elseif stp.meta.resources
+		return :MaxResource
 	elseif !stp.meta.feasible
 		return :Unfeasible
 	end
