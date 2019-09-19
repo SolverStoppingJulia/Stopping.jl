@@ -173,6 +173,8 @@ function _tired_check!(stp    :: AbstractStopping,
     max_time = false
  end
 
+ ##############
+ ##############
   # Maximum number of function and derivative(s) computation
   # temporaire, fonctionne seulement pour les NLPModels
   if typeof(stp.pb) <: AbstractNLPModel
@@ -182,6 +184,8 @@ function _tired_check!(stp    :: AbstractStopping,
 	  max_evals = false
 	  max_f = false
   end
+  ##############
+  ##############
 
  # global user limit diagnostic
  stp.meta.tired = max_time || max_evals || max_f
@@ -198,7 +202,7 @@ function _resources_check!(stp    :: AbstractStopping,
  max_evals = false
  max_f     = false
 
- # global user limit diagnostic
+ # global limit diagnostic
  stp.meta.resources = max_evals || max_f
 
  return stp
@@ -249,7 +253,8 @@ Takes an AbstractStopping as input. Returns the status of the algorithm:
 	- Unbounded : if the problem doesn't have a lower bound
 	- Stalled : if we did too  many iterations of the algorithm
 	- Tired : if the algorithm takes too long
-	- MaxResource: if we used too many ressources, i.e. too many functions evaluations
+	- ResourcesExhausted: if we used too many ressources,
+                          i.e. too many functions evaluations
 	- Unfeasible : default return value, if nothing is done the problem is
 				   considered unfeasible
 """

@@ -11,12 +11,13 @@ Inputs:
  - main_pb : An AbstractNLPModel or nothing
  - optimality_check : a stopping criterion through an admissibility function
  - meta : StoppingMeta
+ - max_cntrs :: Dict contains the max number of evaluations
  - current_state : the current state of the problem (i.e an NLPAtX)
 
  * The main_pb entry is designed to handle the case where the Stopping
  is used to solve a problem as a subproblem of a main problem.
  If main_pb = nothing, then pb acts as the main problem.
- This is used in the _resources_check! and can be used in optimality_check.
+ This is used in the fill_in! (TODO) and can be used in optimality_check (TODO).
 
  * optimality_check : takes two inputs (AbstractNLPModel, NLPAtX)
  and returns a Float64 to be compared at 0.
@@ -129,7 +130,7 @@ function _unbounded_check!(stp  :: NLPStopping,
  # check if x is too large
  x_too_large = norm(x,Inf) >= stp.meta.unbounded_x
 
- if stp.current_state.fx == nothing
+ if isnan(stp.current_state.fx)
 	 stp.current_state.fx = obj(stp.pb, x)
  end
  f_too_large = stp.current_state.fx <= stp.meta.unbounded_threshold
