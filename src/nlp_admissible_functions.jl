@@ -8,7 +8,7 @@ function unconstrained(pb    :: AbstractNLPModel,
 	                   state :: NLPAtX;
 					   pnorm :: Float64 = Inf)
 
-    if state.gx == nothing # should be filled if empty
+    if true in (isnan.(state.gx)) # should be filled if empty
 		update!(state, gx = grad(pb, state.x))
 	end
 
@@ -51,8 +51,8 @@ function KKT(pb    :: AbstractNLPModel,
 	         state :: NLPAtX;
 			 pnorm :: Float64 = Inf)
 
-    if state.gx == nothing #vide il faut remplir
-		update!(state, gx = grad(pb, state.x)) #utiliser la fonction fill_in ?
+    if true in (isnan.(state.gx))
+		update!(state, gx = grad(pb, state.x))
 	end
 
 	if length(state.lambda) == 0 return norm(state.gx, pnorm) end
@@ -60,7 +60,8 @@ function KKT(pb    :: AbstractNLPModel,
 	if state.Jx == nothing
 		update!(state, Jx = jac(pb, state.x))
 	end
-    if state.mu != nothing
+
+    if !(true in (isnan.(state.mu))) && !(true in (isnan.(state.lambda)))
 	  gLagx = _grad_lagrangian(pb, state)
     else #no infos on the Lagrange mulitpliers is available
 	  n = length(state.x)
@@ -75,7 +76,7 @@ function KKT(pb    :: AbstractNLPModel,
 
 	if state.cx == nothing update!(state, cx = cons(pb, state.x)) end
 
-	feas       = _feasibility(pb, state)
+	feas = _feasibility(pb, state)
 
 	res = vcat(gLagx, feas, res_bounds, res_nonlin)
 

@@ -6,7 +6,7 @@ export AbstractStoppingMeta, StoppingMeta
 
 """
 AbstractStoppingMeta
-Abstract type, if specialized meta for stopping were to be implemented they 
+Abstract type, if specialized meta for stopping were to be implemented they
 would need to be subtypes of AbstractStoppingMeta
 """
 abstract type AbstractStoppingMeta end
@@ -51,11 +51,11 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
  unbounded           :: Bool
  tired               :: Bool
  stalled             :: Bool
- resources 	     :: Bool
+ resources 	         :: Bool
  optimal             :: Bool
  feasible            :: Bool
 
- function StoppingMeta(;atol                :: Number   = 1.0e-6,
+ function StoppingMeta(;atol    :: Number   = 1.0e-6,
 			rtol                :: Number   = 1.0e-15,
 			optimality0         :: Number   = 1.0,
 			unbounded_threshold :: Number   = -1.0e50,

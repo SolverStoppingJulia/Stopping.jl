@@ -21,7 +21,7 @@ export fill_in!, status
 				   provided, the kwargs have priority.
 """
 mutable struct GenericStopping <: AbstractStopping
-	
+
 	# Problem
 	pb :: Any
 
@@ -65,8 +65,8 @@ end
 
 """
  start!:
- Input: Stopping. 
- Output: optimal or not. 
+ Input: Stopping.
+ Output: optimal or not.
  Purpose is to know if there is a need to even perform an optimization algorithm or if we are
  at an optimal solution from the beginning.
 
@@ -122,6 +122,7 @@ function stop!(stp :: AbstractStopping)
  # global user limit diagnostic
  _unbounded_check!(stp, x)
  _tired_check!(stp, x, time_t = time)
+ _resources_check!(stp, x)
  _stalled_check!(stp, x)
 
  OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled || stp.meta.unbounded
@@ -139,7 +140,7 @@ iteration of an algorithm
 function _add_stop!(stp :: AbstractStopping)
 
  stp.meta.nb_of_stop += 1
-	
+
  return stp
 end
 
@@ -194,15 +195,8 @@ _resources_check!: Checks if the optimization algorithm has exhausted the resour
 function _resources_check!(stp    :: AbstractStopping,
                            x      :: Iterate)
 
-  # Maximum number of function and derivative(s) computation
-  # temporaire, fonctionne seulement pour les NLPModels
-  if typeof(stp.pb) <: AbstractNLPModel
-	  max_evals = (neval_obj(stp.pb) + neval_grad(stp.pb) + neval_hprod(stp.pb) + neval_hess(stp.pb)) > stp.meta.max_eval
-	  max_f = neval_obj(stp.pb) > stp.meta.max_f
-  else
-	  max_evals = false
-	  max_f = false
-  end
+ max_evals = false
+ max_f     = false
 
  # global user limit diagnostic
  stp.meta.resources = max_evals || max_f
@@ -257,7 +251,7 @@ Takes an AbstractStopping as input. Returns the status of the algorithm:
 	- Tired : if the algorithm takes too long
 	- MaxResource: if we used too many ressources, i.e. too many functions evaluations
 	- Unfeasible : default return value, if nothing is done the problem is
-				   considered unfeasible  
+				   considered unfeasible
 """
 function status(stp :: AbstractStopping)
 	if stp.meta.optimal
@@ -269,7 +263,7 @@ function status(stp :: AbstractStopping)
 	elseif stp.meta.tired
 		return :Tired
 	elseif stp.meta.resources
-		return :MaxResource
+		return :ResourcesExhausted
 	elseif !stp.meta.feasible
 		return :Unfeasible
 	end
