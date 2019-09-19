@@ -20,9 +20,9 @@ OK2 = update_and_stop!(stop, ht = 10.0)
 @test stop!(stop) == false
 
 # Check if _tired_check works
-update!(stop.current_state, tmps = 0.0)
+stop.meta.start_time = 0.0
 @test stop!(stop)
-update!(stop.current_state, tmps = NaN)
+stop.meta.start_time = NaN
 @test !(stop!(stop))
 
 # we can check _tired_check for max evals with NLPStopping

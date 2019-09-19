@@ -8,6 +8,7 @@ test_meta = StoppingMeta()
 @test test_meta.max_eval == 20_000
 @test test_meta.max_iter == 5_000
 @test test_meta.max_time == 300.0
+@test isnan(test_meta.start_time)
 @test test_meta.optimal_sub_pb == false
 @test test_meta.unbounded == false
 @test test_meta.tired == false

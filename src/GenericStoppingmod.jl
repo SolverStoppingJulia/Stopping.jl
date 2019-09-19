@@ -78,6 +78,10 @@ function start!(stp :: AbstractStopping)
  x        = stt_at_x.x
 
  #Initialize the time counter
+ if isnan(stp.meta.start_time)
+  stp.meta.start_time = time()
+ end
+ #and synchornize with the State
  if isnan(stt_at_x.start_time)
   stt_at_x.start_time = time()
  end
@@ -114,7 +118,7 @@ function stop!(stp :: AbstractStopping)
 
  stt_at_x = stp.current_state
  x        = stt_at_x.x
- time     = stt_at_x.start_time
+ time     = stp.meta.start_time #stt_at_x.start_time
 
  # Optimality check
  stp.meta.optimal = _null_test(stp,_optimality_check(stp))
