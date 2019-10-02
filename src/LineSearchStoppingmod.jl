@@ -4,6 +4,27 @@ export LS_Stopping
 # Line search stopping module
 ################################################################################
 
+"""
+LS_Stopping is designed to handle the stopping criterion of line search problems.
+Let f:R→Rⁿ, then h(t) = f(x+td) where x and d are vectors and t is a scalar.
+h is such that h:R→R.
+h is a LineModel defined in SolverTools.jl (https://github.com/JuliaSmoothOptimizers/SolverTools.jl)
+
+It is possible to define those stopping criterion in a NLPStopping except NLPStopping
+uses vectors operations. LS_Stopping and it's admissible functions (Armijo and Wolfe are provided with Stopping.jl)
+uses scalar operations.
+
+In order to work properly within the Stopping framework, admissible functions must
+return a value that will be compare to 0.
+
+For instance, the armijo condition is
+h(t)-h(0)-τ₀*t*h'(0) ⩽ 0
+therefore armijo(h, h_at_t) returns the maximum between h(t)-h(0)-τ₀*t*h'(0) and 0.
+
+The inputs of an admissible function are :
+	- h 	 :: A LineModel
+	- h_at_t :: A line search state, defined in State.jl  
+"""
 mutable struct LS_Stopping <: AbstractStopping
 	# problem
 	pb :: Any       # hard to define a proper type to avoid circular dependencies
@@ -52,10 +73,10 @@ function _optimality_check(stp  :: LS_Stopping)
 
  optimality = stp.optimality_check(stp.pb, stp.current_state)
 
- return 1. - optimality # TO CHANGE. Should change admissible functions
+ return optimality
 end
 
 ################################################################################
 # line search admissibility functions
 ################################################################################
-include("admissible_functions.jl")
+include("ls_admissible_functions.jl")
