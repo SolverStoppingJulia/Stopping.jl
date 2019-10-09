@@ -1,8 +1,11 @@
 export armijo, wolfe, armijo_wolfe
 
-""" Check if a step size is admissible according to the Armijo criteria.
-Inputs: Any, #LineModel and LSAtT. Outpus: admissibility in the armijo sense (Bool)
-Armijo criterion: f(x + θd) - f(x) < τ₀∇f(x+θd)d"""
+""" 
+Check if a step size is admissible according to the Armijo criterion.
+Inputs: Any, #LineModel and LSAtT. 
+Outputs: admissibility in the armijo sense
+Armijo criterion: f(x + θd) - f(x) < τ₀ ∇f(x+θd)d
+"""
 function armijo(h      :: Any, #LineModel,  # never used?
 				h_at_t :: LSAtT;
 				τ₀ 	   :: Float64 = 0.01)
@@ -15,21 +18,27 @@ function armijo(h      :: Any, #LineModel,  # never used?
     return max(hgoal, 0.0)
 end
 
-""" Check if a step size is admissible according to the Wolfe criteria.
-Inputs: Any, #LineModel and LSAtT. Outpus: admissibility in the Strong Wolfe sense (Bool).
-Strong Wolfe criterion: |∇f(x+θd)| < τ₁||∇f(x)||."""
+""" 
+Check if a step size is admissible according to the Wolfe criterion.
+Inputs: Any, #LineModel and LSAtT. 
+Outputs: admissibility in the Strong Wolfe sense.
+Strong Wolfe criterion: |∇f(x+θd)| < τ₁||∇f(x)||.
+"""
 function wolfe(h 	:: Any, #LineModel,
 			   h_at_t :: LSAtT;
 			   τ₁ 	:: Float64 = 0.99)
 
 	wolfe = (τ₁ .* h_at_t.g₀) - (abs(h_at_t.gt))
-	positive = h_at_t.x > 0.0   # positive step
+	#positive = h_at_t.x > 0.0   # positive step
     return max(wolfe, 0.0)
 end
 
-""" Check if a step size is admissible according to both the Armijo and Wolfe criterion.
-Inputs: Any, #LineModel and LSAtT. Outpus: admissibility in the Strong Wolfe sense (Bool).
-Strong Wolfe criterion: |∇f(x+θd)| < τ₁||∇f(x)||."""
+""" 
+Check if a step size is admissible according to both the Armijo and Wolfe criterion.
+Inputs: Any, #LineModel and LSAtT. 
+Outputs: admissibility in the Strong Wolfe sense.
+Strong Wolfe criterion: |∇f(x+θd)| < τ₁||∇f(x)||.
+"""
 function armijo_wolfe(h 	:: Any, #LineModel,
 			   		  h_at_t :: LSAtT;
 			   		  τ₁ 	:: Float64 = 0.99)
