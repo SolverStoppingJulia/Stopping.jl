@@ -228,13 +228,10 @@ end
 
 """
 _optimality_check: If we reached a good approximation of an optimum to our
-problem. In it's basic form only checks the norm of the gradient.
+problem.
 """
 function _optimality_check(stp  :: AbstractStopping)
-
- optimality = Inf
-
- return optimality
+ return throw(error("NotImplemented function"))
 end
 
 """
