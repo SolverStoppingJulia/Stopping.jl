@@ -77,18 +77,49 @@ end
 
 """
 fill_in! : A function that fill in the required values in the State
-
-TO DO: constraint version
 """
 function fill_in!(stp  :: NLPStopping,
                   x    :: Iterate;
                   fx   :: Iterate    = nothing,
-                  gx   :: Iterate    = nothing)
+                  gx   :: Iterate    = nothing,
+                  Hx   :: Iterate    = nothing,
+                  cx   :: Iterate    = nothing,
+                  Jx   :: Iterate    = nothing,
+                  lambda :: Iterate  = nothing,
+                  mu   :: Iterate    = nothing)
 
- obfx = fx == nothing  ? obj(stp.pb, x)   : fx
- grgx = gx == nothing  ? grad(stp.pb, x)  : gx
+ gfx = fx == nothing  ? obj(stp.pb, x)   : fx
+ ggx = gx == nothing  ? grad(stp.pb, x)  : gx
 
- return update!(stp.current_state, x=x, fx = obfx, gx = grgx)
+ #We update the hessian matrix only if it is used
+ if Hx == nothing
+  if stp.current_state.Hx == zeros(0,0)
+   gHx = zeros(0,0)
+  else
+   gHx = hess(stp.pb, x)
+  end
+ else
+  gHx = Hx
+ end
+
+ if stp.pb.meta.ncon > 0
+     gJx = Jx == nothing ? jac(stp.pb, x)  : Jx
+     gcx = cx == nothing ? cons(stp.pb, x) : cx
+ else
+     gJx = stp.current_state.Jx
+     gcx = stp.current_state.cx
+ end
+
+ #update the Lagrange multiplier if one of the 2 is asked
+ if lambda == nothing || mu == nothing
+  lb, lc = _compute_mutliplier(stp.pb, x, ggx, gcx, gJx)
+ else
+  lb, lc = mu, lambda
+ end
+
+ return update!(stp.current_state, x=x, fx = gfx,    gx = ggx, Hx = gHx,
+                                        cx = gcx,    Jx = gJx, mu = lb,
+                                        lambda = lc)
 end
 
 """
@@ -158,3 +189,37 @@ end
 # non linear problems admissibility functions
 ################################################################################
 include("nlp_admissible_functions.jl")
+
+"""
+Additional function to estimate Lagrange multiplier of the problems
+    (guarantee if LICQ holds)
+"""
+function _compute_mutliplier(pb    :: AbstractNLPModel,
+                             x     :: Iterate,
+                             gx    :: Iterate,
+                             cx    :: Iterate,
+                             Jx    :: Any;
+                             active_prec_c :: Float64 = 1e-6,
+                			 active_prec_b :: Float64 = 1e-6)
+
+ n  = length(x)
+ nc = length(cx)
+
+ #active res_bounds
+ Ib = findall(x->(norm(x) <= active_prec_b),
+			      min(abs.(x - pb.meta.lvar),
+				      abs.(x - pb.meta.uvar)))
+ #active constraints
+ Ic = findall(x->(norm(x) <= active_prec_c),
+			      min(abs.(cx-pb.meta.ucon),
+				      abs.(cx-pb.meta.lcon)))
+
+ Jc = hcat(Matrix(1.0I, n, n)[:,Ib], Jx'[:,Ic])
+
+ l = pinv(Jc) * (- gx)
+
+ mu, lambda = zeros(n), zeros(nc)
+ mu[Ib], lambda[Ic] = l[1:length(Ib)], l[length(Ib)+1:length(l)]
+
+ return mu, lambda
+end
