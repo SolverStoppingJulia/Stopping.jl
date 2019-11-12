@@ -1,8 +1,8 @@
-export armijo, wolfe, armijo_wolfe
+export armijo, wolfe, armijo_wolfe, shamanskii_stop
 
-""" 
+"""
 Check if a step size is admissible according to the Armijo criterion.
-Inputs: Any, #LineModel and LSAtT. 
+Inputs: Any, #LineModel and LSAtT.
 Outputs: admissibility in the armijo sense
 Armijo criterion: f(x + θd) - f(x) < τ₀ ∇f(x+θd)d
 """
@@ -18,9 +18,9 @@ function armijo(h      :: Any, #LineModel,  # never used?
     return max(hgoal, 0.0)
 end
 
-""" 
+"""
 Check if a step size is admissible according to the Wolfe criterion.
-Inputs: Any, #LineModel and LSAtT. 
+Inputs: Any, #LineModel and LSAtT.
 Outputs: admissibility in the Strong Wolfe sense.
 Strong Wolfe criterion: |∇f(x+θd)| < τ₁||∇f(x)||.
 """
@@ -33,9 +33,26 @@ function wolfe(h 	:: Any, #LineModel,
     return max(wolfe, 0.0)
 end
 
-""" 
+"""
+Check if a step size is admissible according to the "Shamanskii" criteria.
+This criteria was proposed in
+	GLOBAL CONVERGENCE TECHNIQUE FOR THE NEWTON METHOD WITH PERIODIC HESSIAN EVALUATION
+	by
+	F. LAMPARIELLO and M. SCIANDRONE
+Inputs: Any, #LineModel and LSAtT. Outpus: admissibility in the "Shamanskii" sense (Bool).
+More documentation needed.
+"""
+function shamanskii_stop(h 		:: Any, #LineModel,
+			   	   		 h_at_t :: LSAtT;
+			   	   		 γ 	:: Float64 = 1.0e-09)
+	admissible = h_at_t.ht - h_at_t.h₀ - γ * (h_at_t.x)^3 * norm(h.d)^3
+	return max(admissible, 0.0)
+end
+
+
+"""
 Check if a step size is admissible according to both the Armijo and Wolfe criterion.
-Inputs: Any, #LineModel and LSAtT. 
+Inputs: Any, #LineModel and LSAtT.
 Outputs: admissibility in the Strong Wolfe sense.
 Strong Wolfe criterion: |∇f(x+θd)| < τ₁||∇f(x)||.
 """
@@ -60,15 +77,4 @@ end
 # 	goldstein = (h_at_t.h₀ + h_at_t.x * (1 - τ₀) * h_at_t.g₀) <= (h_at_t.ht) && (h_at_t.ht) <= (h_at_t.h₀ + h_at_t.x *  τ₀ * h_at_t.g₀)
 # 	# positive = h_at_t.x > 0.0   # positive step
 # 	return goldstein #&& positive
-# end
-
-# """ Check if a step size is admissible according to the "Shamanskii" criteria.
-# Inputs: Any, #LineModel and LSAtT. Outpus: admissibility in the "Shamanskii" sense (Bool).
-# More documentation needed."""
-# function shamanskii_stop(h 		:: Any, #LineModel,
-# 			   	   		 h_at_t :: LSAtT;
-# 			   	   		 τ₀ 	:: Float64 = 1.0e-09)
-# 	admissible = (h_at_t.ht) <= (h_at_t.h₀ - τ₀ * (h_at_t.x)^3 * BLAS.nrm2(h.d)^3)
-# 	positive = h_at_t.x > 0.0   # positive step
-# 	return admissible && positive
 # end
