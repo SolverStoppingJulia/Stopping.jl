@@ -22,49 +22,50 @@ h(t)-h(0)-τ₀*t*h'(0) ⩽ 0
 therefore armijo(h, h_at_t) returns the maximum between h(t)-h(0)-τ₀*t*h'(0) and 0.
 
 The inputs of an admissible function are :
-	- h 	 :: A LineModel
-	- h_at_t :: A line search state, defined in State.jl
+    - h 	 :: A LineModel
+    - h_at_t :: A line search state, defined in State.jl
 """
 mutable struct LS_Stopping <: AbstractStopping
-	# problem
-	pb :: Any       # hard to define a proper type to avoid circular dependencies
-					# I don't know the right solution to this situation...
+    # problem
+    pb :: Any # hard to define a proper type to avoid circular dependencies
+              # I don't know the right solution to this situation...
 
-	# stopping criterion proper to linesearch
-	optimality_check :: Function
+    # stopping criterion proper to linesearch
+    optimality_check :: Function
 
-	# shared information with linesearch and other stopping
-	meta :: StoppingMeta
+    # shared information with linesearch and other stopping
+    meta :: StoppingMeta
 
-	# current information on linesearch
-	current_state :: LSAtT
+    # current information on linesearch
+    current_state :: LSAtT
 
-	# Stopping of the main problem, or nothing
+    # Stopping of the main problem, or nothing
     main_stp :: Union{AbstractStopping, Nothing}
 
-	function LS_Stopping(pb         	:: Any,
-						 admissible 	:: Function,
-						 current_state 	:: LSAtT;
-						 meta       	:: StoppingMeta = StoppingMeta(),
-						 main_stp       :: Union{AbstractStopping, Nothing} = nothing,
-						 kwargs...)
+    function LS_Stopping(pb             :: Any,
+                         admissible     :: Function,
+                         current_state  :: LSAtT;
+                         meta           :: StoppingMeta = StoppingMeta(),
+                         main_stp       :: Union{AbstractStopping, Nothing} = nothing,
+                         kwargs...)
 
-		if !(isempty(kwargs))
-			meta = StoppingMeta(;kwargs...)
+        if !(isempty(kwargs))
+           meta = StoppingMeta(;kwargs...)
 		end
 
-		return new(pb, admissible, meta, current_state, main_stp)
-	end
+        return new(pb, admissible, meta, current_state, main_stp)
+    end
 
 end
 
 
 function _unbounded_check!(stp  :: LS_Stopping,
                            x    :: Iterate)
+
  # check if x is too large
  x_too_large = norm(x,Inf) >= stp.meta.unbounded_x
  if isnan(stp.current_state.ht)
-	 stp.current_state.ht = obj(stp.pb, x)
+     stp.current_state.ht = obj(stp.pb, x)
  end
  f_too_large = stp.current_state.ht <= stp.meta.unbounded_threshold
 

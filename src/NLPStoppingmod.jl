@@ -19,37 +19,37 @@ Inputs:
  """
 mutable struct NLPStopping <: AbstractStopping
 
-	# problem
-	pb :: AbstractNLPModel
+    # problem
+    pb :: AbstractNLPModel
 
-	# stopping criterion
-	optimality_check :: Function # will be put in optimality_check
+    # stopping criterion
+    optimality_check :: Function # will be put in optimality_check
 
-	# Common parameters
-	meta      :: StoppingMeta
+    # Common parameters
+    meta      :: StoppingMeta
     # Parameters specific to the NLPModels
     max_cntrs :: Dict #contains the max number of evaluations
 
-	# current state of the line search Algorithm
-	current_state :: AbstractState
+    # current state of the line search Algorithm
+    current_state :: AbstractState
 
     # Stopping of the main problem, or nothing
     main_stp :: Union{AbstractStopping, Nothing}
 
-	function NLPStopping(pb         	:: AbstractNLPModel,
-						 admissible 	:: Function,
-						 current_state 	:: AbstractState;
-						 meta       	:: StoppingMeta = StoppingMeta(),
+    function NLPStopping(pb             :: AbstractNLPModel,
+                         admissible     :: Function,
+                         current_state  :: AbstractState;
+                         meta           :: StoppingMeta = StoppingMeta(),
                          max_cntrs      :: Dict = _init_max_counters(),
                          main_stp       :: Union{AbstractStopping, Nothing} = nothing,
-						 kwargs...)
+                         kwargs...)
 
-		if !(isempty(kwargs))
-			meta = StoppingMeta(;kwargs...)
-		end
+        if !(isempty(kwargs))
+           meta = StoppingMeta(;kwargs...)
+        end
 
-		return new(pb, admissible, meta, max_cntrs, current_state, main_stp)
-	end
+        return new(pb, admissible, meta, max_cntrs, current_state, main_stp)
+    end
 
 end
 
@@ -59,12 +59,12 @@ _init_max_counters(): initialize the maximum number of evaluations on each of
 """
 function _init_max_counters()
 
-    cntrs = Dict([(:neval_obj,    20000), (:neval_grad,   20000),
-                  (:neval_cons,   20000), (:neval_jcon,   20000),
-                  (:neval_jgrad,  20000), (:neval_jac,    20000),
-                  (:neval_jprod,  20000), (:neval_jtprod, 20000),
-                  (:neval_hess,   20000), (:neval_hprod,  20000),
-                  (:neval_jhprod, 20000), (:neval_sum,    20000*11)])
+  cntrs = Dict([(:neval_obj,    20000), (:neval_grad,   20000),
+                (:neval_cons,   20000), (:neval_jcon,   20000),
+                (:neval_jgrad,  20000), (:neval_jac,    20000),
+                (:neval_jprod,  20000), (:neval_jtprod, 20000),
+                (:neval_hess,   20000), (:neval_hprod,  20000),
+                (:neval_jhprod, 20000), (:neval_sum,    20000*11)])
 
  return cntrs
 end
@@ -207,7 +207,7 @@ function _compute_mutliplier(pb    :: AbstractNLPModel,
  Ic = findall(x->(norm(x) <= active_prec_c),
 			      min(abs.(cx-pb.meta.ucon),
 				      abs.(cx-pb.meta.lcon)))
-@show Matrix(1.0I, n, n)[:,Ib], Jx'[:,Ic]
+
  Jc = hcat(Matrix(1.0I, n, n)[:,Ib], Jx'[:,Ic])
 
  l = pinv(Jc) * (- gx)

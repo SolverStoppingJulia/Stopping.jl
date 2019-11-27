@@ -55,22 +55,22 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
  unbounded           :: Bool
  tired               :: Bool
  stalled             :: Bool
- resources 	         :: Bool
+ resources           :: Bool
  optimal             :: Bool
  feasible            :: Bool
- main_pb            :: Bool
+ main_pb             :: Bool
 
- function StoppingMeta(;atol    :: Number   = 1.0e-6,
-			rtol                :: Number   = 1.0e-15,
-			optimality0         :: Number   = 1.0,
-			unbounded_threshold :: Number   = -1.0e50,
-			unbounded_x         :: Number   = 1.0e50,
-			max_f               :: Int      = typemax(Int),
-			max_eval            :: Int      = 20000,
-			max_iter            :: Int      = 5000,
-			max_time            :: Number   = 300.0,
-            start_time          :: Float64  = NaN,
-			kwargs...)
+ function StoppingMeta(;atol                :: Number   = 1.0e-6,
+                        rtol                :: Number   = 1.0e-15,
+                        optimality0         :: Number   = 1.0,
+                        unbounded_threshold :: Number   = -1.0e50,
+                        unbounded_x         :: Number   = 1.0e50,
+                        max_f               :: Int      = typemax(Int),
+                        max_eval            :: Int      = 20000,
+                        max_iter            :: Int      = 5000,
+                        max_time            :: Number   = 300.0,
+                        start_time          :: Float64  = NaN,
+                        kwargs...)
 
    optimal_sub_pb = false
 
