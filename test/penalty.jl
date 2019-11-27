@@ -58,7 +58,7 @@ function penalty(stp :: NLPStopping)
 
  #prepare the subproblem stopping:
  sub_nlp_at_x = NLPAtX(stp.current_state.x)
- sub_stp = NLPStopping(stp.pb, (x,y) -> Stopping.unconstrained(x,y), sub_nlp_at_x)
+ sub_stp = NLPStopping(stp.pb, (x,y) -> Stopping.unconstrained(x,y), sub_nlp_at_x, main_stp = stp)
  OK = false
  #main loop
  while !OK
@@ -69,6 +69,7 @@ function penalty(stp :: NLPStopping)
 
   #update!(stp)
   fill_in!(stp, sub_stp.current_state.x)
+  
   #Either stop! is true OR the penalty parameter is too small
   OK = stop!(stp) || rho < rho_min
 
