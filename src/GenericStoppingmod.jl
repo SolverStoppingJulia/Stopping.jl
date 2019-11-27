@@ -13,9 +13,9 @@ export fill_in!, status
  - tired problem (measured by the number of evaluations of functions and time)
 
  Input :
- 	- pb         : An problem
-	- state      : The information relative to the problem
-	- (opt) meta : Metadata relative to stopping criterion. Can be provided by
+    - pb         : An problem
+    - state      : The information relative to the problem
+    - (opt) meta : Metadata relative to stopping criterion. Can be provided by
 				   the user or created with the Stopping constructor with kwargs
 				   If a specific StoppingMeta is given as well as kwargs are
 				   provided, the kwargs have priority.
@@ -25,30 +25,30 @@ export fill_in!, status
 """
 mutable struct GenericStopping <: AbstractStopping
 
-	# Problem
-	pb :: Any
+    # Problem
+    pb :: Any
 
-	# Problem stopping criterion
-	meta :: StoppingMeta
+    # Problem stopping criterion
+    meta :: StoppingMeta
 
-	# Current information on the problem
-	current_state :: AbstractState
+    # Current information on the problem
+    current_state :: AbstractState
 
     # Stopping of the main problem, or nothing
     main_stp :: Union{AbstractStopping, Nothing}
 
-	function GenericStopping(pb               :: Any,
+    function GenericStopping(pb               :: Any,
                              current_state    :: AbstractState;
                              meta             :: StoppingMeta = StoppingMeta(),
                              main_stp         :: Union{AbstractStopping, Nothing} = nothing,
                              kwargs...)
 
-	 if !(isempty(kwargs))
-	  meta = StoppingMeta(; kwargs...)
-	 end
+     if !(isempty(kwargs))
+      meta = StoppingMeta(; kwargs...)
+     end
 
-         return new(pb, meta, current_state, main_stp)
-	end
+     return new(pb, meta, current_state, main_stp)
+    end
 end
 
 """
@@ -57,10 +57,10 @@ Returns the optimity status of the problem.
 """
 function update_and_start!(stp :: AbstractStopping; kwargs...)
 
-	update!(stp.current_state; kwargs...)
-	OK = start!(stp)
+    update!(stp.current_state; kwargs...)
+    OK = start!(stp)
 
-	return OK
+    return OK
 end
 
 """
@@ -260,39 +260,39 @@ check if the optimality value is null (up to some precisions found in the meta).
 """
 function _null_test(stp  :: AbstractStopping, optimality :: Number)
 
-	atol, rtol, opt0 = stp.meta.atol, stp.meta.rtol, stp.meta.optimality0
+    atol, rtol, opt0 = stp.meta.atol, stp.meta.rtol, stp.meta.optimality0
 
-	optimal = optimality < atol || optimality < (rtol * opt0)
+    optimal = optimality < atol || optimality < (rtol * opt0)
 
-	return optimal
+    return optimal
 end
 
 """
 status:
 Takes an AbstractStopping as input. Returns the status of the algorithm:
- 	- Optimal : if we reached an optimal solution
-	- Unbounded : if the problem doesn't have a lower bound
-	- Stalled : if we did too  many iterations of the algorithm
-	- Tired : if the algorithm takes too long
-	- ResourcesExhausted: if we used too many ressources,
+    - Optimal : if we reached an optimal solution
+    - Unbounded : if the problem doesn't have a lower bound
+    - Stalled : if we did too  many iterations of the algorithm
+    - Tired : if the algorithm takes too long
+    - ResourcesExhausted: if we used too many ressources,
                           i.e. too many functions evaluations
-	- Unfeasible : default return value, if nothing is done the problem is
-				   considered unfeasible
+    - Unfeasible : default return value, if nothing is done the problem is
+                   considered unfeasible
 """
 function status(stp :: AbstractStopping)
-	if stp.meta.optimal
-		return :Optimal
-	elseif stp.meta.unbounded
-		return :Unbounded
-	elseif stp.meta.stalled
-		return :Stalled
-	elseif stp.meta.tired
-		return :Tired
-	elseif stp.meta.resources
-		return :ResourcesExhausted
+    if stp.meta.optimal
+        return :Optimal
+    elseif stp.meta.unbounded
+        return :Unbounded
+    elseif stp.meta.stalled
+        return :Stalled
+    elseif stp.meta.tired
+        return :Tired
+    elseif stp.meta.resources
+        return :ResourcesExhausted
     elseif stp.meta.main_pb
         return :ResourcesOfMainProblemExhausted
-	elseif !stp.meta.feasible
-		return :Unfeasible
-	end
+    elseif !stp.meta.feasible
+        return :Unfeasible
+    end
 end
