@@ -19,6 +19,9 @@ export fill_in!, status
 				   the user or created with the Stopping constructor with kwargs
 				   If a specific StoppingMeta is given as well as kwargs are
 				   provided, the kwargs have priority.
+    - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
+                       of a subproblem.
+                       If not a subproblem, then of type Nothing.
 """
 mutable struct GenericStopping <: AbstractStopping
 
@@ -31,16 +34,20 @@ mutable struct GenericStopping <: AbstractStopping
 	# Current information on the problem
 	current_state :: AbstractState
 
+    # Stopping of the main problem, or nothing
+    main_stp :: Union{AbstractStopping, Nothing}
+
 	function GenericStopping(pb               :: Any,
-				 current_state    :: AbstractState;
-                                 meta             :: StoppingMeta = StoppingMeta(),
-				 kwargs...)
+                             current_state    :: AbstractState;
+                             meta             :: StoppingMeta = StoppingMeta(),
+                             main_stp         :: Union{AbstractStopping, Nothing} = nothing,
+                             kwargs...)
 
 	 if !(isempty(kwargs))
 	  meta = StoppingMeta(; kwargs...)
 	 end
 
-         return new(pb, meta, current_state)
+         return new(pb, meta, current_state, main_stp)
 	end
 end
 
@@ -116,9 +123,8 @@ stop the algorithm (because we have reached optimality or we loop infinitely,
 etc)."""
 function stop!(stp :: AbstractStopping)
 
- stt_at_x = stp.current_state
- x        = stt_at_x.x
- time     = stp.meta.start_time #stt_at_x.start_time
+ x        = stp.current_state.x
+ time     = stp.meta.start_time
 
  # Optimality check
  stp.meta.optimal = _null_test(stp,_optimality_check(stp))
@@ -129,7 +135,11 @@ function stop!(stp :: AbstractStopping)
  _resources_check!(stp, x)
  _stalled_check!(stp, x)
 
- OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled || stp.meta.unbounded
+ if stp.main_stp != nothing
+     _main_pb_check!(stp, x)
+ end
+
+ OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled || stp.meta.unbounded || stp.meta.main_pb
 
  _add_stop!(stp)
 
@@ -177,22 +187,8 @@ function _tired_check!(stp    :: AbstractStopping,
     max_time = false
  end
 
- ##############
- ##############
-  # Maximum number of function and derivative(s) computation
-  # temporaire, fonctionne seulement pour les NLPModels
-  if typeof(stp.pb) <: AbstractNLPModel
-	  max_evals = (neval_obj(stp.pb) + neval_grad(stp.pb) + neval_hprod(stp.pb) + neval_hess(stp.pb)) > stp.meta.max_eval
-	  max_f = neval_obj(stp.pb) > stp.meta.max_f
-  else
-	  max_evals = false
-	  max_f = false
-  end
-  ##############
-  ##############
-
  # global user limit diagnostic
- stp.meta.tired = max_time || max_evals || max_f
+ stp.meta.tired = max_time
 
  return stp
 end
@@ -208,6 +204,30 @@ function _resources_check!(stp    :: AbstractStopping,
 
  # global limit diagnostic
  stp.meta.resources = max_evals || max_f
+
+ return stp
+end
+
+"""
+_main_pb_check!: Checks the resources of the upper problem
+(if main_stp != nothing)
+!! By default stp.meta.main_pb = false
+!! Modify the meta of the main_stp
+"""
+function _main_pb_check!(stp    :: AbstractStopping,
+                         x      :: Iterate)
+
+ # Time check
+ time = stp.meta.start_time
+ _tired_check!(stp.main_stp, x, time_t = time)
+ max_time = stp.main_stp.meta.tired
+
+ # Resource check
+ _resources_check!(stp.main_stp, x)
+ resources = stp.main_stp.meta.resources
+
+ # global user limit diagnostic
+ stp.meta.main_pb = max_time || resources
 
  return stp
 end
@@ -231,7 +251,7 @@ _optimality_check: If we reached a good approximation of an optimum to our
 problem.
 """
 function _optimality_check(stp  :: AbstractStopping)
- return throw(error("NotImplemented function"))
+ return Inf #throw(error("NotImplemented function"))
 end
 
 """
@@ -270,6 +290,8 @@ function status(stp :: AbstractStopping)
 		return :Tired
 	elseif stp.meta.resources
 		return :ResourcesExhausted
+    elseif stp.meta.main_pb
+        return :ResourcesOfMainProblemExhausted
 	elseif !stp.meta.feasible
 		return :Unfeasible
 	end

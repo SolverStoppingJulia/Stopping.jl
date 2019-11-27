@@ -8,16 +8,10 @@ export NLPStopping, unconstrained, fill_in!
 Stopping structure for non-linear programming problems.
 Inputs:
  - pb : An AbstractNLPModel
- - main_pb : An AbstractNLPModel or nothing
  - optimality_check : a stopping criterion through an admissibility function
  - meta : StoppingMeta
  - max_cntrs :: Dict contains the max number of evaluations
  - current_state : the current state of the problem (i.e an NLPAtX)
-
- * The main_pb entry is designed to handle the case where the Stopping
- is used to solve a problem as a subproblem of a main problem.
- If main_pb = nothing, then pb acts as the main problem.
- This is used in the fill_in! (TODO) and can be used in optimality_check (TODO).
 
  * optimality_check : takes two inputs (AbstractNLPModel, NLPAtX)
  and returns a Float64 to be compared at 0.
@@ -27,9 +21,6 @@ mutable struct NLPStopping <: AbstractStopping
 
 	# problem
 	pb :: AbstractNLPModel
-
-    # main problem
-    main_pb :: Union{AbstractNLPModel, Nothing}
 
 	# stopping criterion
 	optimality_check :: Function # will be put in optimality_check
@@ -42,19 +33,22 @@ mutable struct NLPStopping <: AbstractStopping
 	# current state of the line search Algorithm
 	current_state :: AbstractState
 
+    # Stopping of the main problem, or nothing
+    main_stp :: Union{AbstractStopping, Nothing}
+
 	function NLPStopping(pb         	:: AbstractNLPModel,
 						 admissible 	:: Function,
 						 current_state 	:: AbstractState;
 						 meta       	:: StoppingMeta = StoppingMeta(),
                          max_cntrs      :: Dict = _init_max_counters(),
-                         main_pb        :: Union{AbstractNLPModel, Nothing} = nothing,
+                         main_stp       :: Union{AbstractStopping, Nothing} = nothing,
 						 kwargs...)
 
 		if !(isempty(kwargs))
 			meta = StoppingMeta(;kwargs...)
 		end
 
-		return new(pb, main_pb, admissible, meta, max_cntrs, current_state)
+		return new(pb, admissible, meta, max_cntrs, current_state, main_stp)
 	end
 
 end
@@ -213,7 +207,7 @@ function _compute_mutliplier(pb    :: AbstractNLPModel,
  Ic = findall(x->(norm(x) <= active_prec_c),
 			      min(abs.(cx-pb.meta.ucon),
 				      abs.(cx-pb.meta.lcon)))
-
+@show Matrix(1.0I, n, n)[:,Ib], Jx'[:,Ic]
  Jc = hcat(Matrix(1.0I, n, n)[:,Ib], Jx'[:,Ic])
 
  l = pinv(Jc) * (- gx)

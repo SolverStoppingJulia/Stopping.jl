@@ -14,6 +14,8 @@ using LinearAlgebra
 
 include("test-unitaire-stopping-meta.jl")
 printstyled("StoppingMeta tests passed \n", color = :green)
+include("test-unitaire-stopping-generic.jl")
+printstyled("GenericStopping tests passed \n", color = :green)
 include("test-unitaire-ls-stopping.jl")
 printstyled("LineSearch stopping tests passed \n", color = :green)
 include("test-unitaire-nlp-stopping.jl")
