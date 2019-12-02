@@ -291,10 +291,13 @@ Takes an AbstractStopping as input. Returns the status of the algorithm:
     - Tired : if the algorithm takes too long
     - ResourcesExhausted: if we used too many ressources,
                           i.e. too many functions evaluations
+    - ResourcesOfMainProblemExhausted: in the case of a substopping, ResourcesExhausted or Tired
+    for the main stopping.
     - Unfeasible : default return value, if nothing is done the problem is
                    considered unfeasible
 """
 function status(stp :: AbstractStopping)
+
     if stp.meta.optimal
         return :Optimal
     elseif stp.meta.unbounded
@@ -309,5 +312,8 @@ function status(stp :: AbstractStopping)
         return :ResourcesOfMainProblemExhausted
     elseif !stp.meta.feasible
         return :Unfeasible
+    else
+       return :Unknown
     end
+
 end
