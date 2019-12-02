@@ -48,6 +48,19 @@ mutable struct NLPStopping <: AbstractStopping
            meta = StoppingMeta(;kwargs...)
         end
 
+        #current_state is an AbstractState with requirements
+        try
+            current_state.evals
+            current_state.fx, current_state.gx, current_state.Hx
+            #if there are bounds:
+            current_state.mu
+            if pb.meta.ncon > 0 #if there are constraints
+               current_state.Jx, current_state.cx, current_state.lambda
+            end
+        catch
+            throw("error: missing entries in the given current_state")
+        end
+
         return new(pb, admissible, meta, max_cntrs, current_state, main_stp)
     end
 
