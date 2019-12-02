@@ -85,3 +85,20 @@ res2 = infinite_algorithm(stop)
 
 #The algorithm stopped as it attained the iteration limit (stop! call)
 @test status(stop) == :Stalled
+
+reinit!(stop)
+reinit!(substop)
+
+#
+# Test the triple sub-Stopping now:
+#
+subsubstop = GenericStopping(rosenbrock, state1, main_stp = substop, max_iter = ABigInt, rtol = 0.0 )
+#If rtol != 0, any point is a solution as optimality0 = Inf.
+
+#Solve again the problem
+start!(stop) #initialize here as infinite_algorithm has 2 "loops" only
+res3 = infinite_algorithm(subsubstop)
+
+@test status(stop) == :Tired #stop because of the main main stopping.
+@test status(substop) == :ResourcesOfMainProblemExhausted
+@test status(subsubstop) == :ResourcesOfMainProblemExhausted

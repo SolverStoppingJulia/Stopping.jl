@@ -114,6 +114,17 @@ function reinit!(stp :: AbstractStopping)
  stp.meta.start_time  = NaN
  stp.meta.optimality0 = 1.0
 
+ stp.meta.optimal_sub_pb = false
+
+ stp.meta.unbounded = false
+ stp.meta.tired     = false
+ stp.meta.stalled   = false
+ stp.meta.resources = false
+ stp.meta.optimal   = false
+ stp.meta.main_pb   = false
+
+ stp.meta.nb_of_stop = 0
+
  return stp
 end
 
@@ -240,8 +251,15 @@ function _main_pb_check!(stp    :: AbstractStopping,
  _resources_check!(stp.main_stp, x)
  resources = stp.main_stp.meta.resources
 
+ if stp.main_stp.main_stp != nothing
+   _main_pb_check!(stp.main_stp, x)
+   main_main_pb = stp.main_stp.meta.main_pb
+ else
+   main_main_pb = false
+ end
+
  # global user limit diagnostic
- stp.meta.main_pb = max_time || resources
+ stp.meta.main_pb = max_time || resources || main_main_pb
 
  return stp
 end
