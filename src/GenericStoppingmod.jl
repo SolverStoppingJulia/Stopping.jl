@@ -1,4 +1,4 @@
-export GenericStopping,  start!, stop!, update_and_start!, update_and_stop!
+export GenericStopping,  start!, reinit!, stop!, update_and_start!, update_and_stop!
 export fill_in!, status
 
 """
@@ -101,6 +101,20 @@ function start!(stp :: AbstractStopping)
  OK = stp.meta.optimal
 
  return OK
+end
+
+"""
+ reinit!:
+ Input: Stopping.
+ Output: Stopping modified.
+ Reinitialize the meta data filled in by the start!
+"""
+function reinit!(stp :: AbstractStopping)
+
+ stp.meta.start_time  = NaN
+ stp.meta.optimality0 = 1.0
+
+ return stp
 end
 
 """
@@ -251,7 +265,7 @@ _optimality_check: If we reached a good approximation of an optimum to our
 problem.
 """
 function _optimality_check(stp  :: AbstractStopping)
- return Inf #throw(error("NotImplemented function"))
+ return Inf
 end
 
 """
@@ -262,7 +276,8 @@ function _null_test(stp  :: AbstractStopping, optimality :: Number)
 
     atol, rtol, opt0 = stp.meta.atol, stp.meta.rtol, stp.meta.optimality0
 
-    optimal = optimality < atol || optimality < (rtol * opt0)
+    #optimal = optimality < atol || optimality < (rtol * opt0)
+    optimal = optimality <= stp.meta.tol_check(atol, rtol, opt0)
 
     return optimal
 end

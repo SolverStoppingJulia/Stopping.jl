@@ -33,6 +33,9 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
  atol                :: Number # absolute tolerance
  rtol                :: Number # relative tolerance
  optimality0         :: Number # value of the optimality residual at starting point
+ tol_check           :: Function #function of atol, rtol and optimality0
+                                 #by default: tol_check = max(atol, rtol * optimality0)
+                                 #other example: atol + rtol * optimality0
 
  unbounded_threshold :: Number # below this value, the problem is declared unbounded
  unbounded_x         :: Number # beyond this value, x is unbounded
@@ -63,6 +66,7 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
  function StoppingMeta(;atol                :: Number   = 1.0e-6,
                         rtol                :: Number   = 1.0e-15,
                         optimality0         :: Number   = 1.0,
+                        tol_check           :: Function = (atol,rtol,opt0) -> max(atol,rtol*opt0),
                         unbounded_threshold :: Number   = -1.0e50,
                         unbounded_x         :: Number   = 1.0e50,
                         max_f               :: Int      = typemax(Int),
@@ -74,6 +78,12 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
 
    optimal_sub_pb = false
 
+   try
+       tol_check(1,1,1)
+   catch
+       throw("tol_check must have 3 arguments")
+   end
+
    unbounded = false
    tired     = false
    stalled   = false
@@ -83,7 +93,7 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
 
    nb_of_stop = 0
 
-   return new(atol, rtol, optimality0, unbounded_threshold, unbounded_x,
+   return new(atol, rtol, optimality0, tol_check, unbounded_threshold, unbounded_x,
               max_f, max_eval, max_iter, max_time, nb_of_stop, start_time,
               optimal_sub_pb, unbounded, tired, stalled, resources, optimal,
               main_pb)
