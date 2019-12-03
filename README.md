@@ -1,6 +1,6 @@
 # Stopping
 
-[![Build Status](https://travis-ci.org/Goysa2/Stopping.jl.svg?branch=master)](https://travis-ci.org/Goysa2/Stopping.jl)
+<!-- [![Build Status](https://travis-ci.org/Goysa2/Stopping.jl.svg?branch=master)](https://travis-ci.org/Goysa2/Stopping.jl) -->
 
 <!-- [![Coverage Status](https://coveralls.io/repos/Goysa2/Stopping.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/Goysa2/Stopping.jl?branch=julia-0.7)
 
