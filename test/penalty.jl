@@ -1,6 +1,6 @@
 using NLPModels
-using Main.State
-using Main.Stopping
+using State
+using Stopping
 
 function rosenbrock(x)
 
@@ -69,7 +69,7 @@ function penalty(stp :: NLPStopping)
 
   #update!(stp)
   fill_in!(stp, sub_stp.current_state.x)
-  
+
   #Either stop! is true OR the penalty parameter is too small
   OK = stop!(stp) || rho < rho_min
 
