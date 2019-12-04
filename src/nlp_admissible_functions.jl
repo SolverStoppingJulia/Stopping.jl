@@ -49,6 +49,9 @@ function _feasibility(pb    :: AbstractNLPModel,
              max.(- state.x  + pb.meta.lvar,0))
 end
 
+"""
+To be documented
+"""
 function KKT(pb    :: AbstractNLPModel,
              state :: NLPAtX;
              pnorm :: Float64 = Inf)
