@@ -5,7 +5,6 @@ version = "0.0.0"
 
 
 [deps]
-State = "ddcf0d4d-3e56-5c1a-99fc-6bcfdfd69e50"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 NLPModels = "a4795742-8479-5a88-8948-cc11e1c8c1a6"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
