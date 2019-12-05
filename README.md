@@ -6,7 +6,7 @@
 
 [![codecov.io](http://codecov.io/github/Goysa2/Stopping.jl/coverage.svg?branch=master)](http://codecov.io/github/Goysa2/Stopping.jl?branch=master) -->
 
-<!-- [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://goysa2.github.io/State.jl/dev/) -->
+[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://goysa2.github.io/Stopping.jl/dev/)
 
 
 ## Purpose
