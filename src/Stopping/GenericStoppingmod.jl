@@ -96,6 +96,7 @@ function start!(stp :: AbstractStopping)
  # Optimality check
  optimality0          = _optimality_check(stp)
  stp.meta.optimality0 = optimality0
+ if isnan(optimality0) printstyled("Warning: optimality0 is NaN\n", color = :red) end
  stp.meta.optimal     = _null_test(stp, optimality0)
 
  OK = stp.meta.optimal
