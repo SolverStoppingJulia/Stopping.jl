@@ -96,10 +96,14 @@ function start!(stp :: AbstractStopping)
  # Optimality check
  optimality0          = _optimality_check(stp)
  stp.meta.optimality0 = optimality0
- if isnan(optimality0) printstyled("Warning: optimality0 is NaN\n", color = :red) end
+ if isnan(optimality0)
+   printstyled("DomainError: optimality0 is NaN\n", color = :red)
+   stp.meta.domainerror = true
+ end
+
  stp.meta.optimal     = _null_test(stp, optimality0)
 
- OK = stp.meta.optimal
+ OK = stp.meta.optimal || stp.meta.domainerror
 
  return OK
 end
@@ -117,12 +121,13 @@ function reinit!(stp :: AbstractStopping)
 
  stp.meta.optimal_sub_pb = false
 
- stp.meta.unbounded = false
- stp.meta.tired     = false
- stp.meta.stalled   = false
- stp.meta.resources = false
- stp.meta.optimal   = false
- stp.meta.main_pb   = false
+ stp.meta.unbounded   = false
+ stp.meta.tired       = false
+ stp.meta.stalled     = false
+ stp.meta.resources   = false
+ stp.meta.optimal     = false
+ stp.meta.main_pb     = false
+ stp.meta.domainerror = false
 
  stp.meta.nb_of_stop = 0
 
@@ -153,7 +158,12 @@ function stop!(stp :: AbstractStopping)
  time     = stp.meta.start_time
 
  # Optimality check
- stp.meta.optimal = _null_test(stp,_optimality_check(stp))
+ score = _optimality_check(stp)
+ if isnan(score)
+  printstyled("DomainError: score is NaN\n", color = :red)
+  stp.meta.domainerror = true
+ end
+ stp.meta.optimal = _null_test(stp, score)
 
  # global user limit diagnostic
  _unbounded_check!(stp, x)
@@ -165,7 +175,7 @@ function stop!(stp :: AbstractStopping)
      _main_pb_check!(stp, x)
  end
 
- OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled || stp.meta.unbounded || stp.meta.main_pb
+ OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled || stp.meta.unbounded || stp.meta.main_pb || stp.meta.domainerror
 
  _add_stop!(stp)
 
@@ -312,8 +322,9 @@ Takes an AbstractStopping as input. Returns the status of the algorithm:
                           i.e. too many functions evaluations
     - ResourcesOfMainProblemExhausted: in the case of a substopping, ResourcesExhausted or Tired
     for the main stopping.
-    - Unfeasible : default return value, if nothing is done the problem is
-                   considered unfeasible
+    - Infeasible : default return value, if nothing is done the problem is
+                   considered infeasible
+    - DomainError : there is a NaN somewhere
 """
 function status(stp :: AbstractStopping)
 
@@ -329,8 +340,10 @@ function status(stp :: AbstractStopping)
         return :ResourcesExhausted
     elseif stp.meta.main_pb
         return :ResourcesOfMainProblemExhausted
-    elseif !stp.meta.feasible
-        return :Unfeasible
+    elseif stp.meta.infeasible
+        return :Infeasible
+    elseif stp.meta.domainerror
+        return :DomainError
     else
        return :Unknown
     end

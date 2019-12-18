@@ -25,7 +25,7 @@ It's a mutable struct therefore we can modified elements of a StoppingMeta.
     - The start_time is modified once at the beginning of the algorithm (start!)
     if not precised before.
 	- The different status optimal_sub_pb, unbounded, tired, stalled, optimal and
-	  feasible are modified according to the data of the algorithm.
+	  infeasible are modified according to the data of the algorithm.
 """
 mutable struct StoppingMeta <: AbstractStoppingMeta
 
@@ -60,8 +60,9 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
  stalled             :: Bool
  resources           :: Bool
  optimal             :: Bool
- feasible            :: Bool
+ infeasible          :: Bool
  main_pb             :: Bool
+ domainerror         :: Bool
 
  function StoppingMeta(;atol                :: Number   = 1.0e-6,
                         rtol                :: Number   = 1.0e-15,
@@ -84,18 +85,20 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
        throw("tol_check must have 3 arguments")
    end
 
-   unbounded = false
-   tired     = false
-   stalled   = false
-   resources = false
-   optimal   = false
-   main_pb   = false
+   unbounded   = false
+   tired       = false
+   stalled     = false
+   resources   = false
+   optimal     = false
+   infeasible  = false
+   main_pb     = false
+   domainerror = false
 
    nb_of_stop = 0
 
    return new(atol, rtol, optimality0, tol_check, unbounded_threshold, unbounded_x,
               max_f, max_eval, max_iter, max_time, nb_of_stop, start_time,
-              optimal_sub_pb, unbounded, tired, stalled, resources, optimal,
-              main_pb)
+              optimal_sub_pb, unbounded, tired, stalled, resources, optimal,infeasible,
+              main_pb, domainerror)
  end
 end
