@@ -9,6 +9,8 @@
 # but the stopping condition is not satisfied, one option is to iterate
 # and reduce the various tolerances.
 #
+# Documentation for Ipopt options can be found here:
+# https://coin-or.github.io/Ipopt/OPTIONS.html#OPTIONS_REF
 ###############################################################################
 
 using NLPModels
