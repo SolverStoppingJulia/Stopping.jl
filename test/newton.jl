@@ -1,5 +1,4 @@
 using NLPModels
-using State
 using Stopping
 
 # We create a simple function to test

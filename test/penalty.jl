@@ -1,4 +1,5 @@
 using NLPModels
+using Stopping
 
 include("rosenbrock.jl")
 
