@@ -1,7 +1,7 @@
 using NLPModels
 using Stopping
 
-include("rosenbrock.jl")
+include("../test-stopping/rosenbrock.jl")
 
 ##############################################################################
 #
