@@ -25,19 +25,19 @@ update!(ls_a_t, x = 0.0, h₀ = obj(h, 0.0), g₀ = grad(h, 0.0))
 mutable struct 	LSAtT <: AbstractState
 
     x            :: Number
-    ht           :: Number  # h(θ)
-    gt           :: Number  # h'(θ)
-    h₀           :: Number  # h(0)
-    g₀           :: Number  # h'(0)
+    ht           :: FloatVoid  # h(θ)
+    gt           :: FloatVoid  # h'(θ)
+    h₀           :: FloatVoid  # h(0)
+    g₀           :: FloatVoid  # h'(0)
 
-    start_time   :: Number
+    start_time   :: FloatVoid
 
  function LSAtT(t          :: Number;
-                ht         :: Number = NaN,
-                gt         :: Number = NaN,
-                h₀         :: Number = NaN,
-                g₀         :: Number = NaN,
-                start_time :: Number = NaN)
+                ht         :: FloatVoid = nothing,
+                gt         :: FloatVoid = nothing,
+                h₀         :: FloatVoid = nothing,
+                g₀         :: FloatVoid = nothing,
+                start_time :: FloatVoid = nothing)
 
   return new(t, ht, gt, h₀, g₀, start_time)
  end

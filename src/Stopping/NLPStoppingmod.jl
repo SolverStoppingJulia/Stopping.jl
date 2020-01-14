@@ -87,26 +87,22 @@ fill_in! : A function that fill in the required values in the State
 """
 function fill_in!(stp  :: NLPStopping,
                   x    :: Iterate;
-                  fx   :: Iterate    = nothing,
-                  gx   :: Iterate    = nothing,
-                  Hx   :: Iterate    = nothing,
-                  cx   :: Iterate    = nothing,
-                  Jx   :: Iterate    = nothing,
-                  lambda :: Iterate  = nothing,
-                  mu   :: Iterate    = nothing)
+                  fx   :: Iterate     = nothing,
+                  gx   :: Iterate     = nothing,
+                  Hx   :: Iterate     = nothing,
+                  cx   :: Iterate     = nothing,
+                  Jx   :: Iterate     = nothing,
+                  lambda :: Iterate   = nothing,
+                  mu   :: Iterate     = nothing,
+                  matrix_info :: Bool = true)
 
  gfx = fx == nothing  ? obj(stp.pb, x)   : fx
  ggx = gx == nothing  ? grad(stp.pb, x)  : gx
 
- #We update the hessian matrix only if it is used
- if Hx == nothing
-  if stp.current_state.Hx == zeros(0,0)
-   gHx = zeros(0,0)
-  else
+ if Hx == nothing && matrix_info
    gHx = hess(stp.pb, x)
-  end
  else
-  gHx = Hx
+   gHx = Hx
  end
 
  if stp.pb.meta.ncon > 0
@@ -168,7 +164,7 @@ function _unbounded_check!(stp  :: NLPStopping,
  # check if x is too large
  x_too_large = norm(x,Inf) >= stp.meta.unbounded_x
 
- if isnan(stp.current_state.fx)
+ if stp.current_state.fx == nothing
 	 stp.current_state.fx = obj(stp.pb, x)
  end
  f_too_large = stp.current_state.fx <= stp.meta.unbounded_threshold
@@ -210,18 +206,24 @@ function _compute_mutliplier(pb    :: AbstractNLPModel,
                 			 active_prec_b :: Float64 = 1e-6)
 
  n  = length(x)
- nc = length(cx)
+ nc = cx == nothing ? 0 : length(cx)
 
  #active res_bounds
  Ib = findall(x->(norm(x) <= active_prec_b),
 			      min(abs.(x - pb.meta.lvar),
 				      abs.(x - pb.meta.uvar)))
- #active constraints
- Ic = findall(x->(norm(x) <= active_prec_c),
-			      min(abs.(cx-pb.meta.ucon),
-				      abs.(cx-pb.meta.lcon)))
+ if nc != 0
+  #active constraints
+  Ic = findall(x->(norm(x) <= active_prec_c),
+                   min(abs.(cx-pb.meta.ucon),
+                   abs.(cx-pb.meta.lcon)))
 
- Jc = hcat(Matrix(1.0I, n, n)[:,Ib], Jx'[:,Ic])
+  Jc = hcat(Matrix(1.0I, n, n)[:,Ib], Jx'[:,Ic])
+ else
+  Ic = []
+  Jc = hcat(Matrix(1.0I, n, n)[:,Ib])
+ end
+
 
  l = pinv(Jc) * (- gx)
 

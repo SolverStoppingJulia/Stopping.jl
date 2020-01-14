@@ -1,12 +1,13 @@
 # On vérifie que le constructeur par défaut fonctionne
 ls_at_t = LSAtT(0.0)
 
-@test ls_at_t.x == 0.0
-@test isnan(ls_at_t.ht)
-@test isnan(ls_at_t.gt)
-@test isnan(ls_at_t.h₀)
-@test isnan(ls_at_t.g₀)
-@test isnan(ls_at_t.start_time)
+@test ls_at_t.x   == 0.0
+@test ls_at_t.ht  == nothing
+@test ls_at_t.gt  == nothing
+@test ls_at_t.h₀  == nothing
+@test ls_at_t.g₀  == nothing
+
+@test ls_at_t.start_time == nothing
 
 # On test la fonction update!(...)
 update!(ls_at_t, x = 1.0, ht = 1.0, gt = 1.0, h₀ = 1.0)

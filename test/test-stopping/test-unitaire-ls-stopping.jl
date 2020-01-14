@@ -5,10 +5,10 @@ h = nothing
 lsatx = LSAtT(0.0)
 
 # Create the stopping object to test
-stop = LS_Stopping(h, (x,y)-> armijo(x,y), lsatx);
+stop = LS_Stopping(h, (x,y)-> armijo(x,y), lsatx)
 
 # We tests different functions of stopping
-OK = update_and_start!(stop, x = 1.0)
+OK = update_and_start!(stop, x = 1.0, g₀ = NaN, h₀ = NaN, ht = NaN)
 @test OK == true
 @test status(stop) == :DomainError
 @test stop.current_state.x == 1.0

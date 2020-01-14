@@ -10,13 +10,19 @@ function armijo(h      :: Any, #LineModel,  # never used?
                 h_at_t :: LSAtT;
                 τ₀ 	   :: Float64 = 0.01)
 
-    fact = -0.8
-    Eps = 1e-10
-    hgoal = h_at_t.ht - h_at_t.h₀ - h_at_t.g₀ * h_at_t.x * τ₀
-    # Armijo = (h_at_t.ht <= hgoal)# || ((h_at_t.ht <= h_at_t.h₀ + Eps * abs(h_at_t.h₀)) & (h_at_t.gt <= fact * h_at_t.g₀))
-	# Armijo_HZ =
-	# positive = h_at_t.x > 0.0   # positive step
-    return max(hgoal, 0.0)
+    if (h_at_t.ht == nothing) || (h_at_t.h₀ == nothing) || (h_at_t.g₀ == nothing)
+     #printstyled("Warning: Nothing entries in the State.\n", color = :red)
+     return throw(error("Nothing entries in the State."))
+    else
+
+     fact = -0.8
+     Eps = 1e-10
+     hgoal = h_at_t.ht - h_at_t.h₀ - h_at_t.g₀ * h_at_t.x * τ₀
+     # Armijo = (h_at_t.ht <= hgoal)# || ((h_at_t.ht <= h_at_t.h₀ + Eps * abs(h_at_t.h₀)) & (h_at_t.gt <= fact * h_at_t.g₀))
+	 # Armijo_HZ =
+	 # positive = h_at_t.x > 0.0   # positive step
+     return max(hgoal, 0.0)
+    end
 end
 
 """
@@ -29,9 +35,14 @@ function wolfe(h      :: Any, #LineModel,
                h_at_t :: LSAtT;
                τ₁ 	  :: Float64 = 0.99)
 
-    wolfe = (τ₁ .* h_at_t.g₀) - (abs(h_at_t.gt))
-	#positive = h_at_t.x > 0.0   # positive step
-    return max(wolfe, 0.0)
+    if (h_at_t.g₀ == nothing) || (h_at_t.gt == nothing)
+     return throw(error("Nothing entries in the State."))
+    else
+
+     wolfe = (τ₁ .* h_at_t.g₀) - (abs(h_at_t.gt))
+	 #positive = h_at_t.x > 0.0   # positive step
+     return max(wolfe, 0.0)
+    end
 end
 
 """

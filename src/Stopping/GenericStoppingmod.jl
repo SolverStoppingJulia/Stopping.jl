@@ -89,7 +89,7 @@ function start!(stp :: AbstractStopping)
   stp.meta.start_time = time()
  end
  #and synchornize with the State
- if isnan(stt_at_x.start_time)
+ if stt_at_x.start_time == nothing
   stt_at_x.start_time = time()
  end
 

@@ -23,33 +23,35 @@ the iteration x. Basic information is:
 mutable struct 	NLPAtX <: AbstractState
 
 #Unconstrained State
-    x            :: Iterate     # current point
+    x            :: Vector     # current point
     fx           :: FloatVoid   # objective function
-    gx           :: Iterate     # gradient
-    Hx           :: MatrixType  # Accurate?
+    gx           :: Iterate     # gradient, size: x
+    Hx           :: MatrixType  # Accurate? size: |x| x |x|
 
 #Bounds State
-    mu           :: Iterate     # Lagrange multipliers with bounds
+    mu           :: Iterate     # Lagrange multipliers with bounds size of |x|
 
 #Constrained State
     cx           :: Iterate     # vector of constraints lc <= c(x) <= uc
-    Jx           :: MatrixType  # jacobian matrix
-    lambda       :: Iterate     # Lagrange multipliers
+    Jx           :: MatrixType  # jacobian matrix, size: |lambda| x |x|
+    lambda       :: Vector    # Lagrange multipliers
 
  #Resources State
     start_time   :: FloatVoid
     evals        :: Counters
 
- function NLPAtX(x          :: Iterate,
-                 lambda     :: Iterate;
-                 fx         :: FloatVoid    = NaN,
-                 gx         :: Iterate      = NaN * fill(1.0, size(x)),
-                 Hx         :: MatrixType   = zeros(0,0),
-                 mu         :: Iterate      = NaN * fill(1.0, size(x)),
-                 cx         :: Iterate      = NaN * fill(1, size(lambda)),
-                 Jx         :: MatrixType   = zeros(length(lambda),length(x)),
-                 start_time :: FloatVoid    = NaN,
+ function NLPAtX(x          :: Vector,
+                 lambda     :: Vector;
+                 fx         :: FloatVoid    = nothing,
+                 gx         :: Iterate      = nothing,
+                 Hx         :: MatrixType   = nothing,
+                 mu         :: Iterate      = nothing,
+                 cx         :: Iterate      = nothing,
+                 Jx         :: MatrixType   = nothing,
+                 start_time :: FloatVoid    = nothing,
                  evals      :: Counters     = Counters())
+
+  _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
 
   return new(x, fx, gx, Hx, mu, cx, Jx, lambda, start_time, evals)
  end
@@ -58,15 +60,18 @@ end
 """
 An additional constructor for unconstrained problems
 """
-function NLPAtX(x          :: Iterate;
-                fx         :: FloatVoid    = NaN,
-                gx         :: Iterate      = NaN * fill(1.0, size(x)),
-                Hx         :: MatrixType   = zeros(0,0),
-                start_time :: FloatVoid    = NaN,
+function NLPAtX(x          :: Vector;
+                fx         :: FloatVoid    = nothing,
+                gx         :: Iterate      = nothing,
+                Hx         :: MatrixType   = nothing,
+                mu         :: Iterate      = nothing,
+                start_time :: FloatVoid    = nothing,
                 evals      :: Counters     = Counters())
 
+    _size_check(x, zeros(0), fx, gx, Hx, mu, nothing, nothing)
+
 	return NLPAtX(x, zeros(0), fx = fx, gx = gx,
-                  Hx = Hx, start_time = start_time, evals = evals)
+                  Hx = Hx, mu = mu, start_time = start_time, evals = evals)
 end
 
 """
@@ -87,6 +92,8 @@ function update!(nlpatx :: NLPAtX;
                  tmps   :: FloatVoid  = nothing,
                  evals  :: Union{Counters, Nothing}  = nothing)
 
+    _size_check(nlpatx.x, nlpatx.lambda, fx, gx, Hx, mu, cx, Jx)
+
     nlpatx.x   = x  == nothing  ? nlpatx.x   : x
     nlpatx.fx  = fx == nothing  ? nlpatx.fx  : fx
     nlpatx.gx  = gx == nothing  ? nlpatx.gx  : gx
@@ -103,6 +110,31 @@ function update!(nlpatx :: NLPAtX;
     return nlpatx
 end
 
+"""
+Check the size of the entries in the State
+"""
+function _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
+
+    if gx != nothing && length(gx) != length(x)
+     throw(error("Wrong size of gx in the NLPAtX."))
+    end
+    if Hx != nothing && size(Hx) != (length(x), length(x))
+     throw(error("Wrong size of Hx in the NLPAtX."))
+    end
+    if mu != nothing && length(mu) != length(x)
+     throw(error("Wrong size of mu in the NLPAtX."))
+    end
+
+    if lambda != zeros(0)
+        if cx != nothing && length(cx) != length(lambda)
+         throw(error("Wrong size of cx in the NLPAtX."))
+        end
+        if Jx != nothing && size(Jx) != (length(lambda), length(x))
+         throw(error("Wrong size of Jx in the NLPAtX."))
+        end
+    end
+
+end
 
 # function convert_nlp(T,  nlpatx :: NLPAtX)
 #
