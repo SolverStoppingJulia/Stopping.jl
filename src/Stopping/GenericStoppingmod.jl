@@ -52,6 +52,15 @@ mutable struct GenericStopping <: AbstractStopping
 end
 
 """
+GenericStopping(pb, x): additional default constructor
+The function creates a Stopping where the State is by default.
+Keywords arguments are forwarded to the classical constructor.
+"""
+function GenericStopping(pb :: Any, x :: Iterate; kwargs...)
+ return GenericStopping(pb, GenericState(x); kwargs...)
+end
+
+"""
 update_and_start!: Update the values in the State and initializes the Stopping
 Returns the optimity status of the problem.
 """

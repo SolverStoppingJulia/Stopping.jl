@@ -7,6 +7,12 @@ stop0 = GenericStopping(rosenbrock, state0, tol_check = (atol,rtol,opt0) -> atol
 
 @test start!(stop0) == true #opt0 = Inf, so any point is optimal.
 
+#Initialize a GenericStopping by default
+stop_def = GenericStopping(rosenbrock, x0, atol = 1.0)
+@test stop_def.current_state.x == x0
+@test stop_def.meta.atol == 1.0
+@test start!(stop_def) == true
+
 #We build a first stopping:
 x0 = ones(6)
 state = GenericState(x0)
