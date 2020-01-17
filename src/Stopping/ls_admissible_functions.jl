@@ -12,7 +12,7 @@ function armijo(h      :: Any, #LineModel,  # never used?
 
     if (h_at_t.ht == nothing) || (h_at_t.h₀ == nothing) || (h_at_t.g₀ == nothing)
      #printstyled("Warning: Nothing entries in the State.\n", color = :red)
-     return throw(error("Nothing entries in the State."))
+     return throw(error("Nothing entries in the State. ht, h₀ and g₀ are mandatory."))
     else
 
      fact = -0.8
@@ -70,11 +70,16 @@ Strong Wolfe criterion: |∇f(x+θd)| < τ₁||∇f(x)||.
 """
 function armijo_wolfe(h      :: Any, #LineModel,
                       h_at_t :: LSAtT;
+                      τ₀ 	 :: Float64 = 0.01,
                       τ₁     :: Float64 = 0.99)
-
+   if (h_at_t.ht == nothing) || (h_at_t.gt == nothing) || (h_at_t.h₀ == nothing) || (h_at_t.g₀ == nothing)
+    #printstyled("Warning: Nothing entries in the State.\n", color = :red)
+    return throw(error("Nothing entries in the State. ht, h₀ and g₀ are mandatory."))
+   else
     wolfe = (τ₁ .* h_at_t.g₀) - (abs(h_at_t.gt))
     armijo = h_at_t.ht - h_at_t.h₀ - h_at_t.g₀ * h_at_t.x * τ₀
     return max(armijo, wolfe, 0.0)
+   end
 end
 
 # """
