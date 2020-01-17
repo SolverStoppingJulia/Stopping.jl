@@ -13,10 +13,7 @@
 # https://coin-or.github.io/Ipopt/OPTIONS.html#OPTIONS_REF
 ###############################################################################
 
-using NLPModels
-using Ipopt
-using NLPModelsIpopt
-using Stopping
+using Ipopt, NLPModels, NLPModelsIpopt, Stopping
 
 include("../test-stopping/rosenbrock.jl")
 x0  = 1.5 * ones(6)
@@ -32,7 +29,7 @@ stats = ipopt(nlp, print_level = 0, x0 = x0)
 @show stats.solution, stats.status
 
 #Using Stopping, the idea is to create a buffer function
-function solveIpopt(stp)
+function solveIpopt(stp :: NLPStopping)
 
  #xk = solveIpopt(stop.pb, stop.current_state.x)
  stats = ipopt(nlp, print_level     = 0,
