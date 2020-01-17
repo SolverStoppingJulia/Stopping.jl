@@ -50,7 +50,7 @@ function _feasibility(pb    :: AbstractNLPModel,
 end
 
 """
-To be documented
+KKT: verifies the KKT conditions
 """
 function KKT(pb    :: AbstractNLPModel,
              state :: NLPAtX;

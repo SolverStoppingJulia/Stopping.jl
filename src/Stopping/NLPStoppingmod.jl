@@ -67,6 +67,21 @@ mutable struct NLPStopping <: AbstractStopping
 end
 
 """
+NLPStopping(pb): additional default constructor
+The function creates a Stopping where the State is by default and the
+optimality function is the function KKT().
+
+key arguments are forwarded to the classical constructor.
+"""
+function NLPStopping(pb :: AbstractNLPModel; kwargs...)
+ #Create a default NLPAtX
+ nlp_at_x = NLPAtX(pb.meta.x0)
+ admissible = (x,y) -> KKT(x,y)
+
+ return NLPStopping(pb, admissible, nlp_at_x; kwargs...)
+end
+
+"""
 _init_max_counters(): initialize the maximum number of evaluations on each of
                         the functions present in the Counters (NLPModels).
 """

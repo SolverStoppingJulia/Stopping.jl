@@ -24,3 +24,8 @@ sol = ones(6)
 fill_in!(stop_nlp_c, sol)
 
 @test stop!(stop_nlp_c) == true
+
+stop_nlp_default = NLPStopping(nlp2, atol = 1.0)
+fill_in!(stop_nlp_default, sol)
+@test stop_nlp_default.meta.atol == 1.0
+@test stop!(stop_nlp_default) == true
