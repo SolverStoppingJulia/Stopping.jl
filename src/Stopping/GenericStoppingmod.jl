@@ -98,15 +98,15 @@ function start!(stp :: AbstractStopping)
   stp.meta.start_time = time()
  end
  #and synchornize with the State
- if stt_at_x.start_time == nothing
-  stt_at_x.start_time = time()
+ if stt_at_x.current_time == nothing
+  update!(stt_at_x, current_time = time())
  end
 
  # Optimality check
  optimality0          = _optimality_check(stp)
  stp.meta.optimality0 = optimality0
  if isnan(optimality0)
-   printstyled("DomainError: optimality0 is NaN\n", color = :red)
+   #printstyled("DomainError: optimality0 is NaN\n", color = :red)
    stp.meta.domainerror = true
  end
 

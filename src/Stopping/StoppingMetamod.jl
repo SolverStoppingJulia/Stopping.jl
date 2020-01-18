@@ -24,8 +24,8 @@ It's a mutable struct therefore we can modified elements of a StoppingMeta.
 	- The optimality0 is modified once at the beginning of the algorithm (start!)
     - The start_time is modified once at the beginning of the algorithm (start!)
     if not precised before.
-	- The different status fail_sub_pb, unbounded, tired, stalled, optimal and
-	  infeasible are modified according to the data of the algorithm.
+	- The different status fail_sub_pb, unbounded, tired, stalled, optimal,
+	  suboptimal, and infeasible are modified according to the data of the algorithm.
 """
 mutable struct StoppingMeta <: AbstractStoppingMeta
 

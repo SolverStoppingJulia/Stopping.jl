@@ -14,7 +14,7 @@ the iteration x. Basic information is:
  - Jx : jacobian matrix of the constraint function at x
  - lambda : Lagrange multiplier of the constraints
 
- - start_time : Default is a NaN, can be updated to fit the start of the algorithm.
+ - current_time : Default is a void, can be updated to fit the start of the algorithm.
  - evals : number of evaluations of the function (import the type NLPModels.Counters)
 
  All these information (except for x) are optionnal and need to be update when
@@ -39,41 +39,41 @@ mutable struct 	NLPAtX <: AbstractState
     lambda       :: Vector    # Lagrange multipliers
 
  #Resources State
-    start_time   :: FloatVoid
-    evals        :: Counters
+    current_time   :: FloatVoid
+    evals          :: Counters
 
- function NLPAtX(x          :: Vector,
-                 lambda     :: Vector;
-                 fx         :: FloatVoid    = nothing,
-                 gx         :: Iterate      = nothing,
-                 Hx         :: MatrixType   = nothing,
-                 mu         :: Iterate      = nothing,
-                 cx         :: Iterate      = nothing,
-                 Jx         :: MatrixType   = nothing,
-                 start_time :: FloatVoid    = nothing,
-                 evals      :: Counters     = Counters())
+ function NLPAtX(x            :: Vector,
+                 lambda       :: Vector;
+                 fx           :: FloatVoid    = nothing,
+                 gx           :: Iterate      = nothing,
+                 Hx           :: MatrixType   = nothing,
+                 mu           :: Iterate      = nothing,
+                 cx           :: Iterate      = nothing,
+                 Jx           :: MatrixType   = nothing,
+                 current_time :: FloatVoid    = nothing,
+                 evals        :: Counters     = Counters())
 
   _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
 
-  return new(x, fx, gx, Hx, mu, cx, Jx, lambda, start_time, evals)
+  return new(x, fx, gx, Hx, mu, cx, Jx, lambda, current_time, evals)
  end
 end
 
 """
 An additional constructor for unconstrained problems
 """
-function NLPAtX(x          :: Vector;
-                fx         :: FloatVoid    = nothing,
-                gx         :: Iterate      = nothing,
-                Hx         :: MatrixType   = nothing,
-                mu         :: Iterate      = nothing,
-                start_time :: FloatVoid    = nothing,
-                evals      :: Counters     = Counters())
+function NLPAtX(x            :: Vector;
+                fx           :: FloatVoid    = nothing,
+                gx           :: Iterate      = nothing,
+                Hx           :: MatrixType   = nothing,
+                mu           :: Iterate      = nothing,
+                current_time :: FloatVoid    = nothing,
+                evals        :: Counters     = Counters())
 
     _size_check(x, zeros(0), fx, gx, Hx, mu, nothing, nothing)
 
 	return NLPAtX(x, zeros(0), fx = fx, gx = gx,
-                  Hx = Hx, mu = mu, start_time = start_time, evals = evals)
+                  Hx = Hx, mu = mu, current_time = current_time, evals = evals)
 end
 
 """

@@ -1,14 +1,15 @@
-import NLPModels: grad
+import NLPModels: grad, cons, jac
 
-export unconstrained
 """
 unconstrained: return the infinite norm of the gradient of the objective function
+
+required: state.gx (filled if void)
 """
 function unconstrained(pb    :: AbstractNLPModel,
                        state :: NLPAtX;
                        pnorm :: Float64 = Inf)
 
-    if true in (isnan.(state.gx)) # should be filled if empty
+    if state.gx == nothing # should be filled if empty
         update!(state, gx = grad(pb, state.x))
     end
 
@@ -17,13 +18,33 @@ function unconstrained(pb    :: AbstractNLPModel,
     return res
 end
 
-import NLPModels: grad, cons, jac
+"""
+optim_check_bounded: gradient of the objective function projected
+
+required: state.gx (filled if void)
+"""
+function optim_check_bounded(pb    :: AbstractNLPModel,
+                             state :: NLPAtX;
+                             pnorm :: Float64 = Inf)
+
+    if state.gx == nothing # should be filled if void
+     update!(state, gx = grad(pb, state.x))
+    end
+
+    proj = max.(min.(state.x - state.gx, pb.meta.uvar), pb.meta.lvar)
+    gradproj = x - proj
+    res = norm(gradproj, pnorm)
+
+    return res
+end
+
 """
 constrained: return the violation of the KKT conditions
 length(lambda) > 0
 """
 function _grad_lagrangian(pb    :: AbstractNLPModel,
                           state :: NLPAtX)
+
  if pb.meta.ncon == 0 & !has_bounds(pb)
   return state.gx
  elseif pb.meta.ncon == 0
@@ -68,6 +89,10 @@ end
 
 """
 KKT: verifies the KKT conditions
+
+required: state.gx
++ if bounds: state.mu
++ if constraints: state.cx, state.Jx, state.lambda
 """
 function KKT(pb    :: AbstractNLPModel,
              state :: NLPAtX;

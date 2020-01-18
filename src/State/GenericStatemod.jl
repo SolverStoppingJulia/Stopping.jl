@@ -9,23 +9,13 @@ mutable struct GenericState <: AbstractState
     x :: Iterate
 
     #Starting time
-    start_time :: FloatVoid
+    current_time :: FloatVoid
 
-    function GenericState(x          :: Iterate;
-                          start_time :: FloatVoid = nothing)
+    function GenericState(x            :: Iterate;
+                          current_time :: FloatVoid = nothing)
 
-      return new(x, start_time)
+      return new(x, current_time)
    end
-end
-
-function update!(stateatx :: AbstractState;
-                 x        :: Iterate    = nothing,
-                 tmps     :: FloatVoid  = nothing)
-
- stateatx.x          = x      == nothing ? stateatx.x : x
- stateatx.start_time = tmps   == nothing ? stateatx.start_time : tmps
-
- return stateatx
 end
 
 """

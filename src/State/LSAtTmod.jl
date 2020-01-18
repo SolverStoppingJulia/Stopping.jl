@@ -11,7 +11,7 @@ Tracked data can include:
  - gt : h'(θ)
  - h₀ : h(0)
  - g₀ : h'(0)
- - start_time: the time at which the line search algorithm started.
+ - current_time: the time at which the line search algorithm started.
 
 Unless they are defined otherwise, the default value for all parameter is NaN
 (except for x). They can be updated through the update! function.
@@ -30,16 +30,16 @@ mutable struct 	LSAtT <: AbstractState
     h₀           :: FloatVoid  # h(0)
     g₀           :: FloatVoid  # h'(0)
 
-    start_time   :: FloatVoid
+    current_time   :: FloatVoid
 
- function LSAtT(t          :: Number;
-                ht         :: FloatVoid = nothing,
-                gt         :: FloatVoid = nothing,
-                h₀         :: FloatVoid = nothing,
-                g₀         :: FloatVoid = nothing,
-                start_time :: FloatVoid = nothing)
+ function LSAtT(t            :: Number;
+                ht           :: FloatVoid = nothing,
+                gt           :: FloatVoid = nothing,
+                h₀           :: FloatVoid = nothing,
+                g₀           :: FloatVoid = nothing,
+                current_time :: FloatVoid = nothing)
 
-  return new(t, ht, gt, h₀, g₀, start_time)
+  return new(t, ht, gt, h₀, g₀, current_time)
  end
 end
 
@@ -53,5 +53,5 @@ function copy(ls_at_t :: LSAtT)
                  gt = copy(ls_at_t.gt),
                  h₀ = copy(ls_at_t.h₀),
                  g₀ = copy(ls_at_t.g₀),
-                 start_time = copy(ls_at_t.start_time))
+                 current_time = copy(ls_at_t.current_time))
 end

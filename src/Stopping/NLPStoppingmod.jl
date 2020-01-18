@@ -1,4 +1,4 @@
-export NLPStopping, unconstrained, fill_in!
+export NLPStopping, unconstrained, KKT, fill_in!
 
 ################################################################################
 # Specific stopping module for non linear problems

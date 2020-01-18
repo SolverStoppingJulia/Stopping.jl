@@ -14,7 +14,7 @@ uncons_nlp_at_x = NLPAtX(zeros(10))
 @test uncons_nlp_at_x.Jx == nothing
 
 @test uncons_nlp_at_x.lambda == zeros(0)
-@test uncons_nlp_at_x.start_time == nothing
+@test uncons_nlp_at_x.current_time == nothing
 @test (!(uncons_nlp_at_x.evals == nothing))
 
 # On vérifie que le constucteur pour problème avec contrainte fonctionne
@@ -28,12 +28,12 @@ cons_nlp_at_x = NLPAtX(zeros(10), zeros(10))
 @test cons_nlp_at_x.cx == nothing
 @test cons_nlp_at_x.Jx == nothing
 @test (false in (cons_nlp_at_x.lambda .== 0.0)) == false
-@test cons_nlp_at_x.start_time == nothing
+@test cons_nlp_at_x.current_time == nothing
 
 
 # On vérifie que la fonction update! fonctionne
 update!(uncons_nlp_at_x, x = ones(10), fx = 1.0, gx = ones(10))
-update!(uncons_nlp_at_x, lambda = ones(10), start_time = 1.0)
+update!(uncons_nlp_at_x, lambda = ones(10), current_time = 1.0)
 update!(uncons_nlp_at_x, Hx = ones(10,10), mu = ones(10), cx = ones(10), Jx = ones(10,10))
 
 @test (false in (uncons_nlp_at_x.x .== 1.0)) == false #assez bizarre comme test...
@@ -44,7 +44,7 @@ update!(uncons_nlp_at_x, Hx = ones(10,10), mu = ones(10), cx = ones(10), Jx = on
 @test uncons_nlp_at_x.cx == ones(10)
 @test (false in (uncons_nlp_at_x.Jx .== 1.0)) == false
 @test (false in (uncons_nlp_at_x.lambda .== 1.0)) == false
-@test uncons_nlp_at_x.start_time == 1.0
+@test uncons_nlp_at_x.current_time == 1.0
 
 nlp_64 = NLPAtX(ones(10))
 nlp_64.x = ones(10)
@@ -56,10 +56,10 @@ nlp_64.gx = ones(10)
 # @test typeof(nlp_32.fx[1]) == Float32
 # @test typeof(nlp_32.gx[1]) == Float32
 # @test isnan(nlp_32.mu[1])
-# @test isnan(nlp_32.start_time)
+# @test isnan(nlp_32.current_time)
 #
 # @test typeof(nlp_64.x[1]) == Float64
 # @test typeof(nlp_64.fx[1]) == Float64
 # @test typeof(nlp_64.gx[1]) == Float64
 # @test isnan(nlp_64.mu[1])
-# @test isnan(nlp_64.start_time)
+# @test isnan(nlp_64.current_time)
