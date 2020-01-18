@@ -1,7 +1,7 @@
 ##############################################################################
 #
 # In this test problem we consider a backtracking algorithm for 1D optimization.
-# The scenario considers three different stopping criterion to sovle a specific
+# The scenario considers three different stopping criterion to solve a specific
 # problem.
 #
 # This example illustrates how to use a "structure" to handle the algorithmic
@@ -35,7 +35,8 @@ function backtracking_ls(stp :: LS_Stopping;
  state = stp.current_state; xt = state.x;
 
  #First call to stopping
- OK = update_and_start!(stp, x = xt, ht = state.h₀, gt = state.g₀)
+ gt = grad_need ? stp.pb.g(xt) : stp.current_state.gt
+ OK = update_and_start!(stp, x = xt, ht = stp.pb.f(xt), gt = gt)
 
  #main loop
  while !OK
@@ -117,6 +118,7 @@ lsstp3 = LS_Stopping(h, (x,y)-> armijo_wolfe(x,y, τ₀ = 0.01, τ₁ = 0.99), l
 
 parameters = ParamLS(back_update = 0.5, grad_need = false)
 
+printstyled("1D Optimization: backtracking tutorial.\n", color = :green)
 printstyled("backtracking line search with Armijo:\n", color = :green)
 backtracking_ls(lsstp, parameters)
 @show status(lsstp)
