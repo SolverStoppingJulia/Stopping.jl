@@ -70,9 +70,9 @@ function _unbounded_check!(stp  :: LS_Stopping,
  return stp
 end
 
-function _optimality_check(stp  :: LS_Stopping)
+function _optimality_check(stp  :: LS_Stopping; kwargs...)
 
- optimality = stp.optimality_check(stp.pb, stp.current_state)
+ optimality = stp.optimality_check(stp.pb, stp.current_state; kwargs...)
 
  return optimality
 end

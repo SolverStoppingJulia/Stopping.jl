@@ -196,9 +196,9 @@ problem. In it's basic form only checks the norm of the gradient.
 This is the NLP specialized version that takes into account the structure of the
 NLPStopping where the optimality_check function is an input.
 """
-function _optimality_check(stp  :: NLPStopping)
+function _optimality_check(stp  :: NLPStopping; kwargs...)
 
- optimality = stp.optimality_check(stp.pb, stp.current_state)
+ optimality = stp.optimality_check(stp.pb, stp.current_state; kwargs...)
 
  return optimality
 end

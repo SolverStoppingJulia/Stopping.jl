@@ -29,3 +29,10 @@ stop_nlp_default = NLPStopping(nlp2, atol = 1.0)
 fill_in!(stop_nlp_default, sol)
 @test stop_nlp_default.meta.atol == 1.0
 @test stop!(stop_nlp_default) == true
+
+#Keywords in the stop! call
+nlp_at_x_kargs = NLPAtX(x0, NaN*ones(nlp2.meta.ncon))
+stop_nlp_kargs = NLPStopping(nlp2, (x,y; test = 1.0) -> Stopping.KKT(x,y) + test, nlp_at_x_c)
+fill_in!(stop_nlp_kargs, sol)
+@test stop!(stop_nlp_kargs) == false
+@test stop!(stop_nlp_kargs, test = 0.0) == true

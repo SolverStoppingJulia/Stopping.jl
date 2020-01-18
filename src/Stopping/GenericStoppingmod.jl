@@ -87,8 +87,10 @@ end
  at an optimal solution from the beginning.
 
  Note: start! initialize the start_time (if not done before) and meta.optimality0.
+
+ Keywords argument are sent to the _optimality_check!
 """
-function start!(stp :: AbstractStopping)
+function start!(stp :: AbstractStopping; kwargs...)
 
  stt_at_x = stp.current_state
  x        = stt_at_x.x
@@ -103,7 +105,7 @@ function start!(stp :: AbstractStopping)
  end
 
  # Optimality check
- optimality0          = _optimality_check(stp)
+ optimality0          = _optimality_check(stp; kwargs...)
  stp.meta.optimality0 = optimality0
  if isnan(optimality0)
    #printstyled("DomainError: optimality0 is NaN\n", color = :red)
@@ -161,16 +163,19 @@ stop!:
 Inputs: Interface Stopping. Output: optimal or not.
 Serves the same purpose as start! When in an algorithm, tells us if we
 stop the algorithm (because we have reached optimality or we loop infinitely,
-etc)."""
-function stop!(stp :: AbstractStopping)
+etc).
+
+Keywords argument are sent to the _optimality_check!
+"""
+function stop!(stp :: AbstractStopping; kwargs...)
 
  x        = stp.current_state.x
  time     = stp.meta.start_time
 
  # Optimality check
- score = _optimality_check(stp)
+ score = _optimality_check(stp; kwargs...)
  if isnan(score)
-  printstyled("DomainError: score is NaN\n", color = :red)
+  #printstyled("DomainError: score is NaN\n", color = :red)
   stp.meta.domainerror = true
  end
  stp.meta.optimal = _null_test(stp, score)
@@ -303,7 +308,7 @@ end
 _optimality_check: If we reached a good approximation of an optimum to our
 problem.
 """
-function _optimality_check(stp  :: AbstractStopping)
+function _optimality_check(stp  :: AbstractStopping; kwargs...)
  return Inf
 end
 
