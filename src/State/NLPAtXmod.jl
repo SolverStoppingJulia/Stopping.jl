@@ -19,6 +19,8 @@ the iteration x. Basic information is:
 
  All these information (except for x) are optionnal and need to be update when
  required. The update is done trhough the update! function.
+
+ The constructor check the size of the entries.
 """
 mutable struct 	NLPAtX <: AbstractState
 
@@ -75,42 +77,6 @@ function NLPAtX(x          :: Vector;
 end
 
 """
-Updates the (desired) values of an object of type NLPAtX.
-Inputs:
- - An NLPAtX object
- - Any keywords that needs to be updated.
-"""
-function update!(nlpatx :: NLPAtX;
-                 x      :: Iterate    = nothing,
-                 fx     :: FloatVoid  = nothing,
-                 gx     :: Iterate    = nothing,
-                 Hx     :: MatrixType = nothing,
-                 mu     :: Iterate    = nothing,
-                 cx     :: Iterate    = nothing,
-                 Jx     :: MatrixType = nothing,
-                 lambda :: Iterate    = nothing,
-                 tmps   :: FloatVoid  = nothing,
-                 evals  :: Union{Counters, Nothing}  = nothing)
-
-    _size_check(nlpatx.x, nlpatx.lambda, fx, gx, Hx, mu, cx, Jx)
-
-    nlpatx.x   = x  == nothing  ? nlpatx.x   : x
-    nlpatx.fx  = fx == nothing  ? nlpatx.fx  : fx
-    nlpatx.gx  = gx == nothing  ? nlpatx.gx  : gx
-    nlpatx.Hx  = Hx == nothing  ? nlpatx.Hx  : Hx
-    nlpatx.mu  = mu == nothing  ? nlpatx.mu  : mu
-    nlpatx.cx  = cx == nothing  ? nlpatx.cx  : cx
-    nlpatx.Jx  = Jx == nothing  ? nlpatx.Jx  : Jx
-
-    nlpatx.lambda     = lambda == nothing  ? nlpatx.lambda    : lambda
-
-    nlpatx.start_time = tmps   == nothing ? nlpatx.start_time : tmps
-    nlpatx.evals      = evals  == nothing ? nlpatx.evals      : evals
-
-    return nlpatx
-end
-
-"""
 Check the size of the entries in the State
 """
 function _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
@@ -135,18 +101,3 @@ function _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
     end
 
 end
-
-# function convert_nlp(T,  nlpatx :: NLPAtX)
-#
-#     nlpatxT         = NLPAtX(zeros(T, length(nlpatx.x)))
-#     nlpatxT.x       = typeof(nlpatx.x)      != Nothing ? convert.(T, nlpatx.x)      : nlpatx.x
-#     nlpatxT.fx      = typeof(nlpatx.fx)     != Nothing ? convert.(T, nlpatx.fx)     : nlpatx.fx
-#     nlpatxT.gx      = typeof(nlpatx.gx)     != Nothing ? convert.(T, nlpatx.gx)     : nlpatx.gx
-#     nlpatxT.Hx      = typeof(nlpatx.Hx)     != Nothing ? convert.(T, nlpatx.Hx)     : nlpatx.Hx
-#     nlpatxT.mu      = typeof(nlpatx.mu)     != Nothing ? convert.(T, nlpatx.mu)     : nlpatx.mu
-#     nlpatxT.cx      = typeof(nlpatx.cx)     != Nothing ? convert.(T, nlpatx.cx)     : nlpatx.cx
-#     nlpatxT.Jx      = typeof(nlpatx.Jx)     != Nothing ? convert.(T, nlpatx.Jx)     : nlpatx.Jx
-#     nlpatxT.lambda  = typeof(nlpatx.lambda) != Nothing ? convert.(T, nlpatx.lambda) : nlpatx.lambda
-#
-#     return nlpatxT
-# end

@@ -11,7 +11,7 @@ ls_at_t = LSAtT(0.0)
 
 # On test la fonction update!(...)
 update!(ls_at_t, x = 1.0, ht = 1.0, gt = 1.0, h₀ = 1.0)
-update!(ls_at_t, g₀ = 1.0, tmps = 0.0)
+update!(ls_at_t, g₀ = 1.0, start_time = 0.0)
 
 @test ls_at_t.x == 1.0
 @test ls_at_t.ht == 1.0

@@ -33,7 +33,7 @@ cons_nlp_at_x = NLPAtX(zeros(10), zeros(10))
 
 # On vérifie que la fonction update! fonctionne
 update!(uncons_nlp_at_x, x = ones(10), fx = 1.0, gx = ones(10))
-update!(uncons_nlp_at_x, lambda = ones(10), tmps = 1.0)
+update!(uncons_nlp_at_x, lambda = ones(10), start_time = 1.0)
 update!(uncons_nlp_at_x, Hx = ones(10,10), mu = ones(10), cx = ones(10), Jx = ones(10,10))
 
 @test (false in (uncons_nlp_at_x.x .== 1.0)) == false #assez bizarre comme test...
