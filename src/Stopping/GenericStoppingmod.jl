@@ -128,13 +128,14 @@ function reinit!(stp :: AbstractStopping)
  stp.meta.start_time  = NaN
  stp.meta.optimality0 = 1.0
 
- stp.meta.optimal_sub_pb = false
+ stp.meta.fail_sub_pb = false
 
  stp.meta.unbounded   = false
  stp.meta.tired       = false
  stp.meta.stalled     = false
  stp.meta.resources   = false
  stp.meta.optimal     = false
+ stp.meta.suboptimal  = false
  stp.meta.main_pb     = false
  stp.meta.domainerror = false
 
@@ -211,7 +212,7 @@ function _stalled_check!(stp :: AbstractStopping,
 
  max_iter = stp.meta.nb_of_stop >= stp.meta.max_iter
 
- stp.meta.stalled = max_iter || stp.meta.optimal_sub_pb
+ stp.meta.stalled = max_iter || stp.meta.fail_sub_pb || stp.meta.suboptimal
 
  return stp
 end

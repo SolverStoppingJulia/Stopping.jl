@@ -24,7 +24,7 @@ It's a mutable struct therefore we can modified elements of a StoppingMeta.
 	- The optimality0 is modified once at the beginning of the algorithm (start!)
     - The start_time is modified once at the beginning of the algorithm (start!)
     if not precised before.
-	- The different status optimal_sub_pb, unbounded, tired, stalled, optimal and
+	- The different status fail_sub_pb, unbounded, tired, stalled, optimal and
 	  infeasible are modified according to the data of the algorithm.
 """
 mutable struct StoppingMeta <: AbstractStoppingMeta
@@ -54,7 +54,7 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
  start_time :: Float64
 
  # stopping properties status of the problem)
- optimal_sub_pb      :: Bool
+ fail_sub_pb         :: Bool
  unbounded           :: Bool
  tired               :: Bool
  stalled             :: Bool
@@ -63,6 +63,7 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
  infeasible          :: Bool
  main_pb             :: Bool
  domainerror         :: Bool
+ suboptimal          :: Bool
 
  function StoppingMeta(;atol                :: Number   = 1.0e-6,
                         rtol                :: Number   = 1.0e-15,
@@ -77,7 +78,7 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
                         start_time          :: Float64  = NaN,
                         kwargs...)
 
-   optimal_sub_pb = false
+   fail_sub_pb = false
 
    try
        tol_check(1,1,1)
@@ -93,12 +94,13 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
    infeasible  = false
    main_pb     = false
    domainerror = false
+   suboptimal  = false
 
    nb_of_stop = 0
 
    return new(atol, rtol, optimality0, tol_check, unbounded_threshold, unbounded_x,
               max_f, max_eval, max_iter, max_time, nb_of_stop, start_time,
-              optimal_sub_pb, unbounded, tired, stalled, resources, optimal,infeasible,
-              main_pb, domainerror)
+              fail_sub_pb, unbounded, tired, stalled, resources, optimal,infeasible,
+              main_pb, domainerror, suboptimal)
  end
 end

@@ -34,7 +34,7 @@ function AlternatingDirections(stp)
 
   #check if we have a fixed point
   Fix = dot(xk-xk2,xk-xk2)
-  if Fix <= min(eps(Float64),stp.meta.atol) stp.meta.optimal_sub_pb = true end
+  if Fix <= min(eps(Float64),stp.meta.atol) stp.meta.suboptimal = true end
   #call the stopping
   OK = update_and_stop!(stp, x = xk2, cx = cons(stp.pb, xk2))
 

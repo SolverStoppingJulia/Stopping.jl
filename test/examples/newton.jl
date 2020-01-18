@@ -1,17 +1,28 @@
+###############################################################################
+#
+# We illustrate here the use of Stopping in a classical algorithm
+# the Newton method for unconstrained optimization.
+#
+###############################################################################
+
 using NLPModels
 using Stopping
 
 # We create a simple function to test
 A = rand(5, 5);
 Q = A' * A
-
 f(x) = 0.5 * x' * Q * x
 nlp = ADNLPModel(f,  ones(5))
+
+#We now initialize the NLPStopping
 nlp_at_x = NLPAtX(ones(5))
 stop_nlp = NLPStopping(nlp, (x,y) -> Stopping.unconstrained(x,y), nlp_at_x)
+#Note that in this case an alternative is:
+#stop_nlp = NLPStopping(nlp)
 
 
 function newton(stp :: NLPStopping)
+    
     state = stp.current_state; xt = state.x;
     update!(state, x = xt, gx = grad(stp.pb, xt), Hx = hess(stp.pb, xt))
     OK = start!(stp)
