@@ -75,5 +75,5 @@ stop = NLPStopping(nlp, (x,y) -> norm(y.cx,Inf)+0.5, state)
 
 AlternatingDirections(stop)
 #In this scenario, the algorithm stops because it attains a fixed point
-#Hence, status is :Stalled.
+#Hence, status is :SubOptimal.
 @show status(stop)

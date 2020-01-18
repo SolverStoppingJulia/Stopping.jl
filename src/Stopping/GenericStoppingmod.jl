@@ -185,7 +185,7 @@ function stop!(stp :: AbstractStopping)
      _main_pb_check!(stp, x)
  end
 
- OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled || stp.meta.unbounded || stp.meta.main_pb || stp.meta.domainerror
+ OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled || stp.meta.unbounded || stp.meta.main_pb || stp.meta.domainerror || stp.meta.fail_sub_pb || stp.meta.suboptimal
 
  _add_stop!(stp)
 
@@ -212,7 +212,7 @@ function _stalled_check!(stp :: AbstractStopping,
 
  max_iter = stp.meta.nb_of_stop >= stp.meta.max_iter
 
- stp.meta.stalled = max_iter || stp.meta.fail_sub_pb || stp.meta.suboptimal
+ stp.meta.stalled = max_iter
 
  return stp
 end
@@ -340,6 +340,10 @@ function status(stp :: AbstractStopping)
 
     if stp.meta.optimal
         return :Optimal
+    elseif stp.meta.fail_sub_pb
+        return :SubProblemFailure
+    elseif stp.meta.suboptimal
+        return :SubOptimal
     elseif stp.meta.unbounded
         return :Unbounded
     elseif stp.meta.stalled
