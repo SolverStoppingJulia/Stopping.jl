@@ -1,94 +1,19 @@
-using NLPModels
-using Stopping
-
-include("../test-stopping/rosenbrock.jl")
-
 ##############################################################################
 #
-# backtracking LineSearch
-# !! The problem (stp.pb) is the 1d objective function
-# Requirement: g0 and h0 have been filled in the State.
+# In this test problem we consider a quadratic penalty method.
+# This example features an algorithm with the 3 steps:
+# the penalization - the unconstrained min - the 1d min
+#
+# Note that there is no optimization of the evaluations here.
+# The penalization gives an approximation of the gradients, multipliers...
+#
+# Note the use of a structure for the algorithmic parameters which is
+# forwarded to all the 3 steps. If a parameter is not mentioned, then the default
+# entry in the algorithm will be taken.
 #
 #############################################################################
-function backtracking_ls(stp :: LS_Stopping, prms)
- #extract required values in the prms file
- return backtracking_ls(stp :: LS_Stopping, back_update = 0.5, prms = prms)
-end
 
-function backtracking_ls(stp :: LS_Stopping; back_update = 0.5, prms = nothing)
-
- state = stp.current_state; xt = state.x;
-
- #First call to stopping
- update!(state, x = xt, ht = stp.pb(xt))
- OK = start!(stp)
-
- #main loop
- while !OK
-
-  xt = xt * back_update
-
-  update!(state, x = xt, ht = stp.pb(xt))
-
-  OK = stop!(stp)
-
- end
-
- return stp
-end
-
-##############################################################################
-#
-# Newton method with LineSearch
-# Armijo by default
-#
-#############################################################################
-function newton(stp :: NLPStopping, prms)
- #extract required values in the prms file
- #if prms != nothing
- # armijo_prm = prms.armijo_prm
- #end
- return newton(stp; ls_func = (x,y)-> armijo(x,y, τ₀ = 0.01), prms = prms)
-end
-
-function newton(stp :: NLPStopping; ls_func = (x,y)-> armijo(x,y, τ₀ = 0.01), prms = nothing)
-
-    state = stp.current_state; xt = state.x; d = zeros(size(xt));
-
-    #First call
-    update!(state, x = xt, gx = grad(stp.pb, xt), Hx = hess(stp.pb, xt))
-    OK = start!(stp)
-
-    #Initialize the substopping
-    h      = x-> obj(stp.pb, xt + x * d)
-    lsatx  = LSAtT(1.0)
-    lsstp = LS_Stopping(h, ls_func, lsatx)
-
-    #main loop
-    while !OK
-
-        d = -inv(state.Hx) * state.gx
-
-        #Prepare the substopping
-        reinit!(lsstp)
-        lsstp.pb = x-> obj(stp.pb, xt + x * d)
-        update!(lsstp.current_state, x = 1.0, g₀ = dot(grad(stp.pb, xt),d), h₀ = obj(stp.pb, xt), ht = lsstp.pb(1.0))
-
-        #solve subproblem
-        backtracking_ls(lsstp, prms)
-        alpha = lsstp.current_state.x
-
-        #update
-        xt = xt + alpha * d
-
-        #update the state
-        update!(state, x = xt, gx = grad(stp.pb, xt), Hx = hess(stp.pb, xt))
-
-        OK = stop!(stp)
-    end
-
-    return stp
-end
+include("uncons.jl")
 
 ##############################################################################
 #
@@ -98,11 +23,17 @@ end
 #
 #############################################################################
 function penalty(stp :: NLPStopping, prms)
+
  #extract required values in the prms file
- return penalty(stp, rho0 = 100.0, rho_min = 1e-10, rho_update = 0.5, prms = prms)
+ r0 = :rho0       ∈ fieldnames(typeof(prms)) ? prms.rho0       : 100.0
+ rm = :rho_min    ∈ fieldnames(typeof(prms)) ? prms.rho_min    : 1e-10
+ ru = :rho_update ∈ fieldnames(typeof(prms)) ? prms.rho_update : 0.5
+
+ return penalty(stp, rho0 = r0, rho_min = rm, ru = 0.5, prms = prms)
 end
 
-function penalty(stp :: NLPStopping; rho0 = 100.0, rho_min = 1e-10, rho_update = 0.5, prms = nothing)
+function penalty(stp :: NLPStopping; rho0 = 100.0, rho_min = 1e-10,
+                                     rho_update = 0.5, prms = nothing)
 
  #algorithm's parameters
  rho = rho0
@@ -114,7 +45,8 @@ function penalty(stp :: NLPStopping; rho0 = 100.0, rho_min = 1e-10, rho_update =
 
  #prepare the subproblem stopping:
  sub_nlp_at_x = NLPAtX(stp.current_state.x)
- sub_stp = NLPStopping(stp.pb, (x,y) -> Stopping.unconstrained(x,y), sub_nlp_at_x, main_stp = stp)
+ sub_stp = NLPStopping(stp.pb, (x,y) -> Stopping.unconstrained(x,y),
+                               sub_nlp_at_x, main_stp = stp)
 
  #main loop
  while !OK
@@ -122,7 +54,7 @@ function penalty(stp :: NLPStopping; rho0 = 100.0, rho_min = 1e-10, rho_update =
   #solve the subproblem
   reinit!(sub_stp)
   sub_stp.meta.atol = min(rho, sub_stp.meta.atol)
-  newton(sub_stp, prms)
+  global_newton(sub_stp, prms)
 
   #update!(stp)
   fill_in!(stp, sub_stp.current_state.x)
@@ -154,16 +86,26 @@ mutable struct Param
 
     #parameters of the unconstrained minimization
     armijo_prm  :: Float64 #Armijo parameter
+    wolfe_prm   :: Float64 #Wolfe parameter
+    onedsolve   :: Function #1D solver
+    ls_func     :: Function
 
     #parameters of the 1d minimization
     back_update :: Float64 #backtracking update
+    grad_need   :: Bool
 
     function Param(;rho0 :: Float64 = 100.0,
                     rho_min :: Float64 = sqrt(eps(Float64)),
                     rho_update :: Float64 = 0.5,
-                    armijo_prm :: Float64 = 0.01,
-                    back_update :: Float64 = 0.5)
-        return new(rho0, rho_min,rho_update,armijo_prm,back_update)
+                    armijo_prm  :: Float64 = 0.01,
+                    wolfe_prm   :: Float64 = 0.99,
+                    onedsolve   :: Function = backtracking_ls,
+                    ls_func     :: Function = (x,y)-> armijo(x,y, τ₀ = armijo_prm),
+                    back_update :: Float64 = 0.5,
+                    grad_need   :: Bool = false)
+        return new(rho0, rho_min, rho_update,
+                   armijo_prm, wolfe_prm, onedsolve, ls_func,
+                   back_update, grad_need)
     end
 end
 
@@ -172,8 +114,7 @@ end
 #
 #
 #############################################################################
-
-using LinearAlgebra
+printstyled("Constrained optimization: quadratic penalty tutorial.\n", color = :green)
 x0 = 1.5*ones(6)
 c(x) = [sum(x)]
 nlp2 = ADNLPModel(rosenbrock,  x0,
@@ -188,3 +129,5 @@ status(stop_nlp_c)
 
 #We can check afterwards, the score
 Stopping.KKT(stop_nlp_c.pb, stop_nlp_c.current_state)
+
+printstyled("The End.\n", color = :green)
