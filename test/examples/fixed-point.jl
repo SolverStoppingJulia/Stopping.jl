@@ -69,9 +69,8 @@ AlternatingDirections(stop)
 
 #2nd scenario: the user gives an irrealistic optimality condition
 printstyled("2nd scenario:\n")
-reinit!(stop)
-state.x = x0 #necessary as reinit! does not modify the State
-stop = NLPStopping(nlp, (x,y) -> norm(y.cx,Inf)+0.5, state)
+reinit!(stop, rstate = true, x = x0)
+stop.optimality_check = (x,y) -> norm(y.cx,Inf)+0.5
 
 AlternatingDirections(stop)
 #In this scenario, the algorithm stops because it attains a fixed point

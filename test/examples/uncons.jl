@@ -57,10 +57,9 @@ function global_newton(stp       :: NLPStopping,
 
         #Prepare the substopping
         #We reinitialize the stopping before each new use
-        reinit!(lsstp)
+        reinit!(lsstp, rstate = true, x = 1.0, g₀ = -dot(state.gx,d), h₀ = state.fx)
         lsstp.pb = onedoptim(x -> obj(nlp, xt + x * d),
                              x -> dot(d, grad(nlp, xt + x * d)))
-        update!(lsstp.current_state, x = 1.0, g₀ = -dot(state.gx,d), h₀ = state.fx)
 
         #solve subproblem
         onedsolve(lsstp, prms)
@@ -125,8 +124,7 @@ global_newton(stop_nlp, parameters)
 @show stop_nlp.meta.nb_of_stop
 
 printstyled("Newton method with Armijo-Wolfe linesearch.\n", color = :green)
-reinit!(stop_nlp)
-update!(stop_nlp.current_state, x = x0)
+reinit!(stop_nlp, rstate = true, x = x0)
 parameters.ls_func = (x,y)-> armijo_wolfe(x,y, τ₀ = parameters.armijo_prm,
                                                τ₁ = parameters.wolfe_prm)
 parameters.grad_need = true #wolfe condition requires the derivative

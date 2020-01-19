@@ -73,8 +73,8 @@ nbiter = stop.meta.nb_of_stop
 
 #2nd scenario: we check that we control the maximum iterations.
 printstyled("2nd scenario:\n")
-reinit!(stop)
-stop.current_state.x = x0 #necessary as reinit! does not modify the State
+#rstate is set as true to allow reinit! modifying the State
+reinit!(stop, rstate = true, x = x0)
 stop.meta.max_iter = max(nbiter-4,1)
 
 solveIpopt(stop)
