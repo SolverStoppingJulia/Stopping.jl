@@ -6,12 +6,12 @@ abstract type AbstractState end
 
 mutable struct GenericState <: AbstractState
 
-    x :: Iterate
+    x :: Vector
 
     #Starting time
     current_time :: FloatVoid
 
-    function GenericState(x            :: Iterate;
+    function GenericState(x            :: Vector;
                           current_time :: FloatVoid = nothing)
 
       return new(x, current_time)
