@@ -347,31 +347,29 @@ Takes an AbstractStopping as input. Returns the status of the algorithm:
     - Infeasible : default return value, if nothing is done the problem is
                    considered infeasible
     - DomainError : there is a NaN somewhere
+
+ set list to true, to get an Array with all the valid status.
 """
-function status(stp :: AbstractStopping)
+function status(stp :: AbstractStopping; list = false)
 
-    if stp.meta.optimal
-        return :Optimal
-    elseif stp.meta.fail_sub_pb
-        return :SubProblemFailure
-    elseif stp.meta.suboptimal
-        return :SubOptimal
-    elseif stp.meta.unbounded
-        return :Unbounded
-    elseif stp.meta.stalled
-        return :Stalled
-    elseif stp.meta.tired
-        return :Tired
-    elseif stp.meta.resources
-        return :ResourcesExhausted
-    elseif stp.meta.main_pb
-        return :ResourcesOfMainProblemExhausted
-    elseif stp.meta.infeasible
-        return :Infeasible
-    elseif stp.meta.domainerror
-        return :DomainError
-    else
-       return :Unknown
-    end
+ tt = Dict([(:Optimal, :optimal),
+            (:SubProblemFailure, :fail_sub_pb),
+            (:SubOptimal, :suboptimal),
+            (:Unbounded, :unbounded),
+            (:Stalled, :stalled),
+            (:Tired, :tired),
+            (:ResourcesExhausted, :resources),
+            (:ResourcesOfMainProblemExhausted, :main_pb),
+            (:Infeasible, :infeasible),
+            (:DomainError, :domainerror)])
 
+ if list
+  list_status = findall(x -> getfield(stp.meta, x), tt)
+  if list_status == zeros(0) list_status = [:Unknown] end
+ else
+  list_status = findfirst(x -> getfield(stp.meta, x), tt)
+  if list_status == nothing list_status = :Unknown end
+ end
+
+ return list_status
 end

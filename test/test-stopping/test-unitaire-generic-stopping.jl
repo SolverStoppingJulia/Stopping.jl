@@ -91,3 +91,6 @@ res3 = infinite_algorithm(subsubstop)
 @test status(stop) == :Tired #stop because of the main main stopping.
 @test status(substop) == :ResourcesOfMainProblemExhausted
 @test status(subsubstop) == :ResourcesOfMainProblemExhausted
+
+stop.meta.infeasible = true
+@test status(stop, list = true) == [:Infeasible, :Tired]
