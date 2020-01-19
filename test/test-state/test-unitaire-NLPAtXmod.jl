@@ -46,6 +46,13 @@ update!(uncons_nlp_at_x, Hx = ones(10,10), mu = ones(10), cx = ones(10), Jx = on
 @test (false in (uncons_nlp_at_x.lambda .== 1.0)) == false
 @test uncons_nlp_at_x.current_time == 1.0
 
+reinit!(uncons_nlp_at_x)
+@test uncons_nlp_at_x.x == ones(10)
+@test uncons_nlp_at_x.fx == nothing
+reinit!(uncons_nlp_at_x, x = zeros(10))
+@test uncons_nlp_at_x.x == zeros(10)
+@test uncons_nlp_at_x.fx == nothing
+
 nlp_64 = NLPAtX(ones(10))
 nlp_64.x = ones(10)
 nlp_64.fx = 1.0

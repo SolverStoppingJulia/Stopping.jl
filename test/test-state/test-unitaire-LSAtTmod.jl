@@ -35,3 +35,8 @@ update!(ls_64, x = 1.0, ht = 1.0, gt = 1.0, h₀ = 1.0)
 
 # ls_32 = convert_ls(Float32, ls_64)
 # @test typeof(ls_32.x) == Float32
+
+reinit!(ls_64)
+@test ls_64.x == 1.0
+@test ls_64.ht == nothing
+@test ls_64.current_time == nothing

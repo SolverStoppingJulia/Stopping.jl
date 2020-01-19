@@ -45,5 +45,8 @@ stop.meta.start_time = NaN
 update!(stop.current_state, x = 1e100)
 @test stop!(stop)
 
+reinit!(stop, rstate = true, x = 1.0)
+@test stop.current_state.x == 1.0
+@test stop.current_state.ht == nothing
 
 ## _optimality_check and _null_test are tested with NLP

@@ -20,3 +20,8 @@ fill_in!(stop_nlp, a)
 @test stop!(stop_nlp)
 # we make sure the counter of stop works properly
 @test stop_nlp.meta.nb_of_stop == 1
+
+reinit!(stop_nlp, rstate = true, x = ones(5))
+@test stop_nlp.current_state.x == ones(5)
+@test stop_nlp.current_state.fx == nothing
+@test stop_nlp.meta.nb_of_stop == 0

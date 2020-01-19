@@ -77,6 +77,30 @@ function NLPAtX(x            :: Vector;
 end
 
 """
+reinit!: function that set all the entries at void except the mandatory x
+
+Warning: if x, lambda or evals are given as a keyword argument they will be
+prioritized over the existing x, lambda and the default Counters.
+"""
+function reinit!(stateatx :: NLPAtX, x :: Vector, l :: Vector; kwargs...)
+
+ for k ∈ fieldnames(typeof(stateatx))
+   if !(k ∈ [:x,:lambda,:evals]) setfield!(stateatx, k, nothing) end
+ end
+
+ return update!(stateatx; x=x, lambda = l, evals = Counters(), kwargs...)
+end
+"""
+reinit!: short version of reinit! reusing the x in the state
+
+Warning: if x, lambda or evals are given as a keyword argument they will be
+prioritized over the existing x, lambda and the default Counters.
+"""
+function reinit!(stateatx :: NLPAtX; kwargs...)
+ return reinit!(stateatx, stateatx.x, stateatx.lambda; kwargs...)
+end
+
+"""
 Check the size of the entries in the State
 """
 function _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)

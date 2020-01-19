@@ -38,3 +38,28 @@ function update!(stateatx :: AbstractState; convert = false, kwargs...)
 
  return stateatx
 end
+
+"""
+reinit!: function that set all the entries at void except the mandatory x
+
+Note: If x is given as a keyword argument it will be prioritized over
+the argument x.
+"""
+function reinit!(stateatx :: AbstractState, x :: Iterate; kwargs...)
+
+ for k ∈ fieldnames(typeof(stateatx))
+   if k != :x setfield!(stateatx, k, nothing) end
+ end
+
+ return update!(stateatx; x=x, kwargs...)
+end
+
+"""
+reinit!: short version of reinit! reusing the x in the state
+
+Note: If x is given as a keyword argument it will be prioritized over
+the argument x.
+"""
+function reinit!(stateatx :: AbstractState; kwargs...)
+ return reinit!(stateatx, stateatx.x; kwargs...)
+end

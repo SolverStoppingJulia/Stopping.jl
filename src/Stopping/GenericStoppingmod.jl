@@ -124,8 +124,11 @@ end
  Input: Stopping.
  Output: Stopping modified.
  Reinitialize the meta data filled in by the start!
+
+ If rstate is set as true it reinitialize the current_state
+ (with the kwargs)
 """
-function reinit!(stp :: AbstractStopping)
+function reinit!(stp :: AbstractStopping; rstate :: Bool = false, kwargs...)
 
  stp.meta.start_time  = NaN
  stp.meta.optimality0 = 1.0
@@ -142,6 +145,10 @@ function reinit!(stp :: AbstractStopping)
  stp.meta.domainerror = false
 
  stp.meta.nb_of_stop = 0
+
+ if rstate
+  reinit!(stp.current_state; kwargs...)
+ end
 
  return stp
 end
