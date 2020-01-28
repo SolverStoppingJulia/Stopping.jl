@@ -1,6 +1,5 @@
 include("rosenbrock.jl")
 
-using LinearAlgebra
 x0 = ones(6)
 c(x) = [sum(x)]
 nlp2 = ADNLPModel(rosenbrock,  x0,

@@ -54,13 +54,21 @@ mutable struct LS_Stopping <: AbstractStopping
 
 end
 
+"""
+_unbounded_check!: If x gets too big it is likely that the problem is unbounded
+                   This is a specialized version that takes into account
+                   that the problem might be unbounded if the objective function
+                   is unbounded from below.
 
+Warning: evaluate the objective function is state.ht is void.
+"""
 function _unbounded_check!(stp  :: LS_Stopping,
                            x    :: Iterate)
 
  # check if x is too large
  x_too_large = norm(x,Inf) >= stp.meta.unbounded_x
- if isnan(stp.current_state.ht)
+
+ if stp.current_state.ht == nothing
      stp.current_state.ht = obj(stp.pb, x)
  end
  f_too_large = stp.current_state.ht <= stp.meta.unbounded_threshold
@@ -70,6 +78,35 @@ function _unbounded_check!(stp  :: LS_Stopping,
  return stp
 end
 
+"""
+_resources_check!: Checks if the optimization algorithm has exhausted the resources.
+
+If the stp.pb is an AbstractNLPModel check the number of evaluations of f and sum.
+"""
+function _resources_check!(stp    :: AbstractStopping,
+                           x      :: Iterate)
+
+ max_evals = false
+ max_f     = false
+
+ if typeof(stp.pb) <: AbstractNLPModel
+  max_f = stp.meta.max_f > neval_obj(stp.pb)
+  max_evals = stp.meta.max_eval > sum_counters(stp.pb)
+ end
+
+ # global limit diagnostic
+ stp.meta.resources = max_evals || max_f
+
+ return stp
+end
+
+"""
+_optimality_check: If we reached a good approximation of an optimum to our
+problem. In it's basic form only checks the norm of the gradient.
+
+This is a specialized version that takes into account the structure of the
+LineSearchStopping where the optimality_check function is an input.
+"""
 function _optimality_check(stp  :: LS_Stopping; kwargs...)
 
  optimality = stp.optimality_check(stp.pb, stp.current_state; kwargs...)

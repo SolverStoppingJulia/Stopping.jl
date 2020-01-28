@@ -1,6 +1,3 @@
-using LinearAlgebra
-
-
 h = nothing
 lsatx = LSAtT(0.0)
 
