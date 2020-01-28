@@ -25,3 +25,10 @@ reinit!(stop_nlp, rstate = true, x = ones(5))
 @test stop_nlp.current_state.x == ones(5)
 @test stop_nlp.current_state.fx == nothing
 @test stop_nlp.meta.nb_of_stop == 0
+
+#We know test how to initialize the counter:
+test_max_cntrs = Stopping._init_max_counters(obj = 2)
+stop_nlp_cntrs = NLPStopping(nlp, max_cntrs = test_max_cntrs)
+@test stop_nlp_cntrs.max_cntrs[:neval_obj] == 2
+@test stop_nlp_cntrs.max_cntrs[:neval_grad] == 20000
+@test stop_nlp_cntrs.max_cntrs[:neval_sum] == 20000*11

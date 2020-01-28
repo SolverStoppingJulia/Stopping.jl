@@ -85,14 +85,25 @@ end
 _init_max_counters(): initialize the maximum number of evaluations on each of
                         the functions present in the Counters (NLPModels).
 """
-function _init_max_counters()
+function _init_max_counters(; obj    :: Int64 = 20000,
+                              grad   :: Int64 = 20000,
+                              cons   :: Int64 = 20000,
+                              jcon   :: Int64 = 20000,
+                              jgrad  :: Int64 = 20000,
+                              jac    :: Int64 = 20000,
+                              jprod  :: Int64 = 20000,
+                              jtprod :: Int64 = 20000,
+                              hess   :: Int64 = 20000,
+                              hprod  :: Int64 = 20000,
+                              jhprod :: Int64 = 20000,
+                              sum    :: Int64 = 20000*11)
 
-  cntrs = Dict([(:neval_obj,    20000), (:neval_grad,   20000),
-                (:neval_cons,   20000), (:neval_jcon,   20000),
-                (:neval_jgrad,  20000), (:neval_jac,    20000),
-                (:neval_jprod,  20000), (:neval_jtprod, 20000),
-                (:neval_hess,   20000), (:neval_hprod,  20000),
-                (:neval_jhprod, 20000), (:neval_sum,    20000*11)])
+  cntrs = Dict([(:neval_obj,       obj), (:neval_grad,   grad),
+                (:neval_cons,     cons), (:neval_jcon,   jcon),
+                (:neval_jgrad,   jgrad), (:neval_jac,    jac),
+                (:neval_jprod,   jprod), (:neval_jtprod, jtprod),
+                (:neval_hess,     hess), (:neval_hprod,  hprod),
+                (:neval_jhprod, jhprod), (:neval_sum,    sum)])
 
  return cntrs
 end
@@ -172,6 +183,8 @@ _unbounded_check!: If x gets too big it is likely that the problem is unbounded
                    This is the NLP specialized version that takes into account
                    that the problem might be unbounded if the objective function
                    is unbounded from below.
+
+Warning: evaluate the objective function is state.fx is void.
 """
 function _unbounded_check!(stp  :: NLPStopping,
                            x    :: Iterate)
