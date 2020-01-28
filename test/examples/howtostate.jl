@@ -2,62 +2,51 @@
 #
 # The data used through the algorithmic process in the Stopping framework
 # are stored in a State.
-# We illustrate here the NLPAtX which is a specialization of the State for
-# non-linear programming.
+# We illustrate here the GenericState and its features
 #
 ###############################################################################
+using Test, Stopping
 
-using NLPModels
-using Stopping
+#The GenericState contains only two entries:
+# a vector x, and a Float current_time
+state1 = GenericState(ones(2)) #takes a Vector as a mandatory input
+state2 = GenericState(ones(2), current_time = 1.0)
 
-include("../test-stopping/rosenbrock.jl")
-#Formulate the problem with NLPModels
-x0 = ones(6)
-y0 = ones(1)
-c(x) = [x[1] - x[2]]
-lcon = [0.0]
-ucon = [0.0]
+#By default if a non-mandatory entry is not specified it is void:
+@test state1.current_time == nothing
+@test state2.current_time == 1.0
 
-#Here we provide y0 = [1.0]
-#Note that the default value is [0.0]
-nlp = ADNLPModel(x->rosenbrock(x), x0, y0 = y0,
-                 c=c, lcon=lcon, ucon=ucon,
-                 lvar=zeros(6), uvar = Inf * ones(6))
-nlp2 = ADNLPModel(x->rosenbrock(x), x0,
-                 lvar=zeros(6), uvar = Inf * ones(6))
+#The GenericState has two functions: update! and reinit!
+#update! is used to update entries of the State:
+update!(state1, current_time = 1.0)
+@test state1.current_time == 1.0
+#Note that the update select the relevant entries
+update!(state1, fx = 1.0) #does nothing as there are no fx entry
+@test state1.current_time == 1.0 && state1.x == ones(2)
 
-fx = rosenbrock(x0)
+#The update! can be done only if the new entry is void or has the same type
+#as the existing one.
+update!(state1, current_time = 2) #does nothing as it is the wrong type
+@test state1.current_time == 1.0
+#An advanced user can force the update even if the type is not the same by
+#turning the keyword convert as true (it is false by default).
+update!(state1, convert = true, current_time = 2)
+@test state1.current_time == 2
+#Non-required entry in the State can always be set as void without convert
+update!(state1, current_time = nothing)
+@test state1.current_time == nothing
 
-#There are two main constructor for the States:
-#The unconstrained:
-state_unc = NLPAtX(x0)
-#The constrained:
-state_con = NLPAtX(x0, y0)
-
-#By default, all the values in the State are set to nothing except x and lambda
-#In the unconstrained case lambda is a vector of length 0
-printstyled("Is lambda void? ",state_unc.lambda == nothing,"\n")
-printstyled("Is fx void? ",state_unc.fx == nothing,"\n")
-#Apart from x and lambda, the counters are also initialized by default
-printstyled("Is counter void? ", state_unc.evals  == nothing,"\n")
-
-#Note that the constructor proceeds to a size checking on gx, Hx, mu, cx, Jx.
-#It returns an error if this test fails.
-try
-  NLPAtX(x0, Jx = ones(1,1))
-catch
-  printstyled("NLPAtX(x0, Jx = ones(1,1)) is invalid as length(lambda)=0\n")
-end
-
-#For algorithmic use, it might be conveninent to fill in all the entries of then
-#State. In this case, we can use the Stopping:
-stop = NLPStopping(nlp, (x,y) -> Stopping.unconstrained(x,y), state_unc)
-#Note that the fill_in! can receive known informations via keywords.
-#If we don't want to store the hessian matrix, we turn the keyword
-#matrix_info as false.
-fill_in!(stop, x0, matrix_info = false)
-
-printstyled("Hx has not been updated: ",stop.current_state.Hx == nothing,"\n")
-
-# We can now use the updated step in the algorithmic procedure
-start!(stop)
+#A shorter way to empty the State is to use the reinit! function.
+#This function is particularly useful, when there are many entries.
+reinit!(state2)
+@test state2.x == ones(2) && state2.current_time == nothing
+#If we want to reinit! with a different value of the mandatory entry:
+reinit!(state2, zeros(2))
+@test state2.x == zeros(2) && state2.current_time == nothing
+#After reinitializing the State reinit! can update entries passed as keywords.
+#either in the default call:
+reinit!(state2, current_time = 1.0)
+@test state2.x == zeros(2) && state2.current_time == 1.0
+#or in the one changing x:
+reinit!(state2, ones(2), current_time = 1.0)
+@test state2.x == ones(2) && state2.current_time == 1.0

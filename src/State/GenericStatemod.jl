@@ -31,7 +31,7 @@ function update!(stateatx :: AbstractState; convert = false, kwargs...)
  kwargs = Dict(kwargs)
 
  for k ∈ fieldnames(typeof(stateatx))
-  if (k ∈ keys(kwargs)) && (typeof(getfield(stateatx, k)) ∈ [typeof(kwargs[k]), Nothing] || convert)
+  if (k ∈ keys(kwargs)) && (convert || getfield(stateatx, k) == nothing || typeof(kwargs[k]) ∈ [typeof(getfield(stateatx, k)), Nothing])
    setfield!(stateatx, k, kwargs[k])
   end
  end
