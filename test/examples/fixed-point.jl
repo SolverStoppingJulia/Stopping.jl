@@ -16,7 +16,7 @@
 # as it reached a personal success. (optimal_sub_pb is true)
 #
 ###############################################################################
-using Stopping
+using Stopping, Test
 
 #Main algorithm
 function AlternatingDirections(stp)
@@ -66,6 +66,7 @@ stop = NLPStopping(nlp, (x,y) -> norm(y.cx,Inf), state)
 
 AlternatingDirections(stop)
 @show status(stop)
+@test status(stop) == :Optimal
 
 #2nd scenario: the user gives an irrealistic optimality condition
 printstyled("2nd scenario:\n")
@@ -76,3 +77,4 @@ AlternatingDirections(stop)
 #In this scenario, the algorithm stops because it attains a fixed point
 #Hence, status is :SubOptimal.
 @show status(stop)
+@test status(stop) == :SubOptimal

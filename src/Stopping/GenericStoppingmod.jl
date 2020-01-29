@@ -134,15 +134,17 @@ function reinit!(stp :: AbstractStopping; rstate :: Bool = false, kwargs...)
  stp.meta.optimality0 = 1.0
 
  #reinitialize the boolean status
- stp.meta.fail_sub_pb = false
- stp.meta.unbounded   = false
- stp.meta.tired       = false
- stp.meta.stalled     = false
- stp.meta.resources   = false
- stp.meta.optimal     = false
- stp.meta.suboptimal  = false
- stp.meta.main_pb     = false
- stp.meta.domainerror = false
+ stp.meta.fail_sub_pb     = false
+ stp.meta.unbounded       = false
+ stp.meta.unbounded_pb    = false
+ stp.meta.tired           = false
+ stp.meta.stalled         = false
+ stp.meta.iteration_limit = false
+ stp.meta.resources       = false
+ stp.meta.optimal         = false
+ stp.meta.suboptimal      = false
+ stp.meta.main_pb         = false
+ stp.meta.domainerror     = false
 
  #reinitialize the counter of stop
  stp.meta.nb_of_stop = 0
@@ -195,12 +197,17 @@ function stop!(stp :: AbstractStopping; kwargs...)
  _tired_check!(stp, x, time_t = time)
  _resources_check!(stp, x)
  _stalled_check!(stp, x)
+ _iteration_check!(stp, x)
 
  if stp.main_stp != nothing
      _main_pb_check!(stp, x)
  end
 
- OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled || stp.meta.unbounded || stp.meta.unbounded_pb || stp.meta.main_pb || stp.meta.domainerror || stp.meta.fail_sub_pb || stp.meta.suboptimal
+ OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled
+ OK = OK || stp.meta.iteration_limit || stp.meta.unbounded
+ OK = OK || stp.meta.unbounded_pb || stp.meta.main_pb || stp.meta.domainerror
+ OK = OK || stp.meta.suboptimal || stp.meta.fail_sub_pb
+
 
  _add_stop!(stp)
 
@@ -220,14 +227,28 @@ function _add_stop!(stp :: AbstractStopping)
 end
 
 """
+_iteration_check!: Checks if the optimization algorithm is reached the iteration
+limit.
+"""
+function _iteration_check!(stp :: AbstractStopping,
+                           x   :: Iterate)
+
+ max_iter = stp.meta.nb_of_stop >= stp.meta.max_iter
+
+ stp.meta.iteration_limit = max_iter
+
+ return stp
+end
+
+"""
 _stalled_check!: Checks if the optimization algorithm is stalling.
+
+false by default.
 """
 function _stalled_check!(stp :: AbstractStopping,
                          x   :: Iterate)
 
- max_iter = stp.meta.nb_of_stop >= stp.meta.max_iter
-
- stp.meta.stalled = max_iter
+ stp.meta.stalled = false
 
  return stp
 end
@@ -279,7 +300,7 @@ function _main_pb_check!(stp    :: AbstractStopping,
                          x      :: Iterate)
 
  # Time check
- time = stp.meta.start_time
+ time = stp.main_stp.meta.start_time
  _tired_check!(stp.main_stp, x, time_t = time)
  max_time = stp.main_stp.meta.tired
 
@@ -354,7 +375,8 @@ status:
 Takes an AbstractStopping as input. Returns the status of the algorithm:
     - Optimal : if we reached an optimal solution
     - Unbounded : if the problem doesn't have a lower bound
-    - Stalled : if we did too  many iterations of the algorithm
+    - Stalled : if algorithm is stalling
+    - IterationLimit : if we did too  many iterations of the algorithm
     - Tired : if the algorithm takes too long
     - ResourcesExhausted: if we used too many ressources,
                           i.e. too many functions evaluations
@@ -374,6 +396,7 @@ function status(stp :: AbstractStopping; list = false)
             (:Unbounded, :unbounded),
             (:UnboundedPb, :unbounded_pb),
             (:Stalled, :stalled),
+            (:IterationLimit, :iteration_limit),
             (:Tired, :tired),
             (:ResourcesExhausted, :resources),
             (:ResourcesOfMainProblemExhausted, :main_pb),

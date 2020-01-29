@@ -73,7 +73,7 @@ reinit!(stop)
 res2 = infinite_algorithm(stop)
 
 #The algorithm stopped as it attained the iteration limit (stop! call)
-@test status(stop) == :Stalled
+@test status(stop) == :IterationLimit
 
 reinit!(stop)
 reinit!(substop)

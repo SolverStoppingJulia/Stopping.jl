@@ -11,8 +11,10 @@ test_meta = StoppingMeta()
 @test isnan(test_meta.start_time)
 @test test_meta.fail_sub_pb         == false
 @test test_meta.unbounded           == false
+@test test_meta.unbounded_pb        == false
 @test test_meta.tired               == false
 @test test_meta.stalled             == false
+@test test_meta.iteration_limit     == false
 @test test_meta.optimal             == false
 @test test_meta.suboptimal          == false
 @test test_meta.main_pb             == false

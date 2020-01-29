@@ -42,12 +42,12 @@ function solveIpopt(stp :: NLPStopping)
                     compl_inf_tol   = stp.meta.atol)
 
  #Update the meta boolean with the output message
- if stats.status == :first_order stp.meta.suboptimal = true end
- if stats.status == :acceptable  stp.meta.suboptimal = true end
- if stats.status == :infeasible  stp.meta.infeasible = true end
- if stats.status == :small_step  stp.meta.stalled    = true end
- if stats.status == :max_iter    stp.meta.stalled    = true end
- if stats.status == :max_time    stp.meta.tired      = true end
+ if stats.status == :first_order stp.meta.suboptimal      = true end
+ if stats.status == :acceptable  stp.meta.suboptimal      = true end
+ if stats.status == :infeasible  stp.meta.infeasible      = true end
+ if stats.status == :small_step  stp.meta.stalled         = true end
+ if stats.status == :max_iter    stp.meta.iteration_limit = true end
+ if stats.status == :max_time    stp.meta.tired           = true end
 
  stp.meta.nb_of_stop = stats.iter
  #stats.elapsed_time
@@ -78,7 +78,7 @@ reinit!(stop, rstate = true, x = x0)
 stop.meta.max_iter = max(nbiter-4,1)
 
 solveIpopt(stop)
-#Final status is :Stalled
+#Final status is :IterationLimit
 @show stop.current_state.x, status(stop)
 
 printstyled("The End.\n")

@@ -179,25 +179,29 @@ function _resources_check!(stp    :: NLPStopping,
 end
 
 """
-_unbounded_check!: If x gets too big it is likely that the problem is unbounded
-                   This is the NLP specialized version that takes into account
+_unbounded_problem_check!: This is the NLP specialized version that takes into account
                    that the problem might be unbounded if the objective function
                    is unbounded from below.
 
 Warning: evaluate the objective function is state.fx is void.
 """
-function _unbounded_check!(stp  :: NLPStopping,
-                           x    :: Iterate)
-
- # check if x is too large
- x_too_large = norm(x,Inf) >= stp.meta.unbounded_x
+function _unbounded_problem_check!(stp  :: NLPStopping,
+                                   x    :: Iterate)
 
  if stp.current_state.fx == nothing
 	 stp.current_state.fx = obj(stp.pb, x)
  end
  f_too_large = stp.current_state.fx <= stp.meta.unbounded_threshold
 
- stp.meta.unbounded = x_too_large || f_too_large
+ c_too_large = false
+ if stp.pb.meta.ncon != 0 #if the problems has constraints, check |c(x)|
+  if stp.current_state.cx == nothing
+   stp.current_state.cx = cons(stp.pb, x)
+  end
+  c_too_large = norm(stp.current_state.cx) <= stp.meta.unbounded_threshold
+ end
+
+ stp.meta.unbounded_pb = f_too_large || c_too_large
 
  return stp
 end
