@@ -29,7 +29,7 @@ mutable struct GenericStopping <: AbstractStopping
     pb :: Any
 
     # Problem stopping criterion
-    meta :: StoppingMeta
+    meta :: AbstractStoppingMeta
 
     # Current information on the problem
     current_state :: AbstractState
@@ -39,7 +39,7 @@ mutable struct GenericStopping <: AbstractStopping
 
     function GenericStopping(pb               :: Any,
                              current_state    :: AbstractState;
-                             meta             :: StoppingMeta = StoppingMeta(),
+                             meta             :: AbstractStoppingMeta = StoppingMeta(),
                              main_stp         :: Union{AbstractStopping, Nothing} = nothing,
                              kwargs...)
 
@@ -133,8 +133,8 @@ function reinit!(stp :: AbstractStopping; rstate :: Bool = false, kwargs...)
  stp.meta.start_time  = NaN
  stp.meta.optimality0 = 1.0
 
+ #reinitialize the boolean status
  stp.meta.fail_sub_pb = false
-
  stp.meta.unbounded   = false
  stp.meta.tired       = false
  stp.meta.stalled     = false
@@ -144,8 +144,10 @@ function reinit!(stp :: AbstractStopping; rstate :: Bool = false, kwargs...)
  stp.meta.main_pb     = false
  stp.meta.domainerror = false
 
+ #reinitialize the counter of stop
  stp.meta.nb_of_stop = 0
 
+ #reinitialize the state
  if rstate
   reinit!(stp.current_state; kwargs...)
  end
@@ -189,6 +191,7 @@ function stop!(stp :: AbstractStopping; kwargs...)
 
  # global user limit diagnostic
  _unbounded_check!(stp, x)
+ _unbounded_problem_check!(stp, x)
  _tired_check!(stp, x, time_t = time)
  _resources_check!(stp, x)
  _stalled_check!(stp, x)
@@ -197,7 +200,7 @@ function stop!(stp :: AbstractStopping; kwargs...)
      _main_pb_check!(stp, x)
  end
 
- OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled || stp.meta.unbounded || stp.meta.main_pb || stp.meta.domainerror || stp.meta.fail_sub_pb || stp.meta.suboptimal
+ OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled || stp.meta.unbounded || stp.meta.unbounded_pb || stp.meta.main_pb || stp.meta.domainerror || stp.meta.fail_sub_pb || stp.meta.suboptimal
 
  _add_stop!(stp)
 
@@ -312,6 +315,19 @@ function _unbounded_check!(stp  :: AbstractStopping,
 end
 
 """
+_unbounded_problem!: check if problem relative informations are unbounded
+
+not implemented.
+"""
+function _unbounded_problem_check!(stp  :: AbstractStopping,
+                                   x    :: Iterate)
+
+ stp.meta.unbounded_pb = false
+
+ return stp
+end
+
+"""
 _optimality_check: If we reached a good approximation of an optimum to our
 problem.
 """
@@ -356,6 +372,7 @@ function status(stp :: AbstractStopping; list = false)
             (:SubProblemFailure, :fail_sub_pb),
             (:SubOptimal, :suboptimal),
             (:Unbounded, :unbounded),
+            (:UnboundedPb, :unbounded_pb),
             (:Stalled, :stalled),
             (:Tired, :tired),
             (:ResourcesExhausted, :resources),

@@ -56,6 +56,7 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
  # stopping properties status of the problem)
  fail_sub_pb         :: Bool
  unbounded           :: Bool
+ unbounded_pb        :: Bool
  tired               :: Bool
  stalled             :: Bool
  resources           :: Bool
@@ -86,21 +87,22 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
        throw("tol_check must have 3 arguments")
    end
 
-   unbounded   = false
-   tired       = false
-   stalled     = false
-   resources   = false
-   optimal     = false
-   infeasible  = false
-   main_pb     = false
-   domainerror = false
-   suboptimal  = false
+   unbounded    = false
+   unbounded_pb = false
+   tired        = false
+   stalled      = false
+   resources    = false
+   optimal      = false
+   infeasible   = false
+   main_pb      = false
+   domainerror  = false
+   suboptimal   = false
 
    nb_of_stop = 0
 
    return new(atol, rtol, optimality0, tol_check, unbounded_threshold, unbounded_x,
               max_f, max_eval, max_iter, max_time, nb_of_stop, start_time,
-              fail_sub_pb, unbounded, tired, stalled, resources, optimal,infeasible,
-              main_pb, domainerror, suboptimal)
+              fail_sub_pb, unbounded, unbounded_pb, tired, stalled, resources,
+               optimal, infeasible, main_pb, domainerror, suboptimal)
  end
 end
