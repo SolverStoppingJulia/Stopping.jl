@@ -7,7 +7,7 @@ required: state.gx (filled if void)
 """
 function unconstrained_check(pb    :: AbstractNLPModel,
                              state :: NLPAtX;
-                             pnorm :: Float64 = Inf)
+                             pnorm :: Float64 = Inf, kwargs...)
 
     if state.gx == nothing # should be filled if empty
         update!(state, gx = grad(pb, state.x))
@@ -25,7 +25,7 @@ required: state.gx (filled if void)
 """
 function optim_check_bounded(pb    :: AbstractNLPModel,
                              state :: NLPAtX;
-                             pnorm :: Float64 = Inf)
+                             pnorm :: Float64 = Inf, kwargs...)
 
     if state.gx == nothing # should be filled if void
      update!(state, gx = grad(pb, state.x))
@@ -96,7 +96,7 @@ required: state.gx
 """
 function KKT(pb    :: AbstractNLPModel,
              state :: NLPAtX;
-             pnorm :: Float64 = Inf)
+             pnorm :: Float64 = Inf, kwargs...)
 
     #Check the gradient of the Lagrangian
     gLagx      = _grad_lagrangian(pb, state)
