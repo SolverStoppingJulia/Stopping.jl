@@ -30,7 +30,7 @@ mutable struct LS_Stopping <: AbstractStopping
     optimality_check :: Function
 
     # shared information with linesearch and other stopping
-    meta :: StoppingMeta
+    meta :: AbstractStoppingMeta
 
     # current information on linesearch
     current_state :: LSAtT
@@ -41,7 +41,7 @@ mutable struct LS_Stopping <: AbstractStopping
     function LS_Stopping(pb             :: Any,
                          admissible     :: Function,
                          current_state  :: LSAtT;
-                         meta           :: StoppingMeta = StoppingMeta(),
+                         meta           :: AbstractStoppingMeta = StoppingMeta(),
                          main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                          kwargs...)
 

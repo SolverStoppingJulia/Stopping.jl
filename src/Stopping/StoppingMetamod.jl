@@ -37,7 +37,7 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
                                  #by default: tol_check = max(atol, rtol * optimality0)
                                  #other example: atol + rtol * optimality0
 
- unbounded_threshold :: Number # below this value, the problem is declared unbounded
+ unbounded_threshold :: Number # beyond this value, the problem is declared unbounded
  unbounded_x         :: Number # beyond this value, x is unbounded
 
  # fine grain control on ressources

@@ -26,7 +26,7 @@ mutable struct NLPStopping <: AbstractStopping
     optimality_check :: Function # will be put in optimality_check
 
     # Common parameters
-    meta      :: StoppingMeta
+    meta      :: AbstractStoppingMeta
     # Parameters specific to the NLPModels
     max_cntrs :: Dict #contains the max number of evaluations
 
@@ -39,7 +39,7 @@ mutable struct NLPStopping <: AbstractStopping
     function NLPStopping(pb             :: AbstractNLPModel,
                          admissible     :: Function,
                          current_state  :: AbstractState;
-                         meta           :: StoppingMeta = StoppingMeta(),
+                         meta           :: AbstractStoppingMeta = StoppingMeta(),
                          max_cntrs      :: Dict = _init_max_counters(),
                          main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                          kwargs...)
@@ -140,8 +140,10 @@ function fill_in!(stp  :: NLPStopping,
  end
 
  #update the Lagrange multiplier if one of the 2 is asked
- if lambda == nothing || mu == nothing
+ if (stp.pb.meta.ncon > 0 || has_bounds(stp.pb)) && (lambda == nothing || mu == nothing)
   lb, lc = _compute_mutliplier(stp.pb, x, ggx, gcx, gJx)
+ elseif  stp.pb.meta.ncon == 0 && !has_bounds(stp.pb) && lambda == nothing
+  lb, lc = mu, stp.current_state.lambda
  else
   lb, lc = mu, lambda
  end
@@ -166,7 +168,7 @@ function _resources_check!(stp    :: NLPStopping,
   # check all the entries in the counter
   max_f = false
   for f in fieldnames(Counters)
-      max_f = max_f && (max_cntrs[f] > getfield(cntrs, f))
+      max_f = max_f || (getfield(cntrs, f) > max_cntrs[f])
   end
 
  # Maximum number of function and derivative(s) computation
@@ -198,7 +200,7 @@ function _unbounded_problem_check!(stp  :: NLPStopping,
   if stp.current_state.cx == nothing
    stp.current_state.cx = cons(stp.pb, x)
   end
-  c_too_large = norm(stp.current_state.cx) <= stp.meta.unbounded_threshold
+  c_too_large = norm(stp.current_state.cx) >= abs(stp.meta.unbounded_threshold)
  end
 
  stp.meta.unbounded_pb = f_too_large || c_too_large
