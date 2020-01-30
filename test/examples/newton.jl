@@ -15,7 +15,7 @@ nlp = ADNLPModel(f,  ones(5))
 
 #We now initialize the NLPStopping
 nlp_at_x = NLPAtX(ones(5))
-stop_nlp = NLPStopping(nlp, (x,y) -> Stopping.unconstrained(x,y), nlp_at_x)
+stop_nlp = NLPStopping(nlp, (x,y) -> unconstrained_check(x,y), nlp_at_x)
 #Note that in this case an alternative is:
 #stop_nlp = NLPStopping(nlp)
 
