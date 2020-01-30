@@ -7,6 +7,7 @@
 ###############################################################################
 using Test, Stopping
 
+###############################################################################
 #The GenericState contains only two entries:
 # a vector x, and a Float current_time
 state1 = GenericState(ones(2)) #takes a Vector as a mandatory input
@@ -16,6 +17,7 @@ state2 = GenericState(ones(2), current_time = 1.0)
 @test state1.current_time == nothing
 @test state2.current_time == 1.0
 
+###############################################################################
 #The GenericState has two functions: update! and reinit!
 #update! is used to update entries of the State:
 update!(state1, current_time = 1.0)
@@ -50,3 +52,15 @@ reinit!(state2, current_time = 1.0)
 #or in the one changing x:
 reinit!(state2, ones(2), current_time = 1.0)
 @test state2.x == ones(2) && state2.current_time == 1.0
+
+###############################################################################
+#The State has also a private function guaranteeing there are no NaN
+OK = Stopping._domain_check(state1) #function returns a boolean
+@test OK == false #no NaN
+
+update!(state1, current_time = NaN)
+@test Stopping._domain_check(state1) == true
+
+@test Stopping._domain_check(state2) == false
+update!(state2, x=[NaN, 0.0])
+@test Stopping._domain_check(state2) == true

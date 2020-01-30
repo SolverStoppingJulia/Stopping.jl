@@ -63,3 +63,18 @@ the argument x.
 function reinit!(stateatx :: AbstractState; kwargs...)
  return reinit!(stateatx, stateatx.x; kwargs...)
 end
+
+"""
+_domain_check: verifies is there is a NaN in State entries
+
+return true if a NaN has been found
+"""
+function _domain_check(stateatx :: AbstractState)
+ domainerror = false
+
+ for k ∈ fieldnames(typeof(stateatx))
+   try domainerror = domainerror || (true in isnan.(getfield(stateatx, k))) catch end
+ end
+
+ return domainerror
+end

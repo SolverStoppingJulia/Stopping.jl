@@ -53,7 +53,7 @@ using LinearAlgebra #used for the norm function
 c(x) = [x[1] - x[2], x[2]]
 lcon = [0.0, 0.0]
 ucon = [0.0, 0.0]
-nlp = ADNLPModel(x->NaN, zeros(2), c=c, lcon=lcon, ucon=ucon)
+nlp = ADNLPModel(x->Inf, zeros(2), c=c, lcon=lcon, ucon=ucon)
 
 #1st scenario: we solve the problem
 printstyled("1st scenario:\n")

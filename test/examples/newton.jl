@@ -5,8 +5,7 @@
 #
 ###############################################################################
 
-using NLPModels
-using Stopping
+using NLPModels, Stopping, Test
 
 # We create a simple function to test
 A = rand(5, 5);
@@ -22,7 +21,7 @@ stop_nlp = NLPStopping(nlp, (x,y) -> Stopping.unconstrained(x,y), nlp_at_x)
 
 
 function newton(stp :: NLPStopping)
-    
+
     state = stp.current_state; xt = state.x;
     update!(state, x = xt, gx = grad(stp.pb, xt), Hx = hess(stp.pb, xt))
     OK = start!(stp)
@@ -43,6 +42,6 @@ end
 stop_nlp = newton(stop_nlp)
 
 # We can look at the meta to know what happened
-stop_nlp.meta.tired
-stop_nlp.meta.unbounded
-stop_nlp.meta.optimal
+@test stop_nlp.meta.tired == false
+@test stop_nlp.meta.unbounded == false
+@test stop_nlp.meta.optimal == true

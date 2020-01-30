@@ -1,5 +1,5 @@
-export GenericStopping,  start!, reinit!, stop!, update_and_start!, update_and_stop!
-export fill_in!, status
+export GenericStopping, start!, stop!, update_and_start!, update_and_stop!
+export fill_in!, reinit!, status
 
 """
  Type : GenericStopping
@@ -104,15 +104,17 @@ function start!(stp :: AbstractStopping; kwargs...)
   update!(stt_at_x, current_time = time())
  end
 
- # Optimality check
- optimality0          = _optimality_check(stp; kwargs...)
- stp.meta.optimality0 = optimality0
- if isnan(optimality0)
-   #printstyled("DomainError: optimality0 is NaN\n", color = :red)
-   stp.meta.domainerror = true
- end
+ stp.meta.domainerror = _domain_check(stp.current_state)
+ if !stp.meta.domainerror
+   # Optimality check
+   optimality0          = _optimality_check(stp; kwargs...)
+   stp.meta.optimality0 = optimality0
+   if isnan(optimality0)
+     stp.meta.domainerror = true
+   end
 
- stp.meta.optimal     = _null_test(stp, optimality0)
+   stp.meta.optimal     = _null_test(stp, optimality0)
+ end
 
  OK = stp.meta.optimal || stp.meta.domainerror
 
@@ -183,24 +185,26 @@ function stop!(stp :: AbstractStopping; kwargs...)
  x        = stp.current_state.x
  time     = stp.meta.start_time
 
- # Optimality check
- score = _optimality_check(stp; kwargs...)
- if isnan(score)
-  #printstyled("DomainError: score is NaN\n", color = :red)
-  stp.meta.domainerror = true
- end
- stp.meta.optimal = _null_test(stp, score)
+ stp.meta.domainerror = _domain_check(stp.current_state)
+ if !stp.meta.domainerror
+   # Optimality check
+   score = _optimality_check(stp; kwargs...)
+   if isnan(score)
+    stp.meta.domainerror = true
+   end
+   stp.meta.optimal = _null_test(stp, score)
 
- # global user limit diagnostic
- _unbounded_check!(stp, x)
- _unbounded_problem_check!(stp, x)
- _tired_check!(stp, x, time_t = time)
- _resources_check!(stp, x)
- _stalled_check!(stp, x)
- _iteration_check!(stp, x)
+   # global user limit diagnostic
+   _unbounded_check!(stp, x)
+   _unbounded_problem_check!(stp, x)
+   _tired_check!(stp, x, time_t = time)
+   _resources_check!(stp, x)
+   _stalled_check!(stp, x)
+   _iteration_check!(stp, x)
 
- if stp.main_stp != nothing
-     _main_pb_check!(stp, x)
+   if stp.main_stp != nothing
+       _main_pb_check!(stp, x)
+   end
  end
 
  OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled

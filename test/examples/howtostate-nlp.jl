@@ -92,7 +92,14 @@ reinit!(state_bnd, evals = test)
 @test sum_counters(state_bnd.evals) - 102 == 0
 
 ###############################################################################
-#III. Use the NLPAtX
+#III. Domain Error
+#Similar to the GenericState we can use _domain_check to verify there are no NaN
+@test Stopping._domain_check(state_bnd) == false
+update!(state_bnd, fx = NaN)
+@test Stopping._domain_check(state_bnd) == true
+
+###############################################################################
+#IV. Use the NLPAtX
 #
 #For algorithmic use, it might be conveninent to fill in all the entries of then
 #State. In this case, we can use the Stopping:
