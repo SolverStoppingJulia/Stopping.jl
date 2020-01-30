@@ -5,7 +5,7 @@ Q = A' * A
 f(x) = x' * Q * x
 nlp = ADNLPModel(f, zeros(5))
 nlp_at_x = NLPAtX(zeros(5))
-stop_nlp = NLPStopping(nlp, (x,y) -> Stopping.unconstrained(x,y), nlp_at_x, optimality0 = 0.0)
+stop_nlp = NLPStopping(nlp, (x,y) -> unconstrained_check(x,y), nlp_at_x, optimality0 = 0.0)
 
 
 a = zeros(5)

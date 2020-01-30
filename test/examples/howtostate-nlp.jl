@@ -103,7 +103,7 @@ update!(state_bnd, fx = NaN)
 #
 #For algorithmic use, it might be conveninent to fill in all the entries of then
 #State. In this case, we can use the Stopping:
-stop = NLPStopping(nlp, (x,y) -> Stopping.unconstrained(x,y), state_unc)
+stop = NLPStopping(nlp, (x,y) -> unconstrained_check(x,y), state_unc)
 #Note that the fill_in! can receive known informations via keywords.
 #If we don't want to store the hessian matrix, we turn the keyword
 #matrix_info as false.

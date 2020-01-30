@@ -5,9 +5,9 @@ unconstrained: return the infinite norm of the gradient of the objective functio
 
 required: state.gx (filled if void)
 """
-function unconstrained(pb    :: AbstractNLPModel,
-                       state :: NLPAtX;
-                       pnorm :: Float64 = Inf)
+function unconstrained_check(pb    :: AbstractNLPModel,
+                             state :: NLPAtX;
+                             pnorm :: Float64 = Inf)
 
     if state.gx == nothing # should be filled if empty
         update!(state, gx = grad(pb, state.x))

@@ -1,4 +1,4 @@
-export NLPStopping, unconstrained, KKT, fill_in!
+export NLPStopping, unconstrained_check, KKT, fill_in!
 
 ################################################################################
 # Specific stopping module for non linear problems
@@ -224,7 +224,7 @@ end
 
 ################################################################################
 # Nonlinear problems admissibility functions
-# Available: unconstrained(...), optim_check_bounded(...), KKT
+# Available: unconstrained_check(...), optim_check_bounded(...), KKT
 ################################################################################
 include("nlp_admissible_functions.jl")
 

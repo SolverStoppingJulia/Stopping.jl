@@ -45,7 +45,8 @@ function penalty(stp :: NLPStopping; rho0 = 100.0, rho_min = 1e-10,
 
  #prepare the subproblem stopping:
  sub_nlp_at_x = NLPAtX(stp.current_state.x)
- sub_stp = NLPStopping(stp.pb, (x,y) -> Stopping.unconstrained(x,y),
+ sub_pb  = ADNLPModel(x->obj(stp.pb, x) + rho * norm(cons(stp.pb, x))^2,  x0)
+ sub_stp = NLPStopping(sub_pb, (x,y) -> unconstrained_check(x,y),
                                sub_nlp_at_x, main_stp = stp)
 
  #main loop
@@ -62,10 +63,13 @@ function penalty(stp :: NLPStopping; rho0 = 100.0, rho_min = 1e-10,
   #Either stop! is true OR the penalty parameter is too small
   OK = stop!(stp) || rho < rho_min
 
-@show stp.meta.nb_of_stop, OK, rho
+  @show stp.meta.nb_of_stop, OK, rho
 
   #update the penalty parameter if necessary
-  rho = rho * rho_update
+  if !OK
+   rho = rho * rho_update
+   sub_stp.pb  = ADNLPModel(x->obj(stp.pb, x) + rho * norm(cons(stp.pb, x))^2,  x0)
+  end
  end
 
  return stp
@@ -94,9 +98,9 @@ mutable struct Param
     back_update :: Float64 #backtracking update
     grad_need   :: Bool
 
-    function Param(;rho0 :: Float64 = 100.0,
-                    rho_min :: Float64 = sqrt(eps(Float64)),
-                    rho_update :: Float64 = 0.5,
+    function Param(;rho0        :: Float64 = 100.0,
+                    rho_min     :: Float64 = sqrt(eps(Float64)),
+                    rho_update  :: Float64 = 0.5,
                     armijo_prm  :: Float64 = 0.01,
                     wolfe_prm   :: Float64 = 0.99,
                     onedsolve   :: Function = backtracking_ls,
@@ -122,12 +126,12 @@ nlp2 = ADNLPModel(rosenbrock,  x0,
                  y0 = [0.0], c = c, lcon = [-Inf], ucon = [6.])
 
 nlp_at_x_c = NLPAtX(x0, zeros(nlp2.meta.ncon))
-stop_nlp_c = NLPStopping(nlp2, (x,y) -> Stopping.KKT(x,y), nlp_at_x_c)
+stop_nlp_c = NLPStopping(nlp2, (x,y) -> KKT(x,y), nlp_at_x_c)
 
 penalty(stop_nlp_c)
 status(stop_nlp_c)
 
 #We can check afterwards, the score
-Stopping.KKT(stop_nlp_c.pb, stop_nlp_c.current_state)
+KKT(stop_nlp_c.pb, stop_nlp_c.current_state)
 
 printstyled("The End.\n", color = :green)
