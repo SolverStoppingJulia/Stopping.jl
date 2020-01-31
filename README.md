@@ -24,20 +24,20 @@ This tool eases the first three items above. It defines a type
 
     mutable struct GenericStopping <: AbstractStopping
         problem       :: Any          # an arbitrary instance of a problem
-        meta          :: StoppingMeta # contains the used parameters
-        current_state :: State        # the current state
+        meta          :: AbstractStoppingMeta # contains the used parameters
+        current_state :: AbstractState        # the current state
 
 The [StoppingMeta](https://github.com/Goysa2/Stopping.jl/blob/master/src/Stopping/StoppingMetamod.jl) provides default tolerances, maximum resources, ...  as well as (boolean) information on the result.
 
 ### Your Stopping your way
 
-The GenericStopping provides a complete structure to handle stopping criteria.
+The GenericStopping (with GenericState) provides a complete structure to handle stopping criteria.
 Then, depending on your problem, you can specialize a new Stopping by redefining
 a State and some functions specific to your problem.
 
 We provide some specialization of the GenericStopping for optimization :
-  * [NLPStopping](https://github.com/Goysa2/Stopping.jl/blob/master/src/Stopping/NLPStoppingmod.jl): for non-linear programming (based on [NLPModels](https://github.com/JuliaSmoothOptimizers/NLPModels.jl));
-  * [LS_Stopping](https://github.com/Goysa2/Stopping.jl/blob/master/src/Stopping/LineSearchStoppingmod.jl): for 1d optimization;
+  * [NLPStopping](https://github.com/Goysa2/Stopping.jl/blob/master/src/Stopping/NLPStoppingmod.jl): for non-linear programming (based on [NLPModels](https://github.com/JuliaSmoothOptimizers/NLPModels.jl)) uses [NLPAtX](https://github.com/Goysa2/Stopping.jl/blob/master/src/State/NLPAtXmod.jl) as a specialized State;
+  * [LS_Stopping](https://github.com/Goysa2/Stopping.jl/blob/master/src/Stopping/LineSearchStoppingmod.jl): for 1d optimization uses [LSAtT](https://github.com/Goysa2/Stopping.jl/blob/master/src/State/LSAtTmod.jl) as a specialized State;
   * more to come...
 
 In these examples, the function `optimality_residual` computes the residual of the optimality conditions is an additional attribute of the type.
@@ -57,12 +57,12 @@ the Stopping to reuse for another call.
 
 Consult the [HowTo tutorial](https://github.com/Goysa2/Stopping.jl/blob/master/test/examples/runhowto.jl) to learn more about the possibilities offered by Stopping.
 
-You can also access other examples of algorithms in the [test/examples](https://github.com/Goysa2/Stopping.jl/blob/master/test/examples/) folder.
+You can also access other examples of algorithms in the [test/examples](https://github.com/Goysa2/Stopping.jl/blob/master/test/examples/) folder, which for instance illustrate the strenght of Stopping with subproblems.
 
 ## How to install
 Install and test the Stopping package with the Julia package manager:
 ```julia
-pkg> add https://github.com/Goysa2/Stopping.jl
+pkg> add Stopping
 pkg> test Stopping
 ```
 You can access the most-up-to date version of the Stopping package using:
@@ -72,21 +72,20 @@ pkg> test Stopping
 ```
 ## Example
 
-As an example, a naïve version of the Newton method is provided. First we import the packages:
+As an example, a naïve version of the Newton method is provided [here](https://github.com/Goysa2/Stopping.jl/blob/master/test/examples/newton.jl). First we import the packages:
 ```
 using NLPModels, Stopping
 ```
 We consider a quadratic test function, and create an uncontrained quadratic optimization problem using [NLPModels](https://github.com/JuliaSmoothOptimizers/NLPModels.jl):
 ```
 A = rand(5, 5); Q = A' * A;
-
 f(x) = 0.5 * x' * Q * x
 nlp = ADNLPModel(f,  ones(5))
 ```
 
-We now initialize the NLPStopping:
+We now initialize the NLPStopping. First create a State.
 ```
-nlp_at_x = NLPAtX(ones(5)) #First create a State
+nlp_at_x = NLPAtX(ones(5))
 ```
 We use [unconstrained_check](https://github.com/Goysa2/Stopping.jl/blob/master/src/Stopping/nlp_admissible_functions.jl) as an optimality function
 ```
@@ -120,9 +119,9 @@ function newton(stp :: NLPStopping)
     end
 
     return stp
-end #end of function newton
+end
 ```
-Now, we can call the algorithm with our Stopping:
+Finally, we can call the algorithm with our Stopping:
 ```
 stop_nlp = newton(stop_nlp)
 ```
