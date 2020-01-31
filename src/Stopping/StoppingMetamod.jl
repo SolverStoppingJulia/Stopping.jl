@@ -71,7 +71,7 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
                         rtol                :: Number   = 1.0e-15,
                         optimality0         :: Number   = 1.0,
                         tol_check           :: Function = (atol,rtol,opt0) -> max(atol,rtol*opt0),
-                        unbounded_threshold :: Number   = -1.0e50,
+                        unbounded_threshold :: Number   = 1.0e50,
                         unbounded_x         :: Number   = 1.0e50,
                         max_f               :: Int      = typemax(Int),
                         max_eval            :: Int      = 20000,

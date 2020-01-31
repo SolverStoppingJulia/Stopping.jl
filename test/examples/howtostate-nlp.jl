@@ -6,7 +6,7 @@
 # non-linear programming.
 #
 ###############################################################################
-using Test, NLPModels, Stopping
+#using Test, NLPModels, Stopping
 
 include("../test-stopping/rosenbrock.jl")
 #Formulate the problem with NLPModels

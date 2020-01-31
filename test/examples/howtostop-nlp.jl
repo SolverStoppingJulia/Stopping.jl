@@ -12,7 +12,7 @@
 # NLPStopping is following this approach.
 #
 ###############################################################################
-using Test, NLPModels, Stopping
+#using Test, NLPModels, Stopping
 
 #We first create a toy problem
 f(x) = sum(x.^2)
@@ -81,10 +81,10 @@ OK = update_and_stop!(stop_nlp, evals = stop_nlp.pb.counters)
 #4) Unbounded problem
 #An additional feature of the NLPStopping is to provide an _unbounded_problem_check
 #whenever \|c(x)\| or -f(x) become too large.
-stop_nlp.meta.unbounded_threshold = 10.0 #by default -1.0e50
+stop_nlp.meta.unbounded_threshold = - 1.0 #by default 1.0e50
 stop!(stop_nlp)
 @test stop_nlp.meta.unbounded_pb == true
-@test stop_nlp.current_state.fx < stop_nlp.meta.unbounded_threshold
+@test stop_nlp.current_state.fx > stop_nlp.meta.unbounded_threshold
 @test stop_nlp.meta.resources == true #still true as the state has not changed
 
 ###############################################################################

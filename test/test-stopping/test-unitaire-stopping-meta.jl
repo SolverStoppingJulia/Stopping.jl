@@ -2,7 +2,7 @@
 test_meta = StoppingMeta()
 
 @test test_meta.optimality0         == 1.0
-@test test_meta.unbounded_threshold == -1.0e50
+@test test_meta.unbounded_threshold == 1.0e50
 @test test_meta.unbounded_x         == 1.0e50
 @test test_meta.max_f               == 9223372036854775807
 @test test_meta.max_eval            == 20_000

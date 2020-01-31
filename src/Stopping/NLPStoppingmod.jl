@@ -162,7 +162,8 @@ _resources_check!: Checks if the optimization algorithm has exhausted the resour
 function _resources_check!(stp    :: NLPStopping,
                            x      :: Iterate)
 
-  cntrs = stp.current_state.evals #Counters in the state
+  #cntrs = stp.current_state.evals #Counters in the state
+  cntrs = stp.pb.counters
   max_cntrs = stp.max_cntrs
 
   # check all the entries in the counter
@@ -193,7 +194,7 @@ function _unbounded_problem_check!(stp  :: NLPStopping,
  if stp.current_state.fx == nothing
 	 stp.current_state.fx = obj(stp.pb, x)
  end
- f_too_large = stp.current_state.fx <= stp.meta.unbounded_threshold
+ f_too_large = norm(stp.current_state.fx) >= stp.meta.unbounded_threshold
 
  c_too_large = false
  if stp.pb.meta.ncon != 0 #if the problems has constraints, check |c(x)|

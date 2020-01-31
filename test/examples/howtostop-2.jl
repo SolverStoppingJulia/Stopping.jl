@@ -6,7 +6,6 @@
 # subStopping.
 #
 ###############################################################################
-using Test, Stopping
 
 #Assume we want to solve "pb" starting from "x0" and solving at each step
 #of the algorithm the subproblem "subpb".

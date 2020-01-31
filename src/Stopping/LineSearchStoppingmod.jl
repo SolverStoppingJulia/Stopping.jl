@@ -71,7 +71,7 @@ function _unbounded_check!(stp  :: LS_Stopping,
  if stp.current_state.ht == nothing
      stp.current_state.ht = obj(stp.pb, x)
  end
- f_too_large = stp.current_state.ht <= stp.meta.unbounded_threshold
+ f_too_large = norm(stp.current_state.ht) >= stp.meta.unbounded_threshold
 
  stp.meta.unbounded = x_too_large || f_too_large
 

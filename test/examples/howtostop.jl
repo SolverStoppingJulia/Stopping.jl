@@ -7,7 +7,7 @@
 # -> the case where a Stopping is a sub-Stopping is treated in the next tuto.
 #
 ###############################################################################
-using Test, Stopping
+#using Test, Stopping
 
 x0 = ones(2)
 pb = nothing

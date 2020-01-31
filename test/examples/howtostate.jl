@@ -5,7 +5,7 @@
 # We illustrate here the GenericState and its features
 #
 ###############################################################################
-using Test, Stopping
+#using Test, Stopping
 
 ###############################################################################
 #The GenericState contains only two entries:
