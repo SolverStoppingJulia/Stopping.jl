@@ -36,11 +36,11 @@ Then, depending on your problem, you can specialize a new Stopping by redefining
 a State and some functions specific to your problem.
 
 We provide some specialization of the GenericStopping for optimization :
-  * [NLPStopping](https://github.com/Goysa2/Stopping.jl/blob/master/src/Stopping/NLPStoppingmod.jl): for non-linear programming (based on [NLPModels](https://github.com/JuliaSmoothOptimizers/NLPModels.jl)) uses [NLPAtX](https://github.com/Goysa2/Stopping.jl/blob/master/src/State/NLPAtXmod.jl) as a specialized State;
-  * [LS_Stopping](https://github.com/Goysa2/Stopping.jl/blob/master/src/Stopping/LineSearchStoppingmod.jl): for 1d optimization uses [LSAtT](https://github.com/Goysa2/Stopping.jl/blob/master/src/State/LSAtTmod.jl) as a specialized State;
+  * [NLPStopping](https://github.com/Goysa2/Stopping.jl/blob/master/src/Stopping/NLPStoppingmod.jl) with [NLPAtX](https://github.com/Goysa2/Stopping.jl/blob/master/src/State/NLPAtXmod.jl) as a specialized State: for non-linear programming (based on [NLPModels](https://github.com/JuliaSmoothOptimizers/NLPModels.jl));
+  * [LS_Stopping](https://github.com/Goysa2/Stopping.jl/blob/master/src/Stopping/LineSearchStoppingmod.jl) with [LSAtT](https://github.com/Goysa2/Stopping.jl/blob/master/src/State/LSAtTmod.jl) as a specialized State: for 1d optimization;
   * more to come...
 
-In these examples, the function `optimality_residual` computes the residual of the optimality conditions is an additional attribute of the type.
+In these examples, the function `optimality_residual` computes the residual of the optimality conditions is an additional attribute of the type. 
 
 ## Functions
 
