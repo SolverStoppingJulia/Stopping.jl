@@ -1,21 +1,26 @@
-export NLPStopping, unconstrained_check, KKT, fill_in!
-
-################################################################################
-# Specific stopping module for non linear problems
-################################################################################
-
 """
-Stopping structure for non-linear programming problems.
-Inputs:
- - pb : An AbstractNLPModel
- - optimality_check : a stopping criterion through an admissibility function
- - meta : StoppingMeta
- - max_cntrs :: Dict contains the max number of evaluations
- - current_state : the current state of the problem (i.e an NLPAtX)
+Type: NLPStopping (specialization of GenericStopping)
+Methods: start!, stop!, update_and_start!, update_and_stop!, fill_in!, reinit!, status
 
+Stopping structure for non-linear programming problems using NLPModels.
+    Input :
+       - pb         : an AbstractNLPModel
+       - optimality_check : a stopping criterion through an admissibility function
+       - state      : The information relative to the problem, see GenericState
+       - max_cntrs  : Dict contains the max number of evaluations
+       - (opt) meta : Metadata relative to stopping criterion.
+       - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
+                          of a subproblem.
+                          If not a subproblem, then nothing.
+
+ Note:
  * optimality_check : takes two inputs (AbstractNLPModel, NLPAtX)
  and returns a Float64 to be compared at 0.
- (Idée: ajouter une nouvelle input main_pb dans le optimality_check?)
+ * designed for NLPAtX State. Constructor checks that the State has the
+ required entries.
+
+ Warning:
+ * optimality_check does not necessarily fill in the State.
  """
 mutable struct NLPStopping <: AbstractStopping
 
@@ -23,14 +28,14 @@ mutable struct NLPStopping <: AbstractStopping
     pb :: AbstractNLPModel
 
     # stopping criterion
-    optimality_check :: Function # will be put in optimality_check
+    optimality_check :: Function
 
     # Common parameters
     meta      :: AbstractStoppingMeta
     # Parameters specific to the NLPModels
     max_cntrs :: Dict #contains the max number of evaluations
 
-    # current state of the line search Algorithm
+    # current state of the problem
     current_state :: AbstractState
 
     # Stopping of the main problem, or nothing
@@ -109,7 +114,7 @@ function _init_max_counters(; obj    :: Int64 = 20000,
 end
 
 """
-fill_in! : A function that fill in the required values in the State
+fill_in!: a function that fill in the required values in the State
 """
 function fill_in!(stp  :: NLPStopping,
                   x    :: Iterate;
@@ -154,10 +159,12 @@ function fill_in!(stp  :: NLPStopping,
 end
 
 """
-_resources_check!: Checks if the optimization algorithm has exhausted the resources.
-                    This is the NLP specialized version that takes into account
-                    the evaluation of the functions following the sum_counters
-                    structure from NLPModels.
+_resources_check!: check if the optimization algorithm has exhausted the resources.
+                   This is the NLP specialized version that takes into account
+                   the evaluation of the functions following the sum_counters
+                   structure from NLPModels.
+
+Note: function uses counters in stp.pb
 """
 function _resources_check!(stp    :: NLPStopping,
                            x      :: Iterate)
@@ -183,10 +190,11 @@ end
 
 """
 _unbounded_problem_check!: This is the NLP specialized version that takes into account
-                   that the problem might be unbounded if the objective function
-                   is unbounded from below.
+                   that the problem might be unbounded if the objective or the
+                   constraint function are unbounded.
 
-Warning: evaluate the objective function is state.fx is void.
+Note: * evaluate the objective function if state.fx is void.
+      * evaluate the constraint function if state.cx is void.
 """
 function _unbounded_problem_check!(stp  :: NLPStopping,
                                    x    :: Iterate)
@@ -210,8 +218,7 @@ function _unbounded_problem_check!(stp  :: NLPStopping,
 end
 
 """
-_optimality_check: If we reached a good approximation of an optimum to our
-problem. In it's basic form only checks the norm of the gradient.
+_optimality_check: compute the optimality score.
 
 This is the NLP specialized version that takes into account the structure of the
 NLPStopping where the optimality_check function is an input.

@@ -1,19 +1,8 @@
-export AbstractStoppingMeta, StoppingMeta
-
-################################################################################
-# Common stopping parameters to all optimization algorithms
-################################################################################
-
 """
-AbstractStoppingMeta
-Abstract type, if specialized meta for stopping were to be implemented they
-would need to be subtypes of AbstractStoppingMeta
-"""
-abstract type AbstractStoppingMeta end
+Type: StoppingMeta
+Methods: no
 
-"""
-StoppingMeta
-Common stopping criterion for "all" optimization algorithms such as:
+Common stopping criteria for algorithms:
     - absolute and relative tolerance
     - threshold for unboundedness
     - time limit to let the algorithm run
@@ -23,9 +12,11 @@ It's a mutable struct therefore we can modified elements of a StoppingMeta.
 	- The nb_of_stop is incremented everytime stop! or update_and_stop! is called
 	- The optimality0 is modified once at the beginning of the algorithm (start!)
     - The start_time is modified once at the beginning of the algorithm (start!)
-    if not precised before.
-	- The different status fail_sub_pb, unbounded, tired, stalled, optimal,
-	  suboptimal, and infeasible are modified according to the data of the algorithm.
+      if not precised before.
+	- The different status: fail_sub_pb, unbounded, unbounded_pb, tired, stalled,
+      iteration_limit, resources, optimal, main_pb, domainerror, suboptimal, infeasible
+
+Note: fail_sub_pb, suboptimal, and infeasible are modified by the algorithm.
 """
 mutable struct StoppingMeta <: AbstractStoppingMeta
 

@@ -1,14 +1,20 @@
-################################################################################
-# This is the Generic implementation of an AbstractState. More documentation
-# can be found on the specific types and the README.
-################################################################################
-abstract type AbstractState end
+"""
+Type: GenericState
+Methods: update!, reinit!
 
+A generic State to describe the state of a problem at a point x.
+
+Tracked data include:
+ - x : our current iterate
+ - current_time : time
+
+Note: by default, unknown entries are set to nothing.
+"""
 mutable struct GenericState <: AbstractState
 
     x :: Vector
 
-    #Starting time
+    #Current time
     current_time :: FloatVoid
 
     function GenericState(x            :: Vector;
@@ -19,9 +25,10 @@ mutable struct GenericState <: AbstractState
 end
 
 """
-Generic update function for the State
+update!: generic update function for the State
+
 The function compare the kwargs and the entries of the State.
-If the type of the kwargs is the same as the entry or the entry was void, then
+If the type of the kwargs is the same as the entry or the entry was nothing, then
 it is updated.
 
 Set convert to true, to update even incompatible types.
@@ -55,7 +62,7 @@ function reinit!(stateatx :: AbstractState, x :: Iterate; kwargs...)
 end
 
 """
-reinit!: short version of reinit! reusing the x in the state
+reinit!: shorter version of reinit! reusing the x in the state
 
 Note: If x is given as a keyword argument it will be prioritized over
 the argument x.
@@ -65,7 +72,7 @@ function reinit!(stateatx :: AbstractState; kwargs...)
 end
 
 """
-_domain_check: verifies is there is a NaN in State entries
+_domain_check: verifies is there is a NaN in the State entries
 
 return true if a NaN has been found
 """

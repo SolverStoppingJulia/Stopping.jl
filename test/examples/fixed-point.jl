@@ -16,7 +16,7 @@
 # as it reached a personal success. (optimal_sub_pb is true)
 #
 ###############################################################################
-using Stopping, Test
+using LinearAlgebra, NLPModels, Stopping, Test
 
 #Main algorithm
 function AlternatingDirections(stp)
@@ -46,14 +46,11 @@ function AlternatingDirections(stp)
 end
 
 # We model the problem using the NLPModels without objective function
-using NLPModels
-using LinearAlgebra #used for the norm function
-
 #Formulate the problem with NLPModels
 c(x) = [x[1] - x[2], x[2]]
 lcon = [0.0, 0.0]
 ucon = [0.0, 0.0]
-nlp = ADNLPModel(x->Inf, zeros(2), c=c, lcon=lcon, ucon=ucon)
+nlp = ADNLPModel(x->0.0, zeros(2), c=c, lcon=lcon, ucon=ucon)
 
 #1st scenario: we solve the problem
 printstyled("1st scenario:\n")

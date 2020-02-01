@@ -1,30 +1,33 @@
-export LS_Stopping
-
-################################################################################
-# Line search stopping module
-################################################################################
-
 """
+Type: LS_Stopping (specialization of GenericStopping)
+Methods: start!, stop!, update_and_start!, update_and_stop!, fill_in!, reinit!, status
+
 LS_Stopping is designed to handle the stopping criterion of line search problems.
 Let f:R→Rⁿ, then h(t) = f(x+td) where x and d are vectors and t is a scalar.
 h is such that h:R→R.
-h is a LineModel defined in SolverTools.jl (https://github.com/JuliaSmoothOptimizers/SolverTools.jl)
-It is possible to define those stopping criterion in a NLPStopping except NLPStopping
-uses vectors operations. LS_Stopping and it's admissible functions (Armijo and Wolfe are provided with Stopping.jl)
-uses scalar operations.
-In order to work properly within the Stopping framework, admissible functions must
-return a value that will be compare to 0.
-For instance, the armijo condition is
-h(t)-h(0)-τ₀*t*h'(0) ⩽ 0
-therefore armijo(h, h_at_t) returns the maximum between h(t)-h(0)-τ₀*t*h'(0) and 0.
-The inputs of an admissible function are :
-    - h 	 :: A LineModel
-    - h_at_t :: A line search state, defined in State.jl
-"""
+
+Stopping structure for non-linear programming problems using NLPModels.
+    Input :
+       - pb         : an AbstractNLPModel
+       - optimality_check : a stopping criterion through an admissibility function
+       - state      : The information relative to the problem, see GenericState
+       - (opt) meta : Metadata relative to stopping criterion.
+       - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
+                          of a subproblem.
+                          If not a subproblem, then nothing.
+
+ Note:
+ * The pb can be a LineModel defined in SolverTools.jl (https://github.com/JuliaSmoothOptimizers/SolverTools.jl)
+ * It is possible to define those stopping criterion in a NLPStopping except NLPStopping
+   uses vectors operations. LS_Stopping and it's admissible functions (Armijo and Wolfe are provided with Stopping.jl)
+   uses scalar operations.
+ * optimality_check(pb, state; kwargs...) -> Float64
+   For instance, the armijo condition is: h(t)-h(0)-τ₀*t*h'(0) ⩽ 0
+   therefore armijo(h, h_at_t) returns the maximum between h(t)-h(0)-τ₀*t*h'(0) and 0.
+ """
 mutable struct LS_Stopping <: AbstractStopping
     # problem
-    pb :: Any # hard to define a proper type to avoid circular dependencies
-              # I don't know the right solution to this situation...
+    pb :: Any
 
     # stopping criterion proper to linesearch
     optimality_check :: Function
@@ -55,33 +58,30 @@ mutable struct LS_Stopping <: AbstractStopping
 end
 
 """
-_unbounded_check!: If x gets too big it is likely that the problem is unbounded
-                   This is a specialized version that takes into account
-                   that the problem might be unbounded if the objective function
-                   is unbounded from below.
+_unbounded_problem_check!: If x gets too big it is likely that the problem is unbounded
+                           This is a specialized version that takes into account
+                           that the problem might be unbounded if the objective function
+                           is unbounded from below.
 
-Warning: evaluate the objective function is state.ht is void.
+Note: evaluate the objective function is state.ht is void.
 """
-function _unbounded_check!(stp  :: LS_Stopping,
-                           x    :: Iterate)
-
- # check if x is too large
- x_too_large = norm(x,Inf) >= stp.meta.unbounded_x
+function _unbounded_problem_check!(stp  :: LS_Stopping,
+                                   x    :: Iterate)
 
  if stp.current_state.ht == nothing
      stp.current_state.ht = obj(stp.pb, x)
  end
  f_too_large = norm(stp.current_state.ht) >= stp.meta.unbounded_threshold
 
- stp.meta.unbounded = x_too_large || f_too_large
+ stp.meta.unbounded_pb = f_too_large
 
  return stp
 end
 
 """
-_resources_check!: Checks if the optimization algorithm has exhausted the resources.
+_resources_check!: check if the optimization algorithm has exhausted the resources.
 
-If the stp.pb is an AbstractNLPModel check the number of evaluations of f and sum.
+If the problem is an AbstractNLPModel check the number of evaluations of f and sum.
 """
 function _resources_check!(stp    :: AbstractStopping,
                            x      :: Iterate)
@@ -101,11 +101,10 @@ function _resources_check!(stp    :: AbstractStopping,
 end
 
 """
-_optimality_check: If we reached a good approximation of an optimum to our
-problem. In it's basic form only checks the norm of the gradient.
+_optimality_check: compute the optimality score.
 
-This is a specialized version that takes into account the structure of the
-LineSearchStopping where the optimality_check function is an input.
+This is the NLP specialized version that takes into account the structure of the
+LS_Stopping where the optimality_check function is an input.
 """
 function _optimality_check(stp  :: LS_Stopping; kwargs...)
 

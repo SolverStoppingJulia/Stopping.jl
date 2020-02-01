@@ -1,12 +1,18 @@
 import NLPModels: Counters
 
 """
-NLPAtX contains the important information concerning a non linear problem at
-the iteration x. Basic information is:
- - x the current candidate for solution to our original problem
- - f(x) which is the funciton evaluation at x
- - g(x) which is the gradient evaluation at x
- - Hx which is the hessian representation at x
+Type: NLPAtX
+Methods: update!, reinit!
+
+NLPAtX contains the information concerning a nonlinear problem at
+the iteration x.
+min_{x ∈ ℜⁿ} f(x) subject to lcon <= c(x) <= ucon, lvar <= x <= uvar.
+
+Basic information is:
+ - x : the current candidate for solution to our original problem
+ - fx : which is the funciton evaluation at x
+ - gx : which is the gradient evaluation at x
+ - Hx : which is the hessian representation at x
 
  - mu : Lagrange multiplier of the bounds constraints
 
@@ -14,21 +20,22 @@ the iteration x. Basic information is:
  - Jx : jacobian matrix of the constraint function at x
  - lambda : Lagrange multiplier of the constraints
 
- - current_time : Default is a void, can be updated to fit the start of the algorithm.
+ - current_time : time
  - evals : number of evaluations of the function (import the type NLPModels.Counters)
 
- All these information (except for x) are optionnal and need to be update when
- required. The update is done trhough the update! function.
-
- The constructor check the size of the entries.
+Note: * by default, unknown entries are set to nothing (except evals).
+      * All these information (except for x and lambda) are optionnal and need to be update when
+        required. The update is done trhough the update! function.
+      * x and lambda are mandatory entries. If no constraints lambda = [].
+      * The constructor check the size of the entries.
 """
 mutable struct 	NLPAtX <: AbstractState
 
 #Unconstrained State
     x            :: Vector     # current point
     fx           :: FloatVoid   # objective function
-    gx           :: Iterate     # gradient, size: x
-    Hx           :: MatrixType  # Accurate? size: |x| x |x|
+    gx           :: Iterate     # gradient size: x
+    Hx           :: MatrixType  # hessian size: |x| x |x|
 
 #Bounds State
     mu           :: Iterate     # Lagrange multipliers with bounds size of |x|
@@ -101,7 +108,7 @@ function reinit!(stateatx :: NLPAtX; kwargs...)
 end
 
 """
-Check the size of the entries in the State
+_size_check!: check the size of the entries in the State
 """
 function _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
 

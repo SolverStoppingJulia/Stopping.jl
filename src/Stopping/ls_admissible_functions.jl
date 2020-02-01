@@ -1,12 +1,13 @@
-export armijo, wolfe, armijo_wolfe, shamanskii_stop
+export armijo, wolfe, armijo_wolfe, shamanskii_stop, goldstein
 
 """
-Check if a step size is admissible according to the Armijo criterion.
-Inputs: Any, #LineModel and LSAtT.
-Outputs: admissibility in the armijo sense
+armijo: check if a step size is admissible according to the Armijo criterion.
+
 Armijo criterion: f(x + θd) - f(x) < τ₀ ∇f(x+θd)d
+
+Note: ht, h₀ and g₀ are required in the LSAtT
 """
-function armijo(h      :: Any, #LineModel,  # never used?
+function armijo(h      :: Any, #LineModel
                 h_at_t :: LSAtT;
                 τ₀ 	   :: Float64 = 0.01,
                 kwargs...)
@@ -27,10 +28,11 @@ function armijo(h      :: Any, #LineModel,  # never used?
 end
 
 """
-Check if a step size is admissible according to the Wolfe criterion.
-Inputs: Any, #LineModel and LSAtT.
-Outputs: admissibility in the Strong Wolfe sense.
+wolfe: check if a step size is admissible according to the Wolfe criterion.
+
 Strong Wolfe criterion: |∇f(x+θd)| < τ₁||∇f(x)||.
+
+Note: gt and g₀ are required in the LSAtT
 """
 function wolfe(h      :: Any, #LineModel,
                h_at_t :: LSAtT;
@@ -48,13 +50,35 @@ function wolfe(h      :: Any, #LineModel,
 end
 
 """
-Check if a step size is admissible according to the "Shamanskii" criteria.
+armijo_wolfe: check if a step size is admissible according to the Armijo and Wolfe criteria.
+
+Note: ht, h₀, gt and g₀ are required in the LSAtT
+"""
+function armijo_wolfe(h      :: Any, #LineModel,
+                      h_at_t :: LSAtT;
+                      τ₀ 	 :: Float64 = 0.01,
+                      τ₁     :: Float64 = 0.99,
+                      kwargs...)
+
+   if (h_at_t.ht == nothing) || (h_at_t.gt == nothing) || (h_at_t.h₀ == nothing) || (h_at_t.g₀ == nothing)
+    #printstyled("Warning: Nothing entries in the State.\n", color = :red)
+    return throw(error("Nothing entries in the State. ht, h₀, gt and g₀ are mandatory."))
+   else
+    wolfe = (τ₁ .* h_at_t.g₀) - (abs(h_at_t.gt))
+    armijo = h_at_t.ht - h_at_t.h₀ - h_at_t.g₀ * h_at_t.x * τ₀
+    return max(armijo, wolfe, 0.0)
+   end
+end
+
+"""
+shamanskii_stop: check if a step size is admissible according to the "Shamanskii" criteria.
 This criteria was proposed in
 	GLOBAL CONVERGENCE TECHNIQUE FOR THE NEWTON METHOD WITH PERIODIC HESSIAN EVALUATION
 	by
 	F. LAMPARIELLO and M. SCIANDRONE
-Inputs: Any, #LineModel and LSAtT. Outpus: admissibility in the "Shamanskii" sense (Bool).
-More documentation needed.
+
+Note: * h.d accessible (specific LineModel)
+      * ht, h₀ are required in the LSAtT
 """
 function shamanskii_stop(h      :: Any, #LineModel,
                          h_at_t :: LSAtT;
@@ -65,39 +89,18 @@ function shamanskii_stop(h      :: Any, #LineModel,
     return max(admissible, 0.0)
 end
 
-
 """
-Check if a step size is admissible according to both the Armijo and Wolfe criterion.
-Inputs: Any, #LineModel and LSAtT.
-Outputs: admissibility in the Strong Wolfe sense.
-Strong Wolfe criterion: |∇f(x+θd)| < τ₁||∇f(x)||.
-"""
-function armijo_wolfe(h      :: Any, #LineModel,
-                      h_at_t :: LSAtT;
-                      τ₀ 	 :: Float64 = 0.01,
-                      τ₁     :: Float64 = 0.99,
-                      kwargs...)
+goldstein: check if a step size is admissible according to the Goldstein criteria.
 
-   if (h_at_t.ht == nothing) || (h_at_t.gt == nothing) || (h_at_t.h₀ == nothing) || (h_at_t.g₀ == nothing)
-    #printstyled("Warning: Nothing entries in the State.\n", color = :red)
-    return throw(error("Nothing entries in the State. ht, h₀ and g₀ are mandatory."))
-   else
-    wolfe = (τ₁ .* h_at_t.g₀) - (abs(h_at_t.gt))
-    armijo = h_at_t.ht - h_at_t.h₀ - h_at_t.g₀ * h_at_t.x * τ₀
-    return max(armijo, wolfe, 0.0)
-   end
+Note: ht, h₀ and g₀ are required in the LSAtT
+"""
+function goldstein(h      :: Any, #LineModel,
+                   h_at_t :: LSAtT;
+                   τ₀     :: Float64 = 0.0001,
+                   τ₁     :: Float64 = 0.9999,
+                   kwargs...)
+
+ 	goldstein = max((h_at_t.h₀ + h_at_t.x * (1 - τ₀) * h_at_t.g₀) - (h_at_t.ht), (h_at_t.ht) - (h_at_t.h₀ + h_at_t.x *  τ₀ * h_at_t.g₀),0)
+ 	# positive = h_at_t.x > 0.0   # positive step
+ 	return goldstein #&& positive
 end
-
-# """
-# Check if a step size is admissible according to the Goldstein criteria.
-# # Inputs: Any, #LineModel and LSAtT. Outpus: admissibility in the Goldstein sense (Bool).
-# """
-# function goldstein(h      :: Any, #LineModel,
-#                    h_at_t :: LSAtT;
-#                    τ₀     :: Float64 = 0.0001,
-#                    τ₁     :: Float64 = 0.9999)
-#
-# 	goldstein = (h_at_t.h₀ + h_at_t.x * (1 - τ₀) * h_at_t.g₀) <= (h_at_t.ht) && (h_at_t.ht) <= (h_at_t.h₀ + h_at_t.x *  τ₀ * h_at_t.g₀)
-# 	# positive = h_at_t.x > 0.0   # positive step
-# 	return goldstein #&& positive
-# end

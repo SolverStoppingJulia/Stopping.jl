@@ -1,5 +1,5 @@
 """
-Additional function to estimate Lagrange multiplier of the problems
+_compute_mutliplier: Additional function to estimate Lagrange multiplier of the problems
     (guarantee if LICQ holds)
 """
 function _compute_mutliplier(pb    :: AbstractNLPModel,

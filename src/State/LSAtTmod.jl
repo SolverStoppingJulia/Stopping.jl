@@ -1,6 +1,7 @@
-import Base.copy
-
 """
+Type: LSAtT
+Methods: update!, reinit!, copy
+
 A structure designed to track line search information from one iteration to
 another. If we have f : ℜⁿ → ℜ, then we define h(θ) = f(x + θ*d) where x and d
 are vectors of same dimension and θ is a scalar, more specifically our step size.
@@ -13,14 +14,7 @@ Tracked data can include:
  - g₀ : h'(0)
  - current_time: the time at which the line search algorithm started.
 
-Unless they are defined otherwise, the default value for all parameter is NaN
-(except for x). They can be updated through the update! function.
-
-Example:
-```
-ls_a_t = LSAtT(1.0)
-update!(ls_a_t, x = 0.0, h₀ = obj(h, 0.0), g₀ = grad(h, 0.0))
-```
+Note: by default, unknown entries are set to nothing.
 """
 mutable struct 	LSAtT <: AbstractState
 
@@ -43,9 +37,9 @@ mutable struct 	LSAtT <: AbstractState
  end
 end
 
+import Base.copy
 """
-Copy a LSAtT
-useful?
+copy: Copy a LSAtT
 """
 function copy(ls_at_t :: LSAtT)
     return LSAtT(copy(ls_at_t.x),
