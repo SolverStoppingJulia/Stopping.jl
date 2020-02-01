@@ -51,7 +51,7 @@ function penalty(stp :: NLPStopping; rho0 = 100.0, rho_min = 1e-10,
   fill_in!(stp, sub_stp.current_state.x)
 
   #Either stop! is true OR the penalty parameter is too small
-  if rho < rho_min stp.meta.fail_sub_pb = true end
+  if rho < rho_min stp.meta.suboptimal = true end
   OK = stop!(stp)
 
   @show stp.meta.nb_of_stop, OK, rho
