@@ -1,24 +1,24 @@
 ##############################################################################
 #
-# In this test problem we consider a globalized Newton method.
-# The scenario considers two different stopping criterion to solve the linesearch.
+# In this test problem, we consider a globalized Newton method.
+# The scenario considers two different stopping criteria to solve the linesearch.
 #
 # i) This example illustrates how the "structure" handling the algorithmic
 # parameters can be passed to the solver of the subproblem.
 #
 # ii) This algorithm handles a sub-stopping defined by passing the stopping as a
-# keyword argument. Note that when a stopping is used several time, it has to
+# keyword argument. Note that when a stopping is used multiple times, it has to
 # be reinitialized.
 #
 # iii) It also shows how we can reuse the information and avoid unnecessary evals.
-# Here the objective function of the main problem and sub-problem are the same.
+# Here, the objective function of the main problem and sub-problem are the same.
 # Warning: the structure onedoptim however does not allow keeping the gradient
 # of the main problem. This issue can be corrected by using a specialized State.
 #
 #############################################################################
 
-include("backls.jl")
-#contains the rosenbrock and backtracking_ls functions, and the onedoptim struc
+#include("backls.jl")
+#contains the rosenbrock and backtracking_ls functions, and the onedoptim struct
 #using LinearAlgebra, NLPModels, Stopping
 
 ##############################################################################
@@ -26,24 +26,19 @@ include("backls.jl")
 # Newton method with LineSearch
 #
 #############################################################################
-function global_newton(stp :: NLPStopping, prms)
-
- lf = :ls_func   ∈ fieldnames(typeof(prms)) ? prms.ls_func : armijo
- os = :onedsolve ∈ fieldnames(typeof(prms)) ? prms.onedsolve : backtracking_ls
-
- return global_newton(stp, os, lf; prms = prms)
-end
-
 function global_newton(stp       :: NLPStopping,
                        onedsolve :: Function,
                        ls_func   :: Function;
                        prms = nothing)
 
-    state = stp.current_state; xt = state.x; nlp = stp.pb
-    d = zeros(size(xt));
+    #Notations
+    state = stp.current_state; nlp = stp.pb
+    #Initialization
+    xt = state.x; d = zeros(size(xt))
 
     #First call
-    OK = update_and_start!(stp, x = xt, fx = obj(nlp, xt), gx = grad(nlp, xt), Hx = hess(nlp, xt))
+    OK = update_and_start!(stp, x = xt, fx = obj(nlp, xt),
+                                gx = grad(nlp, xt), Hx = hess(nlp, xt))
 
     #Initialize the sub-Stopping with the main Stopping as keyword argument
     h = onedoptim(x -> obj(nlp, xt + x * d),
@@ -52,12 +47,13 @@ function global_newton(stp       :: NLPStopping,
 
     #main loop
     while !OK
-
+        #Compute the Newton direction
         d = -inv(state.Hx) * state.gx
 
         #Prepare the substopping
         #We reinitialize the stopping before each new use
-        reinit!(lsstp, rstate = true, x = 1.0, g₀ = -dot(state.gx,d), h₀ = state.fx)
+        #rstate = true, force a reinialization of the State as well
+        reinit!(lsstp, rstate = true, x = 1.0, g₀=-dot(state.gx,d), h₀=state.fx)
         lsstp.pb = onedoptim(x -> obj(nlp, xt + x * d),
                              x -> dot(d, grad(nlp, xt + x * d)))
 
@@ -84,6 +80,20 @@ end
 
 ##############################################################################
 #
+# Newton method with LineSearch
+# Buffer version
+#
+#############################################################################
+function global_newton(stp :: NLPStopping, prms)
+
+ lf = :ls_func   ∈ fieldnames(typeof(prms)) ? prms.ls_func : armijo
+ os = :onedsolve ∈ fieldnames(typeof(prms)) ? prms.onedsolve : backtracking_ls
+
+ return global_newton(stp, os, lf; prms = prms)
+end
+
+##############################################################################
+#
 #
 #
 mutable struct PrmUn
@@ -96,15 +106,13 @@ mutable struct PrmUn
 
     #parameters of the 1d minimization
     back_update :: Float64 #backtracking update
-    grad_need   :: Bool
 
     function PrmUn(;armijo_prm  :: Float64 = 0.01,
                     wolfe_prm   :: Float64 = 0.99,
                     onedsolve   :: Function = backtracking_ls,
                     ls_func     :: Function = (x,y)-> armijo(x,y, τ₀ = armijo_prm),
-                    back_update :: Float64 = 0.5,
-                    grad_need   :: Bool    = false)
-        return new(armijo_prm,wolfe_prm,onedsolve,ls_func,back_update,grad_need)
+                    back_update :: Float64 = 0.5)
+        return new(armijo_prm,wolfe_prm,onedsolve,ls_func,back_update)
     end
 end
 #############################################################################
@@ -113,6 +121,8 @@ printstyled("Unconstrained Optimization: globalized Newton.\n", color = :green)
 x0 = 1.5*ones(6)
 nlp = ADNLPModel(rosenbrock,  x0)
 
+# We use the default builder using the KKT optimality function (which does not
+# automatically fill in the State)
 stop_nlp = NLPStopping(nlp)
 parameters = PrmUn()
 
@@ -125,9 +135,9 @@ global_newton(stop_nlp, parameters)
 
 printstyled("Newton method with Armijo-Wolfe linesearch.\n", color = :green)
 reinit!(stop_nlp, rstate = true, x = x0)
+reset!(stop_nlp.pb) #reinitialize the counters of the NLP
 parameters.ls_func = (x,y)-> armijo_wolfe(x,y, τ₀ = parameters.armijo_prm,
                                                τ₁ = parameters.wolfe_prm)
-parameters.grad_need = true #wolfe condition requires the derivative
 
 global_newton(stop_nlp, parameters)
 @show status(stop_nlp)

@@ -1,7 +1,7 @@
 ###############################################################################
 #
 # Stopping can also be used for fixed point methods
-# Example here concerns the AlternatingDirections Algoirthm to find
+# Example here concerns the AlternatingDirections Algorithm to find
 # a feasible point in the intersection of 2 convex sets A and B.
 # This algorithm relies on a fixed point argument, hence it stopped if it finds
 # a fixed point.

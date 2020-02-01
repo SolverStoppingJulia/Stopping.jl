@@ -1,11 +1,4 @@
-using Test
-
-# Should we use NLPModels?
-
-using NLPModels
-using Stopping
-using Printf
-using LinearAlgebra
+using LinearAlgebra, NLPModels, Printf, Stopping, Test
 
 printstyled("Generic State tests... ")
 include("test-state/test-unitaire-GenericStatemod.jl")
@@ -26,9 +19,12 @@ printstyled("passed ✓ \n", color = :green)
 printstyled("LineSearch stopping tests... ")
 include("test-stopping/test-unitaire-ls-stopping.jl")
 printstyled(" passed ✓ \n", color = :green)
-printstyled("Unconsmin test... ")
+printstyled("Unconsmin tests... ")
 include("test-stopping/test-unitaire-nlp-stopping.jl")
 printstyled(" passed ✓ \n", color = :green)
-printstyled("Consmin test... ")
+printstyled("Consmin tests... ")
 include("test-stopping/test-unitaire-nlp-stopping_2.jl")
 printstyled("passed ✓ \n", color = :green)
+
+printstyled("HowTo tests..\n.")
+include("examples/runhowto.jl")

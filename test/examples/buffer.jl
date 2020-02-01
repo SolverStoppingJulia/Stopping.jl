@@ -63,7 +63,7 @@ function solveIpopt(stp :: NLPStopping)
 end
 
 nlp_at_x = NLPAtX(x0)
-stop = NLPStopping(nlp, (x,y) -> unconstrained_check(x,y), nlp_at_x)
+stop = NLPStopping(nlp, unconstrained_check, nlp_at_x)
 
 #1st scenario, we solve again the problem with the buffer solver
 printstyled("1st scenario:\n")

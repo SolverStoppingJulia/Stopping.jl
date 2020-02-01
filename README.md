@@ -32,15 +32,15 @@ The [StoppingMeta](https://github.com/Goysa2/Stopping.jl/blob/master/src/Stoppin
 ### Your Stopping your way
 
 The GenericStopping (with GenericState) provides a complete structure to handle stopping criteria.
-Then, depending on your problem, you can specialize a new Stopping by redefining
-a State and some functions specific to your problem.
+Then, depending on the problem structure, you can specialize a new Stopping by
+redefining a State and some functions specific to your problem.
 
 We provide some specialization of the GenericStopping for optimization :
   * [NLPStopping](https://github.com/Goysa2/Stopping.jl/blob/master/src/Stopping/NLPStoppingmod.jl) with [NLPAtX](https://github.com/Goysa2/Stopping.jl/blob/master/src/State/NLPAtXmod.jl) as a specialized State: for non-linear programming (based on [NLPModels](https://github.com/JuliaSmoothOptimizers/NLPModels.jl));
   * [LS_Stopping](https://github.com/Goysa2/Stopping.jl/blob/master/src/Stopping/LineSearchStoppingmod.jl) with [LSAtT](https://github.com/Goysa2/Stopping.jl/blob/master/src/State/LSAtTmod.jl) as a specialized State: for 1d optimization;
   * more to come...
 
-In these examples, the function `optimality_residual` computes the residual of the optimality conditions is an additional attribute of the type. 
+In these examples, the function `optimality_residual` computes the residual of the optimality conditions is an additional attribute of the type.
 
 ## Functions
 
@@ -57,7 +57,7 @@ the Stopping to reuse for another call.
 
 Consult the [HowTo tutorial](https://github.com/Goysa2/Stopping.jl/blob/master/test/examples/runhowto.jl) to learn more about the possibilities offered by Stopping.
 
-You can also access other examples of algorithms in the [test/examples](https://github.com/Goysa2/Stopping.jl/blob/master/test/examples/) folder, which for instance illustrate the strenght of Stopping with subproblems.
+You can also access other examples of algorithms in the [test/examples](https://github.com/Goysa2/Stopping.jl/blob/master/test/examples/) folder, which for instance illustrate the strenght of Stopping with subproblems. Consult the [OptimSolver tutorial](https://github.com/Goysa2/Stopping.jl/blob/master/test/examples/run-optimsolver.jl)
 
 ## How to install
 Install and test the Stopping package with the Julia package manager:
@@ -72,7 +72,7 @@ pkg> test Stopping
 ```
 ## Example
 
-As an example, a naïve version of the Newton method is provided [here](https://github.com/Goysa2/Stopping.jl/blob/master/test/examples/newton.jl). First we import the packages:
+As an example, a naive version of the Newton method is provided [here](https://github.com/Goysa2/Stopping.jl/blob/master/test/examples/newton.jl). First we import the packages:
 ```
 using NLPModels, Stopping
 ```

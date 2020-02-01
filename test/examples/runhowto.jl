@@ -1,3 +1,12 @@
+###############################################################################
+#
+# The Stopping structure eases the implementation of algorithms and the
+# stopping criterion.
+#
+# The following examples illustre the various possibilities offered by Stopping
+#
+###############################################################################
+
 using Test, NLPModels, Stopping
 
 printstyled("How to State ")

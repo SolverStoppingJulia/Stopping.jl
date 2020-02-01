@@ -10,7 +10,7 @@
 #
 #############################################################################
 
-include("uncons.jl")
+#include("penalty.jl")
 
 ##############################################################################
 #
@@ -109,4 +109,6 @@ nlp_bnd_at_x = NLPAtX(x0)
 stop_nlp_c = NLPStopping(nlp_bnd, max_iter = 10)
 
 activeset(stop_nlp_c)
-status(stop_nlp_c)
+@show status(stop_nlp_c)
+
+printstyled("The End.\n", color = :green)
