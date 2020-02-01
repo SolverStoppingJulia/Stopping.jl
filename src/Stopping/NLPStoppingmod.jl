@@ -164,13 +164,14 @@ _resources_check!: check if the optimization algorithm has exhausted the resourc
                    the evaluation of the functions following the sum_counters
                    structure from NLPModels.
 
-Note: function uses counters in stp.pb
+Note: function uses counters in stp.pb, and update the counters in the state
 """
 function _resources_check!(stp    :: NLPStopping,
                            x      :: Iterate)
 
-  #cntrs = stp.current_state.evals #Counters in the state
   cntrs = stp.pb.counters
+  update!(stp.current_state, evals = cntrs)
+  
   max_cntrs = stp.max_cntrs
 
   # check all the entries in the counter

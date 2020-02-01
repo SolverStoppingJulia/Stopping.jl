@@ -97,18 +97,3 @@ while !OK
 
  return stp
 end
-
-#############################################################################
-#Example of problem
-printstyled("Constrained optimization: active-set algorithm tutorial.\n", color = :green)
-x0 = 1.5*ones(6);x0[6]=1.0
-nlp_bnd = ADNLPModel(rosenbrock,  x0,
-                 lvar = fill(-10.0,size(x0)), uvar = fill(1.5,size(x0)))
-
-nlp_bnd_at_x = NLPAtX(x0)
-stop_nlp_c = NLPStopping(nlp_bnd, max_iter = 10)
-
-activeset(stop_nlp_c)
-@show status(stop_nlp_c)
-
-printstyled("The End.\n", color = :green)

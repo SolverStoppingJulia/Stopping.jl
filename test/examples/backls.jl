@@ -27,6 +27,45 @@ mutable struct onedoptim
     g :: Function
 end
 
+#############################################################################
+#
+# We specialize three optimality_check functions for 1D optimization to the
+# onedoptim type of problem.
+#
+# The default functions do not fill in automatically the necessary entries.
+#
+import Stopping: armijo, wolfe, armijo_wolfe
+
+function armijo(h :: onedoptim, h_at_t :: LSAtT; τ₀ :: Float64 = 0.01, kwargs...)
+
+ h_at_t.ht = h_at_t.ht == nothing ? h.f(h_at_t.x) : h_at_t.ht
+ h_at_t.h₀ = h_at_t.h₀ == nothing ? h.f(0) : h_at_t.h₀
+ h_at_t.g₀ = h_at_t.g₀ == nothing ? h.g(0) : h_at_t.g₀
+
+ hgoal = h_at_t.ht - h_at_t.h₀ - h_at_t.g₀ * h_at_t.x * τ₀
+
+ return max(hgoal, 0.0)
+end
+
+function wolfe(h :: onedoptim, h_at_t :: LSAtT; τ₁ :: Float64 = 0.99, kwargs...)
+
+ h_at_t.gt = h_at_t.gt == nothing ? h.g(h_at_t.x) : h_at_t.gt
+ h_at_t.g₀ = h_at_t.g₀ == nothing ? h.g(0) : h_at_t.g₀
+
+ wolfe = τ₁ .* h_at_t.g₀ - abs(h_at_t.gt)
+ return max(wolfe, 0.0)
+end
+
+function armijo_wolfe(h :: onedoptim, h_at_t :: LSAtT; τ₀ :: Float64 = 0.01, τ₁ :: Float64 = 0.99, kwargs...)
+
+ h_at_t.ht = h_at_t.ht == nothing ? h.f(h_at_t.x) : h_at_t.ht
+ h_at_t.h₀ = h_at_t.h₀ == nothing ? h.f(0) : h_at_t.h₀
+ h_at_t.gt = h_at_t.gt == nothing ? h.g(h_at_t.x) : h_at_t.gt
+ h_at_t.g₀ = h_at_t.g₀ == nothing ? h.g(0) : h_at_t.g₀
+
+ return max(armijo(h, h_at_t, τ₀ = τ₀),wolfe(h, h_at_t, τ₁ = τ₁), 0.0)
+end
+
 ##############################################################################
 #
 # backtracking LineSearch
@@ -89,83 +128,3 @@ mutable struct ParamLS
     end
 end
 #############################################################################
-
-include("../test-stopping/rosenbrock.jl")
-
-x0 = 1.5*ones(6)
-nlp = ADNLPModel(rosenbrock,  x0)
-g0 = grad(nlp,x0)
-h = onedoptim(x -> obj(nlp, x0 - x * g0), x -> - dot(g0,grad(nlp,x0 - x * g0)))
-
-#############################################################################
-#
-# We specialize three optimality_check functions for 1D optimization to the
-# onedoptim type of problem.
-#
-# The default functions do not fill in automatically the necessary entries.
-#
-import Stopping: armijo, wolfe, armijo_wolfe
-
-function armijo(h :: onedoptim, h_at_t :: LSAtT; τ₀ :: Float64 = 0.01, kwargs...)
-
- h_at_t.ht = h_at_t.ht == nothing ? h.f(h_at_t.x) : h_at_t.ht
- h_at_t.h₀ = h_at_t.h₀ == nothing ? h.f(0) : h_at_t.h₀
- h_at_t.g₀ = h_at_t.g₀ == nothing ? h.g(0) : h_at_t.g₀
-
- hgoal = h_at_t.ht - h_at_t.h₀ - h_at_t.g₀ * h_at_t.x * τ₀
-
- return max(hgoal, 0.0)
-end
-
-function wolfe(h :: onedoptim, h_at_t :: LSAtT; τ₁ :: Float64 = 0.99, kwargs...)
-
- h_at_t.gt = h_at_t.gt == nothing ? h.g(h_at_t.x) : h_at_t.gt
- h_at_t.g₀ = h_at_t.g₀ == nothing ? h.g(0) : h_at_t.g₀
-
- wolfe = τ₁ .* h_at_t.g₀ - abs(h_at_t.gt)
- return max(wolfe, 0.0)
-end
-
-function armijo_wolfe(h :: onedoptim, h_at_t :: LSAtT; τ₀ :: Float64 = 0.01, τ₁ :: Float64 = 0.99, kwargs...)
-
- h_at_t.ht = h_at_t.ht == nothing ? h.f(h_at_t.x) : h_at_t.ht
- h_at_t.h₀ = h_at_t.h₀ == nothing ? h.f(0) : h_at_t.h₀
- h_at_t.gt = h_at_t.gt == nothing ? h.g(h_at_t.x) : h_at_t.gt
- h_at_t.g₀ = h_at_t.g₀ == nothing ? h.g(0) : h_at_t.g₀
-
- return max(armijo(h, h_at_t, τ₀ = τ₀),wolfe(h, h_at_t, τ₁ = τ₁), 0.0)
-end
-
-#############################################################################
-#SCENARIO:
-#We create 3 stopping:
-#Define the LSAtT with mandatory entries g₀ and h₀.
-lsatx  = LSAtT(1.0, h₀ = obj(nlp, x0), g₀ = -dot(grad(nlp, x0),grad(nlp, x0)))
-lsstp  = LS_Stopping(h, (x,y)-> armijo(x,y, τ₀ = 0.01), lsatx)
-lsatx2 = LSAtT(1.0, h₀ = obj(nlp, x0), g₀ = -dot(grad(nlp, x0),grad(nlp, x0)))
-lsstp2 = LS_Stopping(h, (x,y)-> wolfe(x,y, τ₁ = 0.99), lsatx2)
-lsatx3 = LSAtT(1.0, h₀ = obj(nlp, x0), g₀ = -dot(grad(nlp, x0),grad(nlp, x0)))
-lsstp3 = LS_Stopping(h, (x,y)-> armijo_wolfe(x,y, τ₀ = 0.01, τ₁ = 0.99), lsatx3)
-
-parameters = ParamLS(back_update = 0.5)
-
-printstyled("1D Optimization: backtracking tutorial.\n", color = :green)
-printstyled("backtracking line search with Armijo:\n", color = :green)
-backtracking_ls(lsstp, parameters)
-@show status(lsstp)
-@show lsstp.meta.nb_of_stop
-@show lsstp.current_state.x
-
-printstyled("backtracking line search with Wolfe:\n", color = :green)
-backtracking_ls(lsstp2, parameters)
-@show status(lsstp2)
-@show lsstp2.meta.nb_of_stop
-@show lsstp2.current_state.x
-
-printstyled("backtracking line search with Armijo-Wolfe:\n", color = :green)
-backtracking_ls(lsstp3, parameters)
-@show status(lsstp3)
-@show lsstp3.meta.nb_of_stop
-@show lsstp3.current_state.x
-
-printstyled("The End.\n", color = :green)

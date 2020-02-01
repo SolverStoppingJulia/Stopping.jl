@@ -48,7 +48,7 @@ function global_newton(stp       :: NLPStopping,
     #main loop
     while !OK
         #Compute the Newton direction
-        d = -inv(state.Hx) * state.gx
+        d = state.Hx \ (-state.gx)
 
         #Prepare the substopping
         #We reinitialize the stopping before each new use
@@ -115,34 +115,3 @@ mutable struct PrmUn
         return new(armijo_prm,wolfe_prm,onedsolve,ls_func,back_update)
     end
 end
-#############################################################################
-printstyled("Unconstrained Optimization: globalized Newton.\n", color = :green)
-
-x0 = 1.5*ones(6)
-nlp = ADNLPModel(rosenbrock,  x0)
-
-# We use the default builder using the KKT optimality function (which does not
-# automatically fill in the State)
-stop_nlp = NLPStopping(nlp)
-parameters = PrmUn()
-
-printstyled("Newton method with Armijo linesearch.\n", color = :green)
-global_newton(stop_nlp, parameters)
-@show status(stop_nlp)
-#We can check afterwards, the score
-@show Stopping.KKT(stop_nlp.pb, stop_nlp.current_state)
-@show stop_nlp.meta.nb_of_stop
-
-printstyled("Newton method with Armijo-Wolfe linesearch.\n", color = :green)
-reinit!(stop_nlp, rstate = true, x = x0)
-reset!(stop_nlp.pb) #reinitialize the counters of the NLP
-parameters.ls_func = (x,y)-> armijo_wolfe(x,y, τ₀ = parameters.armijo_prm,
-                                               τ₁ = parameters.wolfe_prm)
-
-global_newton(stop_nlp, parameters)
-@show status(stop_nlp)
-#We can check afterwards, the score
-@show Stopping.KKT(stop_nlp.pb, stop_nlp.current_state)
-@show stop_nlp.meta.nb_of_stop
-
-printstyled("The End.\n", color = :green)

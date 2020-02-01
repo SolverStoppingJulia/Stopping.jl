@@ -68,10 +68,10 @@ Note: evaluate the objective function is state.ht is void.
 function _unbounded_problem_check!(stp  :: LS_Stopping,
                                    x    :: Iterate)
 
- if stp.current_state.ht == nothing
+ if stp.current_state.ht == nothing && typeof(stp.pb) <: AbstractNLPModel
      stp.current_state.ht = obj(stp.pb, x)
  end
- f_too_large = norm(stp.current_state.ht) >= stp.meta.unbounded_threshold
+ f_too_large = stp.current_state.ht != nothing && norm(stp.current_state.ht) >= stp.meta.unbounded_threshold
 
  stp.meta.unbounded_pb = f_too_large
 

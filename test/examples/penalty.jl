@@ -116,26 +116,3 @@ mutable struct Param
                    back_update)
     end
 end
-
-##############################################################################
-#
-#
-#
-#############################################################################
-printstyled("Constrained optimization: quadratic penalty tutorial.\n", color = :green)
-x0 = 1.5*ones(6)
-c(x) = [sum(x)]
-nlp2 = ADNLPModel(rosenbrock,  x0,
-                 lvar = fill(-10.0,size(x0)), uvar = fill(10.0,size(x0)),
-                 y0 = [0.0], c = c, lcon = [-Inf], ucon = [6.])
-
-nlp_at_x_c = NLPAtX(x0, zeros(nlp2.meta.ncon))
-stop_nlp_c = NLPStopping(nlp2, (x,y) -> KKT(x,y), nlp_at_x_c)
-
-penalty(stop_nlp_c)
-@show status(stop_nlp_c)
-
-#We can check afterwards, the score
-@show KKT(stop_nlp_c.pb, stop_nlp_c.current_state)
-
-printstyled("The End.\n", color = :green)

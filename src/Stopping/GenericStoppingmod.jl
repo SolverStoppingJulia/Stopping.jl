@@ -273,7 +273,8 @@ function _tired_check!(stp    :: AbstractStopping,
 
  # Time check
  if !isnan(time_t)
-    elapsed_time = time() - time_t
+    update!(stp.current_state, current_time = time())
+    elapsed_time = stp.current_state.current_time - time_t
     max_time     = elapsed_time > stp.meta.max_time
  else
     max_time = false

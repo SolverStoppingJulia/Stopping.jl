@@ -57,7 +57,10 @@ the Stopping to reuse for another call.
 
 Consult the [HowTo tutorial](https://github.com/Goysa2/Stopping.jl/blob/master/test/examples/runhowto.jl) to learn more about the possibilities offered by Stopping.
 
-You can also access other examples of algorithms in the [test/examples](https://github.com/Goysa2/Stopping.jl/blob/master/test/examples/) folder, which for instance illustrate the strenght of Stopping with subproblems. Consult the [OptimSolver tutorial](https://github.com/Goysa2/Stopping.jl/blob/master/test/examples/run-optimsolver.jl) for more on how to use Stopping with nested algorithms.
+You can also access other examples of algorithms in the [test/examples](https://github.com/Goysa2/Stopping.jl/blob/master/test/examples/) folder, which for instance illustrate the strenght of Stopping with subproblems:
+* Consult the [OptimSolver tutorial](https://github.com/Goysa2/Stopping.jl/blob/master/test/examples/run-optimsolver.jl) for more on how to use Stopping with nested algorithms.
+* Check the [Benchmark tutorial](https://github.com/Goysa2/Stopping.jl/blob/master/test/examples/benchmark.jl) to see how Stopping can combined with [SolverBenchmark.jl](https://juliasmoothoptimizers.github.io/SolverBenchmark.jl/).
+* Stopping can be adapted to closed solvers via a buffer function as in [Buffer tutorial](https://github.com/Goysa2/Stopping.jl/blob/master/test/examples/buffer.jl) for an instance with [Ipopt](https://github.com/JuliaOpt/Ipopt.jl) via [NLPModelsIpopt](https://github.com/JuliaSmoothOptimizers/NLPModelsIpopt.jl).
 
 ## How to install
 Install and test the Stopping package with the Julia package manager:
