@@ -29,11 +29,11 @@ function _compute_mutliplier(pb    :: AbstractNLPModel,
   Jc = hcat(Matrix(1.0I, n, n)[:,Ib])
  end
 
-
- l = pinv(Jc) * (- gx)
-
  mu, lambda = zeros(n), zeros(nc)
- mu[Ib], lambda[Ic] = l[1:length(Ib)], l[length(Ib)+1:length(l)]
+ if (Ib != []) || (Ic  != [])
+  l = Jc \ (- gx)
+  mu[Ib], lambda[Ic] = l[1:length(Ib)], l[length(Ib)+1:length(l)]
+ end
 
  return mu, lambda
 end
