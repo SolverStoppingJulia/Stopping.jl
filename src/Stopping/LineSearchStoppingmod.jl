@@ -83,15 +83,15 @@ _resources_check!: check if the optimization algorithm has exhausted the resourc
 
 If the problem is an AbstractNLPModel check the number of evaluations of f and sum.
 """
-function _resources_check!(stp    :: AbstractStopping,
+function _resources_check!(stp    :: LS_Stopping,
                            x      :: Iterate)
 
  max_evals = false
  max_f     = false
 
  if typeof(stp.pb) <: AbstractNLPModel
-  max_f = stp.meta.max_f > neval_obj(stp.pb)
-  max_evals = stp.meta.max_eval > sum_counters(stp.pb)
+  max_f = stp.meta.max_f < neval_obj(stp.pb)
+  max_evals = stp.meta.max_eval < sum_counters(stp.pb)
  end
 
  # global limit diagnostic

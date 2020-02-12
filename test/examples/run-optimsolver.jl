@@ -143,10 +143,11 @@ x0 = 1.5*ones(6)
 c(x) = [sum(x)]
 nlp2 = ADNLPModel(rosenbrock,  x0,
                  lvar = fill(-10.0,size(x0)), uvar = fill(10.0,size(x0)),
-                 y0 = [0.0], c = c, lcon = [-Inf], ucon = [6.])
+                 y0 = [0.0], c = c, lcon = [-Inf], ucon = [5.])
 
 nlp_at_x_c = NLPAtX(x0, zeros(nlp2.meta.ncon))
-stop_nlp_c = NLPStopping(nlp2, (x,y) -> KKT(x,y), nlp_at_x_c)
+stop_nlp_c = NLPStopping(nlp2, (x,y) -> KKT(x,y), nlp_at_x_c, atol = 1e-3,
+                                max_cntrs = Main.Stopping._init_max_counters(obj = 400000, cons = 800000, sum = 1000000))
 
 penalty(stop_nlp_c)
 @show status(stop_nlp_c)

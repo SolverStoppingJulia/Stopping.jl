@@ -22,7 +22,7 @@
 # subproblems are solved via Newton method
 #
 #############################################################################
-function penalty(stp :: NLPStopping; rho0 = 100.0, rho_min = 1e-10,
+function penalty(stp :: NLPStopping; rho0 = 1.0, rho_min = 1e-10,
                                      rho_update = 0.5, prms = nothing)
 
  #algorithm's parameters
@@ -35,7 +35,9 @@ function penalty(stp :: NLPStopping; rho0 = 100.0, rho_min = 1e-10,
 
  #prepare the subproblem stopping:
  sub_nlp_at_x = NLPAtX(stp.current_state.x)
- sub_pb  = ADNLPModel(x->obj(stp.pb, x) + rho * norm(cons(stp.pb, x))^2,  x0)
+ sub_pb  = ADNLPModel(x -> obj(stp.pb, x)
+                      + 1/rho * norm(max.(cons(stp.pb, x) - stp.pb.meta.ucon, 0.0))^2
+                      + 1/rho * norm(max.(- cons(stp.pb, x) + stp.pb.meta.lcon, 0.0))^2,  x0)
  sub_stp = NLPStopping(sub_pb, unconstrained_check,
                                sub_nlp_at_x, main_stp = stp)
 
@@ -59,7 +61,9 @@ function penalty(stp :: NLPStopping; rho0 = 100.0, rho_min = 1e-10,
   #update the penalty parameter if necessary
   if !OK
    rho = rho * rho_update
-   sub_stp.pb  = ADNLPModel(x->obj(stp.pb, x) + rho * norm(cons(stp.pb, x))^2,  x0)
+   sub_stp.pb  = ADNLPModel(x -> obj(stp.pb, x)
+                            + 1/rho * norm(max.(cons(stp.pb, x) - stp.pb.meta.ucon, 0.0))^2
+                            + 1/rho * norm(max.(- cons(stp.pb, x) + stp.pb.meta.lcon, 0.0))^2,  x0)
   end
  end
 
@@ -74,7 +78,7 @@ end
 function penalty(stp :: NLPStopping, prms)
 
  #extract required values in the prms file
- r0 = :rho0       ∈ fieldnames(typeof(prms)) ? prms.rho0       : 100.0
+ r0 = :rho0       ∈ fieldnames(typeof(prms)) ? prms.rho0       : 1.0
  rm = :rho_min    ∈ fieldnames(typeof(prms)) ? prms.rho_min    : 1e-10
  ru = :rho_update ∈ fieldnames(typeof(prms)) ? prms.rho_update : 0.5
 
@@ -103,7 +107,7 @@ mutable struct Param
     #parameters of the 1d minimization
     back_update :: Float64 #backtracking update
 
-    function Param(;rho0        :: Float64 = 100.0,
+    function Param(;rho0        :: Float64 = 1.0,
                     rho_min     :: Float64 = sqrt(eps(Float64)),
                     rho_update  :: Float64 = 0.5,
                     armijo_prm  :: Float64 = 0.01,
