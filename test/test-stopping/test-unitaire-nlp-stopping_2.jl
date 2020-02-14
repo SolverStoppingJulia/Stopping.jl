@@ -7,7 +7,7 @@ nlp2 = ADNLPModel(rosenbrock,  x0,
                  y0 = [0.0], c = c, lcon = [-Inf], ucon = [6.])
 
 nlp_at_x_c = NLPAtX(x0, NaN*ones(nlp2.meta.ncon))
-stop_nlp_c = NLPStopping(nlp2, (x,y) -> Stopping.KKT(x,y), nlp_at_x_c)
+stop_nlp_c = NLPStopping(nlp2, KKT, nlp_at_x_c)
 
 a = zeros(6)
 fill_in!(stop_nlp_c, a)
@@ -23,6 +23,7 @@ sol = ones(6)
 fill_in!(stop_nlp_c, sol)
 
 @test stop!(stop_nlp_c) == true
+@test stop_nlp_c.current_state.current_score == KKT(stop_nlp_c.pb, stop_nlp_c.current_state)
 
 stop_nlp_default = NLPStopping(nlp2, atol = 1.0)
 fill_in!(stop_nlp_default, sol)
@@ -31,7 +32,7 @@ fill_in!(stop_nlp_default, sol)
 
 #Keywords in the stop! call
 nlp_at_x_kargs = NLPAtX(x0, NaN*ones(nlp2.meta.ncon))
-stop_nlp_kargs = NLPStopping(nlp2, (x,y; test = 1.0) -> Stopping.KKT(x,y) + test, nlp_at_x_c)
+stop_nlp_kargs = NLPStopping(nlp2, (x,y; test = 1.0, kwargs...) -> Stopping.KKT(x,y,kwargs...) + test, nlp_at_x_c)
 fill_in!(stop_nlp_kargs, sol)
 @test stop!(stop_nlp_kargs) == false
 @test stop!(stop_nlp_kargs, test = 0.0) == true

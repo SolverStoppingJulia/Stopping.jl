@@ -12,7 +12,8 @@ Tracked data can include:
  - gt : h'(θ)
  - h₀ : h(0)
  - g₀ : h'(0)
- - current_time: the time at which the line search algorithm started.
+ - current_time:  the time at which the line search algorithm started.
+ - current_score: the score at which the line search algorithm started.
 
 Note: by default, unknown entries are set to nothing.
 """
@@ -25,15 +26,17 @@ mutable struct 	LSAtT <: AbstractState
     g₀           :: FloatVoid  # h'(0)
 
     current_time   :: FloatVoid
+    current_score  :: FloatVoid
 
- function LSAtT(t            :: Number;
-                ht           :: FloatVoid = nothing,
-                gt           :: FloatVoid = nothing,
-                h₀           :: FloatVoid = nothing,
-                g₀           :: FloatVoid = nothing,
-                current_time :: FloatVoid = nothing)
+ function LSAtT(t             :: Number;
+                ht            :: FloatVoid = nothing,
+                gt            :: FloatVoid = nothing,
+                h₀            :: FloatVoid = nothing,
+                g₀            :: FloatVoid = nothing,
+                current_time  :: FloatVoid = nothing,
+                current_score :: FloatVoid = nothing)
 
-  return new(t, ht, gt, h₀, g₀, current_time)
+  return new(t, ht, gt, h₀, g₀, current_time, current_score)
  end
 end
 
@@ -47,5 +50,6 @@ function copy(ls_at_t :: LSAtT)
                  gt = copy(ls_at_t.gt),
                  h₀ = copy(ls_at_t.h₀),
                  g₀ = copy(ls_at_t.g₀),
-                 current_time = copy(ls_at_t.current_time))
+                 current_time = copy(ls_at_t.current_time),
+                 current_score = copy(ls_at_t.current_score))
 end

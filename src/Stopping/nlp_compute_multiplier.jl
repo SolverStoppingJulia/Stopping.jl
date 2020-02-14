@@ -6,7 +6,7 @@ function _compute_mutliplier(pb    :: AbstractNLPModel,
                              x     :: Iterate,
                              gx    :: Iterate,
                              cx    :: Iterate,
-                             Jx    :: Any;
+                             Jx    :: MatrixType;
                              active_prec_c :: Float64 = 1e-6,
                 			 active_prec_b :: Float64 = 1e-6)
 

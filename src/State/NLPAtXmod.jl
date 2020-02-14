@@ -20,7 +20,8 @@ Basic information is:
  - Jx : jacobian matrix of the constraint function at x
  - lambda : Lagrange multiplier of the constraints
 
- - current_time : time
+ - current_time  : time
+ - current_score : score
  - evals : number of evaluations of the function (import the type NLPModels.Counters)
 
 Note: * by default, unknown entries are set to nothing (except evals).
@@ -47,40 +48,44 @@ mutable struct 	NLPAtX <: AbstractState
 
  #Resources State
     current_time   :: FloatVoid
+    current_score  :: FloatVoid
     evals          :: Counters
 
- function NLPAtX(x            :: Vector,
-                 lambda       :: Vector;
-                 fx           :: FloatVoid    = nothing,
-                 gx           :: Iterate      = nothing,
-                 Hx           :: MatrixType   = nothing,
-                 mu           :: Iterate      = nothing,
-                 cx           :: Iterate      = nothing,
-                 Jx           :: MatrixType   = nothing,
-                 current_time :: FloatVoid    = nothing,
-                 evals        :: Counters     = Counters())
+ function NLPAtX(x             :: Vector,
+                 lambda        :: Vector;
+                 fx            :: FloatVoid    = nothing,
+                 gx            :: Iterate      = nothing,
+                 Hx            :: MatrixType   = nothing,
+                 mu            :: Iterate      = nothing,
+                 cx            :: Iterate      = nothing,
+                 Jx            :: MatrixType   = nothing,
+                 current_time  :: FloatVoid    = nothing,
+                 current_score :: FloatVoid    = nothing,
+                 evals         :: Counters     = Counters())
 
   _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
 
-  return new(x, fx, gx, Hx, mu, cx, Jx, lambda, current_time, evals)
+  return new(x, fx, gx, Hx, mu, cx, Jx, lambda, current_time, current_score, evals)
  end
 end
 
 """
 An additional constructor for unconstrained problems
 """
-function NLPAtX(x            :: Vector;
-                fx           :: FloatVoid    = nothing,
-                gx           :: Iterate      = nothing,
-                Hx           :: MatrixType   = nothing,
-                mu           :: Iterate      = nothing,
-                current_time :: FloatVoid    = nothing,
-                evals        :: Counters     = Counters())
+function NLPAtX(x             :: Vector;
+                fx            :: FloatVoid    = nothing,
+                gx            :: Iterate      = nothing,
+                Hx            :: MatrixType   = nothing,
+                mu            :: Iterate      = nothing,
+                current_time  :: FloatVoid    = nothing,
+                current_score :: FloatVoid    = nothing,
+                evals         :: Counters     = Counters())
 
     _size_check(x, zeros(0), fx, gx, Hx, mu, nothing, nothing)
 
 	return NLPAtX(x, zeros(0), fx = fx, gx = gx,
-                  Hx = Hx, mu = mu, current_time = current_time, evals = evals)
+                  Hx = Hx, mu = mu, current_time = current_time,
+                  current_score = current_score, evals = evals)
 end
 
 """

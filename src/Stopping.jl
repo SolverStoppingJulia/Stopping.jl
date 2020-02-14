@@ -1,13 +1,10 @@
 module Stopping
 
-export AbstractStopping
-
-using LinearAlgebra
-using NLPModels
+using LinearAlgebra, NLPModels
 
 const Iterate           = Union{Number, Vector, Nothing}
 const FloatVoid         = Union{Number, Nothing}
-const MatrixType        = Any #Union{Number, AbstractArray, Nothing}
+const MatrixType        = Union{Number, AbstractArray, AbstractMatrix, Nothing}
 
 """
 AbstractStopping
@@ -15,6 +12,8 @@ Abstract type, if specialized stopping were to be implemented they would need to
 be subtypes of AbstractStopping
 """
 abstract type AbstractStopping end
+
+export AbstractStopping
 
 """
 Type: AbstractState

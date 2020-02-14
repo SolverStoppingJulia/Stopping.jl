@@ -362,6 +362,7 @@ _optimality_check: compute the optimality score.
 NotImplemented: Inf by default.
 """
 function _optimality_check(stp  :: AbstractStopping; kwargs...)
+ stp.current_state.current_score = Inf
  return Inf
 end
 

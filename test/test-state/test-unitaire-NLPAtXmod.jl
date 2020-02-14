@@ -15,6 +15,7 @@ uncons_nlp_at_x = NLPAtX(zeros(10))
 
 @test uncons_nlp_at_x.lambda == zeros(0)
 @test uncons_nlp_at_x.current_time == nothing
+@test uncons_nlp_at_x.current_score == nothing
 @test (!(uncons_nlp_at_x.evals == nothing))
 
 # On vérifie que le constucteur pour problème avec contrainte fonctionne
@@ -29,6 +30,7 @@ cons_nlp_at_x = NLPAtX(zeros(10), zeros(10))
 @test cons_nlp_at_x.Jx == nothing
 @test (false in (cons_nlp_at_x.lambda .== 0.0)) == false
 @test cons_nlp_at_x.current_time == nothing
+@test cons_nlp_at_x.current_score == nothing
 
 
 # On vérifie que la fonction update! fonctionne
@@ -45,6 +47,7 @@ update!(uncons_nlp_at_x, Hx = ones(10,10), mu = ones(10), cx = ones(10), Jx = on
 @test (false in (uncons_nlp_at_x.Jx .== 1.0)) == false
 @test (false in (uncons_nlp_at_x.lambda .== 1.0)) == false
 @test uncons_nlp_at_x.current_time == 1.0
+@test uncons_nlp_at_x.current_score == nothing
 
 reinit!(uncons_nlp_at_x)
 @test uncons_nlp_at_x.x == ones(10)

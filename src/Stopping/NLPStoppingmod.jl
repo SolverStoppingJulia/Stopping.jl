@@ -81,7 +81,7 @@ key arguments are forwarded to the classical constructor.
 function NLPStopping(pb :: AbstractNLPModel; kwargs...)
  #Create a default NLPAtX
  nlp_at_x = NLPAtX(pb.meta.x0)
- admissible = (x,y) -> KKT(x,y)
+ admissible = KKT
 
  return NLPStopping(pb, admissible, nlp_at_x; kwargs...)
 end
@@ -114,6 +114,32 @@ function _init_max_counters(; obj    :: Int64 = 20000,
 end
 
 """
+_init_max_counters_NLS(): initialize the maximum number of evaluations on each of
+                          the functions present in the NLSCounters (NLPModels).
+https://github.com/JuliaSmoothOptimizers/NLPModels.jl/blob/master/src/NLSModels.jl
+"""
+function _init_max_counters_NLS(; residual        :: Int = 20000,
+                                  jac_residual    :: Int = 20000,
+                                  jprod_residual  :: Int = 20000,
+                                  jtprod_residual :: Int = 20000,
+                                  hess_residual   :: Int = 20000,
+                                  jhess_residual  :: Int = 20000,
+                                  hprod_residual :: Int = 20000,
+                                  kwargs...)
+
+  cntrs_nlp = _init_max_counters(;kwargs...)
+  cntrs = Dict([(:neval_residual, residual),
+                (:neval_jac_residual, jac_residual),
+                (:neval_jprod_residual, jprod_residual),
+                (:neval_jtprod_residual, jtprod_residual),
+                (:neval_hess_residual, hess_residual),
+                (:neval_jhess_residual, jhess_residual),
+                (:neval_hprod_residual, hprod_residual)])
+
+ return merge(cntrs_nlp, cntrs)
+end
+
+"""
 fill_in!: a function that fill in the required values in the State
 """
 function fill_in!(stp  :: NLPStopping,
@@ -124,7 +150,7 @@ function fill_in!(stp  :: NLPStopping,
                   cx   :: Iterate     = nothing,
                   Jx   :: Iterate     = nothing,
                   lambda :: Iterate   = nothing,
-                  mu   :: Iterate     = nothing,
+                  mu     :: Iterate   = nothing,
                   matrix_info :: Bool = true)
 
  gfx = fx == nothing  ? obj(stp.pb, x)   : fx
@@ -164,20 +190,36 @@ _resources_check!: check if the optimization algorithm has exhausted the resourc
                    the evaluation of the functions following the sum_counters
                    structure from NLPModels.
 
-Note: function uses counters in stp.pb, and update the counters in the state
+Note:
+* function uses counters in stp.pb, and update the counters in the state.
+* function is compatible with Counters, NLSCounters, and any type whose entries
+match the entries in stp.max_cntrs.
 """
 function _resources_check!(stp    :: NLPStopping,
                            x      :: Iterate)
 
   cntrs = stp.pb.counters
   update!(stp.current_state, evals = cntrs)
-  
+
   max_cntrs = stp.max_cntrs
 
   # check all the entries in the counter
   max_f = false
-  for f in fieldnames(Counters)
-      max_f = max_f || (getfield(cntrs, f) > max_cntrs[f])
+  if typeof(stp.pb.counters) == Counters
+   for f in fieldnames(Counters)
+       max_f = max_f || (getfield(cntrs, f) > max_cntrs[f])
+   end
+  elseif typeof(stp.pb.counters) == NLSCounters
+    for f in fieldnames(NLSCounters)
+     max_f = f != :counters ? (max_f || (getfield(cntrs, f) > max_cntrs[f])) : max_f
+    end
+    for f in fieldnames(Counters)
+        max_f = max_f || (getfield(cntrs.counters, f) > max_cntrs[f])
+    end
+  else #Unknown counters type
+   for f in fieldnames(stp.pb.counters)
+    max_f = max_f || (getfield(cntrs, f) > max_cntrs[f])
+   end
   end
 
  # Maximum number of function and derivative(s) computation
@@ -227,6 +269,7 @@ NLPStopping where the optimality_check function is an input.
 function _optimality_check(stp  :: NLPStopping; kwargs...)
 
  optimality = stp.optimality_check(stp.pb, stp.current_state; kwargs...)
+ stp.current_state.current_score = optimality
 
  return optimality
 end

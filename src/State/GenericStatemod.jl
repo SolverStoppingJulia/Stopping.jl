@@ -6,7 +6,8 @@ A generic State to describe the state of a problem at a point x.
 
 Tracked data include:
  - x : our current iterate
- - current_time : time
+ - current_time  : time
+ - current_score : score
 
 Note: by default, unknown entries are set to nothing.
 """
@@ -15,12 +16,15 @@ mutable struct GenericState <: AbstractState
     x :: Vector
 
     #Current time
-    current_time :: FloatVoid
+    current_time  :: FloatVoid
+    #Current score
+    current_score :: FloatVoid
 
     function GenericState(x            :: Vector;
-                          current_time :: FloatVoid = nothing)
+                          current_time  :: FloatVoid = nothing,
+                          current_score :: FloatVoid = nothing)
 
-      return new(x, current_time)
+      return new(x, current_time, current_score)
    end
 end
 

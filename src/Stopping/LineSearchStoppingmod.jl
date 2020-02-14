@@ -109,6 +109,7 @@ LS_Stopping where the optimality_check function is an input.
 function _optimality_check(stp  :: LS_Stopping; kwargs...)
 
  optimality = stp.optimality_check(stp.pb, stp.current_state; kwargs...)
+ stp.current_state.current_score = optimality
 
  return optimality
 end

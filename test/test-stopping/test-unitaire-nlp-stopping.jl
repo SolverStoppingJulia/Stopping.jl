@@ -18,6 +18,7 @@ fill_in!(stop_nlp, a)
 
 # we make sure the optimality check works properly
 @test stop!(stop_nlp)
+@test stop_nlp.current_state.current_score == unconstrained_check(stop_nlp.pb, stop_nlp.current_state)
 # we make sure the counter of stop works properly
 @test stop_nlp.meta.nb_of_stop == 1
 
