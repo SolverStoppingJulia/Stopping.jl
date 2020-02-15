@@ -71,7 +71,7 @@ length(lambda) > 0
 function _grad_lagrangian(pb    :: AbstractNLPModel,
                           state :: NLPAtX)
 
- if pb.meta.ncon == 0 & !has_bounds(pb)
+ if (pb.meta.ncon == 0) & !has_bounds(pb)
   return state.gx
  elseif pb.meta.ncon == 0
   return state.gx + state.mu
