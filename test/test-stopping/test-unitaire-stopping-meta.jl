@@ -19,3 +19,10 @@ test_meta = StoppingMeta()
 @test test_meta.suboptimal          == false
 @test test_meta.main_pb             == false
 @test test_meta.nb_of_stop          == 0
+
+try
+ StoppingMeta(tol_check = x -> x)
+ @test false #tol_check must have 3 arguments and not one
+catch
+ @test true
+end

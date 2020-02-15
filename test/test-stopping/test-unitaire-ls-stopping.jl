@@ -2,7 +2,7 @@ h = nothing
 lsatx = LSAtT(0.0)
 
 # Create the stopping object to test
-stop = LS_Stopping(h, (x,y)-> armijo(x,y), lsatx)
+stop = LS_Stopping(h, (x,y)-> armijo(x,y), lsatx, max_iter = 10)
 
 # We tests different functions of stopping
 OK = update_and_start!(stop, x = 1.0, g₀ = NaN, h₀ = NaN, ht = NaN)
@@ -47,3 +47,30 @@ reinit!(stop, rstate = true, x = 1.0)
 @test stop.current_state.ht == nothing
 
 ## _optimality_check and _null_test are tested with NLP
+
+try
+wolfe(stop.pb, stop.current_state)
+@test false #nothing entries in the stop
+catch
+@test true
+end
+try
+armijo_wolfe(stop.pb, stop.current_state)
+@test false #nothing entries in the stop
+catch
+@test true
+end
+update!(stop.current_state, h₀ = 1.0, ht = 0.0, g₀ = 1.0, gt = 0.0)
+@test wolfe(stop.pb, stop.current_state) == 0.0
+@test armijo_wolfe(stop.pb, stop.current_state) == 0.0
+#@test shamanskii_stop(stop.pb, stop.current_state) #specific LineModel
+@test goldstein(stop.pb, stop.current_state) >= 0.0
+
+stop.optimality_check = (x,y) -> 0.0
+stop.pb = ADNLPModel(x -> 0.0, [1.0])
+stop.meta.max_f = -1
+reinit!(stop.current_state, 0.0)
+@test stop.current_state.ht == nothing
+@test stop!(stop) == true
+@test stop.current_state.ht == nothing
+@test stop.meta.resources == true

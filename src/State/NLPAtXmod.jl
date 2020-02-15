@@ -1,5 +1,3 @@
-import NLPModels: Counters
-
 """
 Type: NLPAtX
 Methods: update!, reinit!

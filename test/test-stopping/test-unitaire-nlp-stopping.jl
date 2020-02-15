@@ -33,3 +33,28 @@ stop_nlp_cntrs = NLPStopping(nlp, max_cntrs = test_max_cntrs)
 @test stop_nlp_cntrs.max_cntrs[:neval_obj] == 2
 @test stop_nlp_cntrs.max_cntrs[:neval_grad] == 20000
 @test stop_nlp_cntrs.max_cntrs[:neval_sum] == 20000*11
+
+reinit!(stop_nlp.current_state)
+@test unconstrained_check(stop_nlp.pb, stop_nlp.current_state) >= 0.0
+reinit!(stop_nlp.current_state)
+@test unconstrained2nd_check(stop_nlp.pb, stop_nlp.current_state) >= 0.0
+@test stop_nlp.current_state.Hx != nothing
+
+nlp_bnd = ADNLPModel(f, zeros(5), lvar = zeros(5), uvar = zeros(5))
+stop_bnd = NLPStopping(nlp_bnd)
+fill_in!(stop_bnd, zeros(5))
+@test KKT(stop_bnd.pb, stop_bnd.current_state) == 0.0
+reinit!(stop_bnd.current_state)
+@test optim_check_bounded(stop_bnd.pb, stop_bnd.current_state) == 0.0
+
+stop_bnd.optimality_check = (x,y) -> NaN
+start!(stop_bnd)
+@test stop_bnd.meta.domainerror == true
+reinit!(stop_bnd)
+@test stop_bnd.meta.domainerror == false
+stop!(stop_bnd)
+@test stop_bnd.meta.domainerror == true
+
+fill_in!(stop_bnd, zeros(5), mu = ones(5), lambda = zeros(0))
+@test stop_bnd.current_state.mu == ones(5)
+@test stop_bnd.current_state.lambda == zeros(0)

@@ -3,13 +3,13 @@ export armijo, wolfe, armijo_wolfe, shamanskii_stop, goldstein
 """
 armijo: check if a step size is admissible according to the Armijo criterion.
 
-Armijo criterion: f(x + θd) - f(x) < τ₀ ∇f(x+θd)d
+Armijo criterion: f(x + θd) - f(x) < τ₀ θ ∇f(x+θd)d
 
 Note: ht, h₀ and g₀ are required in the LSAtT
 """
 function armijo(h      :: Any, #LineModel
                 h_at_t :: LSAtT;
-                τ₀ 	   :: Float64 = 0.01,
+                τ₀     :: Float64 = 0.01,
                 kwargs...)
 
     if (h_at_t.ht == nothing) || (h_at_t.h₀ == nothing) || (h_at_t.g₀ == nothing)
@@ -36,14 +36,15 @@ Note: gt and g₀ are required in the LSAtT
 """
 function wolfe(h      :: Any, #LineModel,
                h_at_t :: LSAtT;
-               τ₁ 	  :: Float64 = 0.99,
+               τ₁     :: Float64 = 0.99,
                kwargs...)
 
     if (h_at_t.g₀ == nothing) || (h_at_t.gt == nothing)
      return throw(error("Nothing entries in the State."))
     else
 
-     wolfe = (τ₁ .* h_at_t.g₀) - (abs(h_at_t.gt))
+     #wolfe = (τ₁ .* h_at_t.g₀) - (abs(h_at_t.gt))
+     wolfe = abs(h_at_t.gt) - τ₁ * abs(h_at_t.g₀)
 	 #positive = h_at_t.x > 0.0   # positive step
      return max(wolfe, 0.0)
     end
@@ -56,7 +57,7 @@ Note: ht, h₀, gt and g₀ are required in the LSAtT
 """
 function armijo_wolfe(h      :: Any, #LineModel,
                       h_at_t :: LSAtT;
-                      τ₀ 	 :: Float64 = 0.01,
+                      τ₀     :: Float64 = 0.01,
                       τ₁     :: Float64 = 0.99,
                       kwargs...)
 
@@ -64,7 +65,7 @@ function armijo_wolfe(h      :: Any, #LineModel,
     #printstyled("Warning: Nothing entries in the State.\n", color = :red)
     return throw(error("Nothing entries in the State. ht, h₀, gt and g₀ are mandatory."))
    else
-    wolfe = (τ₁ .* h_at_t.g₀) - (abs(h_at_t.gt))
+    wolfe  = abs(h_at_t.gt) - τ₁ * abs(h_at_t.g₀)
     armijo = h_at_t.ht - h_at_t.h₀ - h_at_t.g₀ * h_at_t.x * τ₀
     return max(armijo, wolfe, 0.0)
    end
@@ -100,7 +101,8 @@ function goldstein(h      :: Any, #LineModel,
                    τ₁     :: Float64 = 0.9999,
                    kwargs...)
 
- 	goldstein = max((h_at_t.h₀ + h_at_t.x * (1 - τ₀) * h_at_t.g₀) - (h_at_t.ht), (h_at_t.ht) - (h_at_t.h₀ + h_at_t.x *  τ₀ * h_at_t.g₀),0)
+ 	goldstein = max(h_at_t.h₀ + h_at_t.x * (1 - τ₀) * h_at_t.g₀ - h_at_t.ht,
+                    h_at_t.ht - (h_at_t.h₀ + h_at_t.x *  τ₀ * h_at_t.g₀))
  	# positive = h_at_t.x > 0.0   # positive step
- 	return goldstein #&& positive
+ 	return max(goldstein, 0.0) #&& positive
 end
