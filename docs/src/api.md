@@ -1,3 +1,18 @@
+# State
+## Types
+```@docs
+Stopping.GenericStatemod
+Stopping.NLPAtX
+Stopping.LSAtT
+```
+
+## General Functions
+```@docs
+Stopping.update!
+Stopping.reinit!
+```
+
+# Stopping
 ## Types
 ```@docs
 Stopping.GenericStopping
@@ -8,19 +23,21 @@ Stopping.StoppingMeta
 
 ## General Functions
 ```@docs
-Stopping.update_and_start!
-Stopping.update_and_stop!
-Stopping.fill_in!
 Stopping.start!
+Stopping.update_and_start!
 Stopping.stop!
+Stopping.update_and_stop!
 Stopping.reinit!
+Stopping.fill_in!
 Stopping.status
 ```
 
 ## Non linear admissibility functions
 ```@docs
-Stopping.unconstrained
 Stopping.KKT
+Stopping.unconstrained_check
+Stopping.unconstrained2nd_check
+Stopping.optim_check_bounded
 ```
 
 ## Line search admissibility functions
@@ -28,4 +45,6 @@ Stopping.KKT
 Stopping.armijo
 Stopping.wolfe
 Stopping.armijo_wolfe
+Stopping.shamanskii_stop
+Stopping.goldstein
 ```
