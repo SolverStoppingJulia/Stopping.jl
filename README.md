@@ -35,12 +35,12 @@ The GenericStopping (with GenericState) provides a complete structure to handle 
 Then, depending on the problem structure, you can specialize a new Stopping by
 redefining a State and some functions specific to your problem.
 
-We provide some specialization of the GenericStopping for optimization :
+We provide some specialization of the GenericStopping for optimization:
   * [NLPStopping](https://github.com/Goysa2/Stopping.jl/blob/master/src/Stopping/NLPStoppingmod.jl) with [NLPAtX](https://github.com/Goysa2/Stopping.jl/blob/master/src/State/NLPAtXmod.jl) as a specialized State: for non-linear programming (based on [NLPModels](https://github.com/JuliaSmoothOptimizers/NLPModels.jl));
   * [LS_Stopping](https://github.com/Goysa2/Stopping.jl/blob/master/src/Stopping/LineSearchStoppingmod.jl) with [LSAtT](https://github.com/Goysa2/Stopping.jl/blob/master/src/State/LSAtTmod.jl) as a specialized State: for 1d optimization;
   * more to come...
 
-In these examples, the function `optimality_residual` computes the residual of the optimality conditions is an additional attribute of the type.
+In these examples, the function `optimality_residual` computes the residual of the optimality conditions is an additional attribute of the types.
 
 ## Functions
 
@@ -68,7 +68,7 @@ Install and test the Stopping package with the Julia package manager:
 pkg> add Stopping
 pkg> test Stopping
 ```
-You can access the most-up-to date version of the Stopping package using:
+You can access the most up-to-date version of the Stopping package using:
 ```julia
 pkg> add https://github.com/Goysa2/Stopping.jl
 pkg> test Stopping
@@ -77,7 +77,7 @@ pkg> test Stopping
 
 As an example, a naive version of the Newton method is provided [here](https://github.com/Goysa2/Stopping.jl/blob/master/test/examples/newton.jl). First we import the packages:
 ```
-using NLPModels, Stopping
+using LinearAlgebra, NLPModels, Stopping
 ```
 We consider a quadratic test function, and create an uncontrained quadratic optimization problem using [NLPModels](https://github.com/JuliaSmoothOptimizers/NLPModels.jl):
 ```
@@ -92,7 +92,7 @@ nlp_at_x = NLPAtX(ones(5))
 ```
 We use [unconstrained_check](https://github.com/Goysa2/Stopping.jl/blob/master/src/Stopping/nlp_admissible_functions.jl) as an optimality function
 ```
-stop_nlp = NLPStopping(nlp, (x,y) -> unconstrained_check(x,y), nlp_at_x)
+stop_nlp = NLPStopping(nlp, unconstrained_check, nlp_at_x)
 ```
 Note that, since we used a default State, an alternative would have been:
 ```
@@ -113,8 +113,8 @@ function newton(stp :: NLPStopping)
     OK = update_and_start!(stp, x = xt, gx = grad(pb, xt), Hx = hess(pb, xt))
 
     while !OK
-        #Compute the Newton direction
-        d = -inv(state.Hx) * state.gx
+        #Compute the Newton direction (state.Hx only has the lower triangular)
+        d = (state.Hx + state.Hx' - diagm(0 => diag(state.Hx))) \ (- state.gx)
         #Update the iterate
         xt = xt + d
         #Update the State and call the Stopping with stop!
@@ -147,4 +147,4 @@ algorithm verified at each step of the algorithm:
 
 Stopping is aimed as a tool for improving the reusability and robustness in the implementation of iterative algorithms. We warmly welcome any feedback or comment leading to potential improvements.
 
-Future work will address more sophisticated problems such as mixed-integer optimization problems, optimization with uncertainty. The list of suggester optimality functions will be enriched with state of the art conditions.
+Future work will address more sophisticated problems such as mixed-integer optimization problems, optimization with uncertainty. The list of suggested optimality functions will be enriched with state of the art conditions.
