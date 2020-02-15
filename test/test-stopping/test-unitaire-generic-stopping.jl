@@ -96,7 +96,7 @@ stop.meta.infeasible = true
 @test status(stop, list = true) == [:Infeasible, :Tired]
 
 try
- fill_in!(stop)
+ fill_in!(stop, zeros(5))
  @test false
 catch
  @test true

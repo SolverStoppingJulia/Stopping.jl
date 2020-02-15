@@ -30,6 +30,10 @@ fill_in!(stop_nlp_default, sol)
 @test stop_nlp_default.meta.atol == 1.0
 @test stop!(stop_nlp_default) == true
 
+stop_nlp_default.optimality_check = unconstrained_check
+update_and_stop!(stop_nlp_default, cx = nothing)
+@test stop_nlp_default.current_state.cx != nothing
+
 #Keywords in the stop! call
 nlp_at_x_kargs = NLPAtX(x0, NaN*ones(nlp2.meta.ncon))
 stop_nlp_kargs = NLPStopping(nlp2, (x,y; test = 1.0, kwargs...) -> Stopping.KKT(x,y,kwargs...) + test, nlp_at_x_c)

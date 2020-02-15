@@ -68,7 +68,11 @@ end
 update!(stop.current_state, h₀ = 1.0, ht = 0.0, g₀ = 1.0, gt = 0.0)
 @test wolfe(stop.pb, stop.current_state) == 0.0
 @test armijo_wolfe(stop.pb, stop.current_state) == 0.0
-#@test shamanskii_stop(stop.pb, stop.current_state) #specific LineModel
+mutable struct Tpb
+    d :: Number
+end
+stop.pb = Tpb(0.0)
+@test shamanskii_stop(stop.pb, stop.current_state) == 0.0 #specific LineModel
 @test goldstein(stop.pb, stop.current_state) >= 0.0
 
 stop.optimality_check = (x,y) -> 0.0
