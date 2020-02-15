@@ -94,3 +94,10 @@ res3 = infinite_algorithm(subsubstop)
 
 stop.meta.infeasible = true
 @test status(stop, list = true) == [:Infeasible, :Tired]
+
+try
+ fill_in!(stop)
+ @test false
+catch
+ @test true
+end

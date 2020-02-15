@@ -194,6 +194,7 @@ Note:
 * function uses counters in stp.pb, and update the counters in the state.
 * function is compatible with Counters, NLSCounters, and any type whose entries
 match the entries in stp.max_cntrs.
+* all the problems have an entry "pb.counters" and a function "sum_counters(pb)"
 """
 function _resources_check!(stp    :: NLPStopping,
                            x      :: Iterate)
@@ -217,7 +218,7 @@ function _resources_check!(stp    :: NLPStopping,
         max_f = max_f || (getfield(cntrs.counters, f) > max_cntrs[f])
     end
   else #Unknown counters type
-   for f in fieldnames(stp.pb.counters)
+   for f in fieldnames(typeof(stp.pb.counters))
     max_f = max_f || (getfield(cntrs, f) > max_cntrs[f])
    end
   end

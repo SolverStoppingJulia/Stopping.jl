@@ -47,7 +47,12 @@ reinit!(stop, rstate = true, x = 1.0)
 @test stop.current_state.ht == nothing
 
 ## _optimality_check and _null_test are tested with NLP
-
+try
+armijo(stop.pb, stop.current_state)
+@test false #nothing entries in the stop
+catch
+@test true
+end
 try
 wolfe(stop.pb, stop.current_state)
 @test false #nothing entries in the stop

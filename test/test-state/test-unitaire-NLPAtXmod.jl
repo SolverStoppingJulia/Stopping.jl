@@ -73,3 +73,29 @@ nlp_64.gx = ones(10)
 # @test typeof(nlp_64.gx[1]) == Float64
 # @test isnan(nlp_64.mu[1])
 # @test isnan(nlp_64.current_time)
+
+#Test the _size_check:
+try
+    NLPAtX(ones(5), gx = zeros(4))
+    @test false
+catch
+    @test true
+end
+try
+    NLPAtX(ones(5), mu = zeros(4))
+    @test false
+catch
+    @test true
+end
+try
+    NLPAtX(ones(5), Hx = zeros(4,4))
+    @test false
+catch
+    @test true
+end
+try
+    NLPAtX(ones(5), zeros(1), cx = zeros(0))
+    @test false
+catch
+    @test true
+end

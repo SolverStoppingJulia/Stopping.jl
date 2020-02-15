@@ -55,6 +55,19 @@ reinit!(stop_bnd)
 stop!(stop_bnd)
 @test stop_bnd.meta.domainerror == true
 
+stop_bnd.optimality_check = (x,y) -> 0.0
+reinit!(stop_bnd)
 fill_in!(stop_bnd, zeros(5), mu = ones(5), lambda = zeros(0))
 @test stop_bnd.current_state.mu == ones(5)
 @test stop_bnd.current_state.lambda == zeros(0)
+
+update!(stop_bnd.current_state, fx = nothing, current_score = 0.0)
+stop!(stop_bnd)
+@test stop_bnd.current_state.fx != nothing
+
+try
+ NLPStopping(nlp_bnd, KKT, GenericState(x0)) #would not work as there is an entry check
+ @test false
+catch
+ @test true
+end
