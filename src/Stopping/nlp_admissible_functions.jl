@@ -3,7 +3,7 @@ import NLPModels: grad, cons, jac
 """
 unconstrained: return the infinite norm of the gradient of the objective function
 
-required: state.gx (filled if void)
+required: state.gx (filled if nothing)
 """
 function unconstrained_check(pb    :: AbstractNLPModel,
                              state :: NLPAtX;
@@ -15,6 +15,30 @@ function unconstrained_check(pb    :: AbstractNLPModel,
     end
 
     res = norm(state.gx, pnorm)
+
+    return res
+end
+
+"""
+unconstrained 2nd: check the norm of the gradient and the smallest
+                   eigenvalue of the hessian.
+
+required: state.gx, state.Hx (filled if nothing)
+"""
+function unconstrained2nd_check(pb    :: AbstractNLPModel,
+                                state :: NLPAtX;
+                                pnorm :: Float64 = Inf,
+                                kwargs...)
+
+    if state.gx == nothing # should be filled if empty
+        update!(state, gx = grad(pb, state.x))
+    end
+    if state.Hx == nothing
+        update!(state, Hx = hess(pb, state.x))
+    end
+
+    res = max(norm(state.gx, pnorm),
+              max(- eigmin(H + H' - diagm(0 => diag(H))), 0.0))
 
     return res
 end

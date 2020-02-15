@@ -27,5 +27,5 @@ printstyled("Consmin tests... ")
 include("test-stopping/test-unitaire-nlp-stopping_2.jl")
 printstyled("passed ✓ \n", color = :green)
 
-printstyled("HowTo tests..\n.")
+printstyled("HowTo tests...\n")
 include("examples/runhowto.jl")

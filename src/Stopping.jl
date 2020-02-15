@@ -49,6 +49,7 @@ include("Stopping/NLPStoppingmod.jl")
 export GenericStopping, start!, stop!, update_and_start!, update_and_stop!
 export fill_in!, reinit!, status
 export LS_Stopping
-export NLPStopping, unconstrained_check, optim_check_bounded, KKT
+export NLPStopping, unconstrained_check, unconstrained2nd_check
+export optim_check_bounded, KKT
 
 end # end of module

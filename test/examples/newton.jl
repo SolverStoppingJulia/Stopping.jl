@@ -5,7 +5,7 @@
 #
 ###############################################################################
 
-using NLPModels, Stopping, Test
+using LinearAlgebra, NLPModels, Stopping, Test
 
 # We create a quadratic test function, and create an NLPModels
 A = rand(5, 5);
@@ -31,7 +31,7 @@ function newton(stp :: NLPStopping)
 
     while !OK
         #Compute the Newton direction
-        d = -inv(state.Hx) * state.gx
+        d = (state.Hx + state.Hx' - diagm(0 => diag(state.Hx))) \ (- state.gx)
         #Update the iterate
         xt = xt + d
         #Update the State and call the Stopping with stop!
