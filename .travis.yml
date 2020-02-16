@@ -13,7 +13,7 @@ notifications:
   email: false
 
 codecov: true
-#coveralls: true
+coveralls: true
 
 ## uncomment the following lines to allow failures on nightly julia
 # (tests will run but not make your overall status red)
