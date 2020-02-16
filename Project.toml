@@ -1,7 +1,7 @@
 name = "Stopping"
 uuid = "c4fe5a9e-e7fb-5c3d-89d5-7f405ab2214f"
 authors = ["Goysa2 <samuel.goyette@usherbrooke.ca>"]
-version = "0.1.0"
+version = "0.2.0"
 
 
 [deps]
