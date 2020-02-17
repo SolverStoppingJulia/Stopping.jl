@@ -13,14 +13,14 @@ Note: by default, unknown entries are set to nothing.
 """
 mutable struct GenericState <: AbstractState
 
-    x :: Vector
+    x :: AbstractVector
 
     #Current time
     current_time  :: FloatVoid
     #Current score
     current_score :: FloatVoid
 
-    function GenericState(x            :: Vector;
+    function GenericState(x             :: AbstractVector;
                           current_time  :: FloatVoid = nothing,
                           current_score :: FloatVoid = nothing)
 

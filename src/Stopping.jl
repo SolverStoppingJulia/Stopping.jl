@@ -2,7 +2,7 @@ module Stopping
 
 using LinearAlgebra, NLPModels
 
-const Iterate           = Union{Number, Vector, Nothing}
+const Iterate           = Union{Number, AbstractVector, Nothing}
 const FloatVoid         = Union{Number, Nothing}
 const MatrixType        = Union{Number, AbstractArray, AbstractMatrix, Nothing}
 

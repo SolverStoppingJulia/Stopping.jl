@@ -32,7 +32,6 @@ end
 la_pb = LinearAlgebraProblem(A, b)
 la_state = GenericState(xref)
 
-#@test norm(la_state.Jx * xref - la_state.cx) <= 1e-6
 @test norm(la_pb.A * xref - la_pb.b) <= 1e-6
 
 mutable struct LinearAlgebraStopping <: AbstractStopping

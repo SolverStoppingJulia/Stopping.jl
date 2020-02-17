@@ -31,7 +31,7 @@ Note: * by default, unknown entries are set to nothing (except evals).
 mutable struct 	NLPAtX <: AbstractState
 
 #Unconstrained State
-    x            :: Vector     # current point
+    x            :: AbstractVector     # current point
     fx           :: FloatVoid   # objective function
     gx           :: Iterate     # gradient size: x
     Hx           :: MatrixType  # hessian size: |x| x |x|
@@ -42,15 +42,15 @@ mutable struct 	NLPAtX <: AbstractState
 #Constrained State
     cx           :: Iterate     # vector of constraints lc <= c(x) <= uc
     Jx           :: MatrixType  # jacobian matrix, size: |lambda| x |x|
-    lambda       :: Vector    # Lagrange multipliers
+    lambda       :: AbstractVector    # Lagrange multipliers
 
  #Resources State
     current_time   :: FloatVoid
     current_score  :: FloatVoid
     evals          :: Counters
 
- function NLPAtX(x             :: Vector,
-                 lambda        :: Vector;
+ function NLPAtX(x             :: AbstractVector,
+                 lambda        :: AbstractVector;
                  fx            :: FloatVoid    = nothing,
                  gx            :: Iterate      = nothing,
                  Hx            :: MatrixType   = nothing,
@@ -70,7 +70,7 @@ end
 """
 An additional constructor for unconstrained problems
 """
-function NLPAtX(x             :: Vector;
+function NLPAtX(x             :: AbstractVector;
                 fx            :: FloatVoid    = nothing,
                 gx            :: Iterate      = nothing,
                 Hx            :: MatrixType   = nothing,
@@ -92,7 +92,7 @@ reinit!: function that set all the entries at void except the mandatory x
 Warning: if x, lambda or evals are given as a keyword argument they will be
 prioritized over the existing x, lambda and the default Counters.
 """
-function reinit!(stateatx :: NLPAtX, x :: Vector, l :: Vector; kwargs...)
+function reinit!(stateatx :: NLPAtX, x :: AbstractVector, l :: AbstractVector; kwargs...)
 
  for k ∈ fieldnames(typeof(stateatx))
    if !(k ∈ [:x,:lambda,:evals]) setfield!(stateatx, k, nothing) end
