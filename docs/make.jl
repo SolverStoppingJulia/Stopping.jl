@@ -9,6 +9,7 @@ makedocs(
              "Home" => "index.md",
              "API" => "api.md",
              "Examples and tutorials" => "tutorial.md"
+             "How to State" => "howtostate.md"
             ]
 )
 

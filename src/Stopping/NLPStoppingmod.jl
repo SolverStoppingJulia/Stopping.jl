@@ -151,7 +151,8 @@ function fill_in!(stp  :: NLPStopping,
                   Jx   :: Iterate     = nothing,
                   lambda :: Iterate   = nothing,
                   mu     :: Iterate   = nothing,
-                  matrix_info :: Bool = true)
+                  matrix_info :: Bool = true,
+                  kwargs...)
 
  gfx = fx == nothing  ? obj(stp.pb, x)   : fx
  ggx = gx == nothing  ? grad(stp.pb, x)  : gx
@@ -172,7 +173,7 @@ function fill_in!(stp  :: NLPStopping,
 
  #update the Lagrange multiplier if one of the 2 is asked
  if (stp.pb.meta.ncon > 0 || has_bounds(stp.pb)) && (lambda == nothing || mu == nothing)
-  lb, lc = _compute_mutliplier(stp.pb, x, ggx, gcx, gJx)
+  lb, lc = _compute_mutliplier(stp.pb, x, ggx, gcx, gJx; kwargs...)
  elseif  stp.pb.meta.ncon == 0 && !has_bounds(stp.pb) && lambda == nothing
   lb, lc = mu, stp.current_state.lambda
  else
