@@ -1,7 +1,7 @@
 # State
 ## Types
 ```@docs
-Stopping.GenericStatemod
+Stopping.GenericState
 Stopping.NLPAtX
 Stopping.LSAtT
 ```

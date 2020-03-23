@@ -1,5 +1,9 @@
+## How to State
+
 The data used through the algorithmic process in the Stopping framework
-are stored in a State. The Julia file can be found [here](https://github.com/Goysa2/Stopping.jl/tree/master/test/examples/howtostate.jl)
+are stored in a State.
+
+The Julia file corresponding to this tutorial can be found [here](https://github.com/Goysa2/Stopping.jl/tree/master/test/examples/howtostate.jl).
 
 We illustrate here the GenericState and its features
 ```
