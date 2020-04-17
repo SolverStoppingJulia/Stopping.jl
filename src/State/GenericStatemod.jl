@@ -1,5 +1,6 @@
 """
 Type: GenericState
+
 Methods: update!, reinit!
 
 A generic State to describe the state of a problem at a point x.

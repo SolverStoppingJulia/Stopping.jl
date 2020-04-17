@@ -1,9 +1,11 @@
 """
 Type: NLPAtX
+
 Methods: update!, reinit!
 
 NLPAtX contains the information concerning a nonlinear problem at
 the iteration x.
+
 min_{x ∈ ℜⁿ} f(x) subject to lcon <= c(x) <= ucon, lvar <= x <= uvar.
 
 Basic information is:

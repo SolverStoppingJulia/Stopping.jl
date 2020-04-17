@@ -5,13 +5,13 @@ are stored in a State.
 
 The Julia file corresponding to this tutorial can be found [here](https://github.com/Goysa2/Stopping.jl/tree/master/test/examples/howtostate.jl).
 
-We illustrate here the GenericState and its features
+We illustrate here the GenericState and its features.
 ```
 using Test, Stopping
 ```
 
 The GenericState contains only two entries:
- a vector x, and a Float current_time
+ a Vector x, and a Float current_time
 ```
 state1 = GenericState(ones(2)) #takes a Vector as a mandatory input
 state2 = GenericState(ones(2), current_time = 1.0)
@@ -23,13 +23,13 @@ By default if a non-mandatory entry is not specified it is void:
 @test state2.current_time == 1.0
 ```
 
-The GenericState has two functions: update! and reinit!
+The GenericState has two functions: update! and reinit!.
 update! is used to update entries of the State:
 ```
 update!(state1, current_time = 1.0)
 @test state1.current_time == 1.0
 ```
-Note that the update select the relevant entries
+Note that the update select the relevant entries:
 ```
 update!(state1, fx = 1.0) #does nothing as there are no fx entry
 @test state1.current_time == 1.0 && state1.x == ones(2)
@@ -41,13 +41,13 @@ as the existing one.
 update!(state1, current_time = 2) #does nothing as it is the wrong type
 @test state1.current_time == 1.0
 ```
-An advanced user can force the update even if the type is not the same by
+One can force the update even if the type is not the same by
 turning the keyword convert as true (it is false by default).
 ```
 update!(state1, convert = true, current_time = 2)
 @test state1.current_time == 2
 ```
-Non-required entry in the State can always be set as void without convert
+Non-required entry in the State can always be set as void without convert.
 ```
 update!(state1, current_time = nothing)
 @test state1.current_time == nothing
@@ -59,7 +59,7 @@ This function is particularly useful, when there are many entries.
 reinit!(state2)
 @test state2.x == ones(2) && state2.current_time == nothing
 ```
-If we want to reinit! with a different value of the mandatory entry:
+If one wants to use reinit! with a different value of the mandatory entry:
 ```
 reinit!(state2, zeros(2))
 @test state2.x == zeros(2) && state2.current_time == nothing
@@ -76,7 +76,7 @@ reinit!(state2, ones(2), current_time = 1.0)
 @test state2.x == ones(2) && state2.current_time == 1.0
 ```
 
-The State has also a private function guaranteeing there are no NaN
+The State has also a private function guaranteeing there are no NaN.
 ```
 OK = Stopping._domain_check(state1) #function returns a boolean
 @test OK == false #no NaN

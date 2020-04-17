@@ -73,10 +73,10 @@ end
 
 """
 shamanskii_stop: check if a step size is admissible according to the "Shamanskii" criteria.
-This criteria was proposed in
-	GLOBAL CONVERGENCE TECHNIQUE FOR THE NEWTON METHOD WITH PERIODIC HESSIAN EVALUATION
-	by
-	F. LAMPARIELLO and M. SCIANDRONE
+This criteria was proposed in:
+Lampariello, F., & Sciandrone, M. (2001).
+Global convergence technique for the Newton method with periodic Hessian evaluation.
+Journal of optimization theory and applications, 111(2), 341-358.
 
 Note: * h.d accessible (specific LineModel)
       * ht, h₀ are required in the LSAtT

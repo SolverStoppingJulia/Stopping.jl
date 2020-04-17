@@ -9,32 +9,32 @@ The Julia file corresponding to this tutorial can be found [here](https://github
 using Test, NLPModels, Stopping
 ```
 
-Formulate the problem with NLPModels
+Formulate the problem with NLPModels:
 ```
 include("../test-stopping/rosenbrock.jl")
-x0 = ones(6)
-y0 = ones(1)
+x0   = ones(6)
+y0   = ones(1)
 c(x) = [x[1] - x[2]]
 lcon = [0.0]
 ucon = [0.0]
 ```
 
 We can create a NLPAtX for constrained optimization.
-Here we provide y0 = [1.0]
-Note that the default value is [0.0]
+Here we provide y0 = [1.0].
+Note that the default value is [0.0].
 ```
-nlp = ADNLPModel(x->rosenbrock(x), x0, y0 = y0,
-                 c=c, lcon=lcon, ucon=ucon,
-                 lvar=zeros(6), uvar = Inf * ones(6))
+nlp = ADNLPModel(x -> rosenbrock(x), x0, y0 = y0,
+                 c = c, lcon = lcon, ucon = ucon,
+                 lvar = zeros(6), uvar = Inf * ones(6))
 ```
 We can create a NLPAtX for bounds-constrained optimization:
 ```
-nlp2 = ADNLPModel(x->rosenbrock(x), x0,
-                 lvar=zeros(6), uvar = Inf * ones(6))
+nlp2 = ADNLPModel(x -> rosenbrock(x), x0,
+                 lvar = zeros(6), uvar = Inf * ones(6))
 ```
 We can create a NLPAtX for unconstrained optimization:
 ```
-nlp3 = ADNLPModel(x->rosenbrock(x), x0)
+nlp3 = ADNLPModel(x -> rosenbrock(x), x0)
 ```
 
 ### I. Initialize a NLPAtX:
@@ -50,7 +50,7 @@ state_con = NLPAtX(x0, y0)
 ```
 
 By default, all the values in the State are set to nothing except x and lambda
-In the unconstrained case lambda is a vector of length 0
+In the unconstrained case lambda is a vector of length 0.
 ```
 @test !(state_unc.lambda == nothing)
 ```
@@ -59,7 +59,7 @@ From the default initialization, all the other entries are void:
 @test state_unc.mu == nothing && state_con.mu == nothing
 @test state_unc.fx == nothing && state_con.fx == nothing
 ```
-exception is the counters which is initialized as a default Counters:
+An exception is the counters which is initialized as a default Counters:
 ```
 @test (sum_counters(state_unc.evals) + sum_counters(state_con.evals)) == 0
 ```

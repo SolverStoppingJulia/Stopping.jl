@@ -1,5 +1,6 @@
 """
 Type: LSAtT
+
 Methods: update!, reinit!, copy
 
 A structure designed to track line search information from one iteration to
