@@ -101,4 +101,11 @@ export LS_Stopping
 export NLPStopping, unconstrained_check, unconstrained2nd_check
 export optim_check_bounded, KKT
 
+using LinearAlgebra, SparseArrays, LinearOperators #v.1.0.1
+
+include("Stopping/LinearAlgebraStopping.jl")
+
+export LAStopping, LinearSystem, linear_system_check, normal_equation_check
+
+
 end # end of module

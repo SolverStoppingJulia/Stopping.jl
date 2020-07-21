@@ -68,7 +68,7 @@ while !OK
    #the subproblem stops if he solved the unconstrained nlp or iterate is infeasible
    feas(x,y) = maximum(vcat(max.(y.x  - stp.pb.meta.uvar[Ic],0.0),max.(- y.x  + stp.pb.meta.lvar[Ic],0.0)))
    check_func(x,y) = feas(x,y) > 0.0 ? 0.0 : unconstrained_check(x,y)
-   substp = NLPStopping(subpb, check_func, NLPAtX(xt[Ic]), main_stp = stp)
+   substp = NLPStopping(subpb, NLPAtX(xt[Ic]), main_stp = stp, optimality_check = check_func)
 
    #we solve the unconstrained subproblem:
    global_newton(substp, prms)

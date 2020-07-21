@@ -13,6 +13,8 @@
 # - we create a LinearAlgebraStopping
 # - the optimality function linear_system_check!
 #
+# A more sophisticated version can be found in LAStopping.
+#
 ###############################################################################
 using LinearAlgebra, Stopping, Test
 
