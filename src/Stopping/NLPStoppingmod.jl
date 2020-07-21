@@ -8,22 +8,17 @@ Specialization of GenericStopping. Stopping structure for non-linear programming
 
 Attributes:
 - pb         : an AbstractNLPModel
-- optimality_check : a stopping criterion via an admissibility function
 - state      : The information relative to the problem, see GenericState
-- max_cntrs  : Dict contains the maximum number of evaluations
 - (opt) meta : Metadata relative to stopping criterion, see *StoppingMeta*.
 - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
                           of a subproblem.
                           If not a subproblem, then nothing.
 
-`NLPStopping(:: AbstractNLPModel, :: Function, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), max_cntrs :: Dict = _init_max_counters(), main_stp :: Union{AbstractStopping, Nothing} = nothing, kwargs...)`
+`NLPStopping(:: AbstractNLPModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), max_cntrs :: Dict = _init_max_counters(), main_stp :: Union{AbstractStopping, Nothing} = nothing, kwargs...)`
 
  Note:
-- *optimality_check* takes two inputs (*AbstractNLPModel*, *NLPAtX*)
- and returns a *Number* to be compared to *0*.
 - designed for *NLPAtX* State. Constructor checks that the State has the
  required entries.
-- *optimality_check* does not necessarily fill in the State.
 
  There is an additional default constructor creating a Stopping where the State is by default and the
  optimality function is the function *KKT()*.
@@ -37,13 +32,8 @@ mutable struct NLPStopping <: AbstractStopping
     # problem
     pb :: AbstractNLPModel
 
-    # stopping criterion
-    optimality_check :: Function
-
     # Common parameters
     meta      :: AbstractStoppingMeta
-    # Parameters specific to the NLPModels
-    max_cntrs :: Dict #contains the max number of evaluations
 
     # current state of the problem
     current_state :: AbstractState
@@ -52,15 +42,13 @@ mutable struct NLPStopping <: AbstractStopping
     main_stp :: Union{AbstractStopping, Nothing}
 
     function NLPStopping(pb             :: AbstractNLPModel,
-                         admissible     :: Function,
                          current_state  :: AbstractState;
-                         meta           :: AbstractStoppingMeta = StoppingMeta(),
-                         max_cntrs      :: Dict = _init_max_counters(),
+                         meta           :: AbstractStoppingMeta = StoppingMeta(;max_cntrs = _init_max_counters(), optimality_check = KKT),
                          main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                          kwargs...)
 
         if !(isempty(kwargs))
-           meta = StoppingMeta(;kwargs...)
+           meta = StoppingMeta(;max_cntrs = _init_max_counters(), optimality_check = KKT, kwargs...)
         end
 
         #current_state is an AbstractState with requirements
@@ -76,7 +64,7 @@ mutable struct NLPStopping <: AbstractStopping
             throw("error: missing entries in the given current_state")
         end
 
-        return new(pb, admissible, meta, max_cntrs, current_state, main_stp)
+        return new(pb, meta, current_state, main_stp)
     end
 
 end
@@ -84,9 +72,8 @@ end
 function NLPStopping(pb :: AbstractNLPModel; kwargs...)
  #Create a default NLPAtX
  nlp_at_x = NLPAtX(pb.meta.x0)
- admissible = KKT
 
- return NLPStopping(pb, admissible, nlp_at_x; kwargs...)
+ return NLPStopping(pb, nlp_at_x; optimality_check = KKT, kwargs...)
 end
 
 """
@@ -213,7 +200,7 @@ function _resources_check!(stp    :: NLPStopping,
   cntrs = stp.pb.counters
   update!(stp.current_state, evals = cntrs)
 
-  max_cntrs = stp.max_cntrs
+  max_cntrs = stp.meta.max_cntrs
 
   # check all the entries in the counter
   max_f = false
@@ -272,22 +259,6 @@ function _unbounded_problem_check!(stp  :: NLPStopping,
  stp.meta.unbounded_pb = f_too_large || c_too_large
 
  return stp
-end
-
-"""
-\\_optimality\\_check: compute the optimality score.
-
-`_optimality_check(:: NLPStopping; kwargs...)`
-
-This is the NLP specialized version that takes into account the structure of the
-*NLPStopping* where the *optimality_check* function is an attribute of the Stopping.
-"""
-function _optimality_check(stp  :: NLPStopping; kwargs...)
-
- optimality = stp.optimality_check(stp.pb, stp.current_state; kwargs...)
- stp.current_state.current_score = optimality
-
- return optimality
 end
 
 ################################################################################

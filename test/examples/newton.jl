@@ -16,7 +16,7 @@ nlp = ADNLPModel(f,  ones(5))
 #We now initialize the NLPStopping:
 nlp_at_x = NLPAtX(ones(5)) #First create a State
 #We use unconstrained_check as an optimality function (src/Stopping/nlp_admissible_functions.jl)
-stop_nlp = NLPStopping(nlp, unconstrained_check, nlp_at_x)
+stop_nlp = NLPStopping(nlp, nlp_at_x, optimality_check = unconstrained_check)
 
 function newton(stp :: NLPStopping)
 

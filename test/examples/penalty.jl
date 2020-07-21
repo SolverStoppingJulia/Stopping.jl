@@ -38,8 +38,7 @@ function penalty(stp :: NLPStopping; rho0 = 1.0, rho_min = 1e-10,
  sub_pb  = ADNLPModel(x -> obj(stp.pb, x)
                       + 1/rho * norm(max.(cons(stp.pb, x) - stp.pb.meta.ucon, 0.0))^2
                       + 1/rho * norm(max.(- cons(stp.pb, x) + stp.pb.meta.lcon, 0.0))^2,  x0)
- sub_stp = NLPStopping(sub_pb, unconstrained_check,
-                               sub_nlp_at_x, main_stp = stp)
+ sub_stp = NLPStopping(sub_pb, sub_nlp_at_x, main_stp = stp, optimality_check = unconstrained_check)
 
  #main loop
  while !OK

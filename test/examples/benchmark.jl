@@ -41,9 +41,9 @@ for i=1:n
   @show i, problems_unconstrained[i], nlp_cutest.meta.nvar
   #update the stopping with the new problem
   stop_nlp = NLPStopping(nlp_cutest,
-                         unconstrained_check,
                          NLPAtX(nlp_cutest.meta.x0),
-                         max_iter = 20)
+                         max_iter = 20,
+                         optimality_check = unconstrained_check)
 
   for name in names
 

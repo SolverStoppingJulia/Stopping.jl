@@ -43,7 +43,7 @@ function global_newton(stp       :: NLPStopping,
     #Initialize the sub-Stopping with the main Stopping as keyword argument
     h = onedoptim(x -> obj(nlp, xt + x * d),
                   x -> dot(d, grad(nlp, xt + x * d)))
-    lsstp = LS_Stopping(h, ls_func, LSAtT(1.0), main_stp = stp)
+    lsstp = LS_Stopping(h, LSAtT(1.0), main_stp = stp, optimality_check = ls_func)
 
     #main loop
     while !OK

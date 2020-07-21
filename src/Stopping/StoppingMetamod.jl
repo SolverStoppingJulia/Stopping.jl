@@ -8,9 +8,11 @@ Attributes:
 - rtol : relative tolerance.
 - optimality0 : optimality score at the initial guess.
 - tol_check : Function of *atol*, *rtol* and *optimality0* testing a number to zero.
+- optimality_check : a stopping criterion via an admissibility function
 - unbounded_threshold : threshold for unboundedness of the problem.
 - unbounded_x : threshold for unboundedness of the iterate.
 - max_f :  maximum number of function (and derivatives) evaluations.
+- max_cntrs  : Dict contains the maximum number of evaluations
 - max_eval :  maximum number of function (and derivatives) evaluations.
 - max_iter : threshold on the number of stop! call/number of iteration.
 - max_time : time limit to let the algorithm run.
@@ -40,6 +42,9 @@ Note:
 - The different status: *fail\\_sub\\_pb*, *unbounded*, *unbounded_pb*, *tired*, *stalled*,
       *iteration_limit*, *resources*, *optimal*, *main_pb*, *domainerror*, *suboptimal*, *infeasible*
 - *fail\\_sub\\_pb*, *suboptimal*, and *infeasible* are modified by the algorithm.
+- *optimality_check* takes two inputs (*AbstractNLPModel*, *NLPAtX*)
+ and returns a *Number* to be compared to *0*.
+- *optimality_check* does not necessarily fill in the State.
 
 Examples: `StoppingMeta()`
 """
@@ -52,12 +57,15 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
  tol_check           :: Function #function of atol, rtol and optimality0
                                  #by default: tol_check = max(atol, rtol * optimality0)
                                  #other example: atol + rtol * optimality0
+ optimality_check    :: Function # stopping criterion
+                                 # Function of (pb, state; kwargs...)
 
  unbounded_threshold :: Number # beyond this value, the problem is declared unbounded
  unbounded_x         :: Number # beyond this value, x is unbounded
 
  # fine grain control on ressources
  max_f               :: Int    # max function evaluations allowed
+ max_cntrs           :: Dict #contains the detailed max number of evaluations
 
  # global control on ressources
  max_eval            :: Int    # max evaluations (f+g+H+Hv) allowed
@@ -87,9 +95,11 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
                         rtol                :: Number   = 1.0e-15,
                         optimality0         :: Number   = 1.0,
                         tol_check           :: Function = (atol,rtol,opt0) -> max(atol,rtol*opt0),
+                        optimality_check    :: Function = (a,b) -> Inf,
                         unbounded_threshold :: Number   = 1.0e50,
                         unbounded_x         :: Number   = 1.0e50,
                         max_f               :: Int      = typemax(Int),
+                        max_cntrs           :: Dict     = Dict(),
                         max_eval            :: Int      = 20000,
                         max_iter            :: Int      = 5000,
                         max_time            :: Number   = 300.0,
@@ -118,8 +128,8 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
 
    nb_of_stop = 0
 
-   return new(atol, rtol, optimality0, tol_check, unbounded_threshold, unbounded_x,
-              max_f, max_eval, max_iter, max_time, nb_of_stop, start_time,
+   return new(atol, rtol, optimality0, tol_check, optimality_check, unbounded_threshold, unbounded_x,
+              max_f, max_cntrs, max_eval, max_iter, max_time, nb_of_stop, start_time,
               fail_sub_pb, unbounded, unbounded_pb, tired, stalled,
               iteration_limit, resources, optimal, infeasible, main_pb,
               domainerror, suboptimal)

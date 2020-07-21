@@ -59,7 +59,7 @@ x0 = [0.0, 5.0]
 state = NLPAtX(x0)
 #Recall that for the optimality_check function x is the pb and y is the state
 #Here we take the infinite norm of the residual.
-stop = NLPStopping(nlp, (x,y) -> norm(y.cx,Inf), state)
+stop = NLPStopping(nlp, state, optimality_check = (x,y) -> norm(y.cx,Inf))
 
 AlternatingDirections(stop)
 @show status(stop)
@@ -68,7 +68,7 @@ AlternatingDirections(stop)
 #2nd scenario: the user gives an irrealistic optimality condition
 printstyled("2nd scenario:\n")
 reinit!(stop, rstate = true, x = x0)
-stop.optimality_check = (x,y) -> norm(y.cx,Inf)+0.5
+stop.meta.optimality_check = (x,y) -> norm(y.cx,Inf)+0.5
 
 AlternatingDirections(stop)
 #In this scenario, the algorithm stops because it attains a fixed point

@@ -7,7 +7,7 @@ nlp2 = ADNLPModel(rosenbrock,  x0,
                  y0 = [0.0], c = c, lcon = [-Inf], ucon = [6.])
 
 nlp_at_x_c = NLPAtX(x0, NaN*ones(nlp2.meta.ncon))
-stop_nlp_c = NLPStopping(nlp2, KKT, nlp_at_x_c)
+stop_nlp_c = NLPStopping(nlp2, nlp_at_x_c)
 
 a = zeros(6)
 fill_in!(stop_nlp_c, a)
@@ -30,13 +30,13 @@ fill_in!(stop_nlp_default, sol)
 @test stop_nlp_default.meta.atol == 1.0
 @test stop!(stop_nlp_default) == true
 
-stop_nlp_default.optimality_check = unconstrained_check
+stop_nlp_default.meta.optimality_check = unconstrained_check
 update_and_stop!(stop_nlp_default, cx = nothing)
 @test stop_nlp_default.current_state.cx != nothing
 
 #Keywords in the stop! call
 nlp_at_x_kargs = NLPAtX(x0, NaN*ones(nlp2.meta.ncon))
-stop_nlp_kargs = NLPStopping(nlp2, (x,y; test = 1.0, kwargs...) -> Stopping.KKT(x,y,kwargs...) + test, nlp_at_x_c)
+stop_nlp_kargs = NLPStopping(nlp2, nlp_at_x_c, optimality_check =  (x,y; test = 1.0, kwargs...) -> Stopping.KKT(x,y,kwargs...) + test)
 fill_in!(stop_nlp_kargs, sol)
 @test stop!(stop_nlp_kargs) == false
 @test stop!(stop_nlp_kargs, test = 0.0) == true

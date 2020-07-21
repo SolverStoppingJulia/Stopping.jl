@@ -35,11 +35,11 @@ h = onedoptim(x -> obj(nlp, x0 - x * g0), x -> - dot(g0,grad(nlp,x0 - x * g0)))
 #We create 3 stopping:
 #Define the LSAtT with mandatory entries g₀ and h₀.
 lsatx  = LSAtT(1.0, h₀ = obj(nlp, x0), g₀ = -dot(grad(nlp, x0),grad(nlp, x0)))
-lsstp  = LS_Stopping(h, (x,y)-> armijo(x,y, τ₀ = 0.01), lsatx)
+lsstp  = LS_Stopping(h, lsatx, optimality_check = (x,y)-> armijo(x,y, τ₀ = 0.01))
 lsatx2 = LSAtT(1.0, h₀ = obj(nlp, x0), g₀ = -dot(grad(nlp, x0),grad(nlp, x0)))
-lsstp2 = LS_Stopping(h, (x,y)-> wolfe(x,y, τ₁ = 0.99), lsatx2)
+lsstp2 = LS_Stopping(h, lsatx2, optimality_check = (x,y)-> wolfe(x,y, τ₁ = 0.99))
 lsatx3 = LSAtT(1.0, h₀ = obj(nlp, x0), g₀ = -dot(grad(nlp, x0),grad(nlp, x0)))
-lsstp3 = LS_Stopping(h, (x,y)-> armijo_wolfe(x,y, τ₀ = 0.01, τ₁ = 0.99), lsatx3)
+lsstp3 = LS_Stopping(h, lsatx3, optimality_check = (x,y)-> armijo_wolfe(x,y, τ₀ = 0.01, τ₁ = 0.99))
 
 parameters = ParamLS(back_update = 0.5)
 
@@ -146,8 +146,8 @@ nlp2 = ADNLPModel(rosenbrock,  x0,
                  y0 = [0.0], c = c, lcon = [-Inf], ucon = [5.])
 
 nlp_at_x_c = NLPAtX(x0, zeros(nlp2.meta.ncon))
-stop_nlp_c = NLPStopping(nlp2, (x,y) -> KKT(x,y), nlp_at_x_c, atol = 1e-3,
-                                max_cntrs = Main.Stopping._init_max_counters(obj = 400000, cons = 800000, sum = 1000000))
+stop_nlp_c = NLPStopping(nlp2, nlp_at_x_c, atol = 1e-3,
+                                max_cntrs = Main.Stopping._init_max_counters(obj = 400000, cons = 800000, sum = 1000000), optimality_check = (x,y) -> KKT(x,y))
 
 penalty(stop_nlp_c)
 @show status(stop_nlp_c)

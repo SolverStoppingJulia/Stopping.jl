@@ -12,14 +12,13 @@ h is such that h:R→R.
 Stopping structure for 1D non-linear programming problems.
 Input :
 - pb         : an Any
-- optimality_check : a stopping criterion through an admissibility function
 - state      : The information relative to the problem, see GenericState
 - (opt) meta : Metadata relative to stopping criterion.
 - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
                           of a subproblem.
                           If not a subproblem, then nothing.
 
-`LS_Stopping(:: Any, :: Function, :: LSAtT; meta :: AbstractStoppingMeta = StoppingMeta(), main_stp :: Union{AbstractStopping, Nothing} = nothing, kwargs...)`
+`LS_Stopping(:: Any, :: LSAtT; meta :: AbstractStoppingMeta = StoppingMeta(), main_stp :: Union{AbstractStopping, Nothing} = nothing, kwargs...)`
 
 
  Note:
@@ -27,7 +26,7 @@ Input :
  * It is possible to define those stopping criterion in a NLPStopping except NLPStopping
    uses vectors operations. LS_Stopping and it's admissible functions (Armijo and Wolfe are provided with Stopping.jl)
    uses scalar operations.
- * optimality\\_check(pb, state; kwargs...) -> Float64
+ * optimality\\_check(pb, state; kwargs...) -> Float64 is by default *armijo*
    For instance, the armijo condition is: h(t)-h(0)-τ₀*t*h'(0) ⩽ 0
    therefore armijo(h, h_at_t) returns the maximum between h(t)-h(0)-τ₀*t*h'(0) and 0.
 
@@ -36,9 +35,6 @@ See also GenericStopping, NLPStopping, LSAtT
 mutable struct LS_Stopping <: AbstractStopping
     # problem
     pb :: Any
-
-    # stopping criterion proper to linesearch
-    optimality_check :: Function
 
     # shared information with linesearch and other stopping
     meta :: AbstractStoppingMeta
@@ -50,17 +46,16 @@ mutable struct LS_Stopping <: AbstractStopping
     main_stp :: Union{AbstractStopping, Nothing}
 
     function LS_Stopping(pb             :: Any,
-                         admissible     :: Function,
                          current_state  :: LSAtT;
                          meta           :: AbstractStoppingMeta = StoppingMeta(),
                          main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                          kwargs...)
 
         if !(isempty(kwargs))
-           meta = StoppingMeta(;kwargs...)
+           meta = StoppingMeta(;optimality_check = armijo, kwargs...)
 		end
 
-        return new(pb, admissible, meta, current_state, main_stp)
+        return new(pb, meta, current_state, main_stp)
     end
 
 end
@@ -111,22 +106,6 @@ function _resources_check!(stp    :: LS_Stopping,
  stp.meta.resources = max_evals || max_f
 
  return stp
-end
-
-"""
-_optimality_check: compute the optimality score.
-
-`_optimality_check(:: LS_Stopping; kwargs...)`
-
-This is the NLP specialized version that takes into account the structure of the
-LS_Stopping where the optimality_check function is an input.
-"""
-function _optimality_check(stp  :: LS_Stopping; kwargs...)
-
- optimality = stp.optimality_check(stp.pb, stp.current_state; kwargs...)
- stp.current_state.current_score = optimality
-
- return optimality
 end
 
 ################################################################################

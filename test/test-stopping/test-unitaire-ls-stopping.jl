@@ -2,7 +2,7 @@ h = nothing
 lsatx = LSAtT(0.0)
 
 # Create the stopping object to test
-stop = LS_Stopping(h, (x,y)-> armijo(x,y), lsatx, max_iter = 10)
+stop = LS_Stopping(h, lsatx, max_iter = 10, optimality_check = (x,y)-> armijo(x,y))
 
 # We tests different functions of stopping
 OK = update_and_start!(stop, x = 1.0, g₀ = NaN, h₀ = NaN, ht = NaN)
@@ -75,7 +75,7 @@ stop.pb = Tpb(0.0)
 @test shamanskii_stop(stop.pb, stop.current_state) == 0.0 #specific LineModel
 @test goldstein(stop.pb, stop.current_state) >= 0.0
 
-stop.optimality_check = (x,y) -> 0.0
+stop.meta.optimality_check = (x,y) -> 0.0
 stop.pb = ADNLPModel(x -> 0.0, [1.0])
 stop.meta.max_f = -1
 reinit!(stop.current_state, 0.0)

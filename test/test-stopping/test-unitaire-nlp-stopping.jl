@@ -5,7 +5,7 @@ Q = A' * A
 f(x) = x' * Q * x
 nlp = ADNLPModel(f, zeros(5))
 nlp_at_x = NLPAtX(zeros(5))
-stop_nlp = NLPStopping(nlp, (x,y) -> unconstrained_check(x,y), nlp_at_x, optimality0 = 0.0)
+stop_nlp = NLPStopping(nlp, nlp_at_x, optimality0 = 0.0, optimality_check = (x,y) -> unconstrained_check(x,y))
 
 
 a = zeros(5)
@@ -30,9 +30,9 @@ reinit!(stop_nlp, rstate = true, x = ones(5))
 #We know test how to initialize the counter:
 test_max_cntrs = Stopping._init_max_counters(obj = 2)
 stop_nlp_cntrs = NLPStopping(nlp, max_cntrs = test_max_cntrs)
-@test stop_nlp_cntrs.max_cntrs[:neval_obj] == 2
-@test stop_nlp_cntrs.max_cntrs[:neval_grad] == 20000
-@test stop_nlp_cntrs.max_cntrs[:neval_sum] == 20000*11
+@test stop_nlp_cntrs.meta.max_cntrs[:neval_obj] == 2
+@test stop_nlp_cntrs.meta.max_cntrs[:neval_grad] == 20000
+@test stop_nlp_cntrs.meta.max_cntrs[:neval_sum] == 20000*11
 
 reinit!(stop_nlp.current_state)
 @test unconstrained_check(stop_nlp.pb, stop_nlp.current_state) >= 0.0
@@ -47,7 +47,7 @@ fill_in!(stop_bnd, zeros(5))
 reinit!(stop_bnd.current_state)
 @test optim_check_bounded(stop_bnd.pb, stop_bnd.current_state) == 0.0
 
-stop_bnd.optimality_check = (x,y) -> NaN
+stop_bnd.meta.optimality_check = (x,y) -> NaN
 start!(stop_bnd)
 @test stop_bnd.meta.domainerror == true
 reinit!(stop_bnd)
@@ -55,7 +55,7 @@ reinit!(stop_bnd)
 stop!(stop_bnd)
 @test stop_bnd.meta.domainerror == true
 
-stop_bnd.optimality_check = (x,y) -> 0.0
+stop_bnd.meta.optimality_check = (x,y) -> 0.0
 reinit!(stop_bnd)
 fill_in!(stop_bnd, zeros(5), mu = ones(5), lambda = zeros(0))
 @test stop_bnd.current_state.mu == ones(5)

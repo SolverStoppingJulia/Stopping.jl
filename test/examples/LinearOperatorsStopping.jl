@@ -25,7 +25,7 @@ mutable struct LinearSystem
     b :: AbstractVector
 end
 
-function linear_system_check!(pb    :: LinearSystem,
+function linear_system_check(pb    :: LinearSystem,
                               state :: AbstractState;
                               pnorm :: Float64 = Inf,
                               kwargs...)
@@ -39,52 +39,40 @@ Methods: start!, stop!, update_and_start!, update_and_stop!, fill_in!, reinit!, 
 Stopping structure for non-linear programming problems using NLPModels.
     Input :
        - pb         : a LinearSystem
-       - optimality_check : a stopping criterion through an admissibility function
        - state      : The information relative to the problem, see GenericState
-       - max_cntrs  : Dict contains the max number of evaluations
        - (opt) meta : Metadata relative to stopping criterion.
        - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
                           of a subproblem.
                           If not a subproblem, then nothing.
 
  Note:
- * optimality_check : takes two inputs (LinearSystem, AbstractState)
- and returns a Float64 to be compared at 0.
  * Not specific State targeted
  * State don't necessarily keep track of evals
  * Evals are checked only for pb.A being a LinearOperator
 
- Warning:
- * optimality_check does not necessarily fill in the State.
  """
 mutable struct LinearOperatorStopping <: AbstractStopping
 
     # problem
     pb :: LinearSystem
-    # stopping criterion
-    optimality_check :: Function
     # Common parameters
     meta      :: AbstractStoppingMeta
-    # Contains the max number of evaluations
-    max_cntrs :: Dict
     # current state of the problem
     current_state :: AbstractState
     # Stopping of the main problem, or nothing
     main_stp :: Union{AbstractStopping, Nothing}
 
     function LinearOperatorStopping(pb             :: LinearSystem,
-                                    admissible     :: Function,
                                     current_state  :: AbstractState;
-                                    meta           :: AbstractStoppingMeta = StoppingMeta(),
-                                    max_cntrs      :: Dict = _init_max_counters_linear_operators(),
+                                    meta           :: AbstractStoppingMeta = StoppingMeta(max_cntrs = _init_max_counters_linear_operators()),
                                     main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                                     kwargs...)
 
         if !(isempty(kwargs))
-           meta = StoppingMeta(;kwargs...)
+           meta = StoppingMeta(;max_cntrs = _init_max_counters_linear_operators(), optimality_check = linear_system_check, kwargs...)
         end
 
-        return new(pb, admissible, meta, max_cntrs, current_state, main_stp)
+        return new(pb, meta, max_cntrs, current_state, main_stp)
     end
 end
 
@@ -102,15 +90,7 @@ function _init_max_counters_linear_operators(;nprod   :: Int64 = 20000,
  return cntrs
 end
 
-import Main.Stopping: _optimality_check, _resources_check!, start!, stop!, update_and_start!, update_and_stop!, fill_in!, reinit!, status
-
-function _optimality_check(stp  :: LinearOperatorStopping; kwargs...)
-
- optimality = stp.optimality_check(stp.pb, stp.current_state; kwargs...)
- stp.current_state.current_score = optimality
-
- return optimality
-end
+import Main.Stopping: _resources_check!, start!, stop!, update_and_start!, update_and_stop!, fill_in!, reinit!, status
 
 """
 _resources_check!: check if the optimization algorithm has exhausted the resources.
@@ -124,7 +104,7 @@ Note:
 function _resources_check!(stp    :: LinearOperatorStopping,
                            x      :: Union{Vector, Nothing})
 
-  max_cntrs = stp.max_cntrs
+  max_cntrs = stp.meta.max_cntrs
 
   # check all the entries in the counter
   max_f = false
@@ -159,10 +139,10 @@ opA = LinearOperator(A)
 mLO = LinearSystem(A, b)
 sLO = LinearSystem(sA, b)
 opLO = LinearSystem(opA, b)
-mLOstp = LinearOperatorStopping(mLO, linear_system_check!, GenericState(x0))
-sLOstp = LinearOperatorStopping(sLO, linear_system_check!, GenericState(x0))
+mLOstp = LinearOperatorStopping(mLO, GenericState(x0))
+sLOstp = LinearOperatorStopping(sLO, GenericState(x0))
 maxcn = _init_max_counters_linear_operators(nprod = 1)
-opLOstp = LinearOperatorStopping(opLO, linear_system_check!, GenericState(x0), max_cntrs = maxcn)
+opLOstp = LinearOperatorStopping(opLO, GenericState(x0), max_cntrs = maxcn)
 @test start!(mLOstp) == false
 @test start!(sLOstp) == false
 @test start!(opLOstp) == false
@@ -214,12 +194,12 @@ b    = A * xref
 #Our initial guess
 x0 = zeros(n)
 
-la_stop = LinearOperatorStopping(LinearSystem(A, b), linear_system_check!, GenericState(x0), max_iter = 150000, rtol = 1e-6)
+la_stop = LinearOperatorStopping(LinearSystem(A, b), GenericState(x0), max_iter = 150000, rtol = 1e-6)
 #Be careful using GenericState(x0) would not work here without forcing convert = true
 #in the update function. As the iterate will be an SparseVector to the contrary of initial guess.
 #Tangi: maybe start! should send a Warning for such problem !?
-sa_stop = LinearOperatorStopping(LinearSystem(sparse(A), b), linear_system_check!, GenericState(sparse(x0)), max_iter = 150000, rtol = 1e-6)
-op_stop = LinearOperatorStopping(LinearSystem(LinearOperator(A), b), linear_system_check!, GenericState(x0), max_iter = 150000, rtol = 1e-6)
+sa_stop = LinearOperatorStopping(LinearSystem(sparse(A), b), GenericState(sparse(x0)), max_iter = 150000, rtol = 1e-6)
+op_stop = LinearOperatorStopping(LinearSystem(LinearOperator(A), b), GenericState(x0), max_iter = 150000, rtol = 1e-6)
 
 @time RandomizedBlockKaczmarz(la_stop)
 @test status(la_stop) == :Optimal

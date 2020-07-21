@@ -411,8 +411,11 @@ end
 Note: By default returns Inf for Abstract/Generic Stopping.
 """
 function _optimality_check(stp  :: AbstractStopping; kwargs...)
- stp.current_state.current_score = Inf
- return Inf
+
+ optimality = stp.meta.optimality_check(stp.pb, stp.current_state; kwargs...)
+ stp.current_state.current_score = optimality
+
+ return optimality
 end
 
 """

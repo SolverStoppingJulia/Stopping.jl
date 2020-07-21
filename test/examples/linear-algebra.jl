@@ -39,9 +39,6 @@ mutable struct LinearAlgebraStopping <: AbstractStopping
         # problem
         pb :: LinearAlgebraProblem
 
-        # stopping criterion
-        optimality_check :: Function
-
         # Common parameters
         meta :: AbstractStoppingMeta
 
@@ -52,32 +49,22 @@ mutable struct LinearAlgebraStopping <: AbstractStopping
         main_stp :: Union{AbstractStopping, Nothing}
 
         function LinearAlgebraStopping(pb               :: LinearAlgebraProblem,
-                                       optimality_check :: Function,
                                        current_state    :: AbstractState; kwargs...)
-         return new(pb, linear_system_check!, StoppingMeta(; kwargs...), la_state, nothing)
+         return new(pb, linear_system_check!, StoppingMeta(;optimality_check = linear_system_check, kwargs...), la_state, nothing)
         end
 end
 
-import Stopping._optimality_check
-
-function _optimality_check(stp  :: LinearAlgebraStopping; kwargs...)
-
- optimality = stp.optimality_check(stp.pb, stp.current_state; kwargs...)
-
- return optimality
-end
-
-function linear_system_check!(pb    :: LinearAlgebraProblem,
-                              state :: AbstractState; kwargs...)
+function linear_system_check(pb    :: LinearAlgebraProblem,
+                             state :: AbstractState; kwargs...)
  return norm(pb.A * state.x - pb.b)
 end
 
-@test linear_system_check!(la_pb, la_state) == 0.0
+@test linear_system_check(la_pb, la_state) == 0.0
 update!(la_state, x = x0)
-@test linear_system_check!(la_pb, la_state) != 0.0
+@test linear_system_check(la_pb, la_state) != 0.0
 
-la_stop = LinearAlgebraStopping(la_pb, linear_system_check!, la_state,
-                                max_iter = 150000, rtol = 1e-6)
+la_stop = LinearAlgebraStopping(la_pb, la_state,
+                                max_iter = 150000, rtol = 1e-6, optimality_check = linear_system_check)
 
 """
 Randomized block Kaczmarz

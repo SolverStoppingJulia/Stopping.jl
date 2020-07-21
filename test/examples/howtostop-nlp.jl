@@ -28,7 +28,7 @@ x1 = ones(5)
 #optimality_check which is the function later used to compute the score.
 #Recall that the score is then tested at 0, to declare optimality.
 #Stopping provides a default KKT function.
-stop_nlp = NLPStopping(nlp, (x,y) -> KKT(x,y), nlp_at_x)
+stop_nlp = NLPStopping(nlp, nlp_at_x, optimality_check = (x,y) -> KKT(x,y))
 
 #Another approach is to use the lazy way:
 stop_nlp_lazy = NLPStopping(nlp2) #use nlp.meta.x0 as initial point
@@ -62,15 +62,15 @@ fill_in!(stop_nlp_lazy, x1)
 #the evaluations of each function.
 #Similarly the NLPStopping has a dictionary keeping all the maximum number of
 #evaluations:
-@test typeof(stop_nlp.max_cntrs) <: Dict
+@test typeof(stop_nlp.meta.max_cntrs) <: Dict
 #For instance the limit in evaluations of objective and gradient:
-@test stop_nlp.max_cntrs[:neval_obj] == 20000
-@test stop_nlp.max_cntrs[:neval_grad] == 20000
+@test stop_nlp.meta.max_cntrs[:neval_obj] == 20000
+@test stop_nlp.meta.max_cntrs[:neval_grad] == 20000
 
 #Limit can be set using _init_max_counters function:
-stop_nlp.max_cntrs = Stopping._init_max_counters(obj = 3, grad = 0, hess = 0)
-@test stop_nlp.max_cntrs[:neval_obj] == 3
-@test stop_nlp.max_cntrs[:neval_grad] == 0
+stop_nlp.meta.max_cntrs = Stopping._init_max_counters(obj = 3, grad = 0, hess = 0)
+@test stop_nlp.meta.max_cntrs[:neval_obj] == 3
+@test stop_nlp.meta.max_cntrs[:neval_grad] == 0
 
 OK = update_and_stop!(stop_nlp, evals = stop_nlp.pb.counters)
 @test OK == true
@@ -93,7 +93,7 @@ optimality_fct_test = (x,y;a = 1.0) -> a
 
 #In this case, the optimality_check function used to compute the score may
 #depend on a parameter (algorithm-dependent for instance)
-stop_nlp_2 = NLPStopping(nlp, optimality_fct_test, nlp_at_x)
+stop_nlp_2 = NLPStopping(nlp, nlp_at_x, optimality_check = optimality_fct_test)
 fill_in!(stop_nlp_2, x0)
 
 OK = stop!(stop_nlp_2, a = 0.0)
