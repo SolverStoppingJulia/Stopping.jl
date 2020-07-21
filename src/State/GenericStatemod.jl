@@ -6,11 +6,18 @@ Methods: update!, reinit!
 A generic State to describe the state of a problem at a point x.
 
 Tracked data include:
- - x : our current iterate
- - current_time  : time
- - current_score : score
+ - x                   : current iterate
+ - current_time [opt]  : time
+ - current_score [opt] : score
 
-Note: by default, unknown entries are set to nothing.
+Constructor: `GenericState(:: AbstractVector; current_time :: FloatVoid = nothing, current_score :: FloatVoid = nothing)`
+
+Note: By default, unknown entries are set to *nothing*.
+
+Examples:
+GenericState(x)
+GenericState(x, current\\_time = 1.0)
+GenericState(x, current\\_score = 1.0)
 """
 mutable struct GenericState <: AbstractState
 
@@ -32,11 +39,18 @@ end
 """
 update!: generic update function for the State
 
-The function compare the kwargs and the entries of the State.
-If the type of the kwargs is the same as the entry or the entry was nothing, then
+`update!(:: AbstractState; convert = false, kwargs...)`
+
+The function compares the kwargs and the entries of the State.
+If the type of the kwargs is the same as the entry or the entry is *nothing*, then
 it is updated.
 
-Set convert to true, to update even incompatible types.
+Set kargs *convert* to true to update even incompatible types.
+
+Examples:
+update!(state1)
+update!(state1, current\\_time = 2.0)
+update!(state1, convert = true, current\\_time = 2.0)
 """
 function update!(stateatx :: AbstractState; convert = false, kwargs...)
 
@@ -52,10 +66,24 @@ function update!(stateatx :: AbstractState; convert = false, kwargs...)
 end
 
 """
-reinit!: function that set all the entries at void except the mandatory x
+reinit!: function that set all the entries at *nothing* except the mandatory *x*.
 
-Note: If x is given as a keyword argument it will be prioritized over
-the argument x.
+`reinit!(:: AbstractState, :: Iterate; kwargs...)`
+
+Note: If *x* is given as a kargs it will be prioritized over
+the second argument.
+
+Examples:
+reinit!(state2, zeros(2))
+reinit!(state2, zeros(2), current_time = 1.0)
+
+There is a shorter version of reinit! reusing the *x* in the state
+
+`reinit!(:: AbstractState; kwargs...)`
+
+Examples:
+reinit!(state2)
+reinit!(state2, current_time = 1.0)
 """
 function reinit!(stateatx :: AbstractState, x :: Iterate; kwargs...)
 
@@ -66,20 +94,17 @@ function reinit!(stateatx :: AbstractState, x :: Iterate; kwargs...)
  return update!(stateatx; x=x, kwargs...)
 end
 
-"""
-reinit!: shorter version of reinit! reusing the x in the state
-
-Note: If x is given as a keyword argument it will be prioritized over
-the argument x.
-"""
 function reinit!(stateatx :: AbstractState; kwargs...)
  return reinit!(stateatx, stateatx.x; kwargs...)
 end
 
 """
-_domain_check: verifies is there is a NaN in the State entries
+\\_domain\\_check: returns true if there is a NaN in the State entries, false otherwise
 
-return true if a NaN has been found
+`_domain_check(:: AbstractState)`
+
+Examples:
+\\_domain\\_check(state1)
 """
 function _domain_check(stateatx :: AbstractState)
  domainerror = false

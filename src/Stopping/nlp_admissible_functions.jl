@@ -3,7 +3,11 @@ import NLPModels: grad, cons, jac
 """
 unconstrained: return the infinite norm of the gradient of the objective function
 
+`unconstrained_check( :: AbstractNLPModel, :: NLPAtX; pnorm :: Float64 = Inf, kwargs...)`
+
 required: state.gx (filled if nothing)
+
+See also *unconstrained2nd_check*, *optim_check_bounded*, *KKT*
 """
 function unconstrained_check(pb    :: AbstractNLPModel,
                              state :: NLPAtX;
@@ -23,7 +27,11 @@ end
 unconstrained 2nd: check the norm of the gradient and the smallest
                    eigenvalue of the hessian.
 
-required: state.gx, state.Hx (filled if nothing)
+`unconstrained2nd_check( :: AbstractNLPModel, :: NLPAtX; pnorm :: Float64 = Inf, kwargs...)`
+
+Note: required are *state.gx*, *state.Hx* (filled if *nothing*).
+
+See also *unconstrained_check*, *optim_check_bounded*, *KKT*
 """
 function unconstrained2nd_check(pb    :: AbstractNLPModel,
                                 state :: NLPAtX;
@@ -44,9 +52,13 @@ function unconstrained2nd_check(pb    :: AbstractNLPModel,
 end
 
 """
-optim_check_bounded: gradient of the objective function projected
+optim\\_check\\_bounded: gradient of the objective function projected
 
-required: state.gx (filled if void)
+`optim_check_bounded( :: AbstractNLPModel, :: NLPAtX; pnorm :: Float64 = Inf, kwargs...)`
+
+Note: required is *state.gx* (filled if *nothing*)
+
+See also *unconstrained_check*, *unconstrained2nd_check*, *KKT*
 """
 function optim_check_bounded(pb    :: AbstractNLPModel,
                              state :: NLPAtX;
@@ -116,9 +128,11 @@ end
 """
 KKT: verifies the KKT conditions
 
-required: state.gx
-+ if bounds: state.mu
-+ if constraints: state.cx, state.Jx, state.lambda
+`KKT( :: AbstractNLPModel, :: NLPAtX; pnorm :: Float64 = Inf, kwargs...)`
+
+Note: *state.gx* is mandatory + if bounds *state.mu* + if constraints *state.cx*, *state.Jx*, *state.lambda*.
+
+See also *unconstrained_check*, *unconstrained2nd_check*, *optim_check_bounded*
 """
 function KKT(pb    :: AbstractNLPModel,
              state :: NLPAtX;
@@ -128,13 +142,13 @@ function KKT(pb    :: AbstractNLPModel,
     #Check the gradient of the Lagrangian
     gLagx      = _grad_lagrangian(pb, state)
     #Check the complementarity condition for the bounds
-    res_bounds = _sign_multipliers_bounds(pb, state)
+    dual_res_bounds = _sign_multipliers_bounds(pb, state)
     #Check the complementarity condition for the constraints
     res_nonlin = _sign_multipliers_nonlin(pb, state)
     #Check the feasibility
     feas       = _feasibility(pb, state)
 
-    res = vcat(gLagx, feas, res_bounds, res_nonlin)
+    res = vcat(gLagx, feas, dual_res_bounds, res_nonlin)
 
     return norm(res, pnorm)
 end

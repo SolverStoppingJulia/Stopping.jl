@@ -3,32 +3,38 @@ Type: NLPAtX
 
 Methods: update!, reinit!
 
-NLPAtX contains the information concerning a nonlinear problem at
-the iteration x.
+NLPAtX contains the information concerning a nonlinear optimization model at
+the iterate x.
 
 min_{x ∈ ℜⁿ} f(x) subject to lcon <= c(x) <= ucon, lvar <= x <= uvar.
 
-Basic information is:
- - x : the current candidate for solution to our original problem
- - fx : which is the funciton evaluation at x
- - gx : which is the gradient evaluation at x
- - Hx : which is the hessian representation at x
+Tracked data include:
+ - x : the current iterate
+ - fx [opt] : function evaluation at x
+ - gx [opt] : gradient evaluation at x
+ - Hx [opt] : hessian evaluation at x
 
- - mu : Lagrange multiplier of the bounds constraints
+ - mu [opt] : Lagrange multiplier of the bounds constraints
 
- - cx : evaluation of the constraint function at x
- - Jx : jacobian matrix of the constraint function at x
+ - cx [opt] : evaluation of the constraint function at x
+ - Jx [opt] : jacobian matrix of the constraint function at x
  - lambda : Lagrange multiplier of the constraints
 
- - current_time  : time
- - current_score : score
- - evals : number of evaluations of the function (import the type NLPModels.Counters)
+ - current_time [opt]  : time
+ - current_score [opt] : score
+ - evals [opt] : number of evaluations of the function (import the type NLPModels.Counters)
 
-Note: * by default, unknown entries are set to nothing (except evals).
-      * All these information (except for x and lambda) are optionnal and need to be update when
-        required. The update is done trhough the update! function.
-      * x and lambda are mandatory entries. If no constraints lambda = [].
-      * The constructor check the size of the entries.
+Constructor:
+`NLPAtX(:: AbstractVector, :: AbstractVector; fx :: FloatVoid = nothing, gx :: Iterate = nothing, Hx :: MatrixType = nothing, mu :: Iterate = nothing, cx :: Iterate = nothing, Jx :: MatrixType = nothing, current_time :: FloatVoid = nothing, current_score :: FloatVoid = nothing, evals :: Counters = Counters())`
+
+`NLPAtX(:: AbstractVector; fx :: FloatVoid = nothing, gx :: Iterate = nothing, Hx :: MatrixType = nothing, mu :: Iterate = nothing, current_time :: FloatVoid = nothing, current_score :: FloatVoid = nothing, evals :: Counters = Counters())`
+
+Note:
+      - By default, unknown entries are set to *nothing* (except evals).
+      - All these information (except for *x* and *lambda*) are optionnal and need to be update when
+        required. The update is done through the update! function.
+      - *x* and *lambda* are mandatory entries. If no constraints `lambda = []`.
+      - The constructor check the size of the entries.
 """
 mutable struct 	NLPAtX <: AbstractState
 
@@ -69,9 +75,6 @@ mutable struct 	NLPAtX <: AbstractState
  end
 end
 
-"""
-An additional constructor for unconstrained problems
-"""
 function NLPAtX(x             :: AbstractVector;
                 fx            :: FloatVoid    = nothing,
                 gx            :: Iterate      = nothing,
@@ -91,8 +94,12 @@ end
 """
 reinit!: function that set all the entries at void except the mandatory x
 
-Warning: if x, lambda or evals are given as a keyword argument they will be
-prioritized over the existing x, lambda and the default Counters.
+`reinit!(:: NLPAtX, x :: AbstractVector, l :: AbstractVector; kwargs...)`
+
+`reinit!(:: NLPAtX; kwargs...)`
+
+Note: if *x*, *lambda* or *evals* are given as keyword arguments they will be
+prioritized over the existing *x*, *lambda* and the default *Counters*.
 """
 function reinit!(stateatx :: NLPAtX, x :: AbstractVector, l :: AbstractVector; kwargs...)
 
@@ -102,18 +109,15 @@ function reinit!(stateatx :: NLPAtX, x :: AbstractVector, l :: AbstractVector; k
 
  return update!(stateatx; x=x, lambda = l, evals = Counters(), kwargs...)
 end
-"""
-reinit!: short version of reinit! reusing the x in the state
 
-Warning: if x, lambda or evals are given as a keyword argument they will be
-prioritized over the existing x, lambda and the default Counters.
-"""
 function reinit!(stateatx :: NLPAtX; kwargs...)
  return reinit!(stateatx, stateatx.x, stateatx.lambda; kwargs...)
 end
 
 """
 _size_check!: check the size of the entries in the State
+
+`_size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)`
 """
 function _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
 

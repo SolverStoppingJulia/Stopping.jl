@@ -1,32 +1,47 @@
 """
  Type: GenericStopping
- Methods: start!, stop!, update_and_start!, update_and_stop!, fill_in!, reinit!, status
 
- A generic stopping criterion to solve instances (pb) with respect to some
+ Methods: start!, stop!, update\\_and\\_start!, update\\_and\\_stop!, fill\\_in!, reinit!, status
+
+ A generic Stopping to solve instances with respect to some
  optimality conditions. Optimality is decided by computing a score, which is then
  tested to zero.
 
- Besides optimality conditions, we consider classical emergency exit:
- - domain error        (for instance: NaN in x)
- - unbounded problem   (not implemented)
- - unbounded x         (x is too large)
- - tired problem       (time limit attained)
- - resources exhausted (not implemented)
- - stalled problem     (not implemented)
- - iteration limit     (maximum number of iteration (i.e. nb of stop) attained)
- - main_pb limit       (tired or resources of main problem exhausted)
-
- Input :
-    - pb         : A problem
-    - state      : The information relative to the problem, see GenericState
-    - (opt) meta : Metadata relative to stopping criterion.
-    - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
+ Tracked data include:
+- pb         : A problem
+- state      : The information relative to the problem, see *GenericState*
+- (opt) meta : Metadata relative to a stopping criterion, see *StoppingMeta*.
+- (opt) main_stp : Stopping of the main loop in case we consider a Stopping
                        of a subproblem.
-                       If not a subproblem, then nothing.
+                       If not a subproblem, then *nothing*.
+
+ Constructor: `GenericStopping(:: Any, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), main_stp :: Union{AbstractStopping, Nothing} = nothing, kwargs...)`
 
  Note: Metadata can be provided by the user or created with the Stopping
-       constructor with kwargs. If a specific StoppingMeta is given and
+       constructor via kwargs. If a specific StoppingMeta is given and
        kwargs are provided, the kwargs have priority.
+
+ Examples:
+ GenericStopping(pb, GenericState(ones(2)), rtol = 1e-1)
+
+ Besides optimality conditions, we consider classical emergency exit:
+       - domain error        (for instance: NaN in x)
+       - unbounded problem   (not implemented)
+       - unbounded x         (x is too large)
+       - tired problem       (time limit attained)
+       - resources exhausted (not implemented)
+       - stalled problem     (not implemented)
+       - iteration limit     (maximum number of iteration (i.e. nb of stop) attained)
+       - main_pb limit       (tired or resources of main problem exhausted)
+
+ There is an additional default constructor which creates a Stopping with a default State.
+
+ `GenericStopping(:: Any, :: Iterate; kwargs...)`
+
+ Note: Keywords arguments are forwarded to the classical constructor.
+
+ Examples:
+ GenericStopping(pb, x0, rtol = 1e-1)
 """
 mutable struct GenericStopping <: AbstractStopping
 
@@ -56,21 +71,28 @@ mutable struct GenericStopping <: AbstractStopping
     end
 end
 
-"""
-GenericStopping(pb, x): additional default constructor
-The function creates a Stopping with a default State.
-
-Keywords arguments are forwarded to the classical constructor.
-"""
 function GenericStopping(pb :: Any, x :: Iterate; kwargs...)
  return GenericStopping(pb, GenericState(x); kwargs...)
 end
 
 """
-update_and_start!: Update the values in the State and initializes the Stopping
-Returns the optimity status of the problem.
+fill_in!: fill in the unspecified values of the AbstractState.
 
-Kwargs are forwarded to the update!(stp.current_state)
+`fill_in!(:: AbstractStopping, x :: Iterate)`
+
+Note: NotImplemented for Abstract/Generic-Stopping.
+"""
+function fill_in!(stp :: AbstractStopping, x :: Iterate)
+ return throw(error("NotImplemented function"))
+end
+
+"""
+update\\_and\\_start!: update the values in the State and initialize the Stopping.
+Returns the optimality status of the problem as a boolean.
+
+`update_and_start!(:: AbstractStopping; kwargs...)`
+
+ Note: Kwargs are forwarded to the *update!* call.
 """
 function update_and_start!(stp :: AbstractStopping; kwargs...)
 
@@ -81,22 +103,15 @@ function update_and_start!(stp :: AbstractStopping; kwargs...)
 end
 
 """
-fill_in!: A function that fill in the unspecified values of the AbstractState.
-
-NotImplemented for Abstract/Generic-Stopping.
-"""
-function fill_in!(stp :: AbstractStopping, x :: Iterate)
- return throw(error("NotImplemented function"))
-end
-
-"""
  start!: update the Stopping and return a boolean true if we must stop.
+
+ `start!(:: AbstractStopping; kwargs...)`
 
  Purpose is to know if there is a need to even perform an optimization algorithm
  or if we are at an optimal solution from the beginning.
 
- Note: * start! initialize the start_time (if not done before) and meta.optimality0.
-       * Keywords argument are sent to the _optimality_check!
+ Note: - *start!* initialize the start\\_time (if not done before) and *meta.optimality0*.
+       - Keywords argument are sent to the *\\_optimality\\_check!* call.
 """
 function start!(stp :: AbstractStopping; kwargs...)
 
@@ -130,10 +145,12 @@ function start!(stp :: AbstractStopping; kwargs...)
 end
 
 """
- reinit!: Reinitialize the meta data.
+ reinit!: reinitialize the MetaData in the Stopping.
 
- If rstate is set as true it reinitialize the current_state
- (with the kwargs)
+ `reinit!(:: AbstractStopping; rstate :: Bool = false, kwargs...)`
+
+ Note: If *rstate* is set as true it reinitializes the current State
+ (with the kwargs).
 """
 function reinit!(stp :: AbstractStopping; rstate :: Bool = false, kwargs...)
 
@@ -165,10 +182,12 @@ function reinit!(stp :: AbstractStopping; rstate :: Bool = false, kwargs...)
 end
 
 """
-update_and_stop!: update the values in the State and returns the optimality status
-of the problem.
+update\\_and\\_stop!: update the values in the State and
+return the optimality status of the problem as a boolean.
 
-kwargs are forwarded to the update!(stp.current_state)
+`update_and_stop!(stp :: AbstractStopping; kwargs...)`
+
+Note: Kwargs are forwarded to the *update!* call.
 """
 function update_and_stop!(stp :: AbstractStopping; kwargs...)
 
@@ -181,11 +200,13 @@ end
 """
 stop!: update the Stopping and return a boolean true if we must stop.
 
-serves the same purpose as start! in an algorithm, tells us if we
+`stop!(:: AbstractStopping; kwargs...)`
+
+It serves the same purpose as *start!* in an algorithm; telling us if we
 stop the algorithm (because we have reached optimality or we loop infinitely,
 etc).
 
-Keywords argument are sent to the _optimality_check!
+Note: Kwargs are sent to the *\\_optimality\\_check!* call.
 """
 function stop!(stp :: AbstractStopping; kwargs...)
 
@@ -225,10 +246,14 @@ function stop!(stp :: AbstractStopping; kwargs...)
 end
 
 """
-_add_stop!: increment a counter of stop.
+\\_add\\_stop!: increment a counter of stop.
 
-Fonction called everytime stop! is called. In theory should be called once every
+`_add_stop!(:: AbstractStopping)`
+
+Fonction called everytime *stop!* is called. In theory should be called once every
 iteration of an algorithm.
+
+Note: update *meta.nb\\_of\\_stop*.
 """
 function _add_stop!(stp :: AbstractStopping)
 
@@ -238,8 +263,12 @@ function _add_stop!(stp :: AbstractStopping)
 end
 
 """
-_iteration_check!: check if the optimization algorithm has reached the iteration
+\\_iteration\\_check!: check if the optimization algorithm has reached the iteration
 limit.
+
+`_iteration_check!(:: AbstractStopping,  :: Iterate)`
+
+Note: Compare *meta.iteration_limit* with *meta.nb\\_of\\_stop*.
 """
 function _iteration_check!(stp :: AbstractStopping,
                            x   :: Iterate)
@@ -252,9 +281,11 @@ function _iteration_check!(stp :: AbstractStopping,
 end
 
 """
-_stalled_check!: check if the optimization algorithm is stalling.
+\\_stalled\\_check!: check if the optimization algorithm is stalling.
 
-NotImplemented: false by default.
+`_stalled_check!(:: AbstractStopping, :: Iterate)`
+
+Note: By default *meta.stalled* is false for Abstract/Generic Stopping.
 """
 function _stalled_check!(stp :: AbstractStopping,
                          x   :: Iterate)
@@ -265,7 +296,12 @@ function _stalled_check!(stp :: AbstractStopping,
 end
 
 """
-_tired_check!: check if the optimization algorithm has been running for too long.
+\\_tired\\_check!: check if the optimization algorithm has been running for too long.
+
+`_tired_check!(:: AbstractStopping, :: Iterate; time_t :: Number = NaN)`
+
+Note: - Return false if *time_t* is NaN (by default).
+  - Update *meta.tired*.
 """
 function _tired_check!(stp    :: AbstractStopping,
                        x      :: Iterate;
@@ -286,9 +322,11 @@ function _tired_check!(stp    :: AbstractStopping,
 end
 
 """
-_resources_check!: check if the optimization algorithm has exhausted the resources.
+\\_resources\\_check!: check if the optimization algorithm has exhausted the resources.
 
-NotImplemented: false by default.
+`_resources_check!(:: AbstractStopping, :: Iterate)`
+
+Note: By default *meta.resources* is false for Abstract/Generic Stopping.
 """
 function _resources_check!(stp    :: AbstractStopping,
                            x      :: Iterate)
@@ -302,9 +340,12 @@ function _resources_check!(stp    :: AbstractStopping,
 end
 
 """
-_main_pb_check!: check the resources and the time of the upper problem (if main_stp != nothing)
-By default stp.meta.main_pb = false
-Modify the meta of the main_stp
+\\_main\\_pb\\_check!: check the resources and the time of the upper problem (if main_stp != nothing).
+
+`_main_pb_check!(:: AbstractStopping, :: Iterate)`
+
+Note: - Modify the meta of the *main_stp*.
+      - By default `meta.main_pb = false`.
 """
 function _main_pb_check!(stp    :: AbstractStopping,
                          x      :: Iterate)
@@ -331,7 +372,11 @@ function _main_pb_check!(stp    :: AbstractStopping,
 end
 
 """
-_unbounded_check!: check if x gets too big
+\\_unbounded\\_check!: check if x gets too big.
+
+`_unbounded_check!(:: AbstractStopping, :: Iterate)`
+
+Note: compare ||x|| with *meta.unbounded_x* and update *meta.unbounded*.
 """
 function _unbounded_check!(stp  :: AbstractStopping,
                            x    :: Iterate)
@@ -344,9 +389,11 @@ function _unbounded_check!(stp  :: AbstractStopping,
 end
 
 """
-_unbounded_problem!: check if problem relative informations are unbounded
+\\_unbounded\\_problem!: check if problem relative informations are unbounded
 
-NotImplemented: false by default.
+`_unbounded_problem_check!(:: AbstractStopping, :: Iterate)`
+
+Note: *meta.unbounded_pb* is false by default.
 """
 function _unbounded_problem_check!(stp  :: AbstractStopping,
                                    x    :: Iterate)
@@ -357,9 +404,11 @@ function _unbounded_problem_check!(stp  :: AbstractStopping,
 end
 
 """
-_optimality_check: compute the optimality score.
+\\_optimality\\_check: compute the optimality score.
 
-NotImplemented: Inf by default.
+`_optimality_check(:: AbstractStopping; kwargs...)`
+
+Note: By default returns Inf for Abstract/Generic Stopping.
 """
 function _optimality_check(stp  :: AbstractStopping; kwargs...)
  stp.current_state.current_score = Inf
@@ -367,8 +416,12 @@ function _optimality_check(stp  :: AbstractStopping; kwargs...)
 end
 
 """
-_null_test: check if the score is close enough to zero
+\\_null\\_test: check if the score is close enough to zero
 (up to some precisions found in the meta).
+
+`_null_test(:: AbstractStopping, :: Number)`
+
+Note: the second argument is compared with `meta.tol_check(meta.atol, meta.rtol, meta.optimality0)`.
 """
 function _null_test(stp  :: AbstractStopping, optimality :: Number)
 
@@ -381,20 +434,27 @@ end
 
 """
 status: returns the status of the algorithm:
-    - Optimal : if we reached an optimal solution
-    - Unbounded : if the problem doesn't have a lower bound
-    - Stalled : if algorithm is stalling
-    - IterationLimit : if we did too  many iterations of the algorithm
-    - Tired : if the algorithm takes too long
-    - ResourcesExhausted: if we used too many ressources,
-                          i.e. too many functions evaluations
-    - ResourcesOfMainProblemExhausted: in the case of a substopping, ResourcesExhausted or Tired
-    for the main stopping.
-    - Infeasible : default return value, if nothing is done the problem is
-                   considered infeasible
-    - DomainError : there is a NaN somewhere
 
-Note: set keyword argument list to true, to get an Array with all the status.
+`status(:: AbstractStopping; list = false)`
+
+The different status are:
+- Optimal: reached an optimal solution.
+- Unbounded: current iterate too large in norm.
+- UnboundedPb: unbouned problem.
+- Stalled: stalled algorithm.
+- IterationLimit: too many iterations of the algorithm.
+- Tired: algorithm too slow.
+- ResourcesExhausted: too many ressources used,
+                          i.e. too many functions evaluations.
+- ResourcesOfMainProblemExhausted: in the case of a substopping, ResourcesExhausted or Tired
+  for the main stopping.
+- Infeasible: default return value, if nothing is done the problem is
+               considered feasible.
+- DomainError: there is a NaN somewhere.
+
+Note:
+  - Set keyword argument *list* to true, to get an Array with all the status.
+  - The different status correspond to boolean values in the MetaData, see *StoppingMeta*.
 """
 function status(stp :: AbstractStopping; list = false)
 

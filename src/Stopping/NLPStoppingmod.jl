@@ -1,26 +1,36 @@
 """
-Type: NLPStopping (specialization of GenericStopping)
-Methods: start!, stop!, update_and_start!, update_and_stop!, fill_in!, reinit!, status
+Type: NLPStopping
 
-Stopping structure for non-linear programming problems using NLPModels.
-    Input :
-       - pb         : an AbstractNLPModel
-       - optimality_check : a stopping criterion through an admissibility function
-       - state      : The information relative to the problem, see GenericState
-       - max_cntrs  : Dict contains the max number of evaluations
-       - (opt) meta : Metadata relative to stopping criterion.
-       - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
+Methods: start!, stop!, update\\_and\\_start!, update\\_and\\_stop!, fill_in!, reinit!, status
+KKT, unconstrained\\_check, unconstrained2nd\\_check, optim\\_check\\_bounded
+
+Specialization of GenericStopping. Stopping structure for non-linear programming problems using NLPModels.
+
+Attributes:
+- pb         : an AbstractNLPModel
+- optimality_check : a stopping criterion via an admissibility function
+- state      : The information relative to the problem, see GenericState
+- max_cntrs  : Dict contains the maximum number of evaluations
+- (opt) meta : Metadata relative to stopping criterion, see *StoppingMeta*.
+- (opt) main_stp : Stopping of the main loop in case we consider a Stopping
                           of a subproblem.
                           If not a subproblem, then nothing.
 
- Note:
- * optimality_check : takes two inputs (AbstractNLPModel, NLPAtX)
- and returns a Float64 to be compared at 0.
- * designed for NLPAtX State. Constructor checks that the State has the
- required entries.
+`NLPStopping(:: AbstractNLPModel, :: Function, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), max_cntrs :: Dict = _init_max_counters(), main_stp :: Union{AbstractStopping, Nothing} = nothing, kwargs...)`
 
- Warning:
- * optimality_check does not necessarily fill in the State.
+ Note:
+- *optimality_check* takes two inputs (*AbstractNLPModel*, *NLPAtX*)
+ and returns a *Number* to be compared to *0*.
+- designed for *NLPAtX* State. Constructor checks that the State has the
+ required entries.
+- *optimality_check* does not necessarily fill in the State.
+
+ There is an additional default constructor creating a Stopping where the State is by default and the
+ optimality function is the function *KKT()*.
+
+ `NLPStopping(pb :: AbstractNLPModel; kwargs...)`
+
+ Note: Kwargs are forwarded to the classical constructor.
  """
 mutable struct NLPStopping <: AbstractStopping
 
@@ -71,13 +81,6 @@ mutable struct NLPStopping <: AbstractStopping
 
 end
 
-"""
-NLPStopping(pb): additional default constructor
-The function creates a Stopping where the State is by default and the
-optimality function is the function KKT().
-
-key arguments are forwarded to the classical constructor.
-"""
 function NLPStopping(pb :: AbstractNLPModel; kwargs...)
  #Create a default NLPAtX
  nlp_at_x = NLPAtX(pb.meta.x0)
@@ -87,8 +90,10 @@ function NLPStopping(pb :: AbstractNLPModel; kwargs...)
 end
 
 """
-_init_max_counters(): initialize the maximum number of evaluations on each of
+\\_init\\_max\\_counters(): initialize the maximum number of evaluations on each of
                         the functions present in the Counters (NLPModels).
+
+`_init_max_counters(; obj :: Int64 = 20000, grad :: Int64 = 20000, cons :: Int64 = 20000, jcon :: Int64 = 20000, jgrad :: Int64 = 20000, jac :: Int64 = 20000, jprod :: Int64 = 20000, jtprod :: Int64 = 20000, hess :: Int64 = 20000, hprod :: Int64 = 20000, jhprod :: Int64 = 20000, sum :: Int64 = 20000*11)`
 """
 function _init_max_counters(; obj    :: Int64 = 20000,
                               grad   :: Int64 = 20000,
@@ -114,9 +119,11 @@ function _init_max_counters(; obj    :: Int64 = 20000,
 end
 
 """
-_init_max_counters_NLS(): initialize the maximum number of evaluations on each of
+\\_init\\_max\\_counters\\_NLS(): initialize the maximum number of evaluations on each of
                           the functions present in the NLSCounters (NLPModels).
 https://github.com/JuliaSmoothOptimizers/NLPModels.jl/blob/master/src/NLSModels.jl
+
+`_init_max_counters_NLS(; residual :: Int = 20000, jac_residual :: Int = 20000, jprod_residual :: Int = 20000, jtprod_residual :: Int = 20000, hess_residual :: Int = 20000, jhess_residual :: Int = 20000, hprod_residual :: Int = 20000, kwargs...)`
 """
 function _init_max_counters_NLS(; residual        :: Int = 20000,
                                   jac_residual    :: Int = 20000,
@@ -124,7 +131,7 @@ function _init_max_counters_NLS(; residual        :: Int = 20000,
                                   jtprod_residual :: Int = 20000,
                                   hess_residual   :: Int = 20000,
                                   jhess_residual  :: Int = 20000,
-                                  hprod_residual :: Int = 20000,
+                                  hprod_residual  :: Int = 20000,
                                   kwargs...)
 
   cntrs_nlp = _init_max_counters(;kwargs...)
@@ -140,7 +147,9 @@ function _init_max_counters_NLS(; residual        :: Int = 20000,
 end
 
 """
-fill_in!: a function that fill in the required values in the State
+fill_in!: (NLPStopping version) a function that fill in the required values in the *NLPAtX*
+
+`fill_in!( :: NLPStopping, :: Iterate; fx :: Iterate = nothing, gx :: Iterate = nothing, Hx :: Iterate = nothing, cx :: Iterate = nothing, Jx :: Iterate = nothing, lambda :: Iterate = nothing, mu :: Iterate = nothing, matrix_info :: Bool = true, kwargs...)`
 """
 function fill_in!(stp  :: NLPStopping,
                   x    :: Iterate;
@@ -186,16 +195,17 @@ function fill_in!(stp  :: NLPStopping,
 end
 
 """
-_resources_check!: check if the optimization algorithm has exhausted the resources.
+\\_resources\\_check!: check if the optimization algorithm has exhausted the resources.
                    This is the NLP specialized version that takes into account
                    the evaluation of the functions following the sum_counters
                    structure from NLPModels.
 
+`_resources_check!(:: NLPStopping, :: Iterate)`
+
 Note:
-* function uses counters in stp.pb, and update the counters in the state.
-* function is compatible with Counters, NLSCounters, and any type whose entries
-match the entries in stp.max_cntrs.
-* all the problems have an entry "pb.counters" and a function "sum_counters(pb)"
+- function uses counters in *stp.pb*, and update the counters in the state.
+- function is compatible with *Counters*, *NLSCounters*, and any type whose entries match the entries of *max_cntrs*.
+- all the NLPModels have an attribute *counters* and a function *sum_counters(nlp)*.
 """
 function _resources_check!(stp    :: NLPStopping,
                            x      :: Iterate)
@@ -234,12 +244,14 @@ function _resources_check!(stp    :: NLPStopping,
 end
 
 """
-_unbounded_problem_check!: This is the NLP specialized version that takes into account
+\\_unbounded\\_problem\\_check!: This is the NLP specialized version that takes into account
                    that the problem might be unbounded if the objective or the
                    constraint function are unbounded.
 
-Note: * evaluate the objective function if state.fx is void.
-      * evaluate the constraint function if state.cx is void.
+`_unbounded_problem_check!(:: NLPStopping, :: Iterate)`
+
+Note: - evaluate the objective function if *state.fx* is *nothing* and store in *state*.
+      - evaluate the constraint function if *state.cx* is *nothing* and store in *state*.
 """
 function _unbounded_problem_check!(stp  :: NLPStopping,
                                    x    :: Iterate)
@@ -263,10 +275,12 @@ function _unbounded_problem_check!(stp  :: NLPStopping,
 end
 
 """
-_optimality_check: compute the optimality score.
+\\_optimality\\_check: compute the optimality score.
+
+`_optimality_check(:: NLPStopping; kwargs...)`
 
 This is the NLP specialized version that takes into account the structure of the
-NLPStopping where the optimality_check function is an input.
+*NLPStopping* where the *optimality_check* function is an attribute of the Stopping.
 """
 function _optimality_check(stp  :: NLPStopping; kwargs...)
 
