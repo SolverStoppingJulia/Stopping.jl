@@ -75,8 +75,8 @@ include("State/GenericStatemod.jl")
 include("State/LSAtTmod.jl")
 include("State/NLPAtXmod.jl")
 
-export AbstractState, GenericState, update!
-export LSAtT, copy, update!
+export AbstractState, GenericState, update!, copy, compress_state!, copy_compress_state
+export LSAtT, update!
 export NLPAtX, update!
 
 """

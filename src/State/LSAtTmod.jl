@@ -42,19 +42,3 @@ mutable struct 	LSAtT <: AbstractState
   return new(t, ht, gt, h₀, g₀, current_time, current_score)
  end
 end
-
-import Base.copy
-"""
-copy: Copy a LSAtT
-
-`copy(:: LSAtT)`
-"""
-function copy(ls_at_t :: LSAtT)
-    return LSAtT(copy(ls_at_t.x),
-                 ht = copy(ls_at_t.ht),
-                 gt = copy(ls_at_t.gt),
-                 h₀ = copy(ls_at_t.h₀),
-                 g₀ = copy(ls_at_t.g₀),
-                 current_time = copy(ls_at_t.current_time),
-                 current_score = copy(ls_at_t.current_score))
-end

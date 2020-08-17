@@ -115,3 +115,78 @@ function _domain_check(stateatx :: AbstractState)
 
  return domainerror
 end
+
+import Base.copy
+ex=:(_genobj(typ)=$(Expr(:new, :typ))); eval(ex)
+function copy(state :: AbstractState)
+
+ #ex=:(_genobj(typ)=$(Expr(:new, :typ))); eval(ex)
+ cstate = _genobj(typeof(state))
+ #cstate = $(Expr(:new, typeof(state)))
+
+ for k ∈ fieldnames(typeof(state))
+  setfield!(cstate, k, deepcopy(getfield(state, k)))
+ end
+
+ return cstate
+end
+
+"""
+compress_state!: compress State with the following rules.
+- If it contains matrices and save_matrix is false, then the corresponding entries
+are set to nothing.
+- If it contains vectors with length greater than max_vector_size, then the
+corresponding entries are replaced by a vector of size 1 containing its pnorm-norm.
+- If an entry in the State is in the kwargs list, then it is put as nothing if possible.
+
+`compress_state!(:: AbstractState; save_matrix :: Bool = false, max_vector_size :: Int = 50, pnorm :: Float64 = Inf, kwargs...)`
+"""
+function compress_state!(stateatx        :: AbstractState;
+                         save_matrix     :: Bool    = false,
+                         max_vector_size :: Int     = 50,
+                         pnorm           :: Float64 = Inf,
+                         kwargs...)
+
+  for k ∈ fieldnames(typeof(stateatx))
+   if typeof(getfield(stateatx, k)) <: AbstractVector
+       katt = getfield(stateatx, k)
+       if (length(katt) > max_vector_size)  setfield!(stateatx, k, [norm(katt, pnorm)]) end
+   elseif typeof(getfield(stateatx, k)) <: MatrixType && !save_matrix
+       if save_matrix
+        katt = getfield(stateatx, k)
+        if maximum(size(katt)) > max_vector_size setfield!(stateatx, k, norm(getfield(stateatx, k))) end
+       else #save_matrix is false
+        setfield!(stateatx, k, nothing)
+       end
+   else
+       #nothing happens
+   end
+
+   if k ∈ keys(kwargs)
+    try
+     setfield!(stateatx, k, nothing)
+    catch
+     #nothing happens
+    end
+   end
+
+  end
+
+ return stateatx
+end
+
+"""
+copy\\_compress\\_state: copy the State and then compress it.
+
+`copy_compress_state(:: AbstractState; save_matrix :: Bool = false, max_vector_size :: Int = 50, pnorm :: Float64 = Inf, kwargs...)`
+
+see also: copy, compress_state!
+"""
+function copy_compress_state(stateatx        :: AbstractState;
+                             save_matrix     :: Bool    = false,
+                             max_vector_size :: Int     = 50,
+                             pnorm           :: Float64 = Inf,
+                             kwargs...)
+ cstate = copy(stateatx)
+ return compress_state!(cstate; save_matrix = save_matrix, max_vector_size = max_vector_size, pnorm = pnorm, kwargs...)
+end

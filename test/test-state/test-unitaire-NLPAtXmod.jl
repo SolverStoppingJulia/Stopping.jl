@@ -32,6 +32,13 @@ cons_nlp_at_x = NLPAtX(zeros(10), zeros(10))
 @test cons_nlp_at_x.current_time == nothing
 @test cons_nlp_at_x.current_score == nothing
 
+update!(cons_nlp_at_x, Hx = ones(20,20), gx = ones(2), lambda = zeros(2))
+compress_state!(cons_nlp_at_x, max_vector_size = 5, lambda = zeros(0), gx = true)
+@test cons_nlp_at_x.Hx     == nothing
+@test cons_nlp_at_x.x      == [0.0]
+@test cons_nlp_at_x.lambda == zeros(2) #doesn't disapear because mandatory
+@test cons_nlp_at_x.gx     == nothing
+
 
 # On vérifie que la fonction update! fonctionne
 update!(uncons_nlp_at_x, x = ones(10), fx = 1.0, gx = ones(10))
@@ -55,6 +62,12 @@ reinit!(uncons_nlp_at_x)
 reinit!(uncons_nlp_at_x, x = zeros(10))
 @test uncons_nlp_at_x.x == zeros(10)
 @test uncons_nlp_at_x.fx == nothing
+
+c_uncons_nlp_at_x = copy_compress_state(uncons_nlp_at_x, max_vector_size = 5)
+
+@test c_uncons_nlp_at_x != uncons_nlp_at_x
+@test c_uncons_nlp_at_x.x      == [0.0]
+@test c_uncons_nlp_at_x.lambda == [1.0]
 
 nlp_64 = NLPAtX(ones(10))
 nlp_64.x = ones(10)
