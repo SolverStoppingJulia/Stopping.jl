@@ -110,6 +110,9 @@ end
  Purpose is to know if there is a need to even perform an optimization algorithm
  or if we are at an optimal solution from the beginning.
 
+ The function *start!* successively calls: *\\_domain\\_check*, *\\_optimality\\_check*,
+ *\\_null\\_test*
+
  Note: - *start!* initialize the start\\_time (if not done before) and *meta.optimality0*.
        - Keywords argument are sent to the *\\_optimality\\_check!* call.
 """
@@ -205,6 +208,11 @@ stop!: update the Stopping and return a boolean true if we must stop.
 It serves the same purpose as *start!* in an algorithm; telling us if we
 stop the algorithm (because we have reached optimality or we loop infinitely,
 etc).
+
+The function *stop!* successively calls: *\\_domain\\_check*, *\\_optimality\\_check*,
+*\\_null\\_test*, *\\_unbounded\\_check!*, *\\_tired\\_check!*, *\\_resources\\_check!*,
+*\\_stalled\\_check!*, *\\_iteration\\_check!*, *\\_main\\_pb\\_check!*
+
 
 Note: Kwargs are sent to the *\\_optimality\\_check!* call.
 """
@@ -381,7 +389,8 @@ Note: compare ||x|| with *meta.unbounded_x* and update *meta.unbounded*.
 function _unbounded_check!(stp  :: AbstractStopping,
                            x    :: Iterate)
 
- x_too_large = norm(x,Inf) >= stp.meta.unbounded_x
+ pnorm = stp.meta.norm_unbounded_x
+ x_too_large = norm(x, pnorm) >= stp.meta.unbounded_x
 
  stp.meta.unbounded = x_too_large
 
@@ -430,7 +439,8 @@ function _null_test(stp  :: AbstractStopping, optimality :: Number)
 
     atol, rtol, opt0 = stp.meta.atol, stp.meta.rtol, stp.meta.optimality0
 
-    optimal = optimality <= stp.meta.tol_check(atol, rtol, opt0)
+    optimal  =  optimality <= stp.meta.tol_check(atol, rtol, opt0)
+    optimal &=  optimality >= stp.meta.tol_check_neg(atol, rtol, opt0)
 
     return optimal
 end

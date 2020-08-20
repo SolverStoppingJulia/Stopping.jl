@@ -5,7 +5,15 @@ x0 = ones(6)
 state0 = GenericState(x0)
 stop0 = GenericStopping(rosenbrock, state0, tol_check = (atol,rtol,opt0) -> atol + rtol * opt0 )
 
-@test start!(stop0) == true #opt0 = Inf, so any point is optimal.
+@test start!(stop0) == true #opt0 = Inf as default meta.optimality_check returns Inf, so any point is optimal.
+@test status(stop0) == :Optimal
+#We now illustrate the impact of the choice of the norm for the unboundedness of the iterate
+stop0.meta.unbounded_x = sqrt(6)
+stop!(stop0)
+@test status(stop0, list = true) == [:Optimal] #ok as ||x||_\infty = 1 < sqrt(6)
+stop0.meta.norm_unbounded_x = 2
+stop!(stop0)
+@test status(stop0, list = true) == [:Optimal, :Unbounded] #indeed ||x||_2 = sqrt(6) !!
 
 #Initialize a GenericStopping by default
 stop_def = GenericStopping(rosenbrock, x0, atol = 1.0)

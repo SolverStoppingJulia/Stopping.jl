@@ -83,3 +83,12 @@ reinit!(stop.current_state, 0.0)
 @test stop!(stop) == true
 @test stop.current_state.ht == nothing
 @test stop.meta.resources == true
+
+#We now check the tol_check_neg function
+stop.meta.optimality_check = (x,y) -> y.ht
+stop.current_state.ht = 0.0
+@test stop.current_state.ht == 0.0
+stop.meta.tol_check = (a,b,c) -> 1.0
+@test Stopping._null_test(stop, Stopping._optimality_check(stop))
+stop.meta.tol_check_neg = (a,b,c) -> 0.5
+@test !(Stopping._null_test(stop, Stopping._optimality_check(stop)))

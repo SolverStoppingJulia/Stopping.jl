@@ -90,7 +90,7 @@ function LAStopping(A :: Union{AbstractLinearOperator, AbstractMatrix},
 end
 
  """
- _init_max_counters_linear_operators(): counters for LinearOperator
+ \\_init\\_max\\_counters\\_linear\\_operators(): counters for LinearOperator
 
  `_init_max_counters_linear_operators(;nprod :: Int64 = 20000, ntprod  :: Int64 = 20000, nctprod :: Int64 = 20000, sum :: Int64 = 20000*11)`
  """
@@ -106,8 +106,8 @@ end
  end
 
  """
- _resources_check!: check if the optimization algorithm has exhausted the resources.
-                    This is the Linear Algebra specialized version.
+ \\_resources\\_check!: check if the optimization algorithm has exhausted the resources.
+                        This is the Linear Algebra specialized version.
 
  Note:
  * function does _not_ keep track of the evals in the State
@@ -138,7 +138,7 @@ end
  end
 
 """
-linear_system_check: return ||Ax-b||_p
+linear\\_system\\_check: return ||Ax-b||_p
 
 `linear_system_check(pb :: Any state :: AbstractState; pnorm :: Float64 = Inf, kwargs...)`
 """
@@ -150,7 +150,7 @@ function linear_system_check(pb    :: Any,
 end
 
 """
-linear_system_check: return ||A'Ax-A'b||_p
+linear\\_system\\_check: return ||A'Ax-A'b||_p
 
 `linear_system_check(pb :: Any state :: AbstractState; pnorm :: Float64 = Inf, kwargs...)`
 """

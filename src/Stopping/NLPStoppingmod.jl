@@ -237,8 +237,13 @@ end
 
 `_unbounded_problem_check!(:: NLPStopping, :: Iterate)`
 
-Note: - evaluate the objective function if *state.fx* is *nothing* and store in *state*.
-      - evaluate the constraint function if *state.cx* is *nothing* and store in *state*.
+Note:
+- evaluate the objective function if *state.fx* is *nothing* and store in *state*.
+- evaluate the constraint function if *state.cx* is *nothing* and store in *state*.
+- if minimize problem (i.e. nlp.meta.minimize is true) check if
+*state.fx* <= *- meta.unbounded_threshold*,
+otherwise check *state.fx* >= *meta.unbounded_threshold*.
+- *state.cx* is unbounded if larger than *|meta.unbounded_threshold|*.
 """
 function _unbounded_problem_check!(stp  :: NLPStopping,
                                    x    :: Iterate)
@@ -246,7 +251,12 @@ function _unbounded_problem_check!(stp  :: NLPStopping,
  if stp.current_state.fx == nothing
 	 stp.current_state.fx = obj(stp.pb, x)
  end
- f_too_large = norm(stp.current_state.fx) >= stp.meta.unbounded_threshold
+
+ if stp.pb.meta.minimize
+  f_too_large = stp.current_state.fx <= - stp.meta.unbounded_threshold
+ else
+  f_too_large = stp.current_state.fx >=   stp.meta.unbounded_threshold
+ end
 
  c_too_large = false
  if stp.pb.meta.ncon != 0 #if the problems has constraints, check |c(x)|

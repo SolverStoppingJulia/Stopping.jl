@@ -110,5 +110,8 @@ end
 
 ################################################################################
 # line search admissibility functions
+#
+# TODO: change the ls_admissible_functions and use tol_check et tol_check_neg to
+# handle the inequality instead of a max.
 ################################################################################
 include("ls_admissible_functions.jl")

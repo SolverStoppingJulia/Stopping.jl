@@ -40,6 +40,19 @@ reinit!(stop_nlp.current_state)
 @test unconstrained2nd_check(stop_nlp.pb, stop_nlp.current_state) >= 0.0
 @test stop_nlp.current_state.Hx != nothing
 
+#We now test the _unbounded_problem_check:
+@test stop_nlp.pb.meta.minimize #we are minimizing
+stop_nlp.current_state.fx = - 1.0e50 #default meta.unbounded_threshold
+stop!(stop_nlp)
+@test :UnboundedPb in status(stop_nlp, list = true) # the problem is unbounded as fx <= - 1.0e50
+stop_nlp.meta.unbounded_pb = false #reinitialize
+#Let us now consider a maximization problem:
+nlp_max = ADNLPModel(NLPModelMeta(5, minimize = false), Counters(), f, x->[])
+stop_nlp.pb = nlp_max
+@test !stop_nlp.pb.meta.minimize
+stop!(stop_nlp)
+@test !(:UnboundedPb in status(stop_nlp, list = true)) # the problem is NOT unbounded as fx <= 1.0e50
+
 nlp_bnd = ADNLPModel(f, zeros(5), lvar = zeros(5), uvar = zeros(5))
 stop_bnd = NLPStopping(nlp_bnd)
 fill_in!(stop_bnd, zeros(5))

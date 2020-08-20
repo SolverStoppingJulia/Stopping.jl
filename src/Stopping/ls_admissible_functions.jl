@@ -3,7 +3,7 @@ export armijo, wolfe, armijo_wolfe, shamanskii_stop, goldstein
 """
 armijo: check if a step size is admissible according to the Armijo criterion.
 
-Armijo criterion: f(x + θd) - f(x) < τ₀ θ ∇f(x+θd)d
+Armijo criterion: f(x + θd) - f(x) - τ₀ θ ∇f(x+θd)d < 0
 
 `armijo(h :: Any, h_at_t :: LSAtT; τ₀ :: Float64 = 0.01, kwargs...)`
 

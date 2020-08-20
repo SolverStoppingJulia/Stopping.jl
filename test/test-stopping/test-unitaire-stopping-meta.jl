@@ -5,6 +5,7 @@ test_meta = StoppingMeta()
 @test test_meta.optimality_check(1,1) == Inf
 @test test_meta.unbounded_threshold   == 1.0e50
 @test test_meta.unbounded_x           == 1.0e50
+@test test_meta.norm_unbounded_x      == Inf
 @test test_meta.max_f                 == 9223372036854775807
 @test test_meta.max_cntrs             == Dict()
 @test test_meta.max_eval              == 20_000
@@ -24,6 +25,13 @@ test_meta = StoppingMeta()
 
 try
  StoppingMeta(tol_check = x -> x)
+ @test false #tol_check must have 3 arguments and not one
+catch
+ @test true
+end
+
+try
+ StoppingMeta(tol_check_neg = x -> x)
  @test false #tol_check must have 3 arguments and not one
 catch
  @test true
