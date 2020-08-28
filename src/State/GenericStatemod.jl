@@ -151,7 +151,7 @@ function compress_state!(stateatx        :: AbstractState;
    if typeof(getfield(stateatx, k)) <: AbstractVector
        katt = getfield(stateatx, k)
        if (length(katt) > max_vector_size)  setfield!(stateatx, k, [norm(katt, pnorm)]) end
-   elseif typeof(getfield(stateatx, k)) <: MatrixType && !save_matrix
+   elseif typeof(getfield(stateatx, k)) <: Union{AbstractArray, AbstractMatrix} && !save_matrix
        if save_matrix
         katt = getfield(stateatx, k)
         if maximum(size(katt)) > max_vector_size setfield!(stateatx, k, norm(getfield(stateatx, k))) end

@@ -114,9 +114,10 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
    fail_sub_pb = false
 
    try
-       tol_check(1,1,1)
+       tol_check(1.,1.,1.)
+       tol_check_neg(1.,1.,1.)
    catch
-       throw("tol_check must have 3 arguments")
+       throw("tol_check and tol_check_neg must have 3 arguments")
    end
 
    unbounded       = false

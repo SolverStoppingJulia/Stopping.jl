@@ -46,7 +46,7 @@ the Stopping to reuse for another call.
 """
 module Stopping
 
-using LinearAlgebra, NLPModels
+using LinearAlgebra, DataFrames, NLPModels
 
 const Iterate           = Union{Number, AbstractVector, Nothing}
 const FloatVoid         = Union{Number, Nothing}
@@ -78,6 +78,10 @@ include("State/NLPAtXmod.jl")
 export AbstractState, GenericState, update!, copy, compress_state!, copy_compress_state
 export LSAtT, update!
 export NLPAtX, update!
+
+include("State/ListOfStates.jl")
+
+export ListStates, add_to_list!, length, print
 
 """
 AbstractStoppingMeta

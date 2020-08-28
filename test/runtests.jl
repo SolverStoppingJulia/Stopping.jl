@@ -1,4 +1,4 @@
-using LinearAlgebra, NLPModels, Printf, Stopping, Test
+using DataFrames, LinearAlgebra, NLPModels, Printf, Stopping, Test
 
 printstyled("Generic State tests... ")
 include("test-state/test-unitaire-GenericStatemod.jl")
@@ -8,6 +8,9 @@ include("test-state/test-unitaire-LSAtTmod.jl")
 printstyled("passed ✓ \n", color = :green)
 printstyled("NLPAtX tests... ")
 include("test-state/test-unitaire-NLPAtXmod.jl")
+printstyled("passed ✓ \n", color = :green)
+printstyled("ListOfStates tests... ")
+include("test-state/test-unitaire-ListOfStates.jl")
 printstyled("passed ✓ \n", color = :green)
 
 printstyled("StoppingMeta tests... ")

@@ -14,6 +14,7 @@
 - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
                        of a subproblem.
                        If not a subproblem, then *nothing*.
+- (opt) listofstates : ListStates designed to store the history of States.
 
  Constructor: `GenericStopping(:: Any, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), main_stp :: Union{AbstractStopping, Nothing} = nothing, kwargs...)`
 
@@ -57,17 +58,21 @@ mutable struct GenericStopping <: AbstractStopping
     # Stopping of the main problem, or nothing
     main_stp :: Union{AbstractStopping, Nothing}
 
+    # History of states
+    listofstates :: Union{ListStates, Nothing}
+
     function GenericStopping(pb            :: Any,
                              current_state :: AbstractState;
                              meta          :: AbstractStoppingMeta = StoppingMeta(),
                              main_stp      :: Union{AbstractStopping, Nothing} = nothing,
+                             list          :: Union{ListStates, Nothing} = nothing,
                              kwargs...)
 
      if !(isempty(kwargs))
       meta = StoppingMeta(; kwargs...)
      end
 
-     return new(pb, meta, current_state, main_stp)
+     return new(pb, meta, current_state, main_stp, list)
     end
 end
 
