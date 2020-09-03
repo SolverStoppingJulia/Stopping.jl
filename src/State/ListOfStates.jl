@@ -6,8 +6,13 @@ Constructor:
 `ListStates(:: AbstractState)`
 
 Note:
+- If n != -1, then it stores at most n AbstractState.
 - add additional methods following https://docs.julialang.org/en/v1/base/collections/
-- If n != -1, then store at most n AbstractState.
+
+Examples:
+ListStates(state)
+ListStates(state, n = 2)
+ListStates(n = -1, list = [state1, state2], i = 2)
 """
 mutable struct ListStates
 
@@ -28,11 +33,15 @@ function ListStates(state :: AbstractState; n :: Int = -1, kwargs...)
 end
 
 """
-add_to_list!: add a State to the list. In the case, where n != -1, the first one is deleted before update.
+add\\_to\\_list!: add a State to the list of maximal size n.
+If a n+1-th State is added, the first one in the list is removed.
+The given is State is compressed before being added in the list (via State.copy\\_compress\\_state).
 
-`add_to_list!(: ListStates, :: AbstractState; kwargs...)`
+`add_to_list!(:: ListStates, :: AbstractState; kwargs...)`
 
 Note: kwargs are passed to the compress_state call.
+
+see also: ListStates, State.compress\\_state, State.copy\\_compress\\_state
 """
 function add_to_list!(list :: ListStates, state :: AbstractState; kwargs...)
 
@@ -44,7 +53,6 @@ function add_to_list!(list :: ListStates, state :: AbstractState; kwargs...)
       list.i += 1
   end
   cstate = copy_compress_state(state; kwargs...)
-  #list.list[list.i] = cstate
   push!(list.list, cstate)
  else
   push!(list.list, copy_compress_state(state; kwargs...))
@@ -56,9 +64,11 @@ end
 
 import Base.length
 """
-length: return the number of States in the list
+length: return the number of States in the list.
 
-`length(: ListStates)`
+`length(:: ListStates)`
+
+see also: print, add_to_list!, ListStates
 """
 function length(list :: ListStates)
  return list.i
@@ -66,19 +76,42 @@ end
 
 import Base.print
 """
-print: output formatting. return a DataFrame
+print: output formatting. return a DataFrame.
 
-`print(: ListStates)`
+`print(:: ListStates; verbose :: Bool = true, print_sym :: Union{Nothing,Array{Symbol,1}})`
 
-Note: set verbose to false to avoid printing
+Note:
+- set *verbose* to false to avoid printing.
+- if *print_sym* is an Array of Symbol, only those symbols are printed. Note that
+the returned DataFrame still contains all the columns.
+- More information about DataFrame: http://juliadata.github.io/DataFrames.jl
+
+see also: add\\_to\\_list!, length, ListStates
 """
-function print(list :: ListStates; verbose :: Bool = true)
+function print(list :: ListStates; verbose :: Bool = true, print_sym :: Union{Nothing,Array{Symbol,1}} = nothing)
 
-   #foreach(x -> println([norm(x.x), x.current_time]), list.list)
    df = DataFrame()
+
    for k in fieldnames(typeof(list.list[1]))
        df[!,k] = [getfield(i, k) for i in list.list]
    end
- verbose && print(df)
+
+   if print_sym == nothing
+    verbose && print(df)
+   else
+    verbose && print(df[!, print_sym])
+   end
+
  return df
+end
+
+import Base.getindex
+"""
+`getindex(:: ListStates, :: Int)`
+
+Example:
+stop_lstt.listofstates.list[3]
+"""
+function getindex(list :: ListStates, i :: Int)
+    return list.list[i]
 end

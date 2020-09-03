@@ -41,10 +41,14 @@ mutable struct NLPStopping <: AbstractStopping
     # Stopping of the main problem, or nothing
     main_stp :: Union{AbstractStopping, Nothing}
 
+    # History of states
+    listofstates :: Union{ListStates, Nothing}
+
     function NLPStopping(pb             :: AbstractNLPModel,
                          current_state  :: AbstractState;
                          meta           :: AbstractStoppingMeta = StoppingMeta(;max_cntrs = _init_max_counters(), optimality_check = KKT),
                          main_stp       :: Union{AbstractStopping, Nothing} = nothing,
+                         list          :: Union{ListStates, Nothing} = nothing,
                          kwargs...)
 
         if !(isempty(kwargs))
@@ -64,7 +68,7 @@ mutable struct NLPStopping <: AbstractStopping
             throw("error: missing entries in the given current_state")
         end
 
-        return new(pb, meta, current_state, main_stp)
+        return new(pb, meta, current_state, main_stp, list)
     end
 
 end

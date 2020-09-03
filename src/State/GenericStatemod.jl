@@ -137,17 +137,36 @@ compress_state!: compress State with the following rules.
 are set to nothing.
 - If it contains vectors with length greater than max_vector_size, then the
 corresponding entries are replaced by a vector of size 1 containing its pnorm-norm.
-- If an entry in the State is in the kwargs list, then it is put as nothing if possible.
+- If keep is true, then only the entries given in kwargs will be saved (the others are set to nothing).
+- If keep is false and an entry in the State is in the kwargs list, then it is put as nothing if possible.
 
-`compress_state!(:: AbstractState; save_matrix :: Bool = false, max_vector_size :: Int = 50, pnorm :: Float64 = Inf, kwargs...)`
+
+`compress_state!(:: AbstractState; save_matrix :: Bool = false, max_vector_size :: Int = length(stateatx.x), pnorm :: Float64 = Inf, keep :: Bool = false, kwargs...)`
+
+see also: copy, copy\\_compress\\_state, ListStates
 """
 function compress_state!(stateatx        :: AbstractState;
                          save_matrix     :: Bool    = false,
-                         max_vector_size :: Int     = 50,
+                         max_vector_size :: Int     = length(stateatx.x),
                          pnorm           :: Float64 = Inf,
+                         keep            :: Bool    = false,
                          kwargs...)
 
   for k ∈ fieldnames(typeof(stateatx))
+   if k ∈ keys(kwargs) && !keep
+    try
+        setfield!(stateatx, k, nothing)
+    catch
+        #nothing happens
+    end
+   end
+   if k ∉ keys(kwargs) && keep
+    try
+        setfield!(stateatx, k, nothing)
+    catch
+        #nothing happens
+    end
+   end
    if typeof(getfield(stateatx, k)) <: AbstractVector
        katt = getfield(stateatx, k)
        if (length(katt) > max_vector_size)  setfield!(stateatx, k, [norm(katt, pnorm)]) end
@@ -162,14 +181,6 @@ function compress_state!(stateatx        :: AbstractState;
        #nothing happens
    end
 
-   if k ∈ keys(kwargs)
-    try
-     setfield!(stateatx, k, nothing)
-    catch
-     #nothing happens
-    end
-   end
-
   end
 
  return stateatx
@@ -178,13 +189,13 @@ end
 """
 copy\\_compress\\_state: copy the State and then compress it.
 
-`copy_compress_state(:: AbstractState; save_matrix :: Bool = false, max_vector_size :: Int = 50, pnorm :: Float64 = Inf, kwargs...)`
+`copy_compress_state(:: AbstractState; save_matrix :: Bool = false, max_vector_size :: Int = length(stateatx.x), pnorm :: Float64 = Inf, kwargs...)`
 
-see also: copy, compress_state!
+see also: copy, compress_state!, ListStates
 """
 function copy_compress_state(stateatx        :: AbstractState;
                              save_matrix     :: Bool    = false,
-                             max_vector_size :: Int     = 50,
+                             max_vector_size :: Int     = length(stateatx.x),
                              pnorm           :: Float64 = Inf,
                              kwargs...)
  cstate = copy(stateatx)

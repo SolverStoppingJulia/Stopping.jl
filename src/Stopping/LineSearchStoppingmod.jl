@@ -45,17 +45,21 @@ mutable struct LS_Stopping <: AbstractStopping
     # Stopping of the main problem, or nothing
     main_stp :: Union{AbstractStopping, Nothing}
 
+    # History of states
+    listofstates :: Union{ListStates, Nothing}
+
     function LS_Stopping(pb             :: Any,
                          current_state  :: LSAtT;
                          meta           :: AbstractStoppingMeta = StoppingMeta(),
                          main_stp       :: Union{AbstractStopping, Nothing} = nothing,
+                         list           :: Union{ListStates, Nothing} = nothing,
                          kwargs...)
 
         if !(isempty(kwargs))
            meta = StoppingMeta(;optimality_check = armijo, kwargs...)
 		end
 
-        return new(pb, meta, current_state, main_stp)
+        return new(pb, meta, current_state, main_stp, list)
     end
 
 end

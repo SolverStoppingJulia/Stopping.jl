@@ -46,6 +46,8 @@ See also GenericStopping, NLPStopping, LS_Stopping
      current_state :: AbstractState
      # Stopping of the main problem, or nothing
      main_stp :: Union{AbstractStopping, Nothing}
+     # History of states
+     listofstates :: Union{ListStates, Nothing}
 
      #zero is initial point
      zero_start :: Bool
@@ -54,6 +56,7 @@ See also GenericStopping, NLPStopping, LS_Stopping
                          current_state  :: AbstractState;
                          meta           :: AbstractStoppingMeta = StoppingMeta(max_cntrs = _init_max_counters_linear_operators(), optimality_check = linear_system_check),
                          main_stp       :: Union{AbstractStopping, Nothing} = nothing,
+                         list          :: Union{ListStates, Nothing} = nothing,
                          zero_start     :: Bool = false,
                          kwargs...)
 
@@ -67,7 +70,7 @@ See also GenericStopping, NLPStopping, LS_Stopping
             meta = StoppingMeta(;max_cntrs = _init_max_counters_linear_operators(), optimality_check = linear_system_check, kwargs...)
          end
 
-         return new(pb, meta, current_state, main_stp, zero_start)
+         return new(pb, meta, current_state, main_stp, list, zero_start)
      end
  end
 

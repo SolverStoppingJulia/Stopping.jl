@@ -157,10 +157,17 @@ end
 
  `reinit!(:: AbstractStopping; rstate :: Bool = false, kwargs...)`
 
- Note: If *rstate* is set as true it reinitializes the current State
- (with the kwargs).
+ Note:
+- If *rstate* is set as true it reinitializes the current State
+(with the kwargs).
+- If *rlist* is set as true the list of states is also reinitialized, either
+set as nothing if *rstate* is true, and a list containing only the current
+state if *rstate* is false.
 """
-function reinit!(stp :: AbstractStopping; rstate :: Bool = false, kwargs...)
+function reinit!(stp    :: AbstractStopping;
+                 rstate :: Bool = false,
+                 rlist  :: Bool = true,
+                 kwargs...)
 
  stp.meta.start_time  = NaN
  stp.meta.optimality0 = 1.0
@@ -180,6 +187,11 @@ function reinit!(stp :: AbstractStopping; rstate :: Bool = false, kwargs...)
 
  #reinitialize the counter of stop
  stp.meta.nb_of_stop = 0
+
+ #reinitialize the list of states
+ if rlist
+  list = rstate ? nothing : ListStates(stp.current_state)
+ end
 
  #reinitialize the state
  if rstate
