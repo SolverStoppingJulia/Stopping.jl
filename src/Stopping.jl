@@ -109,7 +109,7 @@ using LinearAlgebra, SparseArrays, LinearOperators #v.1.0.1
 
 include("Stopping/LinearAlgebraStopping.jl")
 
-export LAStopping, linear_system_check, normal_equation_check
+export LAStopping, LinearSystem, LACounters, linear_system_check, normal_equation_check
 
 
 end # end of module
