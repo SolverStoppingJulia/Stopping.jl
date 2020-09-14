@@ -7,10 +7,12 @@ A generic State to describe the state of a problem at a point x.
 
 Tracked data include:
  - x                   : current iterate
+ - d [opt]             : search direction
+ - res [opt]           : residual
  - current_time [opt]  : time
  - current_score [opt] : score
 
-Constructor: `GenericState(:: AbstractVector; current_time :: FloatVoid = nothing, current_score :: FloatVoid = nothing)`
+Constructor: `GenericState(:: AbstractVector; d :: Iterate = nothing, res :: Iterate = nothing, current_time :: FloatVoid = nothing, current_score :: FloatVoid = nothing)`
 
 Note: By default, unknown entries are set to *nothing*.
 
@@ -18,10 +20,15 @@ Examples:
 GenericState(x)
 GenericState(x, current\\_time = 1.0)
 GenericState(x, current\\_score = 1.0)
+
+See also: Stopping, NLPAtX
 """
 mutable struct GenericState <: AbstractState
 
     x :: AbstractVector
+
+    d   :: Iterate
+    res :: Iterate
 
     #Current time
     current_time  :: FloatVoid
@@ -29,10 +36,12 @@ mutable struct GenericState <: AbstractState
     current_score :: FloatVoid
 
     function GenericState(x             :: AbstractVector;
+                          d             :: Iterate   = nothing,
+                          res           :: Iterate   = nothing,
                           current_time  :: FloatVoid = nothing,
                           current_score :: FloatVoid = nothing)
 
-      return new(x, current_time, current_score)
+      return new(x, d, res, current_time, current_score)
    end
 end
 
@@ -51,6 +60,8 @@ Examples:
 update!(state1)
 update!(state1, current\\_time = 2.0)
 update!(state1, convert = true, current\\_time = 2.0)
+
+See also: GenericState, reinit!, update\\_and\\_start!, update\\_and\\_stop!
 """
 function update!(stateatx :: AbstractState; convert = false, kwargs...)
 

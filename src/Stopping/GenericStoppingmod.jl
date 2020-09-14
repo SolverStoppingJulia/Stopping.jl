@@ -228,10 +228,12 @@ etc).
 
 The function *stop!* successively calls: *\\_domain\\_check*, *\\_optimality\\_check*,
 *\\_null\\_test*, *\\_unbounded\\_check!*, *\\_tired\\_check!*, *\\_resources\\_check!*,
-*\\_stalled\\_check!*, *\\_iteration\\_check!*, *\\_main\\_pb\\_check!*
+*\\_stalled\\_check!*, *\\_iteration\\_check!*, *\\_main\\_pb\\_check!*, add\\_to\\_list!
 
 
-Note: Kwargs are sent to the *\\_optimality\\_check!* call.
+Note:
+- Kwargs are sent to the *\\_optimality\\_check!* call.
+- If listofstates != nothing, call add\\_to\\_list! to update the list of State.
 """
 function stop!(stp :: AbstractStopping; kwargs...)
 
@@ -266,6 +268,10 @@ function stop!(stp :: AbstractStopping; kwargs...)
 
 
  _add_stop!(stp)
+
+ if stp.listofstates != nothing
+  add_to_list!(stp.listofstates, stp.current_state)
+ end
 
  return OK
 end

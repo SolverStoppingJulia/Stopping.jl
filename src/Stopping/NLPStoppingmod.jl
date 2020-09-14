@@ -1,7 +1,7 @@
 """
 Type: NLPStopping
 
-Methods: start!, stop!, update\\_and\\_start!, update\\_and\\_stop!, fill_in!, reinit!, status
+Methods: start!, stop!, update\\_and\\_start!, update\\_and\\_stop!, fill\\_in!, reinit!, status
 KKT, unconstrained\\_check, unconstrained2nd\\_check, optim\\_check\\_bounded
 
 Specialization of GenericStopping. Stopping structure for non-linear programming problems using NLPModels.
@@ -13,6 +13,7 @@ Attributes:
 - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
                           of a subproblem.
                           If not a subproblem, then nothing.
+- (opt) listofstates : ListStates designed to store the history of States.
 
 `NLPStopping(:: AbstractNLPModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), max_cntrs :: Dict = _init_max_counters(), main_stp :: Union{AbstractStopping, Nothing} = nothing, kwargs...)`
 

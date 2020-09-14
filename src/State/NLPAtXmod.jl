@@ -18,7 +18,10 @@ Tracked data include:
 
  - cx [opt] : evaluation of the constraint function at x
  - Jx [opt] : jacobian matrix of the constraint function at x
- - lambda : Lagrange multiplier of the constraints
+ - lambda   : Lagrange multiplier of the constraints
+
+ - d [opt]   : search direction
+ - res [opt] : residual
 
  - current_time [opt]  : time
  - current_score [opt] : score
@@ -35,6 +38,8 @@ Note:
         required. The update is done through the update! function.
       - *x* and *lambda* are mandatory entries. If no constraints `lambda = []`.
       - The constructor check the size of the entries.
+
+See also: GenericState, update!, update\\_and\\_start!, update\\_and\\_stop!, reinit! 
 """
 mutable struct 	NLPAtX <: AbstractState
 
@@ -52,6 +57,9 @@ mutable struct 	NLPAtX <: AbstractState
     Jx           :: MatrixType  # jacobian matrix, size: |lambda| x |x|
     lambda       :: AbstractVector    # Lagrange multipliers
 
+    d            :: Iterate #search direction
+    res          :: Iterate #residual
+
  #Resources State
     current_time   :: FloatVoid
     current_score  :: FloatVoid
@@ -65,13 +73,15 @@ mutable struct 	NLPAtX <: AbstractState
                  mu            :: Iterate      = nothing,
                  cx            :: Iterate      = nothing,
                  Jx            :: MatrixType   = nothing,
+                 d             :: Iterate      = nothing,
+                 res           :: Iterate      = nothing,
                  current_time  :: FloatVoid    = nothing,
                  current_score :: FloatVoid    = nothing,
                  evals         :: Counters     = Counters())
 
   _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
 
-  return new(x, fx, gx, Hx, mu, cx, Jx, lambda, current_time, current_score, evals)
+  return new(x, fx, gx, Hx, mu, cx, Jx, lambda, d, res, current_time, current_score, evals)
  end
 end
 

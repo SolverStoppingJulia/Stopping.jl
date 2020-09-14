@@ -17,12 +17,10 @@ function algo_rand(stp :: NLPStopping)
  OK = start!(stp)
 
  while !OK
+
      x  = rand(n)
      OK = update_and_stop!(stp, x = x, fx = obj(nlp, x), gx = grad(nlp, x))
 
-     if stp.listofstates != nothing
-      add_to_list!(stp.listofstates, stp.current_state)
-     end
  end
 
  return stp
