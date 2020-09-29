@@ -111,8 +111,6 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
                         start_time          :: Float64  = NaN,
                         kwargs...)
 
-   fail_sub_pb = false
-
    try
        tol_check(1.,1.,1.)
        tol_check_neg(1.,1.,1.)
@@ -120,6 +118,7 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
        throw("tol_check and tol_check_neg must have 3 arguments")
    end
 
+   fail_sub_pb     = false
    unbounded       = false
    unbounded_pb    = false
    tired           = false
