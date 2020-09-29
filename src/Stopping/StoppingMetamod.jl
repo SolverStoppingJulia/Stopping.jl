@@ -7,7 +7,7 @@ Attributes:
 - atol : absolute tolerance.
 - rtol : relative tolerance.
 - optimality0 : optimality score at the initial guess.
-- tol_check : Function of *atol*, *rtol* and *optimality0* testing a number to zero.
+- tol_check : Function of *atol*, *rtol* and *optimality0* testing a score to zero.
 - optimality_check : a stopping criterion via an admissibility function
 - unbounded_threshold : threshold for unboundedness of the problem.
 - unbounded_x : threshold for unboundedness of the iterate.

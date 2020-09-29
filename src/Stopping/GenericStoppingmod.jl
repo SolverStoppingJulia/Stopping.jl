@@ -244,7 +244,7 @@ function stop!(stp :: AbstractStopping; kwargs...)
  if !stp.meta.domainerror
    # Optimality check
    score = _optimality_check(stp; kwargs...)
-   if isnan(score)
+   if true in isnan.(score)
     stp.meta.domainerror = true
    end
    stp.meta.optimal = _null_test(stp, score)
@@ -454,16 +454,21 @@ end
 \\_null\\_test: check if the score is close enough to zero
 (up to some precisions found in the meta).
 
-`_null_test(:: AbstractStopping, :: Number)`
+`_null_test(:: AbstractStopping, :: Union{Number,AbstractVector})`
 
-Note: the second argument is compared with `meta.tol_check(meta.atol, meta.rtol, meta.optimality0)`.
+Note:
+- the second argument is compared with `meta.tol_check(meta.atol, meta.rtol, meta.optimality0)`
+and `meta.tol_check_neg(meta.atol, meta.rtol, meta.optimality0)`.
+- Compatible size is not verified.
 """
-function _null_test(stp  :: AbstractStopping, optimality :: Number)
+function _null_test(stp  :: AbstractStopping, optimality :: Union{Number,AbstractVector})
 
     atol, rtol, opt0 = stp.meta.atol, stp.meta.rtol, stp.meta.optimality0
+    check_pos = stp.meta.tol_check(atol, rtol, opt0)
+    check_neg = stp.meta.tol_check_neg(atol, rtol, opt0)
 
-    optimal  =  optimality <= stp.meta.tol_check(atol, rtol, opt0)
-    optimal &=  optimality >= stp.meta.tol_check_neg(atol, rtol, opt0)
+    optimal  =  !(false in (optimality .<= check_pos))
+    optimal &=  !(false in (optimality .>= check_neg))
 
     return optimal
 end

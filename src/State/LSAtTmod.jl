@@ -16,7 +16,7 @@ Tracked data can include:
  - current_time [opt]  :  the time at which the line search algorithm started.
  - current_score [opt] : the score at which the line search algorithm started.
 
-Constructor: `LSAtT(:: Number; ht :: FloatVoid = nothing, gt :: FloatVoid = nothing, h₀ :: FloatVoid = nothing, g₀ :: FloatVoid = nothing, current_time :: FloatVoid = nothing, current_score :: FloatVoid = nothing)`
+Constructor: `LSAtT(:: Number; ht :: FloatVoid = nothing, gt :: FloatVoid = nothing, h₀ :: FloatVoid = nothing, g₀ :: FloatVoid = nothing, current_time :: FloatVoid = nothing, current_score :: Iterate = nothing)`
 
 Note: By default, unknown entries are set to *nothing*.
 """
@@ -29,7 +29,7 @@ mutable struct 	LSAtT <: AbstractState
     g₀           :: FloatVoid  # h'(0)
 
     current_time   :: FloatVoid
-    current_score  :: FloatVoid
+    current_score  :: Iterate
 
  function LSAtT(t             :: Number;
                 ht            :: FloatVoid = nothing,
@@ -37,7 +37,7 @@ mutable struct 	LSAtT <: AbstractState
                 h₀            :: FloatVoid = nothing,
                 g₀            :: FloatVoid = nothing,
                 current_time  :: FloatVoid = nothing,
-                current_score :: FloatVoid = nothing)
+                current_score :: Iterate = nothing)
 
   return new(t, ht, gt, h₀, g₀, current_time, current_score)
  end

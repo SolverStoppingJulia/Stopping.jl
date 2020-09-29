@@ -28,9 +28,9 @@ Tracked data include:
  - evals [opt] : number of evaluations of the function (import the type NLPModels.Counters)
 
 Constructor:
-`NLPAtX(:: AbstractVector, :: AbstractVector; fx :: FloatVoid = nothing, gx :: Iterate = nothing, Hx :: MatrixType = nothing, mu :: Iterate = nothing, cx :: Iterate = nothing, Jx :: MatrixType = nothing, current_time :: FloatVoid = nothing, current_score :: FloatVoid = nothing, evals :: Counters = Counters())`
+`NLPAtX(:: AbstractVector, :: AbstractVector; fx :: FloatVoid = nothing, gx :: Iterate = nothing, Hx :: MatrixType = nothing, mu :: Iterate = nothing, cx :: Iterate = nothing, Jx :: MatrixType = nothing, current_time :: FloatVoid = nothing, current_score :: Iterate = nothing, evals :: Counters = Counters())`
 
-`NLPAtX(:: AbstractVector; fx :: FloatVoid = nothing, gx :: Iterate = nothing, Hx :: MatrixType = nothing, mu :: Iterate = nothing, current_time :: FloatVoid = nothing, current_score :: FloatVoid = nothing, evals :: Counters = Counters())`
+`NLPAtX(:: AbstractVector; fx :: FloatVoid = nothing, gx :: Iterate = nothing, Hx :: MatrixType = nothing, mu :: Iterate = nothing, current_time :: FloatVoid = nothing, current_score :: Iterate = nothing, evals :: Counters = Counters())`
 
 Note:
       - By default, unknown entries are set to *nothing* (except evals).
@@ -39,7 +39,7 @@ Note:
       - *x* and *lambda* are mandatory entries. If no constraints `lambda = []`.
       - The constructor check the size of the entries.
 
-See also: GenericState, update!, update\\_and\\_start!, update\\_and\\_stop!, reinit! 
+See also: GenericState, update!, update\\_and\\_start!, update\\_and\\_stop!, reinit!
 """
 mutable struct 	NLPAtX <: AbstractState
 
@@ -62,7 +62,7 @@ mutable struct 	NLPAtX <: AbstractState
 
  #Resources State
     current_time   :: FloatVoid
-    current_score  :: FloatVoid
+    current_score  :: Iterate
     evals          :: Counters
 
  function NLPAtX(x             :: AbstractVector,
@@ -76,7 +76,7 @@ mutable struct 	NLPAtX <: AbstractState
                  d             :: Iterate      = nothing,
                  res           :: Iterate      = nothing,
                  current_time  :: FloatVoid    = nothing,
-                 current_score :: FloatVoid    = nothing,
+                 current_score :: Iterate      = nothing,
                  evals         :: Counters     = Counters())
 
   _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
@@ -91,7 +91,7 @@ function NLPAtX(x             :: AbstractVector;
                 Hx            :: MatrixType   = nothing,
                 mu            :: Iterate      = nothing,
                 current_time  :: FloatVoid    = nothing,
-                current_score :: FloatVoid    = nothing,
+                current_score :: Iterate      = nothing,
                 evals         :: Counters     = Counters())
 
     _size_check(x, zeros(0), fx, gx, Hx, mu, nothing, nothing)

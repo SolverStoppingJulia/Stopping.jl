@@ -12,7 +12,7 @@ Tracked data include:
  - current_time [opt]  : time
  - current_score [opt] : score
 
-Constructor: `GenericState(:: AbstractVector; d :: Iterate = nothing, res :: Iterate = nothing, current_time :: FloatVoid = nothing, current_score :: FloatVoid = nothing)`
+Constructor: `GenericState(:: AbstractVector; d :: Iterate = nothing, res :: Iterate = nothing, current_time :: FloatVoid = nothing, current_score :: Iterate = nothing)`
 
 Note: By default, unknown entries are set to *nothing*.
 
@@ -33,13 +33,13 @@ mutable struct GenericState <: AbstractState
     #Current time
     current_time  :: FloatVoid
     #Current score
-    current_score :: FloatVoid
+    current_score :: Iterate
 
     function GenericState(x             :: AbstractVector;
                           d             :: Iterate   = nothing,
                           res           :: Iterate   = nothing,
                           current_time  :: FloatVoid = nothing,
-                          current_score :: FloatVoid = nothing)
+                          current_score :: Iterate = nothing)
 
       return new(x, d, res, current_time, current_score)
    end
