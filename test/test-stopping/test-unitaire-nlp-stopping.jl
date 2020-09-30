@@ -7,6 +7,13 @@ nlp = ADNLPModel(f, zeros(5))
 nlp_at_x = NLPAtX(zeros(5))
 stop_nlp = NLPStopping(nlp, nlp_at_x, optimality0 = 0.0, optimality_check = (x,y) -> unconstrained_check(x,y))
 
+#You cannot create an NLPStopping with a GenericState
+try
+    fail_stop = NLPStopping(nlp, GenericState(zeros(5)))
+    @test false
+catch
+    @test true
+end
 
 a = zeros(5)
 fill_in!(stop_nlp, a)

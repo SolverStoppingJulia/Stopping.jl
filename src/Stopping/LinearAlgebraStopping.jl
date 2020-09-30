@@ -151,9 +151,7 @@ function LAStopping(A :: AbstractLinearOperator,
                     b :: AbstractVector;
                     x :: AbstractVector = zeros(size(A,2)),
                     kwargs...)
- return LAStopping(LinearSystem(A,b, LACounters()), GenericState(x),
-                   max_cntrs =  _init_max_counters_linear_operators(),
-                   kwargs...)
+ return LAStopping(A, b, GenericState(x), kwargs...)
 end
 
 function LAStopping(A :: AbstractLinearOperator,
