@@ -19,12 +19,14 @@ ucon = [0.0]
 #We can create a NLPAtX for constrained optimization.
 #Here we provide y0 = [1.0]
 #Note that the default value is [0.0]
-nlp = ADNLPModel(x->rosenbrock(x), x0, y0 = y0,
-                 c=c, lcon=lcon, ucon=ucon,
-                 lvar=zeros(6), uvar = Inf * ones(6))
+#Warning: see https://github.com/JuliaSmoothOptimizers/NLPModels.jl/blob/master/src/autodiff_model.jl
+#for the proper way of defining an ADNLPModel
+meta = NLPModelMeta(6, x0=x0, lvar=zeros(6), uvar = Inf * ones(6),
+                    ncon = 1, y0 = [0.0], lcon=lcon, ucon=ucon)
+nlp = ADNLPModel(meta, Counters(), rosenbrock,  c)
 #We can create a NLPAtX for bounds-constrained optimization:
-nlp2 = ADNLPModel(x->rosenbrock(x), x0,
-                 lvar=zeros(6), uvar = Inf * ones(6))
+meta = NLPModelMeta(6, x0=x0, lvar=zeros(6), uvar = Inf * ones(6))
+nlp2 = ADNLPModel(meta, Counters(), rosenbrock,  x->[])
 #We can create a NLPAtX for unconstrained optimization:
 nlp3 = ADNLPModel(x->rosenbrock(x), x0)
 

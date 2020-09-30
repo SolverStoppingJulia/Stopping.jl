@@ -18,7 +18,10 @@
 f(x) = sum(x.^2)
 x0 = zeros(5)
 nlp = ADNLPModel(f, x0)
-nlp2 = ADNLPModel(f, x0, lvar = zeros(5), uvar = Inf * ones(5))
+#Warning: see https://github.com/JuliaSmoothOptimizers/NLPModels.jl/blob/master/src/autodiff_model.jl
+#for the proper way of defining an ADNLPModel
+meta = NLPModelMeta(5, x0=x0, lvar=zeros(5), uvar = Inf * ones(5))
+nlp2 = ADNLPModel(meta, Counters(), f,  x->[])
 nlp_at_x = NLPAtX(x0)
 x1 = ones(5)
 
