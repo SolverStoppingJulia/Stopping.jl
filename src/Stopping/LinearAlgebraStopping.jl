@@ -258,6 +258,6 @@ function normal_equation_check(pb    :: LLSModel,
                                state :: AbstractState;
                                pnorm :: Float64 = Inf,
                                kwargs...)
- nres = jtprod_residual(pb, state.x, jprod_residual(pb, state.x, state.x))
+ nres = jtprod_residual(pb, state.x, residual(pb, state.x))
  return norm(nres, pnorm)
 end

@@ -15,6 +15,15 @@ stop0.meta.norm_unbounded_x = 2
 stop!(stop0)
 @test status(stop0, list = true) == [:Optimal, :Unbounded] #indeed ||x||_2 = sqrt(6) !!
 
+#We now test that stop! verifies that:
+#- there are no NaN in the score
+#- if the listofstates != nothing, stop! increases the list of states with the current_state.
+stop0.meta.optimality_check = (a,b) -> NaN
+stop0.listofstates = ListStates(state0)
+stop!(stop0)
+@test :DomainError in status(stop0, list = true)
+@test length(stop0.listofstates) == 2
+
 #Initialize a GenericStopping by default
 stop_def = GenericStopping(rosenbrock, x0, atol = 1.0)
 @test stop_def.current_state.x == x0

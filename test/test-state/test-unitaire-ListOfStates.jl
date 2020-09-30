@@ -21,3 +21,7 @@ df1 = print(stest, verbose = false)
 df2 = print(stest2, verbose = false)
 
 @test typeof(df2) <: DataFrame
+
+stest3 = ListStates(-1, list = [s0, s1, s2], i = 3)
+
+@test stest3[2] == s1

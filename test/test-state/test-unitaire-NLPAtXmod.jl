@@ -69,6 +69,10 @@ c_uncons_nlp_at_x = copy_compress_state(uncons_nlp_at_x, max_vector_size = 5)
 @test c_uncons_nlp_at_x.x      == [0.0]
 @test c_uncons_nlp_at_x.lambda == [1.0]
 
+uncons_nlp_at_x.Hx = zeros(10,10)
+zip_uncons_nlp_at_x = compress_state!(uncons_nlp_at_x, keep = true, save_matrix = true, max_vector_size = 5, Hx = 1)
+zip_uncons_nlp_at_x.Hx == 0.0
+
 nlp_64 = NLPAtX(ones(10))
 nlp_64.x = ones(10)
 nlp_64.fx = 1.0

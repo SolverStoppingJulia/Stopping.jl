@@ -94,9 +94,19 @@ la_stop = LAStopping(A, b, GenericState(x0), max_iter = 150000, rtol = 1e-6, max
 sa_stop = LAStopping(sparse(A), b, GenericState(sparse(x0)), max_iter = 150000, rtol = 1e-6)
 op_stop = LAStopping(LinearSystem(LinearOperator(A), b), GenericState(x0), max_iter = 150000, rtol = 1e-6, max_cntrs =  Stopping._init_max_counters_linear_operators(nprod = 150000))
 
-@time RandomizedBlockKaczmarz(la_stop)
-@test status(la_stop) == :Optimal
-@time RandomizedBlockKaczmarz(sa_stop)
-@test status(sa_stop) == :Optimal
-@time RandomizedBlockKaczmarz(op_stop)
-@test status(op_stop) == :Optimal
+try
+ @time RandomizedBlockKaczmarz(la_stop)
+ @test status(la_stop) == :Optimal
+ @time RandomizedBlockKaczmarz(sa_stop)
+ @test status(sa_stop) == :Optimal
+ @time RandomizedBlockKaczmarz(op_stop)
+ @test status(op_stop) == :Optimal
+catch
+    @warn "If LSSModel.A does not exist consider [la_stop.pb.Avals[i,j] for (i) in la_stop.pb.Arows, j in la_stop.pb.Acols]"
+    #https://github.com/JuliaSmoothOptimizers/NLPModels.jl/blob/master/src/lls_model.jl
+end
+
+update!(la_stop.current_state, x = xref)
+@test normal_equation_check(la_stop.pb, la_stop.current_state) <= 1e-10
+update!(op_stop.current_state, x = xref)
+@test normal_equation_check(op_stop.pb, op_stop.current_state) <= 1e-10
