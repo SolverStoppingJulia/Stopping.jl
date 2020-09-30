@@ -53,7 +53,10 @@ stop_nlp.pb = nlp_max
 stop!(stop_nlp)
 @test !(:UnboundedPb in status(stop_nlp, list = true)) # the problem is NOT unbounded as fx <= 1.0e50
 
-nlp_bnd = ADNLPModel(f, zeros(5), lvar = zeros(5), uvar = zeros(5))
+#Warning: see https://github.com/JuliaSmoothOptimizers/NLPModels.jl/blob/master/src/autodiff_model.jl
+#for the proper way of defining an ADNLPModel
+nlp_bnd = ADNLPModel(NLPModelMeta(5, x0=zeros(5), lvar=zeros(5), uvar=zeros(5)),
+                     Counters(), f, x->[])
 stop_bnd = NLPStopping(nlp_bnd)
 fill_in!(stop_bnd, zeros(5))
 @test KKT(stop_bnd.pb, stop_bnd.current_state) == 0.0

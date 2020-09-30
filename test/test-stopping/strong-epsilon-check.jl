@@ -10,6 +10,8 @@
 # Note that if tol_check is a Vector and the score is a Number, only
 # the smallest value of tol_check is considered.
 #
+#Warning: see https://github.com/JuliaSmoothOptimizers/NLPModels.jl/blob/master/src/autodiff_model.jl
+#for the proper way of defining an ADNLPModel
 #
 ###############################################################################
 
@@ -17,9 +19,9 @@
 x0 = ones(2)
 t  = 1.0
 c(x) = [(x[1] - t) .* (x[2] - t)]
-nlp = ADNLPModel(x -> x[1]+x[2],  x0,
-                 lvar = zeros(2), uvar = Inf*ones(2),
-                 y0 = zeros(1), c = c, lcon = -Inf*ones(1), ucon = zeros(1))
+meta = NLPModelMeta(2, x0=x0, lvar = zeros(2), uvar = Inf*ones(2),
+                    ncon = 1, y0=zeros(1), lcon = -Inf*ones(1), ucon = zeros(1))
+nlp = ADNLPModel(meta, Counters(), x -> x[1]+x[2], c)
 
 #We consider a vectorized optimality_check KKT function:
 function KKTvect(pb    :: AbstractNLPModel,
@@ -73,6 +75,15 @@ reinit!(stop_nlp, rstate = true) #reinitialize the Stopping and the State
 fill_in!(stop_nlp, sol)
 OK = stop!(stop_nlp)
 @test OK #However, sol is a solution.
+
+#We can also use an asymetric test on the optimality condition using tol_check_neg
+#by default tol_check_neg = - tol_check
+tol_check1_neg(atol,rtol,opt0) = - 1e-3 * ones(14)
+stop_nlp = NLPStopping(nlp, nlp_at_x_c, optimality_check = KKTvect,
+                       tol_check = tol_check1, tol_check_neg = tol_check1_neg)
+fill_in!(stop_nlp, sol)
+OK = stop!(stop_nlp)
+@test OK
 
 #Finally, let us comment on the case where the optimality_check returns a number:
 stop_nlp = NLPStopping(nlp, nlp_at_x_c, optimality_check = KKT, tol_check = tol_check1)
