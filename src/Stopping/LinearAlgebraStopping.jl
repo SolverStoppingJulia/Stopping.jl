@@ -64,12 +64,6 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
                          zero_start     :: Bool = false,
                          kwargs...)
 
-         try
-             pb.A, pb.b
-         catch
-            throw("pb must have A and b entries")
-         end
-
          if !(isempty(kwargs))
             meta = StoppingMeta(;max_cntrs = _init_max_counters_NLS(), optimality_check = linear_system_check, kwargs...)
          end
@@ -248,6 +242,8 @@ end
 linear\\_system\\_check: return ||A'Ax-A'b||_p
 
 `linear_system_check(:: Any, :: AbstractState; pnorm :: Float64 = Inf, kwargs...)`
+
+Note: pb must have A and b entries
 """
 function normal_equation_check(pb    :: LinearSystem,
                                state :: AbstractState;
