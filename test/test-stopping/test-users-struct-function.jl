@@ -56,4 +56,4 @@ stop!(stop_bnd)
 @test stop_bnd.user_specific_struct.feasible == true
 
 #remove the _user_check!(stp :: NLPStopping, x :: Main.Stopping.Iterate) from the workspace
-Base.delete_method(@which _user_check!(stop_bnd, ones(6)))
+Base.delete_method(which(_user_check!, (NLPStopping,Main.Stopping.Iterate,)))
