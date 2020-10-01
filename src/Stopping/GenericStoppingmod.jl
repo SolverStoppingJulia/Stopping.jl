@@ -15,8 +15,9 @@
                        of a subproblem.
                        If not a subproblem, then *nothing*.
 - (opt) listofstates : ListStates designed to store the history of States.
+- (opt) user_specific_struct : Contains any structure designed by the user.
 
- Constructor: `GenericStopping(:: Any, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), main_stp :: Union{AbstractStopping, Nothing} = nothing, kwargs...)`
+ Constructor: `GenericStopping(:: Any, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), main_stp :: Union{AbstractStopping, Nothing} = nothing, user_specific_struct :: Any = nothing, kwargs...)`
 
  Note: Metadata can be provided by the user or created with the Stopping
        constructor via kwargs. If a specific StoppingMeta is given and
@@ -61,18 +62,22 @@ mutable struct GenericStopping <: AbstractStopping
     # History of states
     listofstates :: Union{ListStates, Nothing}
 
+    # User-specific structure
+    user_specific_struct :: Any
+
     function GenericStopping(pb            :: Any,
                              current_state :: AbstractState;
                              meta          :: AbstractStoppingMeta = StoppingMeta(),
                              main_stp      :: Union{AbstractStopping, Nothing} = nothing,
                              list          :: Union{ListStates, Nothing} = nothing,
+                             user_specific_struct :: Any = nothing,
                              kwargs...)
 
      if !(isempty(kwargs))
       meta = StoppingMeta(; kwargs...)
      end
 
-     return new(pb, meta, current_state, main_stp, list)
+     return new(pb, meta, current_state, main_stp, list, user_specific_struct)
     end
 end
 
@@ -259,6 +264,8 @@ function stop!(stp :: AbstractStopping; kwargs...)
    if stp.main_stp != nothing
        _main_pb_check!(stp, x)
    end
+
+   _user_check!(stp, x)
  end
 
  OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled
@@ -471,6 +478,15 @@ function _null_test(stp  :: AbstractStopping, optimality :: Union{Number,Abstrac
     optimal &=  !(false in (optimality .>= check_neg))
 
     return optimal
+end
+
+"""
+\\_user\\_check: nothing by default.
+
+`_user_check!( :: AbstractStopping, x :: Iterate)`
+"""
+function _user_check!(stp :: AbstractStopping, x :: Iterate)
+ nothing
 end
 
 """

@@ -17,8 +17,10 @@ Input :
 - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
                           of a subproblem.
                           If not a subproblem, then nothing.
+- (opt) listofstates : ListStates designed to store the history of States.
+- (opt) user_specific_struct : Contains any structure designed by the user.
 
-`LS_Stopping(:: Any, :: LSAtT; meta :: AbstractStoppingMeta = StoppingMeta(), main_stp :: Union{AbstractStopping, Nothing} = nothing, kwargs...)`
+`LS_Stopping(:: Any, :: LSAtT; meta :: AbstractStoppingMeta = StoppingMeta(), main_stp :: Union{AbstractStopping, Nothing} = nothing, user_specific_struct :: Any = nothing, kwargs...)`
 
 
  Note:
@@ -48,18 +50,22 @@ mutable struct LS_Stopping <: AbstractStopping
     # History of states
     listofstates :: Union{ListStates, Nothing}
 
+    # User-specific structure
+    user_specific_struct :: Any
+
     function LS_Stopping(pb             :: Any,
                          current_state  :: LSAtT;
                          meta           :: AbstractStoppingMeta = StoppingMeta(),
                          main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                          list           :: Union{ListStates, Nothing} = nothing,
+                         user_specific_struct :: Any = nothing,
                          kwargs...)
 
         if !(isempty(kwargs))
            meta = StoppingMeta(;optimality_check = armijo, kwargs...)
-		end
+        end
 
-        return new(pb, meta, current_state, main_stp, list)
+        return new(pb, meta, current_state, main_stp, list, user_specific_struct)
     end
 
 end

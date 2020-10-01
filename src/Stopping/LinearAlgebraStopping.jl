@@ -21,8 +21,9 @@ Attributes:
                           of a subproblem.
                           If not a subproblem, then nothing.
 - (opt) listofstates : ListStates designed to store the history of States.
+- (opt) user_specific_struct : Contains any structure designed by the user.
 
-`LAStopping(:: LLSModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta() main_stp :: Union{AbstractStopping, Nothing} = nothing, kwargs...)`
+`LAStopping(:: LLSModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta() main_stp :: Union{AbstractStopping, Nothing} = nothing, user_specific_struct :: Any = nothing, kwargs...)`
 
 Note:
 - Kwargs are forwarded to the classical constructor.
@@ -52,6 +53,8 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
      main_stp :: Union{AbstractStopping, Nothing}
      # History of states
      listofstates :: Union{ListStates, Nothing}
+     # User-specific structure
+     user_specific_struct :: Any
 
      #zero is initial point
      zero_start :: Bool
@@ -61,6 +64,7 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
                          meta           :: AbstractStoppingMeta = StoppingMeta(max_cntrs = _init_max_counters_NLS(), optimality_check = linear_system_check),
                          main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                          list           :: Union{ListStates, Nothing} = nothing,
+                         user_specific_struct :: Any = nothing,
                          zero_start     :: Bool = false,
                          kwargs...)
 
@@ -68,7 +72,7 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
             meta = StoppingMeta(;max_cntrs = _init_max_counters_NLS(), optimality_check = linear_system_check, kwargs...)
          end
 
-         return new(pb, meta, current_state, main_stp, list, zero_start)
+         return new(pb, meta, current_state, main_stp, list, user_specific_struct, zero_start)
      end
  end
 
@@ -158,7 +162,7 @@ function LAStopping(A :: AbstractLinearOperator,
                     b :: AbstractVector,
                     state :: AbstractState;
                     kwargs...)
- return LAStopping(LinearSystem(A,b, LACounters()), state,
+ return LAStopping(LinearSystem(A,b), state,
                    max_cntrs =  _init_max_counters_linear_operators(),
                    kwargs...)
 end

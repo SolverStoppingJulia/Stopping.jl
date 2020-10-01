@@ -93,7 +93,7 @@ la_stop = LAStopping(A, b, GenericState(x0), max_iter = 150000, rtol = 1e-6, max
 #Tangi: maybe start! should send a Warning for such problem !?
 sa_stop = LAStopping(sparse(A), b, GenericState(sparse(x0)), max_iter = 150000, rtol = 1e-6)
 op_stop = LAStopping(LinearSystem(LinearOperator(A), b), GenericState(x0), max_iter = 150000, rtol = 1e-6, max_cntrs =  Stopping._init_max_counters_linear_operators(nprod = 150000))
-opbis_stop = LAStopping(LinearSystem(LinearOperator(A), b), GenericState(x0))
+opbis_stop = LAStopping(LinearOperator(A), b)
 
 try
  @time RandomizedBlockKaczmarz(la_stop)

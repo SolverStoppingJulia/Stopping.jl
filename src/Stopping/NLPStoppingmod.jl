@@ -14,8 +14,9 @@ Attributes:
                           of a subproblem.
                           If not a subproblem, then nothing.
 - (opt) listofstates : ListStates designed to store the history of States.
+- (opt) user_specific_struct : Contains any structure designed by the user.
 
-`NLPStopping(:: AbstractNLPModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), max_cntrs :: Dict = _init_max_counters(), main_stp :: Union{AbstractStopping, Nothing} = nothing, kwargs...)`
+`NLPStopping(:: AbstractNLPModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), max_cntrs :: Dict = _init_max_counters(), main_stp :: Union{AbstractStopping, Nothing} = nothing, user_specific_struct :: Any = nothing, kwargs...)`
 
  Note:
 - designed for *NLPAtX* State. Constructor checks that the State has the
@@ -45,11 +46,15 @@ mutable struct NLPStopping <: AbstractStopping
     # History of states
     listofstates :: Union{ListStates, Nothing}
 
+    # User-specific structure
+    user_specific_struct :: Any
+
     function NLPStopping(pb             :: AbstractNLPModel,
                          current_state  :: AbstractState;
                          meta           :: AbstractStoppingMeta = StoppingMeta(;max_cntrs = _init_max_counters(), optimality_check = KKT),
                          main_stp       :: Union{AbstractStopping, Nothing} = nothing,
-                         list          :: Union{ListStates, Nothing} = nothing,
+                         list           :: Union{ListStates, Nothing} = nothing,
+                         user_specific_struct  :: Any = nothing,
                          kwargs...)
 
         if !(isempty(kwargs))
@@ -69,7 +74,7 @@ mutable struct NLPStopping <: AbstractStopping
             throw("error: missing entries in the given current_state")
         end
 
-        return new(pb, meta, current_state, main_stp, list)
+        return new(pb, meta, current_state, main_stp, list, user_specific_struct)
     end
 
 end
