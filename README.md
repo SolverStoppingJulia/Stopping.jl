@@ -2,7 +2,6 @@
 
 [![Build Status](https://travis-ci.org/vepiteski/Stopping.jl.svg?branch=master)](https://travis-ci.org/vepiteski/Stopping.jl)
 [![Coverage Status](https://coveralls.io/repos/vepiteski/Stopping.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/vepiteski/Stopping.jl?branch=julia-0.7)
-[![codecov.io](http://codecov.io/github/vepiteski/Stopping.jl/coverage.svg?branch=master)](http://codecov.io/github/vepiteski/Stopping.jl?branch=master)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://vepiteski.github.io/Stopping.jl/dev/)
 
 

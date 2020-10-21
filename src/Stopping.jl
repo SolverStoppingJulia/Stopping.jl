@@ -50,7 +50,7 @@ using LinearAlgebra, DataFrames, NLPModels
 
 const Iterate           = Union{Number, AbstractVector, Nothing}
 const FloatVoid         = Union{Number, Nothing}
-const MatrixType        = Union{Number, AbstractArray, AbstractMatrix, Nothing}
+const MatrixType        = Union{Number, AbstractArray, AbstractMatrix, Nothing} #Krylov.PreallocatedLinearOperator, 
 
 """
 AbstractStopping

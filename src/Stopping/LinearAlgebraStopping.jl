@@ -76,7 +76,7 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
      end
  end
 
-function LAStopping(A :: AbstractMatrix,
+function LAStopping(A :: Any,
                     b :: AbstractVector;
                     x :: AbstractVector = zeros(size(A,2)),
                     sparse = true,
@@ -88,7 +88,7 @@ function LAStopping(A :: AbstractMatrix,
  return LAStopping(pb, GenericState(x), max_cntrs = mcntrs; kwargs...)
 end
 
-function LAStopping(A     :: AbstractMatrix,
+function LAStopping(A     :: Any,
                     b     :: AbstractVector,
                     state :: AbstractState;
                     sparse = true,
