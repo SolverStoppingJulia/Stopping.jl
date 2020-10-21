@@ -69,6 +69,7 @@ You can access the most up-to-date version of the Stopping package using:
 ```julia
 pkg> add https://github.com/vepiteski/Stopping.jl
 pkg> test Stopping
+pkg> status Stopping
 ```
 ## Example
 

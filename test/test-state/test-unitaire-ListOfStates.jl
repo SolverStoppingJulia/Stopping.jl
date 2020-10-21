@@ -24,6 +24,12 @@ df3 = print(stest2, verbose = false, print_sym = [:x])
 
 @test typeof(df2) <: DataFrame
 
-stest3 = ListStates(-1, list = [s0, s1, s2], i = 3)
+stest3 = ListStates(-1, list = [[s0,nothing], [s1,nothing], [s2,nothing]], i = 3)
 
-@test stest3[2] == s1
+@test stest3[2,1] == s1
+
+#nested lists
+
+stest4 = ListStates(-1, list = [[s0, stest3]])
+
+df4 = print(stest4[1,2], verbose = false)

@@ -1,3 +1,5 @@
+abstract type AbstractListStates end
+
 """
 Type: list of States
 
@@ -8,17 +10,21 @@ Constructor:
 Note:
 - If n != -1, then it stores at most n AbstractState.
 - add additional methods following https://docs.julialang.org/en/v1/base/collections/
+- ListStates recursively handles sub-list of states as the attribute list is
+an array of pair whose first component is a, AbstractState and the second
+component is a ListStates (or nothing).
 
 Examples:
 ListStates(state)
 ListStates(state, n = 2)
-ListStates(n = -1, list = [state1, state2], i = 2)
+ListStates(n = -1, list = [[state1, nothing], [state2, nothing]], i = 2)
+ListStates(n = -1, list = [[state1, another_list]], i = 1)
 """
-mutable struct ListStates
+mutable struct ListStates <: AbstractListStates
 
   n     :: Int #If length of the list is knwon, -1 if unknown
   i     :: Int #current index in the list/length
-  list :: Array #list of States
+  list  :: Array #list of [States, list]
 
 end
 
@@ -28,7 +34,7 @@ end
 
 function ListStates(state :: AbstractState; n :: Int = -1, kwargs...)
     i =  1
-    list = [copy_compress_state(state; kwargs...)]
+    list = [[copy_compress_state(state; kwargs...), nothing]]
   return ListStates(n, i, list)
 end
 
@@ -43,7 +49,7 @@ Note: kwargs are passed to the compress_state call.
 
 see also: ListStates, State.compress\\_state, State.copy\\_compress\\_state
 """
-function add_to_list!(list :: ListStates, state :: AbstractState; kwargs...)
+function add_to_list!(list :: AbstractListStates, state :: AbstractState; kwargs...)
 
  if typeof(list.n) <: Int && list.n > 0 #If n is a natural number
   if list.i + 1 > list.n
@@ -53,9 +59,9 @@ function add_to_list!(list :: ListStates, state :: AbstractState; kwargs...)
       list.i += 1
   end
   cstate = copy_compress_state(state; kwargs...)
-  push!(list.list, cstate)
+  push!(list.list, [cstate, nothing])
  else
-  push!(list.list, copy_compress_state(state; kwargs...))
+  push!(list.list, [copy_compress_state(state; kwargs...), nothing])
   list.i += 1
  end
 
@@ -70,7 +76,7 @@ length: return the number of States in the list.
 
 see also: print, add_to_list!, ListStates
 """
-function length(list :: ListStates)
+function length(list :: AbstractListStates)
  return list.i
 end
 
@@ -88,12 +94,12 @@ the returned DataFrame still contains all the columns.
 
 see also: add\\_to\\_list!, length, ListStates
 """
-function print(list :: ListStates; verbose :: Bool = true, print_sym :: Union{Nothing,Array{Symbol,1}} = nothing)
+function print(list :: AbstractListStates; verbose :: Bool = true, print_sym :: Union{Nothing,Array{Symbol,1}} = nothing)
 
    df = DataFrame()
 
-   for k in fieldnames(typeof(list.list[1]))
-       df[!,k] = [getfield(i, k) for i in list.list]
+   for k in fieldnames(typeof(list.list[1,1]))
+       df[!,k] = [getfield(i[1], k) for i in list.list]
    end
 
    if print_sym == nothing
@@ -108,10 +114,16 @@ end
 import Base.getindex
 """
 `getindex(:: ListStates, :: Int)`
+`getindex(:: ListStates, :: Int, :: Int)`
 
 Example:
 stop_lstt.listofstates.list[3]
+stop_lstt.listofstates.list[3,1]
 """
-function getindex(list :: ListStates, i :: Int)
+function getindex(list :: AbstractListStates, i :: Int)
     return list.list[i]
+end
+
+function getindex(list :: AbstractListStates, i :: Int, j :: Int)
+    return list.list[i][j]
 end

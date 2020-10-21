@@ -16,7 +16,7 @@ function Newton_Stop(nlp :: AbstractNLPModel,
     while !OK
         Hx   = hess(nlp, x)
         H    = Matrix(Symmetric(Hx,:L))
-        O, Δ = eigvecs(H), eigvals(H)
+        Δ, O = eigen(H)
 
         # Boost negative values of Δ to 1e-8
         D = Δ .+ max.((1e-8 .- Δ), 0.0)

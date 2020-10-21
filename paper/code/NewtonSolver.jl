@@ -10,7 +10,7 @@ function Newton_Spectral(nlp:: AbstractNLPModel,
 
     while (norm(g, Inf) > ϵ) && (iter <= maxiter)
         H    = Matrix(Symmetric(hess(nlp, x),:L))
-        O, Δ = eigvecs(H), eigvals(H)
+        Δ, O = eigen(H)
 
         # Boost negative values of Δ to 1e-8
         D = Δ .+ max.((1e-8 .- Δ), 0.0)

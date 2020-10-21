@@ -1,6 +1,6 @@
 name = "Stopping"
 uuid = "c4fe5a9e-e7fb-5c3d-89d5-7f405ab2214f"
-authors = ["Goysa2 <samuel.goyette@usherbrooke.ca>"]
+authors = ["Jean-Pierre Dussault <Jean-Pierre.Dussault@USherbrooke.CA>","Tangi Migot <tangi.migot@gmail.com>","Sam Goyette <samuel.goyette@usherbrooke.ca>"]
 version = "0.2.3"
 
 
