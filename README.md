@@ -19,9 +19,12 @@ When a solver is called on an optimization model, four outcomes may happen:
 This tool eases the first three items above. It defines a type
 
     mutable struct GenericStopping <: AbstractStopping
-        problem       :: Any          # an arbitrary instance of a problem
-        meta          :: AbstractStoppingMeta # contains the used parameters
-        current_state :: AbstractState        # the current state
+        problem       :: Any                  # an arbitrary instance of a problem
+        meta          :: AbstractStoppingMeta # contains the used parameters and stopping status
+        current_state :: AbstractState        # Current information on the problem
+        main_stp :: Union{AbstractStopping, Nothing} # Stopping of the main problem, or nothing
+        listofstates :: Union{ListStates, Nothing}   # History of states
+        user_specific_struct :: Any                  # User-specific structure
 
 The [StoppingMeta](https://github.com/vepiteski/Stopping.jl/blob/master/src/Stopping/StoppingMetamod.jl) provides default tolerances, maximum resources, ...  as well as (boolean) information on the result.
 
@@ -33,10 +36,9 @@ redefining a State and some functions specific to your problem.
 
 We provide some specialization of the GenericStopping for optimization:
   * [NLPStopping](https://github.com/vepiteski/Stopping.jl/blob/master/src/Stopping/NLPStoppingmod.jl) with [NLPAtX](https://github.com/vepiteski/Stopping.jl/blob/master/src/State/NLPAtXmod.jl) as a specialized State: for non-linear programming (based on [NLPModels](https://github.com/JuliaSmoothOptimizers/NLPModels.jl));
+  * [LAStopping](https://github.com/vepiteski/Stopping.jl/blob/master/src/Stopping/LinearAlgebraStopping.jl) with [GenericState](https://github.com/vepiteski/Stopping.jl/blob/master/src/State/GenericStatemod.jl): for linear algebra problems.
   * [LS_Stopping](https://github.com/vepiteski/Stopping.jl/blob/master/src/Stopping/LineSearchStoppingmod.jl) with [LSAtT](https://github.com/vepiteski/Stopping.jl/blob/master/src/State/LSAtTmod.jl) as a specialized State: for 1d optimization;
   * more to come...
-
-In these examples, the function `optimality_residual` computes the residual of the optimality conditions is an additional attribute of the types.
 
 ## Functions
 
@@ -83,13 +85,13 @@ f(x) = 0.5 * x' * Q * x
 nlp = ADNLPModel(f,  ones(5))
 ```
 
-We now initialize the NLPStopping. First create a State.
+We now initialize the *NLPStopping*. First create a State.
 ```
 nlp_at_x = NLPAtX(ones(5))
 ```
 We use [unconstrained_check](https://github.com/vepiteski/Stopping.jl/blob/master/src/Stopping/nlp_admissible_functions.jl) as an optimality function
 ```
-stop_nlp = NLPStopping(nlp, unconstrained_check, nlp_at_x)
+stop_nlp = NLPStopping(nlp, nlp_at_x, optimality_check = unconstrained_check)
 ```
 Note that, since we used a default State, an alternative would have been:
 ```
