@@ -115,10 +115,11 @@ end
 """
  start!: update the Stopping and return a boolean true if we must stop.
 
- `start!(:: AbstractStopping; kwargs...)`
+ `start!(:: AbstractStopping; no_start_opt_check :: Bool = false, kwargs...)`
 
  Purpose is to know if there is a need to even perform an optimization algorithm
- or if we are at an optimal solution from the beginning.
+ or if we are at an optimal solution from the beginning. Set *no\\_start\\_opt\\_check*
+ to *true* to avoid checking optimality.
 
  The function *start!* successively calls: *\\_domain\\_check*, *\\_optimality\\_check*,
  *\\_null\\_test*
@@ -126,7 +127,7 @@ end
  Note: - *start!* initialize the start\\_time (if not done before) and *meta.optimality0*.
        - Keywords argument are sent to the *\\_optimality\\_check!* call.
 """
-function start!(stp :: AbstractStopping; kwargs...)
+function start!(stp :: AbstractStopping; no_start_opt_check :: Bool = false, kwargs...)
 
  stt_at_x = stp.current_state
  x        = stt_at_x.x
@@ -141,11 +142,11 @@ function start!(stp :: AbstractStopping; kwargs...)
  end
 
  stp.meta.domainerror = _domain_check(stp.current_state)
- if !stp.meta.domainerror
+ if !stp.meta.domainerror && !no_start_opt_check
    # Optimality check
    optimality0          = _optimality_check(stp; kwargs...)
-   stp.meta.optimality0 = optimality0
-   if isnan(optimality0)
+   stp.meta.optimality0 = norm(optimality0, Inf)
+   if (true in isnan.(optimality0))
      stp.meta.domainerror = true
    end
 

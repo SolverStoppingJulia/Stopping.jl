@@ -116,8 +116,7 @@ include("activeset.jl")
 
 printstyled("Constrained optimization: active-set algorithm tutorial.\n", color = :green)
 x0 = 1.5*ones(6);x0[6]=1.0
-nlp_bnd = ADNLPModel(rosenbrock,  x0,
-                 lvar = fill(-10.0,size(x0)), uvar = fill(1.5,size(x0)))
+nlp_bnd = ADNLPModel(rosenbrock,  x0, fill(-10.0,size(x0)), fill(1.5,size(x0)))
 
 nlp_bnd_at_x = NLPAtX(x0)
 stop_nlp_c = NLPStopping(nlp_bnd, max_iter = 10)
@@ -141,9 +140,10 @@ include("penalty.jl")
 printstyled("Constrained optimization: quadratic penalty tutorial.\n", color = :green)
 x0 = 1.5*ones(6)
 c(x) = [sum(x)]
+# ADNLPModel(f, x0, lvar, uvar, c, lcon, ucon)
 nlp2 = ADNLPModel(rosenbrock,  x0,
-                 lvar = fill(-10.0,size(x0)), uvar = fill(10.0,size(x0)),
-                 y0 = [0.0], c = c, lcon = [-Inf], ucon = [5.])
+                  fill(-10.0,size(x0)), fill(10.0,size(x0)),
+                   c, [-Inf], [5.])
 
 nlp_at_x_c = NLPAtX(x0, zeros(nlp2.meta.ncon))
 stop_nlp_c = NLPStopping(nlp2, nlp_at_x_c, atol = 1e-3,
