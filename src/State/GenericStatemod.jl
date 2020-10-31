@@ -23,25 +23,25 @@ GenericState(x, current\\_score = 1.0)
 
 See also: Stopping, NLPAtX
 """
-mutable struct GenericState <: AbstractState
+mutable struct GenericState{T<:Union{AbstractFloat,AbstractVector}} <: AbstractState
 
-    x :: AbstractVector
+    x   :: T
 
-    d   :: Iterate
-    res :: Iterate
+    d   :: Union{T,eltype(T),Nothing}
+    res :: Union{T,eltype(T),Nothing}
 
     #Current time
-    current_time  :: FloatVoid
+    current_time  :: Union{eltype(T),Nothing}
     #Current score
-    current_score :: Iterate
+    current_score :: Union{T,eltype(T),Nothing}
 
-    function GenericState(x             :: AbstractVector;
-                          d             :: Iterate   = nothing,
-                          res           :: Iterate   = nothing,
-                          current_time  :: FloatVoid = nothing,
-                          current_score :: Iterate = nothing)
+    function GenericState(x             :: T;
+                          d             :: Union{T,eltype(T),Nothing} = nothing,
+                          res           :: Union{T,eltype(T),Nothing} = nothing,
+                          current_time  :: Union{eltype(T),Nothing}   = nothing,
+                          current_score :: Union{T,eltype(T),Nothing} = nothing) where T <:Union{AbstractFloat,AbstractVector}
 
-      return new(x, d, res, current_time, current_score)
+      return new{T}(x, d, res, current_time, current_score)
    end
 end
 
@@ -63,7 +63,7 @@ update!(state1, convert = true, current\\_time = 2.0)
 
 See also: GenericState, reinit!, update\\_and\\_start!, update\\_and\\_stop!
 """
-function update!(stateatx :: AbstractState; convert = false, kwargs...)
+function update!(stateatx :: AbstractState; convert :: Bool = false, kwargs...)
 
  kwargs = Dict(kwargs)
 
@@ -96,7 +96,7 @@ Examples:
 reinit!(state2)
 reinit!(state2, current_time = 1.0)
 """
-function reinit!(stateatx :: AbstractState, x :: Iterate; kwargs...)
+function reinit!(stateatx :: AbstractState, x :: Union{Number, AbstractVector}; kwargs...)
 
  for k ∈ fieldnames(typeof(stateatx))
    if k != :x setfield!(stateatx, k, nothing) end
@@ -121,11 +121,17 @@ function _domain_check(stateatx :: AbstractState)
  domainerror = false
 
  for k ∈ fieldnames(typeof(stateatx))
-   try domainerror = domainerror || (true in isnan.(getfield(stateatx, k))) catch end
+     _temp = getfield(stateatx, k)
+     domainerror = domainerror || _check_nan(_temp)
  end
 
  return domainerror
 end
+
+_check_nan(field :: Any) = false #Nothing or Counters
+_check_nan(field :: SparseMatrixCSC) = any(isnan, field.nzval) #because checking in sparse matrices is too slow
+_check_nan(field :: Union{AbstractVector,AbstractMatrix}) = any(isnan, field)
+_check_nan(field :: AbstractFloat) = isnan(field)
 
 import Base.copy
 ex=:(_genobj(typ)=$(Expr(:new, :typ))); eval(ex)

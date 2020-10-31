@@ -32,19 +32,19 @@ Attributes:
 mutable struct NLPStopping <: AbstractStopping
 
     # problem
-    pb :: AbstractNLPModel
+    pb                   :: AbstractNLPModel
 
     # Common parameters
-    meta      :: AbstractStoppingMeta
+    meta                 :: AbstractStoppingMeta
 
     # current state of the problem
-    current_state :: AbstractState
+    current_state        :: AbstractState
 
     # Stopping of the main problem, or nothing
-    main_stp :: Union{AbstractStopping, Nothing}
+    main_stp             :: Union{AbstractStopping, Nothing}
 
     # History of states
-    listofstates :: Union{ListStates, Nothing}
+    listofstates         :: Union{ListStates, Nothing}
 
     # User-specific structure
     user_specific_struct :: Any
@@ -149,7 +149,7 @@ fill_in!: (NLPStopping version) a function that fill in the required values in t
 `fill_in!( :: NLPStopping, :: Iterate; fx :: Iterate = nothing, gx :: Iterate = nothing, Hx :: Iterate = nothing, cx :: Iterate = nothing, Jx :: Iterate = nothing, lambda :: Iterate = nothing, mu :: Iterate = nothing, matrix_info :: Bool = true, kwargs...)`
 """
 function fill_in!(stp  :: NLPStopping,
-                  x    :: Iterate;
+                  x    :: AbstractVector;
                   fx   :: Iterate     = nothing,
                   gx   :: Iterate     = nothing,
                   Hx   :: Iterate     = nothing,
@@ -205,7 +205,7 @@ Note:
 - all the NLPModels have an attribute *counters* and a function *sum_counters(nlp)*.
 """
 function _resources_check!(stp    :: NLPStopping,
-                           x      :: Iterate)
+                           x      :: AbstractVector)
 
   cntrs = stp.pb.counters
   update!(stp.current_state, evals = cntrs)
@@ -256,7 +256,7 @@ otherwise check *state.fx* >= *meta.unbounded_threshold*.
 - *state.cx* is unbounded if larger than *|meta.unbounded_threshold|*.
 """
 function _unbounded_problem_check!(stp  :: NLPStopping,
-                                   x    :: Iterate)
+                                   x    :: AbstractVector)
 
  if stp.current_state.fx == nothing
 	 stp.current_state.fx = obj(stp.pb, x)

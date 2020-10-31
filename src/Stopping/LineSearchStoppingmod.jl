@@ -36,19 +36,19 @@ See also GenericStopping, NLPStopping, LSAtT
  """
 mutable struct LS_Stopping <: AbstractStopping
     # problem
-    pb :: Any
+    pb                   :: Any
 
     # shared information with linesearch and other stopping
-    meta :: AbstractStoppingMeta
+    meta                 :: AbstractStoppingMeta
 
     # current information on linesearch
-    current_state :: LSAtT
+    current_state        :: LSAtT
 
     # Stopping of the main problem, or nothing
-    main_stp :: Union{AbstractStopping, Nothing}
+    main_stp             :: Union{AbstractStopping, Nothing}
 
     # History of states
-    listofstates :: Union{ListStates, Nothing}
+    listofstates         :: Union{ListStates, Nothing}
 
     # User-specific structure
     user_specific_struct :: Any
@@ -80,8 +80,8 @@ end
 
 Note: evaluate the objective function is *state.ht* is void.
 """
-function _unbounded_problem_check!(stp  :: LS_Stopping,
-                                   x    :: Iterate)
+function _unbounded_problem_check!(stp :: LS_Stopping,
+                                   x   :: T) where T <: Union{Number, AbstractVector}
 
  if stp.current_state.ht == nothing && typeof(stp.pb) <: AbstractNLPModel && typeof(x) <: AbstractVector
      stp.current_state.ht = obj(stp.pb, x)
@@ -101,8 +101,8 @@ This is the LS\\_Stopping specialization.
 
 Note: If the problem is an AbstractNLPModel check the number of evaluations of *f* and *sum*.
 """
-function _resources_check!(stp    :: LS_Stopping,
-                           x      :: Iterate)
+function _resources_check!(stp :: LS_Stopping,
+                           x   :: T) where T <: Union{Number, AbstractVector}
 
  max_evals = false
  max_f     = false

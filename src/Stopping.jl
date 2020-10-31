@@ -46,7 +46,7 @@ the Stopping to reuse for another call.
 """
 module Stopping
 
-using LinearAlgebra, LinearOperators, DataFrames, NLPModels
+using LinearAlgebra, LinearOperators, SparseArrays, DataFrames, NLPModels
 
 const Iterate           = Union{Number, AbstractVector, Nothing}
 const FloatVoid         = Union{Number, Nothing}

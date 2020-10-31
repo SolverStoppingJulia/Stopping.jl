@@ -33,7 +33,7 @@ stop_bnd = NLPStopping(nlp, user_specific_struct = structtest)
 
 import Main.Stopping._user_check!
 #We now redefine _user_check! to verify the feasibility
-function _user_check!(stp :: NLPStopping, x :: Main.Stopping.Iterate)
+function _user_check!(stp :: NLPStopping, x :: T) where T <: Union{Number, AbstractVector}
  cx   = stp.current_state.cx
  feas = max.( stp.pb.meta.lcon - cx,
               cx - stp.pb.meta.ucon,
@@ -56,4 +56,4 @@ stop!(stop_bnd)
 @test stop_bnd.user_specific_struct.feasible == true
 
 #remove the _user_check!(stp :: NLPStopping, x :: Main.Stopping.Iterate) from the workspace
-Base.delete_method(which(_user_check!, (NLPStopping,Main.Stopping.Iterate,)))
+Base.delete_method(which(_user_check!, (NLPStopping,Union{Number, AbstractVector},)))

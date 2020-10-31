@@ -41,32 +41,32 @@ Note:
 
 See also: GenericState, update!, update\\_and\\_start!, update\\_and\\_stop!, reinit!
 """
-mutable struct 	NLPAtX <: AbstractState
+mutable struct 	NLPAtX{T <: AbstractVector} <: AbstractState
 
 #Unconstrained State
-    x            :: AbstractVector     # current point
-    fx           :: FloatVoid   # objective function
-    gx           :: Iterate     # gradient size: x
+    x            :: T     # current point
+    fx           :: Union{eltype(T),Nothing} # objective function
+    gx           :: Union{T,eltype(T),Nothing}  # gradient size: x
     Hx           :: MatrixType  # hessian size: |x| x |x|
 
 #Bounds State
-    mu           :: Iterate     # Lagrange multipliers with bounds size of |x|
+    mu           :: Union{T,eltype(T),Nothing} # Lagrange multipliers with bounds size of |x|
 
 #Constrained State
-    cx           :: Iterate     # vector of constraints lc <= c(x) <= uc
+    cx           :: Union{T,eltype(T),Nothing} # vector of constraints lc <= c(x) <= uc
     Jx           :: MatrixType  # jacobian matrix, size: |lambda| x |x|
-    lambda       :: AbstractVector    # Lagrange multipliers
+    lambda       :: T    # Lagrange multipliers
 
-    d            :: Iterate #search direction
-    res          :: Iterate #residual
+    d            :: Union{T,eltype(T),Nothing} #search direction
+    res          :: Union{T,eltype(T),Nothing} #residual
 
  #Resources State
-    current_time   :: FloatVoid
-    current_score  :: Iterate
+    current_time   :: Union{eltype(T),Nothing}
+    current_score  :: Union{T,eltype(T),Nothing}
     evals          :: Counters
 
- function NLPAtX(x             :: AbstractVector,
-                 lambda        :: AbstractVector;
+ function NLPAtX(x             :: T,
+                 lambda        :: T;
                  fx            :: FloatVoid    = nothing,
                  gx            :: Iterate      = nothing,
                  Hx            :: MatrixType   = nothing,
@@ -77,11 +77,11 @@ mutable struct 	NLPAtX <: AbstractState
                  res           :: Iterate      = nothing,
                  current_time  :: FloatVoid    = nothing,
                  current_score :: Iterate      = nothing,
-                 evals         :: Counters     = Counters())
+                 evals         :: Counters     = Counters()) where T <: AbstractVector
 
   _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
 
-  return new(x, fx, gx, Hx, mu, cx, Jx, lambda, d, res, current_time, current_score, evals)
+  return new{T}(x, fx, gx, Hx, mu, cx, Jx, lambda, d, res, current_time, current_score, evals)
  end
 end
 
@@ -114,7 +114,7 @@ prioritized over the existing *x*, *lambda* and the default *Counters*.
 function reinit!(stateatx :: NLPAtX, x :: AbstractVector, l :: AbstractVector; kwargs...)
 
  for k ∈ fieldnames(typeof(stateatx))
-   if !(k ∈ [:x,:lambda,:evals]) setfield!(stateatx, k, nothing) end
+   if k ∉ [:x,:lambda,:evals] setfield!(stateatx, k, nothing) end
  end
 
  return update!(stateatx; x=x, lambda = l, evals = Counters(), kwargs...)

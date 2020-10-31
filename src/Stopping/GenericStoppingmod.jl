@@ -38,61 +38,61 @@
 
  There is an additional default constructor which creates a Stopping with a default State.
 
- `GenericStopping(:: Any, :: Iterate; kwargs...)`
+ `GenericStopping(:: Any, :: Union{Number, AbstractVector}; kwargs...)`
 
  Note: Keywords arguments are forwarded to the classical constructor.
 
  Examples:
  GenericStopping(pb, x0, rtol = 1e-1)
 """
-mutable struct GenericStopping <: AbstractStopping
+mutable struct GenericStopping{T <: AbstractState} <: AbstractStopping
 
     # Problem
-    pb :: Any
+    pb                   :: Any
 
     # Problem stopping criterion
-    meta :: AbstractStoppingMeta
+    meta                 :: AbstractStoppingMeta
 
     # Current information on the problem
-    current_state :: AbstractState
+    current_state        :: T
 
     # Stopping of the main problem, or nothing
-    main_stp :: Union{AbstractStopping, Nothing}
+    main_stp             :: Union{AbstractStopping, Nothing}
 
     # History of states
-    listofstates :: Union{ListStates, Nothing}
+    listofstates         :: Union{ListStates, Nothing}
 
     # User-specific structure
     user_specific_struct :: Any
 
     function GenericStopping(pb            :: Any,
-                             current_state :: AbstractState;
+                             current_state :: T;
                              meta          :: AbstractStoppingMeta = StoppingMeta(),
                              main_stp      :: Union{AbstractStopping, Nothing} = nothing,
                              list          :: Union{ListStates, Nothing} = nothing,
                              user_specific_struct :: Any = nothing,
-                             kwargs...)
+                             kwargs...) where T<:AbstractState
 
      if !(isempty(kwargs))
       meta = StoppingMeta(; kwargs...)
      end
 
-     return new(pb, meta, current_state, main_stp, list, user_specific_struct)
+     return new{T}(pb, meta, current_state, main_stp, list, user_specific_struct)
     end
 end
 
-function GenericStopping(pb :: Any, x :: Iterate; kwargs...)
+function GenericStopping(pb :: Any, x :: Union{Number, AbstractVector}; kwargs...)
  return GenericStopping(pb, GenericState(x); kwargs...)
 end
 
 """
 fill_in!: fill in the unspecified values of the AbstractState.
 
-`fill_in!(:: AbstractStopping, x :: Iterate)`
+`fill_in!(:: AbstractStopping, x :: Union{Number, AbstractVector})`
 
 Note: NotImplemented for Abstract/Generic-Stopping.
 """
-function fill_in!(stp :: AbstractStopping, x :: Iterate)
+function fill_in!(stp :: AbstractStopping, x :: Union{Number, AbstractVector})
  return throw(error("NotImplemented function"))
 end
 
@@ -138,7 +138,7 @@ function start!(stp :: AbstractStopping; no_start_opt_check :: Bool = false, kwa
  end
  #and synchornize with the State
  if stt_at_x.current_time == nothing
-  update!(stt_at_x, current_time = time())
+   update!(stt_at_x, current_time = time())
  end
 
  stp.meta.domainerror = _domain_check(stp.current_state)
@@ -146,7 +146,7 @@ function start!(stp :: AbstractStopping; no_start_opt_check :: Bool = false, kwa
    # Optimality check
    optimality0          = _optimality_check(stp; kwargs...)
    stp.meta.optimality0 = norm(optimality0, Inf)
-   if (true in isnan.(optimality0))
+ if (true in isnan.(optimality0))
      stp.meta.domainerror = true
    end
 
@@ -246,7 +246,7 @@ function stop!(stp :: AbstractStopping; kwargs...)
  x        = stp.current_state.x
  time     = stp.meta.start_time
 
- stp.meta.domainerror = _domain_check(stp.current_state)
+ stp.meta.domainerror = _domain_check(stp.current_state) #pb here?
  if !stp.meta.domainerror
    # Optimality check
    score = _optimality_check(stp; kwargs...)
@@ -305,12 +305,12 @@ end
 \\_iteration\\_check!: check if the optimization algorithm has reached the iteration
 limit.
 
-`_iteration_check!(:: AbstractStopping,  :: Iterate)`
+`_iteration_check!(:: AbstractStopping,  :: Union{Number, AbstractVector})`
 
 Note: Compare *meta.iteration_limit* with *meta.nb\\_of\\_stop*.
 """
 function _iteration_check!(stp :: AbstractStopping,
-                           x   :: Iterate)
+                           x   :: T) where T <: Union{Number, AbstractVector}
 
  max_iter = stp.meta.nb_of_stop >= stp.meta.max_iter
 
@@ -322,12 +322,12 @@ end
 """
 \\_stalled\\_check!: check if the optimization algorithm is stalling.
 
-`_stalled_check!(:: AbstractStopping, :: Iterate)`
+`_stalled_check!(:: AbstractStopping, :: Union{Number, AbstractVector})`
 
 Note: By default *meta.stalled* is false for Abstract/Generic Stopping.
 """
 function _stalled_check!(stp :: AbstractStopping,
-                         x   :: Iterate)
+                         x   :: T) where T <: Union{Number, AbstractVector}
 
  stp.meta.stalled = false
 
@@ -337,14 +337,14 @@ end
 """
 \\_tired\\_check!: check if the optimization algorithm has been running for too long.
 
-`_tired_check!(:: AbstractStopping, :: Iterate; time_t :: Number = NaN)`
+`_tired_check!(:: AbstractStopping, :: Union{Number, AbstractVector}; time_t :: Number = NaN)`
 
 Note: - Return false if *time_t* is NaN (by default).
   - Update *meta.tired*.
 """
 function _tired_check!(stp    :: AbstractStopping,
-                       x      :: Iterate;
-                       time_t :: Number = NaN)
+                       x      :: T;
+                       time_t :: Number = NaN) where T <: Union{Number, AbstractVector}
 
  # Time check
  if !isnan(time_t)
@@ -363,12 +363,12 @@ end
 """
 \\_resources\\_check!: check if the optimization algorithm has exhausted the resources.
 
-`_resources_check!(:: AbstractStopping, :: Iterate)`
+`_resources_check!(:: AbstractStopping, :: Union{Number, AbstractVector})`
 
 Note: By default *meta.resources* is false for Abstract/Generic Stopping.
 """
 function _resources_check!(stp    :: AbstractStopping,
-                           x      :: Iterate)
+                           x      :: T) where T <: Union{Number, AbstractVector}
 
  max_evals = false
  max_f     = false
@@ -381,13 +381,13 @@ end
 """
 \\_main\\_pb\\_check!: check the resources and the time of the upper problem (if main_stp != nothing).
 
-`_main_pb_check!(:: AbstractStopping, :: Iterate)`
+`_main_pb_check!(:: AbstractStopping, :: Union{Number, AbstractVector})`
 
 Note: - Modify the meta of the *main_stp*.
       - By default `meta.main_pb = false`.
 """
 function _main_pb_check!(stp    :: AbstractStopping,
-                         x      :: Iterate)
+                         x      :: T) where T <: Union{Number, AbstractVector}
 
  # Time check
  time = stp.main_stp.meta.start_time
@@ -413,12 +413,12 @@ end
 """
 \\_unbounded\\_check!: check if x gets too big.
 
-`_unbounded_check!(:: AbstractStopping, :: Iterate)`
+`_unbounded_check!(:: AbstractStopping, :: Union{Number, AbstractVector})`
 
 Note: compare ||x|| with *meta.unbounded_x* and update *meta.unbounded*.
 """
 function _unbounded_check!(stp  :: AbstractStopping,
-                           x    :: Iterate)
+                           x    :: T) where T <: Union{Number, AbstractVector}
 
  pnorm = stp.meta.norm_unbounded_x
  x_too_large = norm(x, pnorm) >= stp.meta.unbounded_x
@@ -431,12 +431,12 @@ end
 """
 \\_unbounded\\_problem!: check if problem relative informations are unbounded
 
-`_unbounded_problem_check!(:: AbstractStopping, :: Iterate)`
+`_unbounded_problem_check!(:: AbstractStopping, :: Union{Number, AbstractVector})`
 
 Note: *meta.unbounded_pb* is false by default.
 """
 function _unbounded_problem_check!(stp  :: AbstractStopping,
-                                   x    :: Iterate)
+                                   x    :: T) where T <: Union{Number, AbstractVector}
 
  stp.meta.unbounded_pb = false
 
@@ -469,7 +469,7 @@ Note:
 and `meta.tol_check_neg(meta.atol, meta.rtol, meta.optimality0)`.
 - Compatible size is not verified.
 """
-function _null_test(stp  :: AbstractStopping, optimality :: Union{Number,AbstractVector})
+function _null_test(stp  :: AbstractStopping, optimality :: T) where T <: Union{Number,AbstractVector}
 
     atol, rtol, opt0 = stp.meta.atol, stp.meta.rtol, stp.meta.optimality0
     check_pos = stp.meta.tol_check(atol, rtol, opt0)
@@ -484,9 +484,9 @@ end
 """
 \\_user\\_check: nothing by default.
 
-`_user_check!( :: AbstractStopping, x :: Iterate)`
+`_user_check!( :: AbstractStopping, x :: Union{Number, AbstractVector})`
 """
-function _user_check!(stp :: AbstractStopping, x :: Iterate)
+function _user_check!(stp :: AbstractStopping, x   :: T) where T <: Union{Number, AbstractVector}
  nothing
 end
 

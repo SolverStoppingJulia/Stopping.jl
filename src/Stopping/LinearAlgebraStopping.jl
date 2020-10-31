@@ -41,46 +41,46 @@ There is additional constructors:
 
 See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, normal\\_equation\\_check
  """
- mutable struct LAStopping <: AbstractStopping
+ mutable struct LAStopping{T <: AbstractState, Pb <: Any} <: AbstractStopping
 
      # problem
-     pb :: Any
+     pb                   :: Pb
      # Common parameters
-     meta      :: AbstractStoppingMeta
+     meta                 :: AbstractStoppingMeta
      # current state of the problem
-     current_state :: AbstractState
+     current_state        :: T
      # Stopping of the main problem, or nothing
-     main_stp :: Union{AbstractStopping, Nothing}
+     main_stp             :: Union{AbstractStopping, Nothing}
      # History of states
-     listofstates :: Union{ListStates, Nothing}
+     listofstates         :: Union{ListStates, Nothing}
      # User-specific structure
      user_specific_struct :: Any
 
      #zero is initial point
-     zero_start :: Bool
+     zero_start           :: Bool
 
-     function LAStopping(pb             :: Any,
-                         current_state  :: AbstractState;
+     function LAStopping(pb             :: Pb,
+                         current_state  :: T;
                          meta           :: AbstractStoppingMeta = StoppingMeta(max_cntrs = _init_max_counters_NLS(), optimality_check = linear_system_check),
                          main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                          list           :: Union{ListStates, Nothing} = nothing,
                          user_specific_struct :: Any = nothing,
                          zero_start     :: Bool = false,
-                         kwargs...)
+                         kwargs...) where {T <: AbstractState, Pb <: Any}
 
          if !(isempty(kwargs))
             meta = StoppingMeta(;max_cntrs = _init_max_counters_NLS(), optimality_check = linear_system_check, kwargs...)
          end
 
-         return new(pb, meta, current_state, main_stp, list, user_specific_struct, zero_start)
+         return new{T,Pb}(pb, meta, current_state, main_stp, list, user_specific_struct, zero_start)
      end
  end
 
-function LAStopping(A :: Any,
-                    b :: AbstractVector;
-                    x :: AbstractVector = zeros(size(A,2)),
-                    sparse = true,
-                    kwargs...)
+function LAStopping(A      :: TA,
+                    b      :: Tb;
+                    x      :: Tb = zeros(eltype(Tb), size(A,2)),
+                    sparse :: Bool = true,
+                    kwargs...) where {TA <: Any, Tb <: AbstractVector}
  pb = sparse ? LLSModel(A,b) : LinearSystem(A,b)
 
  mcntrs = sparse ? _init_max_counters_NLS() : _init_max_counters_linear_operators()
@@ -88,11 +88,11 @@ function LAStopping(A :: Any,
  return LAStopping(pb, GenericState(x), max_cntrs = mcntrs; kwargs...)
 end
 
-function LAStopping(A     :: Any,
-                    b     :: AbstractVector,
-                    state :: AbstractState;
-                    sparse = true,
-                    kwargs...)
+function LAStopping(A      :: TA,
+                    b      :: Tb,
+                    state  :: S;
+                    sparse :: Bool = true,
+                    kwargs...) where {TA <: Any, Tb <: AbstractVector, S <: AbstractState}
 
  pb = sparse ? LLSModel(A,b) : LinearSystem(A,b)
 
@@ -119,12 +119,12 @@ end
 """
 \\_init\\_max\\_counters\\_linear\\_operators(): counters for LinearOperator
 
-`_init_max_counters_linear_operators(;nprod :: Int64 = 20000, ntprod  :: Int64 = 20000, nctprod :: Int64 = 20000, sum :: Int64 = 20000*11)`
+`_init_max_counters_linear_operators(;nprod :: Int = 20000, ntprod  :: Int = 20000, nctprod :: Int = 20000, sum :: Int = 20000*11)`
 """
-function _init_max_counters_linear_operators(;nprod   :: Int64 = 20000,
-                                              ntprod  :: Int64 = 20000,
-                                              nctprod :: Int64 = 20000,
-                                              sum     :: Int64 = 20000*11)
+function _init_max_counters_linear_operators(;nprod   :: Int = 20000,
+                                              ntprod  :: Int = 20000,
+                                              nctprod :: Int = 20000,
+                                              sum     :: Int = 20000*11)
 
   cntrs = Dict([(:nprod,   nprod),   (:ntprod, ntprod),
                 (:nctprod, nctprod), (:neval_sum,    sum)])
@@ -140,28 +140,28 @@ Minimal structure to store linear algebra problems
 Note:
 - Another option is to convert the LinearOperatorSystem as an LLSModel.
 """
-mutable struct LinearSystem
-  A :: Union{AbstractLinearOperator, AbstractMatrix}
-  b :: AbstractVector
+mutable struct LinearSystem{TA <: Union{AbstractLinearOperator, AbstractMatrix}, Tb <: AbstractVector}
+  A :: TA
+  b :: Tb
 
   counters :: LACounters
 
-  function LinearSystem(A :: Union{AbstractLinearOperator, AbstractMatrix}, b :: AbstractVector; counters :: LACounters = LACounters(), kwargs...)
-      return new(A, b, counters)
+  function LinearSystem(A :: TA, b :: Tb; counters :: LACounters = LACounters(), kwargs...) where {TA <: Union{AbstractLinearOperator, AbstractMatrix}, Tb <: AbstractVector}
+      return new{TA,Tb}(A, b, counters)
   end
 end
 
-function LAStopping(A :: AbstractLinearOperator,
-                    b :: AbstractVector;
-                    x :: AbstractVector = zeros(size(A,2)),
-                    kwargs...)
+function LAStopping(A :: TA,
+                    b :: Tb;
+                    x :: Tb = zeros(eltype(Tb), size(A,2)),
+                    kwargs...) where {TA <: AbstractLinearOperator, Tb <: AbstractVector}
  return LAStopping(A, b, GenericState(x), kwargs...)
 end
 
-function LAStopping(A :: AbstractLinearOperator,
-                    b :: AbstractVector,
+function LAStopping(A :: TA,
+                    b :: Tb,
                     state :: AbstractState;
-                    kwargs...)
+                    kwargs...)  where {TA <: AbstractLinearOperator, Tb <: AbstractVector}
  return LAStopping(LinearSystem(A,b), state,
                    max_cntrs =  _init_max_counters_linear_operators(),
                    kwargs...)
@@ -176,7 +176,7 @@ end
  * check :nprod, :ntprod, :nctprod in the LinearOperator entries
  """
  function _resources_check!(stp    :: LAStopping,
-                            x      :: Union{Vector, Nothing})
+                            x      :: AbstractVector)
 
    cntrs = stp.pb.counters
    update!(stp.current_state, evals = cntrs)
@@ -185,19 +185,8 @@ end
    # check all the entries in the counter
    max_f = false
    sum   = 0
-  if typeof(stp.pb.counters) <: LACounters
-   for f in [:nprod, :ntprod, :nctprod]
-    max_f = max_f || (getfield(cntrs, f) > max_cntrs[f])
-    sum  += getfield(cntrs, f)
-   end
-  elseif typeof(stp.pb.counters) == NLSCounters
-   for f in fieldnames(NLSCounters)
-    max_f = f != :counters ? (max_f || (getfield(cntrs, f) > max_cntrs[f])) : max_f
-   end
-   for f in fieldnames(Counters)
-    max_f = max_f || (getfield(cntrs.counters, f) > max_cntrs[f])
-   end
-  end
+
+   sum, max_f = _counters_loop(cntrs, max_cntrs, max_f, sum)
 
   # Maximum number of function and derivative(s) computation
   max_evals = sum > max_cntrs[:neval_sum]
@@ -206,6 +195,24 @@ end
   stp.meta.resources = max_evals || max_f
 
   return stp
+ end
+
+ function _counters_loop(cntrs :: LACounters, max_cntrs :: Dict, max_f :: Bool, sum :: Int)
+     for f in [:nprod, :ntprod, :nctprod]
+      max_f = max_f || (getfield(cntrs, f) > max_cntrs[f])
+      sum  += getfield(cntrs, f)
+     end
+     return sum, max_f
+ end
+
+ function _counters_loop(cntrs :: NLSCounters, max_cntrs :: Dict, max_f :: Bool, sum :: Int)
+     for f in fieldnames(NLSCounters)
+      max_f = f != :counters ? (max_f || (getfield(cntrs, f) > max_cntrs[f])) : max_f
+     end
+     for f in fieldnames(Counters)
+      max_f = max_f || (getfield(cntrs.counters, f) > max_cntrs[f])
+     end
+     return sum, max_f
  end
 
 """
