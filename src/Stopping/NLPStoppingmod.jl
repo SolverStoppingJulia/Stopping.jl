@@ -16,7 +16,7 @@ Attributes:
 - (opt) listofstates : ListStates designed to store the history of States.
 - (opt) user_specific_struct : Contains any structure designed by the user.
 
-`NLPStopping(:: AbstractNLPModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), max_cntrs :: Dict = _init_max_counters(), main_stp :: Union{AbstractStopping, Nothing} = nothing, user_specific_struct :: Any = nothing, kwargs...)`
+`NLPStopping(:: AbstractNLPModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), max_cntrs :: Dict = _init_max_counters(), main_stp :: Union{AbstractStopping, Nothing} = nothing, list :: Union{ListStates, Nothing} = nothing, user_specific_struct :: Any = nothing, kwargs...)`
 
  Note:
 - designed for *NLPAtX* State. Constructor checks that the State has the

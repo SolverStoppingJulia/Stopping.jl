@@ -113,7 +113,7 @@ prioritized over the existing *x*, *lambda* and the default *Counters*.
 """
 function reinit!(stateatx :: NLPAtX, x :: AbstractVector, l :: AbstractVector; kwargs...)
 
- for k ∈ fieldnames(typeof(stateatx))
+ for k ∈ fieldnames(NLPAtX)
    if k ∉ [:x,:lambda,:evals] setfield!(stateatx, k, nothing) end
  end
 

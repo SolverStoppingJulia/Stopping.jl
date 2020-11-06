@@ -5,7 +5,6 @@ test_meta = StoppingMeta()
 @test test_meta.optimality_check(1,1) == Inf
 @test test_meta.unbounded_threshold   == 1.0e50
 @test test_meta.unbounded_x           == 1.0e50
-@test test_meta.norm_unbounded_x      == Inf
 @test test_meta.max_f                 == 9223372036854775807
 @test test_meta.max_cntrs             == Dict()
 @test test_meta.max_eval              == 20_000

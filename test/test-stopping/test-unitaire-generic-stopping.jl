@@ -11,9 +11,6 @@ stop0 = GenericStopping(rosenbrock, state0, tol_check = (atol,rtol,opt0) -> atol
 stop0.meta.unbounded_x = sqrt(6)
 stop!(stop0)
 @test status(stop0, list = true) == [:Optimal] #ok as ||x||_\infty = 1 < sqrt(6)
-stop0.meta.norm_unbounded_x = 2
-stop!(stop0)
-@test status(stop0, list = true) == [:Optimal, :Unbounded] #indeed ||x||_2 = sqrt(6) !!
 
 #We now test that stop! verifies that:
 #- there are no NaN in the score

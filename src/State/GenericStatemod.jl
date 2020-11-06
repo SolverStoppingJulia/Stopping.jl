@@ -110,38 +110,44 @@ function reinit!(stateatx :: AbstractState; kwargs...)
 end
 
 """
-\\_domain\\_check: returns true if there is a NaN in the State entries, false otherwise
+\\_domain\\_check: returns true if there is a *NaN* or a *Missing* in the state entries (short-circuiting), false otherwise.
 
-`_domain_check(:: AbstractState)`
+`_domain_check(:: AbstractState; kwargs...)`
+
+Note:
+- The fields given as keys in kwargs are not checked.
 
 Examples:
 \\_domain\\_check(state1)
+\\_domain\\_check(state1, x = true)
 """
-function _domain_check(stateatx :: AbstractState)
- domainerror = false
+function _domain_check(stateatx :: T; kwargs...) where T <: AbstractState
 
- for k ∈ fieldnames(typeof(stateatx))
-     _temp = getfield(stateatx, k)
-     domainerror = domainerror || _check_nan(_temp)
+ for k ∈ setdiff(fieldnames(T), keys(kwargs))
+
+     gf = getfield(stateatx, k)
+     if _check_nan_miss(gf)
+         return true
+     end
  end
 
- return domainerror
+ return false
 end
 
-_check_nan(field :: Any) = false #Nothing or Counters
-_check_nan(field :: SparseMatrixCSC) = any(isnan, field.nzval) #because checking in sparse matrices is too slow
-_check_nan(field :: Union{AbstractVector,AbstractMatrix}) = any(isnan, field)
-_check_nan(field :: AbstractFloat) = isnan(field)
+_check_nan_miss(field :: Any) = false #Nothing or Counters
+_check_nan_miss(field :: SparseMatrixCSC) = any(isnan, field.nzval) #because checking in sparse matrices is too slow
+_check_nan_miss(field :: Union{AbstractVector,AbstractMatrix}) = any(isnan, field)
+_check_nan_miss(field :: AbstractFloat) = ismissing(field) || isnan(field)
 
 import Base.copy
 ex=:(_genobj(typ)=$(Expr(:new, :typ))); eval(ex)
-function copy(state :: AbstractState)
+function copy(state :: T) where T <: AbstractState
 
  #ex=:(_genobj(typ)=$(Expr(:new, :typ))); eval(ex)
- cstate = _genobj(typeof(state))
+ cstate = _genobj(T)
  #cstate = $(Expr(:new, typeof(state)))
 
- for k ∈ fieldnames(typeof(state))
+ for k ∈ fieldnames(T)
   setfield!(cstate, k, deepcopy(getfield(state, k)))
  end
 
@@ -162,14 +168,14 @@ corresponding entries are replaced by a vector of size 1 containing its pnorm-no
 
 see also: copy, copy\\_compress\\_state, ListStates
 """
-function compress_state!(stateatx        :: AbstractState;
+function compress_state!(stateatx        :: T;
                          save_matrix     :: Bool    = false,
                          max_vector_size :: Int     = length(stateatx.x),
                          pnorm           :: Float64 = Inf,
                          keep            :: Bool    = false,
-                         kwargs...)
+                         kwargs...)  where T <: AbstractState
 
-  for k ∈ fieldnames(typeof(stateatx))
+  for k ∈ fieldnames(T)
    if k ∈ keys(kwargs) && !keep
     try
         setfield!(stateatx, k, nothing)

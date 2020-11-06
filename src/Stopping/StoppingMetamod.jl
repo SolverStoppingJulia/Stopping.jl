@@ -11,7 +11,6 @@ Attributes:
 - optimality_check : a stopping criterion via an admissibility function
 - unbounded_threshold : threshold for unboundedness of the problem.
 - unbounded_x : threshold for unboundedness of the iterate.
-- norm_unbounded_x : norm used for the threshold for unboundedness of the iterate.
 - max_f :  maximum number of function (and derivatives) evaluations.
 - max_cntrs  : Dict contains the maximum number of evaluations
 - max_eval :  maximum number of function (and derivatives) evaluations.
@@ -63,8 +62,7 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
                                  # Function of (pb, state; kwargs...)
 
  unbounded_threshold :: Number # beyond this value, the problem is declared unbounded
- unbounded_x         :: Number # beyond this value, ||x|| is unbounded
- norm_unbounded_x    :: Number #norm used to check unboundedness of x.
+ unbounded_x         :: Number # beyond this value, ||x||_\infty is unbounded
 
  # fine grain control on ressources
  max_f               :: Int    # max function evaluations allowed
@@ -102,7 +100,6 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
                         optimality_check    :: Function = (a,b) -> Inf,
                         unbounded_threshold :: Number   = 1.0e50,
                         unbounded_x         :: Number   = 1.0e50,
-                        norm_unbounded_x    :: Number   = Inf,
                         max_f               :: Int      = typemax(Int),
                         max_cntrs           :: Dict     = Dict(),
                         max_eval            :: Int      = 20000,
@@ -134,7 +131,7 @@ mutable struct StoppingMeta <: AbstractStoppingMeta
    nb_of_stop = 0
 
    return new(atol, rtol, optimality0, tol_check, tol_check_neg, optimality_check,
-              unbounded_threshold, unbounded_x, norm_unbounded_x,
+              unbounded_threshold, unbounded_x,
               max_f, max_cntrs, max_eval, max_iter, max_time, nb_of_stop, start_time,
               fail_sub_pb, unbounded, unbounded_pb, tired, stalled,
               iteration_limit, resources, optimal, infeasible, main_pb,

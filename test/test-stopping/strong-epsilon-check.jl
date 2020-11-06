@@ -85,8 +85,12 @@ fill_in!(stop_nlp, sol)
 OK = stop!(stop_nlp)
 @test OK
 
-#Finally, let us comment on the case where the optimality_check returns a number:
-stop_nlp = NLPStopping(nlp, nlp_at_x_c, optimality_check = KKT, tol_check = tol_check1)
-fill_in!(stop_nlp, esol)
-OK = stop!(stop_nlp)
-@test !OK #esol is not a solution as the score returned by KKT is not smaller than minimum(tol_check)
+#An error is returned if size(KKT) is different from size(tol_check).
+try
+   stop_nlp2 = NLPStopping(nlp, nlp_at_x_c, optimality_check = KKT, tol_check = tol_check1)
+   fill_in!(stop_nlp2, esol)
+   stop!(stop_nlp2)
+   @test false
+catch
+   @test true
+end

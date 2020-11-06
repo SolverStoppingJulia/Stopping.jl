@@ -1,4 +1,4 @@
-using NLPModels, Stopping
+using LinearAlgebra, NLPModels, Stopping
 
 include("NewtonSolver.jl")
 include("Armijo.jl")

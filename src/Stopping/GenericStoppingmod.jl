@@ -92,7 +92,7 @@ fill_in!: fill in the unspecified values of the AbstractState.
 
 Note: NotImplemented for Abstract/Generic-Stopping.
 """
-function fill_in!(stp :: AbstractStopping, x :: Union{Number, AbstractVector})
+function fill_in!(stp :: AbstractStopping, x :: T) where T
  return throw(error("NotImplemented function"))
 end
 
@@ -129,19 +129,19 @@ end
 """
 function start!(stp :: AbstractStopping; no_start_opt_check :: Bool = false, kwargs...)
 
- stt_at_x = stp.current_state
- x        = stt_at_x.x
+ state = stp.current_state
+ x     = state.x
 
  #Initialize the time counter
  if isnan(stp.meta.start_time)
   stp.meta.start_time = time()
  end
  #and synchornize with the State
- if stt_at_x.current_time == nothing
-   update!(stt_at_x, current_time = time())
+ if state.current_time == nothing
+   update!(state, current_time = time())
  end
 
- stp.meta.domainerror = _domain_check(stp.current_state)
+ stp.meta.domainerror = _domain_check(state)
  if !stp.meta.domainerror && !no_start_opt_check
    # Optimality check
    optimality0          = _optimality_check(stp; kwargs...)
@@ -246,7 +246,8 @@ function stop!(stp :: AbstractStopping; kwargs...)
  x        = stp.current_state.x
  time     = stp.meta.start_time
 
- stp.meta.domainerror = _domain_check(stp.current_state) #pb here?
+ _unbounded_and_domain_x_check!(stp, x)
+ stp.meta.domainerror = _domain_check(stp.current_state, x = true)
  if !stp.meta.domainerror
    # Optimality check
    score = _optimality_check(stp; kwargs...)
@@ -255,7 +256,6 @@ function stop!(stp :: AbstractStopping; kwargs...)
    end
    stp.meta.optimal = _null_test(stp, score)
 
-   _unbounded_check!(stp, x)
    _unbounded_problem_check!(stp, x)
    _tired_check!(stp, x, time_t = time)
    _resources_check!(stp, x)
@@ -310,7 +310,7 @@ limit.
 Note: Compare *meta.iteration_limit* with *meta.nb\\_of\\_stop*.
 """
 function _iteration_check!(stp :: AbstractStopping,
-                           x   :: T) where T <: Union{Number, AbstractVector}
+                           x   :: T) where T
 
  max_iter = stp.meta.nb_of_stop >= stp.meta.max_iter
 
@@ -327,7 +327,7 @@ end
 Note: By default *meta.stalled* is false for Abstract/Generic Stopping.
 """
 function _stalled_check!(stp :: AbstractStopping,
-                         x   :: T) where T <: Union{Number, AbstractVector}
+                         x   :: T) where T
 
  stp.meta.stalled = false
 
@@ -344,7 +344,7 @@ Note: - Return false if *time_t* is NaN (by default).
 """
 function _tired_check!(stp    :: AbstractStopping,
                        x      :: T;
-                       time_t :: Number = NaN) where T <: Union{Number, AbstractVector}
+                       time_t :: Number = NaN) where T
 
  # Time check
  if !isnan(time_t)
@@ -368,7 +368,7 @@ end
 Note: By default *meta.resources* is false for Abstract/Generic Stopping.
 """
 function _resources_check!(stp    :: AbstractStopping,
-                           x      :: T) where T <: Union{Number, AbstractVector}
+                           x      :: T) where T
 
  max_evals = false
  max_f     = false
@@ -387,7 +387,7 @@ Note: - Modify the meta of the *main_stp*.
       - By default `meta.main_pb = false`.
 """
 function _main_pb_check!(stp    :: AbstractStopping,
-                         x      :: T) where T <: Union{Number, AbstractVector}
+                         x      :: T) where T
 
  # Time check
  time = stp.main_stp.meta.start_time
@@ -411,21 +411,34 @@ function _main_pb_check!(stp    :: AbstractStopping,
 end
 
 """
-\\_unbounded\\_check!: check if x gets too big.
+\\_unbounded\\_and\\_domain\\_x\\_check!: check if x gets too big, and if it has NaN or missing values.
 
-`_unbounded_check!(:: AbstractStopping, :: Union{Number, AbstractVector})`
+`_unbounded_and_domain_x_check!(:: AbstractStopping, :: Union{Number, AbstractVector})`
 
-Note: compare ||x|| with *meta.unbounded_x* and update *meta.unbounded*.
+Note:
+- compare ||x||_∞ with *meta.unbounded_x* and update *meta.unbounded*.
+- it also checks *NaN* and *missing* and update *meta.domainerror*.
+- short-circuiting if one of the two is true.
 """
-function _unbounded_check!(stp  :: AbstractStopping,
-                           x    :: T) where T <: Union{Number, AbstractVector}
+function _unbounded_and_domain_x_check!(stp  :: AbstractStopping,
+                                        x    :: T) where T
 
- pnorm = stp.meta.norm_unbounded_x
- x_too_large = norm(x, pnorm) >= stp.meta.unbounded_x
+ bigX(z :: eltype(T)) = (abs(z) >= stp.meta.unbounded_x)
+ (stp.meta.unbounded, stp.meta.domainerror) = _large_and_domain_check(bigX, x)
 
- stp.meta.unbounded = x_too_large
+end
 
- return stp
+function _large_and_domain_check(f, itr)
+    for x in itr
+        v   = f(x)
+        w   = ismissing(x) || isnan(x)
+        if w
+            return (false, true)
+        elseif v
+            return (true, false)
+        end
+    end
+    return (false, false)
 end
 
 """
@@ -436,7 +449,7 @@ end
 Note: *meta.unbounded_pb* is false by default.
 """
 function _unbounded_problem_check!(stp  :: AbstractStopping,
-                                   x    :: T) where T <: Union{Number, AbstractVector}
+                                   x    :: T) where T
 
  stp.meta.unbounded_pb = false
 
@@ -472,13 +485,33 @@ and `meta.tol_check_neg(meta.atol, meta.rtol, meta.optimality0)`.
 function _null_test(stp  :: AbstractStopping, optimality :: T) where T <: Union{Number,AbstractVector}
 
     atol, rtol, opt0 = stp.meta.atol, stp.meta.rtol, stp.meta.optimality0
+
     check_pos = stp.meta.tol_check(atol, rtol, opt0)
     check_neg = stp.meta.tol_check_neg(atol, rtol, opt0)
 
-    optimal  =  !(false in (optimality .<= check_pos))
-    optimal &=  !(false in (optimality .>= check_neg))
+    optimal = _inequality_check(optimality, check_pos, check_neg)
 
     return optimal
+end
+
+_inequality_check(opt :: Number, check_pos :: Number, check_neg :: Number) = (opt <= check_pos) && (opt >= check_neg)
+_inequality_check(opt, check_pos :: Number, check_neg :: Number) = !any(z->((z > check_pos) || (z < check_neg)), opt)
+function _inequality_check(opt :: T, check_pos :: T, check_neg :: T) where T
+
+    n = size(opt)
+
+    if n != size(check_pos) || n != size(check_neg)
+        throw("Error: incompatible size in _null_test wrong size of optimality, tol_check and tol_check_neg")
+    end
+
+    for (o, cp, cn) in zip(opt, check_pos, check_neg)
+        v = o > cp || o < cn
+        if v
+            return false
+        end
+    end
+
+   return true
 end
 
 """
@@ -486,7 +519,7 @@ end
 
 `_user_check!( :: AbstractStopping, x :: Union{Number, AbstractVector})`
 """
-function _user_check!(stp :: AbstractStopping, x   :: T) where T <: Union{Number, AbstractVector}
+function _user_check!(stp :: AbstractStopping, x   :: T) where T
  nothing
 end
 
