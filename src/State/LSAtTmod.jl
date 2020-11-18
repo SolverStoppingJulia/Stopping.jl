@@ -28,7 +28,7 @@ mutable struct 	LSAtT <: AbstractState
     h₀           :: FloatVoid  # h(0)
     g₀           :: FloatVoid  # h'(0)
 
-    current_time   :: FloatVoid
+    current_time   :: Union{Float64, Nothing}
     current_score  :: Iterate
 
  function LSAtT(t             :: Number;
@@ -36,8 +36,8 @@ mutable struct 	LSAtT <: AbstractState
                 gt            :: FloatVoid = nothing,
                 h₀            :: FloatVoid = nothing,
                 g₀            :: FloatVoid = nothing,
-                current_time  :: FloatVoid = nothing,
-                current_score :: Iterate = nothing)
+                current_time  :: Union{Float64, Nothing} = nothing,
+                current_score :: Iterate   = nothing)
 
   return new(t, ht, gt, h₀, g₀, current_time, current_score)
  end

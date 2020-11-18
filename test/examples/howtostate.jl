@@ -32,8 +32,8 @@ update!(state1, current_time = 2) #does nothing as it is the wrong type
 @test state1.current_time == 1.0
 #An advanced user can force the update even if the type is not the same by
 #turning the keyword convert as true (it is false by default).
-update!(state1, convert = true, current_time = 2)
-@test state1.current_time == 2
+#update!(state1, convert = true, current_time = 2) NON!!!
+#@test state1.current_time == 2
 #Non-required entry in the State can always be set as void without convert
 update!(state1, current_time = nothing)
 @test state1.current_time == nothing

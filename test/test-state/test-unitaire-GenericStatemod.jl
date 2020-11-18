@@ -24,4 +24,4 @@ update!(state0, x = x1)
 reinit!(state0, current_time = 0.5)
 @test state0.x == x1
 @test state0.current_time == 0.5
-@test state0.current_score == nothing 
+@test state0.current_score == nothing

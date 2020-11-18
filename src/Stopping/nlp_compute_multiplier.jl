@@ -9,8 +9,8 @@ function _compute_mutliplier(pb    :: AbstractNLPModel,
                              gx    :: Iterate,
                              cx    :: Iterate,
                              Jx    :: MatrixType;
-                             active_prec_c :: Float64 = 1e-6,
-                			 active_prec_b :: Float64 = 1e-6)
+                             active_prec_c :: AbstractFloat = 1e-6,
+                			 active_prec_b :: AbstractFloat = 1e-6)
 
  n  = length(x)
  nc = cx == nothing ? 0 : length(cx)

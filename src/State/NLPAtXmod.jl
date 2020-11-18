@@ -61,7 +61,7 @@ mutable struct 	NLPAtX{T <: AbstractVector} <: AbstractState
     res          :: Union{T,eltype(T),Nothing} #residual
 
  #Resources State
-    current_time   :: Union{eltype(T),Nothing}
+    current_time   :: Union{Float64, Nothing}
     current_score  :: Union{T,eltype(T),Nothing}
     evals          :: Counters
 
@@ -75,7 +75,7 @@ mutable struct 	NLPAtX{T <: AbstractVector} <: AbstractState
                  Jx            :: MatrixType   = nothing,
                  d             :: Iterate      = nothing,
                  res           :: Iterate      = nothing,
-                 current_time  :: FloatVoid    = nothing,
+                 current_time  :: Union{Float64, Nothing} = nothing,
                  current_score :: Iterate      = nothing,
                  evals         :: Counters     = Counters()) where T <: AbstractVector
 
@@ -90,7 +90,7 @@ function NLPAtX(x             :: AbstractVector;
                 gx            :: Iterate      = nothing,
                 Hx            :: MatrixType   = nothing,
                 mu            :: Iterate      = nothing,
-                current_time  :: FloatVoid    = nothing,
+                current_time  :: Union{Float64, Nothing} = nothing,
                 current_score :: Iterate      = nothing,
                 evals         :: Counters     = Counters())
 

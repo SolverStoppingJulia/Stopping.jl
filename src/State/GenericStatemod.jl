@@ -31,14 +31,14 @@ mutable struct GenericState{T<:Union{AbstractFloat,AbstractVector}} <: AbstractS
     res :: Union{T,eltype(T),Nothing}
 
     #Current time
-    current_time  :: Union{eltype(T),Nothing}
+    current_time  :: Union{Float64, Nothing}
     #Current score
     current_score :: Union{T,eltype(T),Nothing}
 
     function GenericState(x             :: T;
                           d             :: Union{T,eltype(T),Nothing} = nothing,
                           res           :: Union{T,eltype(T),Nothing} = nothing,
-                          current_time  :: Union{eltype(T),Nothing}   = nothing,
+                          current_time  :: Union{Float64, Nothing}    = nothing,
                           current_score :: Union{T,eltype(T),Nothing} = nothing) where T <:Union{AbstractFloat,AbstractVector}
 
       return new{T}(x, d, res, current_time, current_score)
@@ -63,12 +63,12 @@ update!(state1, convert = true, current\\_time = 2.0)
 
 See also: GenericState, reinit!, update\\_and\\_start!, update\\_and\\_stop!
 """
-function update!(stateatx :: AbstractState; convert :: Bool = false, kwargs...)
+function update!(stateatx :: T; convert :: Bool = false, kwargs...) where T <: AbstractState
 
- kwargs = Dict(kwargs)
-
- for k ∈ fieldnames(typeof(stateatx))
-  if (k ∈ keys(kwargs)) && (convert || getfield(stateatx, k) == nothing || typeof(kwargs[k]) ∈ [typeof(getfield(stateatx, k)), Nothing])
+ for k ∈ keys(kwargs)
+  #check if k is in fieldnames and type compatibility
+  #two calls to getfield...
+  if (k ∈ fieldnames(T)) && (convert || getfield(stateatx, k) == nothing || typeof(kwargs[k]) ∈ [typeof(getfield(stateatx, k)), Nothing])
    setfield!(stateatx, k, kwargs[k])
   end
  end
@@ -76,6 +76,33 @@ function update!(stateatx :: AbstractState; convert :: Bool = false, kwargs...)
  return stateatx
 end
 
+
+"""
+\\_smart\\_update!: generic update function for the State without Type verification.
+
+`_smart_update!(:: AbstractState; kwargs...)`
+
+The function works exactly as update! without type and field verifications.
+So, affecting a value to nothing or a different type will return an error.
+
+See also: update!, GenericState, reinit!, update\\_and\\_start!, update\\_and\\_stop!
+"""
+function _smart_update!(stateatx :: T; kwargs...) where T <: AbstractState
+
+ for k ∈ keys(kwargs)
+   setfield!(stateatx, k, kwargs[k])
+ end
+
+ return stateatx
+end
+#https://github.com/JuliaLang/julia/blob/f3252bf50599ba16640ef08eb1e43c632eacf264/base/Base.jl#L34
+
+function _update_time!(stateatx :: T, current_time :: Float64) where T <: AbstractState
+
+ setfield!(stateatx, :current_time, current_time)
+
+ return stateatx
+end
 """
 reinit!: function that set all the entries at *nothing* except the mandatory *x*.
 

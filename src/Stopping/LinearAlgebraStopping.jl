@@ -41,12 +41,12 @@ There is additional constructors:
 
 See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, normal\\_equation\\_check
  """
- mutable struct LAStopping{T <: AbstractState, Pb <: Any} <: AbstractStopping
+ mutable struct LAStopping{T, Pb, M}  <: AbstractStopping{T, Pb, M}
 
      # problem
      pb                   :: Pb
      # Common parameters
-     meta                 :: AbstractStoppingMeta
+     meta                 :: M
      # current state of the problem
      current_state        :: T
      # Stopping of the main problem, or nothing
@@ -61,18 +61,18 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
 
      function LAStopping(pb             :: Pb,
                          current_state  :: T;
-                         meta           :: AbstractStoppingMeta = StoppingMeta(max_cntrs = _init_max_counters_NLS(), optimality_check = linear_system_check),
+                         meta           :: M = StoppingMeta(;max_cntrs = _init_max_counters_NLS(), optimality_check = linear_system_check),
                          main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                          list           :: Union{ListStates, Nothing} = nothing,
                          user_specific_struct :: Any = nothing,
                          zero_start     :: Bool = false,
-                         kwargs...) where {T <: AbstractState, Pb <: Any}
+                         kwargs...) where {T <: AbstractState, Pb <: Any, M <: AbstractStoppingMeta}
 
          if !(isempty(kwargs))
             meta = StoppingMeta(;max_cntrs = _init_max_counters_NLS(), optimality_check = linear_system_check, kwargs...)
          end
 
-         return new{T,Pb}(pb, meta, current_state, main_stp, list, user_specific_struct, zero_start)
+         return new{T,Pb,M}(pb, meta, current_state, main_stp, list, user_specific_struct, zero_start)
      end
  end
 
@@ -104,16 +104,20 @@ end
 """
 Type: LACounters
 """
-mutable struct  LACounters
+mutable struct  LACounters{T <: Int}
 
-    nprod   :: Int
-    ntprod  :: Int
-    nctprod :: Int
-    sum     :: Int
+    nprod   :: T
+    ntprod  :: T
+    nctprod :: T
+    sum     :: T
 
-    function LACounters(;nprod :: Int = 0, ntprod :: Int = 0, nctprod :: Int = 0, sum :: Int = 0)
-        return new(nprod, ntprod, nctprod, sum)
+    function LACounters(nprod :: T, ntprod :: T, nctprod :: T, sum :: T) where T <: Int
+        return new{T}(nprod, ntprod, nctprod, sum)
     end
+end
+
+function LACounters(;nprod :: Int64 = 0, ntprod :: Int64 = 0, nctprod :: Int64 = 0, sum :: Int64 = 0)
+    return LACounters(nprod, ntprod, nctprod, sum)
 end
 
 """
@@ -121,12 +125,13 @@ end
 
 `_init_max_counters_linear_operators(;nprod :: Int = 20000, ntprod  :: Int = 20000, nctprod :: Int = 20000, sum :: Int = 20000*11)`
 """
-function _init_max_counters_linear_operators(;nprod   :: Int = 20000,
-                                              ntprod  :: Int = 20000,
-                                              nctprod :: Int = 20000,
-                                              sum     :: Int = 20000*11)
+function _init_max_counters_linear_operators(;quick   :: T = 20000,
+                                              nprod   :: T = quick,
+                                              ntprod  :: T = quick,
+                                              nctprod :: T = quick,
+                                              sum     :: T = quick*11) where T <: Int
 
-  cntrs = Dict([(:nprod,   nprod),   (:ntprod, ntprod),
+  cntrs = Dict{Symbol,T}([(:nprod,   nprod),   (:ntprod, ntprod),
                 (:nctprod, nctprod), (:neval_sum,    sum)])
 
  return cntrs
@@ -178,41 +183,44 @@ end
  function _resources_check!(stp    :: LAStopping,
                             x      :: AbstractVector)
 
-   cntrs = stp.pb.counters
-   update!(stp.current_state, evals = cntrs)
-   max_cntrs = stp.meta.max_cntrs
+  cntrs = stp.pb.counters
+  #GenericState has no field evals.
+  #_smart_update!(stp.current_state, evals = cntrs)
+  max_cntrs = stp.meta.max_cntrs
 
-   # check all the entries in the counter
-   max_f = false
-   sum   = 0
+  # check all the entries in the counter
+  max_f = false
+  sum   = 0
 
-   sum, max_f = _counters_loop(cntrs, max_cntrs, max_f, sum)
+  max_f = _counters_loop!(cntrs, max_cntrs, max_f, sum) #updates sum
 
   # Maximum number of function and derivative(s) computation
   max_evals = sum > max_cntrs[:neval_sum]
 
   # global user limit diagnostic
-  stp.meta.resources = max_evals || max_f
+  check = max_evals || max_f
+  stp.meta.resources = check
 
-  return stp
+  return check
  end
 
- function _counters_loop(cntrs :: LACounters, max_cntrs :: Dict, max_f :: Bool, sum :: Int)
+ function _counters_loop!(cntrs :: LACounters, max_cntrs :: Dict, max_f :: Bool, sum :: Int)
      for f in [:nprod, :ntprod, :nctprod]
-      max_f = max_f || (getfield(cntrs, f) > max_cntrs[f])
-      sum  += getfield(cntrs, f)
+      ff    = getfield(cntrs, f)
+      max_f = max_f || (ff > max_cntrs[f])
+      sum  += ff
      end
-     return sum, max_f
+     return max_f
  end
 
- function _counters_loop(cntrs :: NLSCounters, max_cntrs :: Dict, max_f :: Bool, sum :: Int)
+ function _counters_loop!(cntrs :: NLSCounters, max_cntrs :: Dict, max_f :: Bool, sum :: Int)
      for f in fieldnames(NLSCounters)
       max_f = f != :counters ? (max_f || (getfield(cntrs, f) > max_cntrs[f])) : max_f
      end
      for f in fieldnames(Counters)
       max_f = max_f || (getfield(cntrs.counters, f) > max_cntrs[f])
      end
-     return sum, max_f
+     return max_f
  end
 
 """

@@ -34,12 +34,12 @@ Input :
 
 See also GenericStopping, NLPStopping, LSAtT
  """
-mutable struct LS_Stopping <: AbstractStopping
+mutable struct LS_Stopping{Pb, M}  <: AbstractStopping{LSAtT, Pb, M}
     # problem
-    pb                   :: Any
+    pb                   :: Pb
 
     # shared information with linesearch and other stopping
-    meta                 :: AbstractStoppingMeta
+    meta                 :: M
 
     # current information on linesearch
     current_state        :: LSAtT
@@ -53,19 +53,19 @@ mutable struct LS_Stopping <: AbstractStopping
     # User-specific structure
     user_specific_struct :: Any
 
-    function LS_Stopping(pb             :: Any,
+    function LS_Stopping(pb             :: Pb,
                          current_state  :: LSAtT;
-                         meta           :: AbstractStoppingMeta = StoppingMeta(),
+                         meta           :: M = StoppingMeta(),
                          main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                          list           :: Union{ListStates, Nothing} = nothing,
                          user_specific_struct :: Any = nothing,
-                         kwargs...)
+                         kwargs...) where {Pb <: Any, M <: AbstractStoppingMeta}
 
         if !(isempty(kwargs))
            meta = StoppingMeta(;optimality_check = armijo, kwargs...)
         end
 
-        return new(pb, meta, current_state, main_stp, list, user_specific_struct)
+        return new{Pb,M}(pb, meta, current_state, main_stp, list, user_specific_struct)
     end
 
 end

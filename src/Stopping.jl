@@ -53,16 +53,6 @@ const FloatVoid         = Union{Number, Nothing}
 const MatrixType        = Union{Number, AbstractArray, AbstractMatrix, Nothing, AbstractLinearOperator} #Krylov.PreallocatedLinearOperator,
 
 """
-AbstractStopping
-
-Abstract type, if specialized stopping were to be implemented they would need to
-be subtypes of AbstractStopping
-"""
-abstract type AbstractStopping end
-
-export AbstractStopping
-
-"""
 AbstractState
 
 Abstract type, if specialized state were to be implemented they would need to
@@ -94,12 +84,22 @@ include("Stopping/StoppingMetamod.jl")
 
 export AbstractStoppingMeta, StoppingMeta
 
+"""
+AbstractStopping
+
+Abstract type, if specialized stopping were to be implemented they would need to
+be subtypes of AbstractStopping
+"""
+abstract type AbstractStopping{T <: AbstractState, Pb <: Any, M <: AbstractStoppingMeta} end
+
+export AbstractStopping
+
 # Stopping
 include("Stopping/GenericStoppingmod.jl")
 include("Stopping/LineSearchStoppingmod.jl")
 include("Stopping/NLPStoppingmod.jl")
 
-export GenericStopping, start!, stop!, update_and_start!, update_and_stop!
+export GenericStopping, start!, stop!, cheap_stop!, update_and_start!, update_and_stop!, update_and_cheap_stop!
 export fill_in!, reinit!, status
 export LS_Stopping
 export NLPStopping, unconstrained_check, unconstrained2nd_check

@@ -29,16 +29,16 @@ Attributes:
 
  Note: Kwargs are forwarded to the classical constructor.
  """
-mutable struct NLPStopping <: AbstractStopping
+mutable struct NLPStopping{T, Pb, M}  <: AbstractStopping{T, Pb, M}
 
     # problem
-    pb                   :: AbstractNLPModel
+    pb                   :: Pb
 
     # Common parameters
-    meta                 :: AbstractStoppingMeta
+    meta                 :: M
 
     # current state of the problem
-    current_state        :: AbstractState
+    current_state        :: T
 
     # Stopping of the main problem, or nothing
     main_stp             :: Union{AbstractStopping, Nothing}
@@ -49,13 +49,13 @@ mutable struct NLPStopping <: AbstractStopping
     # User-specific structure
     user_specific_struct :: Any
 
-    function NLPStopping(pb             :: AbstractNLPModel,
-                         current_state  :: AbstractState;
-                         meta           :: AbstractStoppingMeta = StoppingMeta(;max_cntrs = _init_max_counters(), optimality_check = KKT),
+    function NLPStopping(pb             :: Pb,
+                         current_state  :: T;
+                         meta           :: M = StoppingMeta(;max_cntrs = _init_max_counters(), optimality_check = KKT),
                          main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                          list           :: Union{ListStates, Nothing} = nothing,
                          user_specific_struct  :: Any = nothing,
-                         kwargs...)
+                         kwargs...) where {T <: AbstractState, Pb <: AbstractNLPModel, M <: AbstractStoppingMeta}
 
         if !(isempty(kwargs))
            meta = StoppingMeta(;max_cntrs = _init_max_counters(), optimality_check = KKT, kwargs...)
@@ -74,7 +74,7 @@ mutable struct NLPStopping <: AbstractStopping
             throw("error: missing entries in the given current_state")
         end
 
-        return new(pb, meta, current_state, main_stp, list, user_specific_struct)
+        return new{T,Pb,M}(pb, meta, current_state, main_stp, list, user_specific_struct)
     end
 
 end
@@ -92,25 +92,26 @@ end
 
 `_init_max_counters(; obj :: Int64 = 20000, grad :: Int64 = 20000, cons :: Int64 = 20000, jcon :: Int64 = 20000, jgrad :: Int64 = 20000, jac :: Int64 = 20000, jprod :: Int64 = 20000, jtprod :: Int64 = 20000, hess :: Int64 = 20000, hprod :: Int64 = 20000, jhprod :: Int64 = 20000, sum :: Int64 = 20000*11)`
 """
-function _init_max_counters(; obj    :: Int64 = 20000,
-                              grad   :: Int64 = 20000,
-                              cons   :: Int64 = 20000,
-                              jcon   :: Int64 = 20000,
-                              jgrad  :: Int64 = 20000,
-                              jac    :: Int64 = 20000,
-                              jprod  :: Int64 = 20000,
-                              jtprod :: Int64 = 20000,
-                              hess   :: Int64 = 20000,
-                              hprod  :: Int64 = 20000,
-                              jhprod :: Int64 = 20000,
-                              sum    :: Int64 = 20000*11)
+function _init_max_counters(; quick  :: T = 20000,
+                              obj    :: T = quick,
+                              grad   :: T = quick,
+                              cons   :: T = quick,
+                              jcon   :: T = quick,
+                              jgrad  :: T = quick,
+                              jac    :: T = quick,
+                              jprod  :: T = quick,
+                              jtprod :: T = quick,
+                              hess   :: T = quick,
+                              hprod  :: T = quick,
+                              jhprod :: T = quick,
+                              sum    :: T = quick*11) where {T <: Int}
 
-  cntrs = Dict([(:neval_obj,       obj), (:neval_grad,   grad),
-                (:neval_cons,     cons), (:neval_jcon,   jcon),
-                (:neval_jgrad,   jgrad), (:neval_jac,    jac),
-                (:neval_jprod,   jprod), (:neval_jtprod, jtprod),
-                (:neval_hess,     hess), (:neval_hprod,  hprod),
-                (:neval_jhprod, jhprod), (:neval_sum,    sum)])
+  cntrs = Dict{Symbol,T}([(:neval_obj,       obj), (:neval_grad,   grad),
+                          (:neval_cons,     cons), (:neval_jcon,   jcon),
+                          (:neval_jgrad,   jgrad), (:neval_jac,    jac),
+                          (:neval_jprod,   jprod), (:neval_jtprod, jtprod),
+                          (:neval_hess,     hess), (:neval_hprod,  hprod),
+                          (:neval_jhprod, jhprod), (:neval_sum,    sum)])
 
  return cntrs
 end
@@ -122,23 +123,24 @@ https://github.com/JuliaSmoothOptimizers/NLPModels.jl/blob/master/src/NLSModels.
 
 `_init_max_counters_NLS(; residual :: Int = 20000, jac_residual :: Int = 20000, jprod_residual :: Int = 20000, jtprod_residual :: Int = 20000, hess_residual :: Int = 20000, jhess_residual :: Int = 20000, hprod_residual :: Int = 20000, kwargs...)`
 """
-function _init_max_counters_NLS(; residual        :: Int = 20000,
-                                  jac_residual    :: Int = 20000,
-                                  jprod_residual  :: Int = 20000,
-                                  jtprod_residual :: Int = 20000,
-                                  hess_residual   :: Int = 20000,
-                                  jhess_residual  :: Int = 20000,
-                                  hprod_residual  :: Int = 20000,
-                                  kwargs...)
+function _init_max_counters_NLS(; quick           :: T = 20000,
+                                  residual        :: T = quick,
+                                  jac_residual    :: T = quick,
+                                  jprod_residual  :: T = quick,
+                                  jtprod_residual :: T = quick,
+                                  hess_residual   :: T = quick,
+                                  jhess_residual  :: T = quick,
+                                  hprod_residual  :: T = quick,
+                                  kwargs...) where {T <: Int}
 
   cntrs_nlp = _init_max_counters(;kwargs...)
-  cntrs = Dict([(:neval_residual, residual),
-                (:neval_jac_residual, jac_residual),
-                (:neval_jprod_residual, jprod_residual),
-                (:neval_jtprod_residual, jtprod_residual),
-                (:neval_hess_residual, hess_residual),
-                (:neval_jhess_residual, jhess_residual),
-                (:neval_hprod_residual, hprod_residual)])
+  cntrs = Dict{Symbol,T}([(:neval_residual, residual),
+                          (:neval_jac_residual, jac_residual),
+                          (:neval_jprod_residual, jprod_residual),
+                          (:neval_jtprod_residual, jtprod_residual),
+                          (:neval_hess_residual, hess_residual),
+                          (:neval_jhess_residual, jhess_residual),
+                          (:neval_hprod_residual, hprod_residual)])
 
  return merge(cntrs_nlp, cntrs)
 end
@@ -148,16 +150,16 @@ fill_in!: (NLPStopping version) a function that fill in the required values in t
 
 `fill_in!( :: NLPStopping, :: Iterate; fx :: Iterate = nothing, gx :: Iterate = nothing, Hx :: Iterate = nothing, cx :: Iterate = nothing, Jx :: Iterate = nothing, lambda :: Iterate = nothing, mu :: Iterate = nothing, matrix_info :: Bool = true, kwargs...)`
 """
-function fill_in!(stp  :: NLPStopping,
-                  x    :: AbstractVector;
-                  fx   :: Iterate     = nothing,
-                  gx   :: Iterate     = nothing,
-                  Hx   :: Iterate     = nothing,
-                  cx   :: Iterate     = nothing,
-                  Jx   :: Iterate     = nothing,
-                  lambda :: Iterate   = nothing,
-                  mu     :: Iterate   = nothing,
-                  matrix_info :: Bool = true,
+function fill_in!(stp         :: NLPStopping,
+                  x           :: AbstractVector;
+                  fx          :: Iterate = nothing,
+                  gx          :: Iterate = nothing,
+                  Hx          :: Iterate = nothing,
+                  cx          :: Iterate = nothing,
+                  Jx          :: Iterate = nothing,
+                  lambda      :: Iterate = nothing,
+                  mu          :: Iterate = nothing,
+                  matrix_info :: Bool    = true,
                   kwargs...)
 
  gfx = fx == nothing  ? obj(stp.pb, x)   : fx
