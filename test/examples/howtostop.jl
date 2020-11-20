@@ -24,7 +24,7 @@ stop2 = GenericStopping(pb, state1, rtol = 1e-1)
 
 #Both ways give the same result:
 @test stop1.current_state.x == stop2.current_state.x
-@test stop1.current_state.current_time == stop2.current_state.current_time
+@test isnan(stop1.current_state.current_time) && isnan(stop2.current_state.current_time)
 #Keywords given in the Stopping creator are forwarded to the StoppingMeta.
 @test stop1.meta.rtol == 1e-1
 
@@ -129,5 +129,5 @@ reinit!(stop3)
 #This can be done by switching the keyword rstate to true.
 #In this case, keywords are forwarded to the reinit! of current_state.
 reinit!(stop3, rstate =  true, x = zeros(2))
-@test stop3.current_state.current_time == nothing
+@test isnan(stop3.current_state.current_time)
 @test stop3.current_state.x == zeros(2)

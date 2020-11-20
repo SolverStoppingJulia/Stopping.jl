@@ -137,20 +137,22 @@ function start!(stp :: AbstractStopping; no_start_opt_check :: Bool = false, kwa
   stp.meta.start_time = time()
  end
  #and synchornize with the State
- if state.current_time == nothing
-   update!(state, current_time = time())
+ if isnan(state.current_time)
+   _update_time!(state, time())
  end
 
- stp.meta.domainerror = _domain_check(state)
- if !stp.meta.domainerror && !no_start_opt_check
-   # Optimality check
-   optimality0          = _optimality_check(stp; kwargs...)
-   stp.meta.optimality0 = norm(optimality0, Inf)
- if (true in isnan.(optimality0))
-     stp.meta.domainerror = true
-   end
+ if !no_start_opt_check
+  stp.meta.domainerror = _domain_check(state)
+  if !stp.meta.domainerror
+    # Optimality check
+    optimality0          = _optimality_check(stp; kwargs...)
+    stp.meta.optimality0 = norm(optimality0, Inf)
+    if (true in isnan.(optimality0))
+       stp.meta.domainerror = true
+    end
 
-   stp.meta.optimal     = _null_test(stp, optimality0)
+    stp.meta.optimal     = _null_test(stp, optimality0)
+   end
  end
 
  OK = stp.meta.optimal || stp.meta.domainerror
@@ -231,7 +233,7 @@ return the optimality status of the problem as a boolean.
 
 Note: Kwargs are forwarded to the *update!* call.
 """
-function update_and_cheap_stop!(stp :: AbstractStopping; kwargs...)
+function cheap_update_and_stop!(stp :: AbstractStopping; kwargs...)
 
  _smart_update!(stp.current_state; kwargs...)
  OK = cheap_stop!(stp)
@@ -329,8 +331,6 @@ function cheap_stop!(stp :: AbstractStopping; kwargs...)
  OK = OK || _iteration_check!(stp, x) #stp.meta.iteration_limit
 
  OK = OK || _user_check!(stp, x)
-
- #OK = stp.meta.optimal || stp.meta.tired || stp.meta.iteration_limit || stp.meta.resources || stp.meta.unbounded_pb
 
  _add_stop!(stp)
 
@@ -510,16 +510,13 @@ end
 `_optimality_check(:: AbstractStopping; kwargs...)`
 
 """
-function _optimality_check(stp :: AbstractStopping{T,Pb,M}; kwargs...) where {T,Pb,M}
+function _optimality_check(stp :: AbstractStopping{T,Pb,M};
+                           kwargs...) where {T,Pb,M}
 
-    optimality = _get_optimality(stp.pb, stp.current_state, stp.meta; kwargs...) #:: optimtype(stp.meta)
-    stp.current_state.current_score = optimality
+ setfield!(stp.current_state, :current_score,
+           stp.meta.optimality_check(stp.pb, stp.current_state; kwargs...))
 
- return optimality
-end
-
-function _get_optimality(pb :: Pb, state :: T, meta :: M; kwargs...) where {T,Pb,M}
- return meta.optimality_check(pb, state; kwargs...)
+ return stp.current_state.current_score
 end
 
 """

@@ -46,16 +46,16 @@ stop_nlp_lazy = NLPStopping(nlp2) #use nlp.meta.x0 as initial point
 fill_in!(stop_nlp, x1, matrix_info = false)
 @test stop_nlp.current_state.x  == x1
 @test stop_nlp.current_state.fx == 5.
-@test stop_nlp.current_state.Hx == nothing
+@test stop_nlp.current_state.Hx == zeros(0,0)
 #Note that since there are no constraints, c(x) and J(x) are not called:
-@test stop_nlp.current_state.Jx == nothing
-@test stop_nlp.current_state.cx == nothing
+@test stop_nlp.current_state.Jx == zeros(0,0)
+@test stop_nlp.current_state.cx == zeros(0)
 #Since there are no bounds on x, the Lagrange multiplier is not updated:
-@test stop_nlp.current_state.mu == nothing
+@test stop_nlp.current_state.mu == zeros(0)
 
 #would give Hx if matrix_info = true
 fill_in!(stop_nlp_lazy, x1)
-@test stop_nlp_lazy.current_state.Hx != nothing
+@test stop_nlp_lazy.current_state.Hx != zeros(0,0)
 #stop_nlp_lazy.pb has bounds, so mu is a vector of size x
 @test size(x0) == size(stop_nlp_lazy.current_state.mu)
 

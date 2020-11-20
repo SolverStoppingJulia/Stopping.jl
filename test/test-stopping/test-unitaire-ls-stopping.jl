@@ -8,10 +8,11 @@ lsatx = LSAtT(0.0)
 stop = LS_Stopping(h, lsatx, max_iter = 10, optimality_check = (x,y)-> armijo(x,y))
 
 # We tests different functions of stopping
-OK = update_and_start!(stop, x = 1.0, g₀ = NaN, h₀ = NaN, ht = NaN)
-@test OK == true
-@test status(stop) == :DomainError
-@test stop.current_state.x == 1.0
+#This is no longer true as NaN is the _init_field for the quantities
+#OK = update_and_start!(stop, x = 1.0, g₀ = NaN, h₀ = NaN, ht = NaN)
+#@test OK == true
+#@test status(stop) == :DomainError
+#@test stop.current_state.x == 1.0
 
 reinit!(stop)
 @test stop.meta.domainerror == false
@@ -47,7 +48,7 @@ update!(stop.current_state, x = 1e100)
 
 reinit!(stop, rstate = true, x = 1.0)
 @test stop.current_state.x == 1.0
-@test stop.current_state.ht == nothing
+@test isnan(stop.current_state.ht)
 
 ## _optimality_check and _null_test are tested with NLP
 try

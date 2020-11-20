@@ -2,13 +2,13 @@
 ls_at_t = LSAtT(0.0)
 
 @test ls_at_t.x   == 0.0
-@test ls_at_t.ht  == nothing
-@test ls_at_t.gt  == nothing
-@test ls_at_t.h₀  == nothing
-@test ls_at_t.g₀  == nothing
+@test isnan(ls_at_t.ht)
+@test isnan(ls_at_t.gt)
+@test isnan(ls_at_t.h₀)
+@test isnan(ls_at_t.g₀)
 
-@test ls_at_t.current_time == nothing
-@test ls_at_t.current_score == nothing
+@test isnan(ls_at_t.current_time)
+@test isnan(ls_at_t.current_score)
 
 # On test la fonction update!(...)
 update!(ls_at_t, x = 1.0, ht = 1.0, gt = 1.0, h₀ = 1.0)
@@ -36,10 +36,7 @@ ls_at_t_2 = copy(ls_at_t)
 ls_64 = LSAtT(0.0)
 update!(ls_64, x = 1.0, ht = 1.0, gt = 1.0, h₀ = 1.0)
 
-# ls_32 = convert_ls(Float32, ls_64)
-# @test typeof(ls_32.x) == Float32
-
 reinit!(ls_64)
 @test ls_64.x == 1.0
-@test ls_64.ht == nothing
-@test ls_64.current_time == nothing
+@test isnan(ls_64.ht)
+@test isnan(ls_64.current_time)

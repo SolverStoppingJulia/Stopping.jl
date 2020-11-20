@@ -58,13 +58,14 @@ AbstractState
 Abstract type, if specialized state were to be implemented they would need to
 be subtypes of AbstractState
 """
-abstract type AbstractState end
+abstract type AbstractState{S,T} end
 
 # State
 include("State/GenericStatemod.jl")
 include("State/LSAtTmod.jl")
 include("State/NLPAtXmod.jl")
 
+export scoretype, xtype
 export AbstractState, GenericState, update!, copy, compress_state!, copy_compress_state
 export LSAtT, update!
 export NLPAtX, update!
@@ -99,7 +100,8 @@ include("Stopping/GenericStoppingmod.jl")
 include("Stopping/LineSearchStoppingmod.jl")
 include("Stopping/NLPStoppingmod.jl")
 
-export GenericStopping, start!, stop!, cheap_stop!, update_and_start!, update_and_stop!, update_and_cheap_stop!
+export GenericStopping, start!, stop!, cheap_stop!, update_and_start!
+export update_and_stop!, cheap_update_and_stop!
 export fill_in!, reinit!, status
 export LS_Stopping
 export NLPStopping, unconstrained_check, unconstrained2nd_check

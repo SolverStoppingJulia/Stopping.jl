@@ -13,7 +13,7 @@ function _compute_mutliplier(pb    :: AbstractNLPModel,
                 			 active_prec_b :: AbstractFloat = 1e-6)
 
  n  = length(x)
- nc = cx == nothing ? 0 : length(cx)
+ nc = cx == _init_field(typeof(cx)) ? 0 : length(cx)
 
  #active res_bounds
  Ib = findall(x->(norm(x) <= active_prec_b),

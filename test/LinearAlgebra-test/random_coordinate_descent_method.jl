@@ -20,7 +20,7 @@ function RandomizedCD(A :: AbstractMatrix,
                       atol :: AbstractFloat = 1e-7,
                       rtol :: AbstractFloat = 1e-15,
                       max_iter :: Int = size(A,2)^2,
-                      max_time :: Float64 = 10.,
+                      max_time :: Float64 = 60.,
                       max_cntrs = Main.Stopping._init_max_counters_linear_operators(quick=20000),
                       verbose :: Int = 100,
                       kwargs...) where T <: AbstractFloat
@@ -39,8 +39,8 @@ function RandomizedCD(A :: AbstractMatrix,
     OK = nrm0 <= atol
     k  = 0
 
-    @info log_header([:iter, :un, :time], [Int, T, T])
-    @info log_row(Any[0, res[1], elapsed_time])
+    #@info log_header([:iter, :un, :time], [Int, T, T])
+    #@info log_row(Any[0, res[1], elapsed_time])
     while !OK && (k <= max_iter) && (elapsed_time - time_init <= max_time) && !max_f
 
      #rand a number between 1 and n
@@ -56,8 +56,8 @@ function RandomizedCD(A :: AbstractMatrix,
 
      res = A*x - b
      cntrs.nprod += 1
-     nrm = norm(res)
-     OK  = nrm <= atol + nrm * rtol
+     nrm = norm(res,Inf)
+     OK  = nrm <= atol + nrm0 * rtol
 
      sum, max_f = 0, false
      for f in [:nprod, :ntprod, :nctprod]
@@ -69,7 +69,7 @@ function RandomizedCD(A :: AbstractMatrix,
      k += 1
      elapsed_time = time()
      if mod(k, verbose) == 0 #print every 20 iterations
-      @info log_row(Any[k, res[1], elapsed_time])
+     # @info log_row(Any[k, res[1], elapsed_time])
      end
 
     end

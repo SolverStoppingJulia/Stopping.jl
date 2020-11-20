@@ -47,7 +47,7 @@ sol  = [1.0, 0.0]
 esol = [1.0 + 1e-7, 0.0]
 
 #As usual, we initialize the State and the Stopping
-nlp_at_x_c = NLPAtX(x0, NaN*ones(nlp.meta.ncon))
+nlp_at_x_c = NLPAtX(x0, NaN*ones(nlp.meta.ncon), Array{Float64,1}(undef, 14))
 stop_nlp = NLPStopping(nlp, nlp_at_x_c, optimality_check = KKTvect)
 fill_in!(stop_nlp, x0)
 OK = stop!(stop_nlp)

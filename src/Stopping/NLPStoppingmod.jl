@@ -260,7 +260,7 @@ otherwise check *state.fx* >= *meta.unbounded_threshold*.
 function _unbounded_problem_check!(stp  :: NLPStopping,
                                    x    :: AbstractVector)
 
- if stp.current_state.fx == nothing
+ if isnan(stp.current_state.fx)
 	 stp.current_state.fx = obj(stp.pb, x)
  end
 
@@ -272,7 +272,7 @@ function _unbounded_problem_check!(stp  :: NLPStopping,
 
  c_too_large = false
  if stp.pb.meta.ncon != 0 #if the problems has constraints, check |c(x)|
-  if stp.current_state.cx == nothing
+  if stp.current_state.cx == _init_field(typeof(stp.current_state.cx))
    stp.current_state.cx = cons(stp.pb, x)
   end
   c_too_large = norm(stp.current_state.cx) >= abs(stp.meta.unbounded_threshold)

@@ -8,6 +8,10 @@ Attributes:
 - rtol : relative tolerance.
 - optimality0 : optimality score at the initial guess.
 - tol_check : Function of *atol*, *rtol* and *optimality0* testing a score to zero.
+- tol_check_neg : Function of *atol*, *rtol* and *optimality0* testing a score to zero.
+- check_pos : pre-allocation for positive tolerance
+- check_neg : pre-allocation for negative tolerance
+- retol : true if tolerances are updated
 - optimality_check : a stopping criterion via an admissibility function
 - unbounded_threshold : threshold for unboundedness of the problem.
 - unbounded_x : threshold for unboundedness of the iterate.
@@ -48,7 +52,7 @@ Note:
 
 Examples: `StoppingMeta()`
 """
-mutable struct StoppingMeta{TolType <: Number} <: AbstractStoppingMeta
+mutable struct StoppingMeta{TolType <: Number, CheckType} <: AbstractStoppingMeta
 
  # problem tolerances
  atol                :: TolType # absolute tolerance
@@ -58,16 +62,19 @@ mutable struct StoppingMeta{TolType <: Number} <: AbstractStoppingMeta
                                  #by default: tol_check = max(atol, rtol * optimality0)
                                  #other example: atol + rtol * optimality0
  tol_check_neg       :: Function # function of atol, rtol and optimality0
+ check_pos           :: CheckType #pre-allocation for positive tolerance
+ check_neg           :: CheckType #pre-allocation for negative tolerance
  optimality_check    :: Function # stopping criterion
                                  # Function of (pb, state; kwargs...)
                                  #return type  :: Union{Number, eltype(stp.meta)}
+ retol               :: Bool #true if tolerances are updated
 
  unbounded_threshold :: Number # beyond this value, the problem is declared unbounded
  unbounded_x         :: Number # beyond this value, ||x||_\infty is unbounded
 
  # fine grain control on ressources
  max_f               :: Int    # max function evaluations allowed
- max_cntrs           :: Dict{Symbol,Int} #contains the detailed max number of evaluations
+ max_cntrs           :: Dict{Symbol,Int64} #contains the detailed max number of evaluations
 
  # global control on ressources
  max_eval            :: Int    # max evaluations (f+g+H+Hv) allowed
@@ -99,24 +106,23 @@ mutable struct StoppingMeta{TolType <: Number} <: AbstractStoppingMeta
                        tol_check           :: Function = (atol :: Number, rtol :: Number, opt0 :: Number) -> max(atol,rtol*opt0),
                        tol_check_neg       :: Function = (atol :: Number, rtol :: Number, opt0 :: Number) -> - tol_check(atol,rtol,opt0),
                        optimality_check    :: Function = (a,b) -> Inf,
+                       retol               :: Bool     = true,
                        unbounded_threshold :: Number   = 1.0e50,
                        unbounded_x         :: Number   = 1.0e50,
                        max_f               :: Int      = typemax(Int),
-                       max_cntrs           :: Dict{Symbol,Int} = Dict{Symbol,Int}(),
+                       max_cntrs           :: Dict{Symbol,Int} = Dict{Symbol,Int64}(),
                        max_eval            :: Int      = 20000,
                        max_iter            :: Int      = 5000,
-                       max_time            :: Float64   = 300.0,
+                       max_time            :: Float64  = 300.0,
                        start_time          :: Float64  = NaN,
                        kwargs...)
 
-   tt = typeof(atol)
+   #throw("Error in StoppingMeta definition: tol_check and tol_check_neg must have 3 arguments")
+   check_pos = tol_check(atol, rtol, optimality0)
+   check_neg = tol_check_neg(atol, rtol, optimality0)
 
-   try
-       a  = tol_check(one(tt), one(tt), one(tt))
-       an = tol_check_neg(one(tt), one(tt), one(tt))
-       if (true in (a .< an)) @warn "Warning in StoppingMeta definition: tol_check should be greater than tol_check_neg." end
-   catch
-       throw("Error in StoppingMeta definition: tol_check and tol_check_neg must have 3 arguments")
+   if (true in (check_pos .< check_neg))
+       @warn "Warning in StoppingMeta definition: tol_check should be greater than tol_check_neg."
    end
 
    fail_sub_pb     = false
@@ -134,8 +140,9 @@ mutable struct StoppingMeta{TolType <: Number} <: AbstractStoppingMeta
 
    nb_of_stop = 0
 
-   return new{tt}(atol, rtol, optimality0,
-                 tol_check, tol_check_neg, optimality_check,
+   return new{typeof(atol), typeof(check_pos)}(atol, rtol, optimality0,
+                 tol_check, tol_check_neg,
+                 check_pos, check_neg, optimality_check, retol,
                  unbounded_threshold, unbounded_x,
                  max_f, max_cntrs, max_eval, max_iter, max_time, nb_of_stop, start_time,
                  fail_sub_pb, unbounded, unbounded_pb, tired, stalled,
@@ -144,12 +151,26 @@ mutable struct StoppingMeta{TolType <: Number} <: AbstractStoppingMeta
  end
 end
 
-function tol_check(meta :: StoppingMeta{TolType}) where {TolType <: Number}
+function tol_check(meta :: StoppingMeta{TolType, CheckType}) where {TolType <: Number, CheckType}
 
- atol, rtol, opt0 = meta.atol, meta.rtol, meta.optimality0
+ if meta.retol
+   atol, rtol, opt0 = meta.atol, meta.rtol, meta.optimality0
+   setfield!(meta, :check_pos, meta.tol_check(atol, rtol, opt0))
+   setfield!(meta, :check_neg, meta.tol_check_neg(atol, rtol, opt0))
+ end
 
- check_pos = meta.tol_check(atol, rtol, opt0) # :: checktype(stp.meta)
- check_neg = meta.tol_check_neg(atol, rtol, opt0) # :: checktype(stp.meta)
+ return (meta.check_pos, meta.check_pos)
+end
 
- return (check_pos, check_neg)
+function update_tol!(meta        :: StoppingMeta{TolType, CheckType};
+                     atol        :: Union{TolType,Nothing} = nothing,
+                     rtol        :: Union{TolType,Nothing} = nothing,
+                     optimality0 :: Union{TolType,Nothing} = nothing) where {TolType <: Number, CheckType}
+ meta.retol = true
+
+ atol == nothing        && setfield!(meta, :atol, atol)
+ rtol == nothing        && setfield!(meta, :rtol, rtol)
+ optimality0 == nothing && setfield!(meta, :optimality0, optimality0)
+
+ return meta
 end

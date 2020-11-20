@@ -37,11 +37,12 @@ Note:
 There is additional constructors:
 
 `LAStopping(:: Union{AbstractLinearOperator, AbstractMatrix}, :: AbstractVector, kwargs...)`
+
 `LAStopping(:: Union{AbstractLinearOperator, AbstractMatrix}, :: AbstractVector, :: AbstractState, kwargs...)`
 
 See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, normal\\_equation\\_check
  """
- mutable struct LAStopping{T, Pb, M}  <: AbstractStopping{T, Pb, M}
+ mutable struct LAStopping{T, Pb, M} <: AbstractStopping{T, Pb, M}
 
      # problem
      pb                   :: Pb
@@ -183,44 +184,41 @@ end
  function _resources_check!(stp    :: LAStopping,
                             x      :: AbstractVector)
 
-  cntrs = stp.pb.counters
   #GenericState has no field evals.
   #_smart_update!(stp.current_state, evals = cntrs)
-  max_cntrs = stp.meta.max_cntrs
 
   # check all the entries in the counter
-  max_f = false
-  sum   = 0
-
-  max_f = _counters_loop!(cntrs, max_cntrs, max_f, sum) #updates sum
-
-  # Maximum number of function and derivative(s) computation
-  max_evals = sum > max_cntrs[:neval_sum]
-
   # global user limit diagnostic
-  check = max_evals || max_f
-  stp.meta.resources = check
+  stp.meta.resources = _counters_loop!(stp.pb.counters, stp.meta.max_cntrs)
 
-  return check
+  return stp.meta.resources
  end
 
- function _counters_loop!(cntrs :: LACounters, max_cntrs :: Dict, max_f :: Bool, sum :: Int)
-     for f in [:nprod, :ntprod, :nctprod]
+ function _counters_loop!(cntrs :: LACounters{T}, max_cntrs :: Dict{Symbol,T}) where T
+
+     sum, max_f = 0, false
+
+     for f in (:nprod, :ntprod, :nctprod)
       ff    = getfield(cntrs, f)
       max_f = max_f || (ff > max_cntrs[f])
       sum  += ff
      end
-     return max_f
+
+     return max_f || (sum > max_cntrs[:neval_sum])
  end
 
- function _counters_loop!(cntrs :: NLSCounters, max_cntrs :: Dict, max_f :: Bool, sum :: Int)
+ function _counters_loop!(cntrs :: NLSCounters, max_cntrs :: Dict{Symbol,T}) where T
+
+     sum, max_f = 0, false
+
      for f in fieldnames(NLSCounters)
       max_f = f != :counters ? (max_f || (getfield(cntrs, f) > max_cntrs[f])) : max_f
      end
      for f in fieldnames(Counters)
       max_f = max_f || (getfield(cntrs.counters, f) > max_cntrs[f])
      end
-     return max_f
+
+     return max_f || (sum > max_cntrs[:neval_sum])
  end
 
 """
@@ -237,7 +235,7 @@ function linear_system_check(pb    :: LinearSystem,
                              pnorm :: Float64 = Inf,
                              kwargs...)
  pb.counters.nprod += 1
- if state.res == nothing
+ if state.res == _init_field(typeof(state.res))
   update!(state, res = pb.A * state.x - pb.b)
  end
 
@@ -248,7 +246,7 @@ function linear_system_check(pb    :: LLSModel,
                              state :: AbstractState;
                              pnorm :: Float64 = Inf,
                              kwargs...)
- if state.res == nothing
+ if state.res == _init_field(typeof(state.res))
   update!(state, res = residual(pb, state.x))
  end
 

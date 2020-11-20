@@ -38,9 +38,9 @@ import Stopping: armijo, wolfe, armijo_wolfe
 
 function armijo(h :: onedoptim, h_at_t :: LSAtT; τ₀ :: Float64 = 0.01, kwargs...)
 
- h_at_t.ht = h_at_t.ht == nothing ? h.f(h_at_t.x) : h_at_t.ht
- h_at_t.h₀ = h_at_t.h₀ == nothing ? h.f(0) : h_at_t.h₀
- h_at_t.g₀ = h_at_t.g₀ == nothing ? h.g(0) : h_at_t.g₀
+ h_at_t.ht = isnan(h_at_t.ht) ? h.f(h_at_t.x) : h_at_t.ht
+ h_at_t.h₀ = isnan(h_at_t.h₀) ? h.f(0) : h_at_t.h₀
+ h_at_t.g₀ = isnan(h_at_t.g₀) ? h.g(0) : h_at_t.g₀
 
  hgoal = h_at_t.ht - h_at_t.h₀ - h_at_t.g₀ * h_at_t.x * τ₀
 
@@ -49,8 +49,8 @@ end
 
 function wolfe(h :: onedoptim, h_at_t :: LSAtT; τ₁ :: Float64 = 0.99, kwargs...)
 
- h_at_t.gt = h_at_t.gt == nothing ? h.g(h_at_t.x) : h_at_t.gt
- h_at_t.g₀ = h_at_t.g₀ == nothing ? h.g(0) : h_at_t.g₀
+ h_at_t.gt = isnan(h_at_t.gt) ? h.g(h_at_t.x) : h_at_t.gt
+ h_at_t.g₀ = isnan(h_at_t.g₀) ? h.g(0) : h_at_t.g₀
 
  wolfe = τ₁ .* h_at_t.g₀ - abs(h_at_t.gt)
  return max(wolfe, 0.0)
@@ -58,10 +58,10 @@ end
 
 function armijo_wolfe(h :: onedoptim, h_at_t :: LSAtT; τ₀ :: Float64 = 0.01, τ₁ :: Float64 = 0.99, kwargs...)
 
- h_at_t.ht = h_at_t.ht == nothing ? h.f(h_at_t.x) : h_at_t.ht
- h_at_t.h₀ = h_at_t.h₀ == nothing ? h.f(0) : h_at_t.h₀
- h_at_t.gt = h_at_t.gt == nothing ? h.g(h_at_t.x) : h_at_t.gt
- h_at_t.g₀ = h_at_t.g₀ == nothing ? h.g(0) : h_at_t.g₀
+ h_at_t.ht = isnan(h_at_t.ht) ? h.f(h_at_t.x) : h_at_t.ht
+ h_at_t.h₀ = isnan(h_at_t.h₀) ? h.f(0) : h_at_t.h₀
+ h_at_t.gt = isnan(h_at_t.gt) ? h.g(h_at_t.x) : h_at_t.gt
+ h_at_t.g₀ = isnan(h_at_t.g₀) ? h.g(0) : h_at_t.g₀
 
  return max(armijo(h, h_at_t, τ₀ = τ₀),wolfe(h, h_at_t, τ₁ = τ₁), 0.0)
 end

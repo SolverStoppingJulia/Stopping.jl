@@ -31,7 +31,7 @@ fill_in!(stop_nlp, a)
 
 reinit!(stop_nlp, rstate = true, x = ones(5))
 @test stop_nlp.current_state.x == ones(5)
-@test stop_nlp.current_state.fx == nothing
+@test isnan(stop_nlp.current_state.fx)
 @test stop_nlp.meta.nb_of_stop == 0
 
 #We know test how to initialize the counter:
@@ -84,9 +84,9 @@ fill_in!(stop_bnd, zeros(5), mu = ones(5), lambda = zeros(0))
 @test stop_bnd.current_state.mu == ones(5)
 @test stop_bnd.current_state.lambda == zeros(0)
 
-update!(stop_bnd.current_state, fx = nothing, current_score = 0.0)
+update!(stop_bnd.current_state, fx = NaN, current_score = 0.0)
 stop!(stop_bnd)
-@test stop_bnd.current_state.fx != nothing
+@test !isnan(stop_bnd.current_state.fx)
 
 try
  NLPStopping(nlp_bnd, KKT, GenericState(x0)) #would not work as there is an entry check

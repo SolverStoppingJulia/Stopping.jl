@@ -14,7 +14,7 @@ function unconstrained_check(pb    :: AbstractNLPModel,
                              pnorm :: Float64 = Inf,
                              kwargs...)
 
-    if state.gx == nothing # should be filled if empty
+    if state.gx == _init_field(typeof(state.gx)) # should be filled if empty
         update!(state, gx = grad(pb, state.x))
     end
 
@@ -38,10 +38,10 @@ function unconstrained2nd_check(pb    :: AbstractNLPModel,
                                 pnorm :: Float64 = Inf,
                                 kwargs...)
 
-    if state.gx == nothing # should be filled if empty
+    if state.gx == _init_field(typeof(state.gx)) # should be filled if empty
         update!(state, gx = grad(pb, state.x))
     end
-    if state.Hx == nothing
+    if state.Hx == _init_field(typeof(state.Hx))
         update!(state, Hx = hess(pb, state.x))
     end
 
@@ -65,7 +65,7 @@ function optim_check_bounded(pb    :: AbstractNLPModel,
                              pnorm :: Float64 = Inf,
                              kwargs...)
 
-    if state.gx == nothing # should be filled if void
+    if state.gx == _init_field(typeof(state.gx)) # should be filled if void
      update!(state, gx = grad(pb, state.x))
     end
 

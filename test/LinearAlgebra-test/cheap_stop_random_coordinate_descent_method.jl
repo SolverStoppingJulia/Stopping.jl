@@ -27,31 +27,37 @@ function StopRandomizedCD2(A             :: AbstractMatrix,
                            kwargs...) where T <: AbstractFloat
 
  stp = LAStopping(LinearSystem(A,b),
-                  GenericState(x0),
+                  GenericState(x0, similar(b)),
                   max_cntrs = Main.Stopping._init_max_counters_linear_operators(),
                   atol = atol, rtol = rtol, max_iter = max_iter,
                   tol_check = (atol, rtol, opt0)->(atol + rtol * opt0),
+                  retol = false,
                   optimality_check = (pb, state) -> state.res,
                   kwargs...)
 
  return StopRandomizedCD2(stp, is_zero_start = is_zero_start, verbose = verbose, kwargs...)
 end
 
-function StopRandomizedCD2(stp           :: AbstractStopping;
+function StopRandomizedCD2(stp          :: AbstractStopping;
                           is_zero_start :: Bool = true,
                           verbose       :: Int = 100,
                           kwargs...)
+    state = stp.current_state
 
     A,b = stp.pb.A, stp.pb.b
     m,n = size(A)
-    x  = stp.current_state.x
+    x  = state.x
     T  = eltype(x)
-    res = is_zero_start ? - b : A*x - b
-    OK = update_and_start!(stp, convert = true,  res = res)
 
-    @info log_header([:iter, :nrm, :time], [Int, T, T],
-                     hdr_override=Dict(:nrm=>"||Ax-b||"))
-    @info log_row(Any[0, stp.current_state.current_score[1], stp.current_state.current_time])
+    state.res = is_zero_start ? - b : A*x - b
+    res = state.res
+
+    OK = start!(stp, no_start_opt_check = true)
+    stp.meta.optimality0 = norm(b)
+
+    #@info log_header([:iter, :nrm, :time], [Int, T, T],
+    #                 hdr_override=Dict(:nrm=>"||Ax-b||"))
+    #@info log_row(Any[0, res[1], state.current_time])
 
     while !OK
 
@@ -64,14 +70,15 @@ function StopRandomizedCD2(stp           :: AbstractStopping;
         #xk  = Ai == 0 ? x0 : x0 - dot(Ai,res)/norm(Ai,2)^2 * ei
         Aires = @kdot(m, Ai, res)
         nAi   = @kdot(m, Ai, Ai)
-        x[i] -= Aires/nAi
+        state.x[i] -= Aires/nAi
 
-        res = A*x - b
+        state.res = A*state.x - b #TO IMPROVE!!
+        res = state.res
 
-        OK = update_and_cheap_stop!(stp, x = x, res = res)
+        OK = cheap_stop!(stp) #make a copy of res in current_score?
 
         if mod(stp.meta.nb_of_stop, verbose) == 0 #print every 20 iterations
-         @info log_row(Any[stp.meta.nb_of_stop, stp.current_state.current_score[1], stp.current_state.current_time])
+         #@info log_row(Any[stp.meta.nb_of_stop, res[1], state.current_time])
         end
 
     end

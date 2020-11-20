@@ -39,13 +39,13 @@ opLOstp = LAStopping(opLO, GenericState(x0), max_cntrs = maxcn)
 @test start!(sLOstp) == false
 @test start!(opLOstp) == false
 
-update_and_stop!(mLOstp, x = xref, res = nothing)
+update_and_stop!(mLOstp, x = xref, res = Float64[])
 @test status(mLOstp) == :Optimal
 @test mLOstp.meta.resources == false
-update_and_stop!(sLOstp, x = xref, res = nothing)
+update_and_stop!(sLOstp, x = xref, res = Float64[])
 @test status(sLOstp) == :Optimal
 @test sLOstp.meta.resources == false
-update_and_stop!(opLOstp, x = xref, res = nothing)
+update_and_stop!(opLOstp, x = xref, res = Float64[])
 @test status(opLOstp) == :Optimal
 @test opLOstp.meta.resources == true
 
@@ -71,7 +71,7 @@ function RandomizedBlockKaczmarz(stp :: AbstractStopping; kwargs...)
      xk  = Ai == 0 ? x0 : x0 - (dot(Ai,x0)-b[i])/dot(Ai,Ai) * Ai
      #xk  = Ai == 0 ? x0 : x0 - (Ai' * x0-b[i])/(Ai' * Ai) * Ai
 
-     OK = update_and_stop!(stp, x = xk, res = nothing)
+     OK = update_and_stop!(stp, x = xk, res = [])
      x0  = xk
 
     end

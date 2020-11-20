@@ -53,8 +53,8 @@ for i=1:n
     #update the stats from the Stopping
     stats[name].nvar[i] = nlp_cutest.meta.nvar
     stats[name].status[i] = status(stop_nlp)
-    stats[name].f[i] = stop_nlp.current_state.fx == nothing ? NaN : stop_nlp.current_state.fx
-    stats[name].t[i] = stop_nlp.current_state.current_time == nothing ? NaN : stop_nlp.current_state.current_time - stop_nlp.meta.start_time
+    stats[name].f[i] = stop_nlp.current_state.fx
+    stats[name].t[i] = stop_nlp.current_state.current_time - stop_nlp.meta.start_time
     stats[name].iter[i] = stop_nlp.meta.nb_of_stop
     stats[name].score[i] = unconstrained_check(nlp_cutest, stop_nlp.current_state)
     stats[name].eval_f[i] = getfield(stop_nlp.current_state.evals, :neval_obj)
