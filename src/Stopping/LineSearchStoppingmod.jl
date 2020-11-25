@@ -55,17 +55,17 @@ mutable struct LS_Stopping{Pb, M}  <: AbstractStopping{LSAtT, Pb, M}
 
     function LS_Stopping(pb             :: Pb,
                          current_state  :: LSAtT;
-                         meta           :: M = StoppingMeta(),
+                         meta           :: AbstractStoppingMeta = StoppingMeta(),
                          main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                          list           :: Union{ListStates, Nothing} = nothing,
                          user_specific_struct :: Any = nothing,
-                         kwargs...) where {Pb <: Any, M <: AbstractStoppingMeta}
+                         kwargs...) where {Pb <: Any}
 
         if !(isempty(kwargs))
            meta = StoppingMeta(;optimality_check = armijo, kwargs...)
         end
 
-        return new{Pb,M}(pb, meta, current_state, main_stp, list, user_specific_struct)
+        return new{Pb, typeof(meta)}(pb, meta, current_state, main_stp, list, user_specific_struct)
     end
 
 end

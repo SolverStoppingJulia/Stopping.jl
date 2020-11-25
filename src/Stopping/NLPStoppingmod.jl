@@ -51,14 +51,16 @@ mutable struct NLPStopping{T, Pb, M}  <: AbstractStopping{T, Pb, M}
 
     function NLPStopping(pb             :: Pb,
                          current_state  :: T;
-                         meta           :: M = StoppingMeta(;max_cntrs = _init_max_counters(), optimality_check = KKT),
+                         meta           :: AbstractStoppingMeta = StoppingMeta(;max_cntrs = _init_max_counters(), optimality_check = KKT),
                          main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                          list           :: Union{ListStates, Nothing} = nothing,
                          user_specific_struct  :: Any = nothing,
-                         kwargs...) where {T <: AbstractState, Pb <: AbstractNLPModel, M <: AbstractStoppingMeta}
+                         kwargs...) where {T <: AbstractState, Pb <: AbstractNLPModel}
 
         if !(isempty(kwargs))
-           meta = StoppingMeta(;max_cntrs = _init_max_counters(), optimality_check = KKT, kwargs...)
+           meta = StoppingMeta(;max_cntrs = _init_max_counters(),
+                                optimality_check = KKT,
+                                kwargs...)
         end
 
         #current_state is an AbstractState with requirements
@@ -74,7 +76,8 @@ mutable struct NLPStopping{T, Pb, M}  <: AbstractStopping{T, Pb, M}
             throw("error: missing entries in the given current_state")
         end
 
-        return new{T,Pb,M}(pb, meta, current_state, main_stp, list, user_specific_struct)
+        return new{T, Pb, typeof(meta)}(pb, meta, current_state, main_stp,
+                                        list, user_specific_struct)
     end
 
 end

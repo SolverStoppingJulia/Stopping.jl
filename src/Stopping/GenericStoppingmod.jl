@@ -67,21 +67,21 @@ mutable struct GenericStopping{T, Pb, M} <: AbstractStopping{T, Pb, M}
 
     function GenericStopping(pb            :: Pb,
                              current_state :: T;
-                             meta          :: M = StoppingMeta(),
+                             meta          :: AbstractStoppingMeta = StoppingMeta(),
                              main_stp      :: Union{AbstractStopping, Nothing} = nothing,
                              list          :: Union{ListStates, Nothing} = nothing,
                              user_specific_struct :: Any = nothing,
-                             kwargs...) where {T <: AbstractState, Pb <: Any, M <: AbstractStoppingMeta}
+                             kwargs...) where {T <: AbstractState, Pb <: Any}
 
      if !(isempty(kwargs))
       meta = StoppingMeta(; kwargs...)
      end
 
-     return new{T,Pb,M}(pb, meta, current_state, main_stp, list, user_specific_struct)
+     return new{T, Pb, typeof(meta)}(pb, meta, current_state, main_stp, list, user_specific_struct)
     end
 end
 
-function GenericStopping(pb :: Any, x :: Union{Number, AbstractVector}; kwargs...)
+function GenericStopping(pb :: Any, x :: T; kwargs...) where T
  return GenericStopping(pb, GenericState(x); kwargs...)
 end
 

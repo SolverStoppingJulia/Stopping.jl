@@ -83,7 +83,7 @@ would need to be subtypes of AbstractStoppingMeta
 abstract type AbstractStoppingMeta end
 include("Stopping/StoppingMetamod.jl")
 
-export AbstractStoppingMeta, StoppingMeta
+export AbstractStoppingMeta, StoppingMeta, tol_check, update_tol!
 
 """
 AbstractStopping

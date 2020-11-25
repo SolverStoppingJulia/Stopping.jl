@@ -159,7 +159,7 @@ function tol_check(meta :: StoppingMeta{TolType, CheckType}) where {TolType <: N
    setfield!(meta, :check_neg, meta.tol_check_neg(atol, rtol, opt0))
  end
 
- return (meta.check_pos, meta.check_pos)
+ return (meta.check_pos, meta.check_neg)
 end
 
 function update_tol!(meta        :: StoppingMeta{TolType, CheckType};

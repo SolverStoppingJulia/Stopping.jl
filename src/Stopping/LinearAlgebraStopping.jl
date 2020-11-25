@@ -62,18 +62,19 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
 
      function LAStopping(pb             :: Pb,
                          current_state  :: T;
-                         meta           :: M = StoppingMeta(;max_cntrs = _init_max_counters_NLS(), optimality_check = linear_system_check),
+                         meta           :: AbstractStoppingMeta = StoppingMeta(;max_cntrs = _init_max_counters_NLS(), optimality_check = linear_system_check),
                          main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                          list           :: Union{ListStates, Nothing} = nothing,
                          user_specific_struct :: Any = nothing,
                          zero_start     :: Bool = false,
-                         kwargs...) where {T <: AbstractState, Pb <: Any, M <: AbstractStoppingMeta}
+                         kwargs...) where {T <: AbstractState, Pb <: Any}
 
          if !(isempty(kwargs))
             meta = StoppingMeta(;max_cntrs = _init_max_counters_NLS(), optimality_check = linear_system_check, kwargs...)
          end
 
-         return new{T,Pb,M}(pb, meta, current_state, main_stp, list, user_specific_struct, zero_start)
+         return new{T, Pb, typeof(meta)}(pb, meta, current_state, main_stp, list,
+                                         user_specific_struct, zero_start)
      end
  end
 
