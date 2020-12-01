@@ -1,5 +1,7 @@
 abstract type AbstractListStates end
 
+struct VoidListStates <: AbstractListStates end
+
 """
 Type: list of States
 
@@ -17,24 +19,33 @@ component is a ListStates (or nothing).
 Examples:
 ListStates(state)
 ListStates(state, n = 2)
-ListStates(n = -1, list = [[state1, nothing], [state2, nothing]], i = 2)
-ListStates(n = -1, list = [[state1, another_list]], i = 1)
+ListStates(-1)
+ListStates(-1, [(state1, VoidListStates), (state2, VoidListStates)], 2)
+ListStates(-1, [(state1, another_list)], 1)
 """
 mutable struct ListStates <: AbstractListStates
 
   n     :: Int #If length of the list is knwon, -1 if unknown
   i     :: Int #current index in the list/length
-  list  :: Array #list of [States, list]
+  list  :: Array #Array{Tuple{AbstractState, AbstractListStates},1}
+                 #Tanj: \TODO Tuple instead of an Array would be better, I think
 
 end
 
-function ListStates(n :: Int; list :: Array = Array{Any}(nothing, n), i :: Int = 0)
+function ListStates(n :: T) where T <: Int
+  list = Array{Any}(nothing, max(n, zero(T)))
+  i = 0
+  return ListStates(n, i, list)
+end
+
+function ListStates(n :: T, list :: Array) where T <: Int
+  i = length(list)
   return ListStates(n, i, list)
 end
 
 function ListStates(state :: AbstractState; n :: Int = -1, kwargs...)
     i =  1
-    list = [[copy_compress_state(state; kwargs...), nothing]]
+    list = [(copy_compress_state(state; kwargs...), VoidListStates())]
   return ListStates(n, i, list)
 end
 
@@ -59,9 +70,9 @@ function add_to_list!(list :: AbstractListStates, state :: AbstractState; kwargs
       list.i += 1
   end
   cstate = copy_compress_state(state; kwargs...)
-  push!(list.list, [cstate, nothing])
+  push!(list.list, (cstate, VoidListStates()))
  else
-  push!(list.list, [copy_compress_state(state; kwargs...), nothing])
+  push!(list.list, (copy_compress_state(state; kwargs...), VoidListStates()))
   list.i += 1
  end
 

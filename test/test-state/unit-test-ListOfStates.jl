@@ -1,35 +1,49 @@
-s0 = GenericState(zeros(50))
-s1 = GenericState(ones(10))
-s2 = GenericState(NaN*ones(10), current_time = 1.0, current_score = 0.0)
+@testset "List of States" begin
 
-stest = ListStates(s0, max_vector_size = 2, pnorm = Inf)
+    s0 = GenericState(zeros(50))
+    s1 = GenericState(ones(10))
+    s2 = GenericState(NaN*ones(10), current_time = 1.0, current_score = 0.0)
+    
+    @test typeof(ListStates(s0)) <: AbstractListStates
+    @test typeof(ListStates(-1)) <: AbstractListStates
+    @test typeof(ListStates(1)) <: AbstractListStates
+    @test typeof(ListStates(-1, 3, [])) <: AbstractListStates
+    @test typeof(ListStates(-1, [])) <: AbstractListStates
 
-add_to_list!(stest, s1, max_vector_size = 2, pnorm = Inf)
-add_to_list!(stest, s2, max_vector_size = 2, pnorm = Inf)
+    stest = ListStates(s0, max_vector_size = 2, pnorm = Inf)
 
-@test length(stest) == 3
+    add_to_list!(stest, s1, max_vector_size = 2, pnorm = Inf)
+    add_to_list!(stest, s2, max_vector_size = 2, pnorm = Inf)
 
-stest2 = ListStates(s0, n = 2, max_vector_size = 2, pnorm = Inf)
+    @test length(stest) == 3
 
-add_to_list!(stest2, s1, max_vector_size = 2, pnorm = Inf)
-add_to_list!(stest2, s2, max_vector_size = 2, pnorm = Inf)
+    stest2 = ListStates(s0, n = 2, max_vector_size = 2, pnorm = Inf)
 
-@test length(stest2) == 2
+    add_to_list!(stest2, s1, max_vector_size = 2, pnorm = Inf)
+    add_to_list!(stest2, s2, max_vector_size = 2, pnorm = Inf)
 
-df1 = print(stest, verbose = false)
+    @test length(stest2) == 2
 
-df2 = print(stest2, verbose = false)
+    df1 = print(stest, verbose = false)
 
-df3 = print(stest2, verbose = false, print_sym = [:x])
+    df2 = print(stest2, verbose = false)
 
-@test typeof(df2) <: DataFrame
+    df3 = print(stest2, verbose = false, print_sym = [:x])
 
-stest3 = ListStates(-1, list = [[s0,nothing], [s1,nothing], [s2,nothing]], i = 3)
+    @test typeof(df2) <: DataFrame
 
-@test stest3[2,1] == s1
+    stest3 = ListStates(-1, 3, [(s0, VoidListStates()), (s1, VoidListStates()), (s2, VoidListStates())])
 
-#nested lists
+    @test stest3[2,1] == s1
+    
+    stest4 = ListStates(-1, [(s0, VoidListStates()), (s1, VoidListStates()), (s2, VoidListStates())])
+    
+    @test length(stest4) == 3
 
-stest4 = ListStates(-1, list = [[s0, stest3]])
+    #nested lists
 
-df4 = print(stest4[1,2], verbose = false)
+    stest5 = ListStates(-1, [(s0, stest3)])
+
+    df5 = print(stest5[1,2], verbose = false)
+
+end

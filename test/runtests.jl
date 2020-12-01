@@ -1,4 +1,9 @@
-using DataFrames, LinearAlgebra, NLPModels, Printf, Stopping, Test
+using Test
+
+using DataFrames, LinearAlgebra, NLPModels, Printf, SparseArrays
+
+using Stopping
+using Stopping: _init_field
 
 printstyled("Generic State tests... ")
 include("test-state/unit-test-GenericStatemod.jl")

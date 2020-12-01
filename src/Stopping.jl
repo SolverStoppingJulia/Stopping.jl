@@ -72,7 +72,8 @@ export NLPAtX, update!
 
 include("State/ListOfStates.jl")
 
-export ListStates, add_to_list!, length, print, getindex
+export AbstractListStates, ListStates, VoidListStates
+export add_to_list!, length, print, getindex
 
 """
 AbstractStoppingMeta

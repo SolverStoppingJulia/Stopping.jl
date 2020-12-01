@@ -122,7 +122,7 @@ mutable struct StoppingMeta{TolType <: Number, CheckType} <: AbstractStoppingMet
    check_neg = tol_check_neg(atol, rtol, optimality0)
 
    if (true in (check_pos .< check_neg))
-       @warn "Warning in StoppingMeta definition: tol_check should be greater than tol_check_neg."
+       throw(ErrorException("StoppingMeta: tol_check should be greater than tol_check_neg."))
    end
 
    fail_sub_pb     = false
@@ -168,9 +168,9 @@ function update_tol!(meta        :: StoppingMeta{TolType, CheckType};
                      optimality0 :: Union{TolType,Nothing} = nothing) where {TolType <: Number, CheckType}
  meta.retol = true
 
- atol == nothing        && setfield!(meta, :atol, atol)
- rtol == nothing        && setfield!(meta, :rtol, rtol)
- optimality0 == nothing && setfield!(meta, :optimality0, optimality0)
+ atol != nothing        && setfield!(meta, :atol, atol)
+ rtol != nothing        && setfield!(meta, :rtol, rtol)
+ optimality0 != nothing && setfield!(meta, :optimality0, optimality0)
 
  return meta
 end

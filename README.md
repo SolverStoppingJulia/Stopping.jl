@@ -4,7 +4,6 @@
 [![Coverage Status](https://coveralls.io/repos/vepiteski/Stopping.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/vepiteski/Stopping.jl?branch=julia-0.7)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://vepiteski.github.io/Stopping.jl/dev/)
 
-
 ## Purpose
 
 Tools to ease the uniformization of stopping criteria in iterative solvers.
