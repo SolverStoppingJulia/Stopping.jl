@@ -63,22 +63,31 @@ mutable struct GenericStopping{T, Pb, M} <: AbstractStopping{T, Pb, M}
     listofstates         :: Union{ListStates, Nothing}
 
     # User-specific structure
-    user_specific_struct :: Any
+    user_specific_struct :: Any #this type should be parametric
 
-    function GenericStopping(pb            :: Pb,
-                             current_state :: T;
-                             meta          :: AbstractStoppingMeta = StoppingMeta(),
-                             main_stp      :: Union{AbstractStopping, Nothing} = nothing,
-                             list          :: Union{ListStates, Nothing} = nothing,
-                             user_specific_struct :: Any = nothing,
-                             kwargs...) where {T <: AbstractState, Pb <: Any}
+end
 
-     if !(isempty(kwargs))
-      meta = StoppingMeta(; kwargs...)
-     end
+function GenericStopping(pb            :: Pb,
+                         meta          :: M,
+                         current_state :: T;
+                         main_stp      :: Union{AbstractStopping, Nothing} = nothing,
+                         list          :: Union{ListStates, Nothing} = nothing,
+                         user_specific_struct :: Any = nothing,
+                         kwargs...) where {T <: AbstractState, Pb <: Any, M <: AbstractStoppingMeta}
 
-     return new{T, Pb, typeof(meta)}(pb, meta, current_state, main_stp, list, user_specific_struct)
-    end
+ return GenericStopping(pb, meta, current_state, main_stp, list, user_specific_struct)
+end
+
+function GenericStopping(pb            :: Pb,
+                         current_state :: T;
+                         main_stp      :: Union{AbstractStopping, Nothing} = nothing,
+                         list          :: Union{ListStates, Nothing} = nothing,
+                         user_specific_struct :: Any = nothing,
+                         kwargs...) where {T <: AbstractState, Pb <: Any}
+
+  meta = StoppingMeta(; kwargs...)
+
+ return GenericStopping(pb, meta, current_state, main_stp, list, user_specific_struct)
 end
 
 function GenericStopping(pb :: Any, x :: T; kwargs...) where T

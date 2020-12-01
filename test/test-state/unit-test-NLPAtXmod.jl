@@ -1,3 +1,4 @@
+@testset "NLPAtX" begin
 #Test unconstrained NLPAtX
 uncons_nlp_at_x = NLPAtX(zeros(10))
 
@@ -111,4 +112,5 @@ try
     @test false
 catch
     @test true
+end
 end

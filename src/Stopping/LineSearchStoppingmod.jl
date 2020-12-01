@@ -53,21 +53,34 @@ mutable struct LS_Stopping{Pb, M}  <: AbstractStopping{LSAtT, Pb, M}
     # User-specific structure
     user_specific_struct :: Any
 
-    function LS_Stopping(pb             :: Pb,
-                         current_state  :: LSAtT;
-                         meta           :: AbstractStoppingMeta = StoppingMeta(),
-                         main_stp       :: Union{AbstractStopping, Nothing} = nothing,
-                         list           :: Union{ListStates, Nothing} = nothing,
-                         user_specific_struct :: Any = nothing,
-                         kwargs...) where {Pb <: Any}
+end
 
-        if !(isempty(kwargs))
-           meta = StoppingMeta(;optimality_check = armijo, kwargs...)
-        end
+function LS_Stopping(pb             :: Pb,
+                     meta           :: M,
+                     current_state  :: LSAtT;
+                     main_stp       :: Union{AbstractStopping, Nothing} = nothing,
+                     list           :: Union{ListStates, Nothing} = nothing,
+                     user_specific_struct :: Any = nothing) where {Pb <: Any, M <: AbstractStoppingMeta}
+                     
+    return LS_Stopping(pb, meta, current_state, main_stp, list, user_specific_struct)
+end
 
-        return new{Pb, typeof(meta)}(pb, meta, current_state, main_stp, list, user_specific_struct)
+function LS_Stopping(pb             :: Pb,
+                     current_state  :: LSAtT;
+                     main_stp       :: Union{AbstractStopping, Nothing} = nothing,
+                     list           :: Union{ListStates, Nothing} = nothing,
+                     user_specific_struct :: Any = nothing,
+                     kwargs...) where {Pb <: Any}
+    
+    if :optimality_check in keys(kwargs)
+        oc = kwargs[:optimality_check]
+    else
+        oc = armijo
     end
 
+    meta = StoppingMeta(;optimality_check = oc, kwargs...)
+
+    return LS_Stopping(pb, meta, current_state, main_stp, list, user_specific_struct)
 end
 
 """

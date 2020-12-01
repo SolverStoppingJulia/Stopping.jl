@@ -49,7 +49,7 @@ function StopRandomizedCD2(stp          :: AbstractStopping;
     x  = state.x
     T  = eltype(x)
 
-    state.res = is_zero_start ? - b : A*x - b
+    state.res = is_zero_start ? b : b - A*x
     res = state.res
 
     OK = start!(stp, no_start_opt_check = true)
@@ -72,7 +72,7 @@ function StopRandomizedCD2(stp          :: AbstractStopping;
         nAi   = @kdot(m, Ai, Ai)
         state.x[i] -= Aires/nAi
 
-        state.res = A*state.x - b #TO IMPROVE!!
+        state.res = b - A*state.x #TO IMPROVE!!
         res = state.res
 
         OK = cheap_stop!(stp) #make a copy of res in current_score?

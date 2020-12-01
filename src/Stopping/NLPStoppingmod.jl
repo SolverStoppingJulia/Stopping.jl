@@ -49,37 +49,68 @@ mutable struct NLPStopping{T, Pb, M}  <: AbstractStopping{T, Pb, M}
     # User-specific structure
     user_specific_struct :: Any
 
-    function NLPStopping(pb             :: Pb,
-                         current_state  :: T;
-                         meta           :: AbstractStoppingMeta = StoppingMeta(;max_cntrs = _init_max_counters(), optimality_check = KKT),
-                         main_stp       :: Union{AbstractStopping, Nothing} = nothing,
-                         list           :: Union{ListStates, Nothing} = nothing,
-                         user_specific_struct  :: Any = nothing,
-                         kwargs...) where {T <: AbstractState, Pb <: AbstractNLPModel}
+end
 
-        if !(isempty(kwargs))
-           meta = StoppingMeta(;max_cntrs = _init_max_counters(),
-                                optimality_check = KKT,
-                                kwargs...)
+
+function NLPStopping(pb             :: Pb,
+                     meta           :: M,
+                     current_state  :: T;
+                     main_stp       :: Union{AbstractStopping, Nothing} = nothing,
+                     list           :: Union{ListStates, Nothing} = nothing,
+                     user_specific_struct  :: Any = nothing,
+                     kwargs...) where {T <: AbstractState, Pb <: AbstractNLPModel, M <: AbstractStoppingMeta}
+
+    #current_state is an AbstractState with requirements
+    try
+        current_state.evals
+        current_state.fx, current_state.gx, current_state.Hx
+        #if there are bounds:
+        current_state.mu
+        if pb.meta.ncon > 0 #if there are constraints
+           current_state.Jx, current_state.cx, current_state.lambda
         end
-
-        #current_state is an AbstractState with requirements
-        try
-            current_state.evals
-            current_state.fx, current_state.gx, current_state.Hx
-            #if there are bounds:
-            current_state.mu
-            if pb.meta.ncon > 0 #if there are constraints
-               current_state.Jx, current_state.cx, current_state.lambda
-            end
-        catch
-            throw("error: missing entries in the given current_state")
-        end
-
-        return new{T, Pb, typeof(meta)}(pb, meta, current_state, main_stp,
-                                        list, user_specific_struct)
+    catch
+        throw(ErrorException("error: missing entries in the given current_state"))
     end
 
+    return NLPStopping(pb, meta, current_state, main_stp, list, user_specific_struct)
+end
+
+function NLPStopping(pb             :: Pb,
+                     current_state  :: T;
+                     main_stp       :: Union{AbstractStopping, Nothing} = nothing,
+                     list           :: Union{ListStates, Nothing} = nothing,
+                     user_specific_struct  :: Any = nothing,
+                     kwargs...) where {T <: AbstractState, Pb <: AbstractNLPModel}
+    
+    if :max_cntrs in keys(kwargs)
+        mcntrs = kwargs[:max_cntrs]
+    else
+        mcntrs = _init_max_counters()
+    end
+    
+    if :optimality_check in keys(kwargs)
+        oc = kwargs[:optimality_check]
+    else
+        oc = KKT
+    end
+
+    meta = StoppingMeta(;max_cntrs = mcntrs, optimality_check = oc, kwargs...)
+    
+    #current_state is an AbstractState with requirements
+    try
+        current_state.evals
+        current_state.fx, current_state.gx, current_state.Hx
+        #if there are bounds:
+        current_state.mu
+        if pb.meta.ncon > 0 #if there are constraints
+           current_state.Jx, current_state.cx, current_state.lambda
+        end
+    catch
+        throw(ErrorException("error: missing entries in the given current_state"))
+    end
+
+    return NLPStopping(pb, meta, current_state, main_stp, list, user_specific_struct)
 end
 
 function NLPStopping(pb :: AbstractNLPModel; kwargs...)

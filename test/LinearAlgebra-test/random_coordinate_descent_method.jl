@@ -27,7 +27,7 @@ function RandomizedCD(A :: AbstractMatrix,
 
     m, n = size(A)
     x    = copy(x0)
-    res  = is_zero_start ? - b : A*x - b
+    res  = is_zero_start ? b : b - A*x
     nrm0 = norm(res)
 
     time_init = time()
@@ -54,7 +54,7 @@ function RandomizedCD(A :: AbstractMatrix,
      nAi   = @kdot(m, Ai, Ai)
      x[i] -= Aires/nAi
 
-     res = A*x - b
+     res = b - A*x
      cntrs.nprod += 1
      nrm = norm(res,Inf)
      OK  = nrm <= atol + nrm0 * rtol

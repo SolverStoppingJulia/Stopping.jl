@@ -114,8 +114,7 @@ mutable struct StoppingMeta{TolType <: Number, CheckType} <: AbstractStoppingMet
                        max_eval            :: Int      = 20000,
                        max_iter            :: Int      = 5000,
                        max_time            :: Float64  = 300.0,
-                       start_time          :: Float64  = NaN,
-                       kwargs...)
+                       start_time          :: Float64  = NaN)
 
    #throw("Error in StoppingMeta definition: tol_check and tol_check_neg must have 3 arguments")
    check_pos = tol_check(atol, rtol, optimality0)

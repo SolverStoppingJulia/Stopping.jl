@@ -60,22 +60,44 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
      #zero is initial point
      zero_start           :: Bool
 
-     function LAStopping(pb             :: Pb,
-                         current_state  :: T;
-                         meta           :: AbstractStoppingMeta = StoppingMeta(;max_cntrs = _init_max_counters_NLS(), optimality_check = linear_system_check),
-                         main_stp       :: Union{AbstractStopping, Nothing} = nothing,
-                         list           :: Union{ListStates, Nothing} = nothing,
-                         user_specific_struct :: Any = nothing,
-                         zero_start     :: Bool = false,
-                         kwargs...) where {T <: AbstractState, Pb <: Any}
+ end
+ 
+ function LAStopping(pb             :: Pb,
+                     meta           :: M,
+                     current_state  :: T;
+                     main_stp       :: Union{AbstractStopping, Nothing} = nothing,
+                     list           :: Union{ListStates, Nothing} = nothing,
+                     user_specific_struct :: Any = nothing,
+                     zero_start     :: Bool = false) where {T <: AbstractState, Pb <: Any, M <: AbstractStoppingMeta}
 
-         if !(isempty(kwargs))
-            meta = StoppingMeta(;max_cntrs = _init_max_counters_NLS(), optimality_check = linear_system_check, kwargs...)
-         end
-
-         return new{T, Pb, typeof(meta)}(pb, meta, current_state, main_stp, list,
-                                         user_specific_struct, zero_start)
+     return LAStopping(pb, meta, current_state, main_stp, list, user_specific_struct, zero_start)
+ end
+ 
+ function LAStopping(pb             :: Pb,
+                     current_state  :: T;
+                     main_stp       :: Union{AbstractStopping, Nothing} = nothing,
+                     list           :: Union{ListStates, Nothing} = nothing,
+                     user_specific_struct :: Any = nothing,
+                     zero_start     :: Bool = false,
+                     kwargs...) where {T <: AbstractState, Pb <: Any}
+                     
+     if :max_cntrs in keys(kwargs)
+         mcntrs = kwargs[:max_cntrs]
+     elseif Pb <: LLSModel
+         mcntrs = _init_max_counters_NLS()
+     else
+         mcntrs = _init_max_counters_linear_operators()
      end
+     
+     if :optimality_check in keys(kwargs)
+         oc = kwargs[:optimality_check]
+     else
+         oc = linear_system_check
+     end
+
+     meta = StoppingMeta(;max_cntrs =  mcntrs, optimality_check = oc, kwargs...)
+
+     return LAStopping(pb, meta, current_state, main_stp, list, user_specific_struct, zero_start)
  end
 
 function LAStopping(A      :: TA,
