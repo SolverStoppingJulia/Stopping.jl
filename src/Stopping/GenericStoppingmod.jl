@@ -266,13 +266,13 @@ function stop!(stp :: AbstractStopping; kwargs...)
        _main_pb_check!(stp, x)
    end
 
-   _user_check!(stp, x)
+   stop_by_user = _user_check!(stp, x)
  end
 
  OK = stp.meta.optimal || stp.meta.tired || stp.meta.stalled
  OK = OK || stp.meta.iteration_limit || stp.meta.unbounded || stp.meta.resources
  OK = OK || stp.meta.unbounded_pb || stp.meta.main_pb || stp.meta.domainerror
- OK = OK || stp.meta.suboptimal || stp.meta.fail_sub_pb
+ OK = OK || stp.meta.suboptimal || stp.meta.fail_sub_pb || stop_by_user
 
 
  _add_stop!(stp)
@@ -520,7 +520,7 @@ end
 `_user_check!( :: AbstractStopping, x :: Union{Number, AbstractVector})`
 """
 function _user_check!(stp :: AbstractStopping, x   :: T) where T
- nothing
+ return false
 end
 
 """
