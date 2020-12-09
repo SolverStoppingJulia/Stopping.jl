@@ -1,3 +1,47 @@
+abstract type AbstractStopRemoteControl end
+
+"""
+Turn a boolean to false to cancel this check in the functions stop! and start!.
+"""
+struct StopRemoteControl <: AbstractStopRemoteControl
+    
+    unbounded_and_domain_x_check :: Bool
+    domain_check                 :: Bool
+    optimality                   :: Bool
+    infeasibility_check          :: Bool
+    unbounded_problem_check      :: Bool
+    tired_check                  :: Bool
+    resources_check              :: Bool
+    stalled_check                :: Bool
+    iteration_check              :: Bool
+    main_pb_check                :: Bool
+    user_check                   :: Bool
+    
+    cheap_check                  :: Bool
+    
+end
+
+function StopRemoteControl(;unbounded_and_domain_x_check :: Bool = true,
+                            domain_check                 :: Bool = true,
+                            optimality                   :: Bool = true,
+                            infeasibility_check          :: Bool = true,
+                            unbounded_problem_check      :: Bool = true,
+                            tired_check                  :: Bool = true,
+                            resources_check              :: Bool = true,
+                            stalled_check                :: Bool = true,
+                            iteration_check              :: Bool = true,
+                            main_pb_check                :: Bool = true,
+                            user_check                   :: Bool = true,
+                            cheap_check                  :: Bool = false)
+                            
+ return StopRemoteControl(unbounded_and_domain_x_check, domain_check, 
+                          optimality, infeasibility_check, 
+                          unbounded_problem_check, tired_check, 
+                          resources_check, stalled_check,
+                          iteration_check, main_pb_check, 
+                          user_check, cheap_check)
+end
+
 """
 Type: StoppingMeta
 
@@ -34,8 +78,11 @@ Attributes:
 - main_pb : status.
 - domainerror : status.
 - suboptimal : status.
+- stopbyuser : status
 
-`StoppingMeta(;atol :: Number = 1.0e-6, rtol :: Number = 1.0e-15, optimality0 :: Number = 1.0, tol_check :: Function = (atol,rtol,opt0) -> max(atol,rtol*opt0), unbounded_threshold :: Number = 1.0e50, unbounded_x :: Number = 1.0e50, max_f :: Int = typemax(Int), max_eval :: Int = 20000, max_iter :: Int = 5000, max_time :: Number = 300.0, start_time :: Float64 = NaN, kwargs...)`
+- meta_user_struct :  Any
+
+`StoppingMeta(;atol :: Number = 1.0e-6, rtol :: Number = 1.0e-15, optimality0 :: Number = 1.0, tol_check :: Function = (atol,rtol,opt0) -> max(atol,rtol*opt0), unbounded_threshold :: Number = 1.0e50, unbounded_x :: Number = 1.0e50, max_f :: Int = typemax(Int), max_eval :: Int = 20000, max_iter :: Int = 5000, max_time :: Number = 300.0, start_time :: Float64 = NaN, meta_user_struct :: Any = nothing, kwargs...)`
 
 Note:
 - It is a mutable struct, therefore we can modify elements of a *StoppingMeta*.
@@ -52,7 +99,7 @@ Note:
 
 Examples: `StoppingMeta()`
 """
-mutable struct StoppingMeta{TolType <: Number, CheckType} <: AbstractStoppingMeta
+mutable struct StoppingMeta{TolType <: Number, CheckType, MUS, SRC <: AbstractStopRemoteControl} <: AbstractStoppingMeta
 
  # problem tolerances
  atol                :: TolType # absolute tolerance
@@ -99,6 +146,11 @@ mutable struct StoppingMeta{TolType <: Number, CheckType} <: AbstractStoppingMet
  main_pb             :: Bool
  domainerror         :: Bool
  suboptimal          :: Bool
+ stopbyuser          :: Bool
+ 
+ meta_user_struct    :: MUS
+ 
+ stop_remote         :: SRC
 
  function StoppingMeta(;atol               :: Number   = 1.0e-6,
                        rtol                :: Number   = 1.0e-15,
@@ -114,7 +166,9 @@ mutable struct StoppingMeta{TolType <: Number, CheckType} <: AbstractStoppingMet
                        max_eval            :: Int      = 20000,
                        max_iter            :: Int      = 5000,
                        max_time            :: Float64  = 300.0,
-                       start_time          :: Float64  = NaN)
+                       start_time          :: Float64  = NaN,
+                       meta_user_struct    :: Any      = nothing,
+                       stop_remote         :: AbstractStopRemoteControl = StopRemoteControl())
 
    #throw("Error in StoppingMeta definition: tol_check and tol_check_neg must have 3 arguments")
    check_pos = tol_check(atol, rtol, optimality0)
@@ -136,21 +190,23 @@ mutable struct StoppingMeta{TolType <: Number, CheckType} <: AbstractStoppingMet
    main_pb         = false
    domainerror     = false
    suboptimal      = false
+   stopbyuser      = false
 
    nb_of_stop = 0
 
-   return new{typeof(atol), typeof(check_pos)}(atol, rtol, optimality0,
+   return new{typeof(atol), typeof(check_pos), typeof(meta_user_struct), typeof(stop_remote)}(
+                 atol, rtol, optimality0,
                  tol_check, tol_check_neg,
                  check_pos, check_neg, optimality_check, retol,
                  unbounded_threshold, unbounded_x,
                  max_f, max_cntrs, max_eval, max_iter, max_time, nb_of_stop, start_time,
                  fail_sub_pb, unbounded, unbounded_pb, tired, stalled,
                  iteration_limit, resources, optimal, infeasible, main_pb,
-                 domainerror, suboptimal)
+                 domainerror, suboptimal, stopbyuser, meta_user_struct, stop_remote)
  end
 end
 
-function tol_check(meta :: StoppingMeta{TolType, CheckType}) where {TolType <: Number, CheckType}
+function tol_check(meta :: StoppingMeta{TolType, CheckType, MUS}) where {TolType <: Number, CheckType, MUS, SRC <: AbstractStopRemoteControl}
 
  if meta.retol
    atol, rtol, opt0 = meta.atol, meta.rtol, meta.optimality0
@@ -161,10 +217,10 @@ function tol_check(meta :: StoppingMeta{TolType, CheckType}) where {TolType <: N
  return (meta.check_pos, meta.check_neg)
 end
 
-function update_tol!(meta        :: StoppingMeta{TolType, CheckType};
+function update_tol!(meta        :: StoppingMeta{TolType, CheckType, MUS};
                      atol        :: Union{TolType,Nothing} = nothing,
                      rtol        :: Union{TolType,Nothing} = nothing,
-                     optimality0 :: Union{TolType,Nothing} = nothing) where {TolType <: Number, CheckType}
+                     optimality0 :: Union{TolType,Nothing} = nothing) where {TolType <: Number, CheckType, MUS, SRC <: AbstractStopRemoteControl}
  meta.retol = true
 
  atol != nothing        && setfield!(meta, :atol, atol)

@@ -151,7 +151,7 @@ function start!(stp :: AbstractStopping; no_start_opt_check :: Bool = false, kwa
  end
 
  if !no_start_opt_check
-  stp.meta.domainerror = _domain_check(state)
+  stp.meta.domainerror = _domain_check(state) ? true : stp.meta.domainerror
   if !stp.meta.domainerror
     # Optimality check
     optimality0          = _optimality_check(stp; kwargs...)
@@ -160,7 +160,7 @@ function start!(stp :: AbstractStopping; no_start_opt_check :: Bool = false, kwa
        stp.meta.domainerror = true
     end
 
-    stp.meta.optimal     = _null_test(stp, optimality0)
+    stp.meta.optimal = _null_test(stp, optimality0) ? true : stp.meta.optimal
    end
  end
 
@@ -269,20 +269,21 @@ Note:
 - Kwargs are sent to the *\\_optimality\\_check!* call.
 - If listofstates != nothing, call add\\_to\\_list! to update the list of State.
 """
-function stop!(stp :: AbstractStopping; kwargs...)
+function _oldstop!(stp :: AbstractStopping; kwargs...)
 
  x        = stp.current_state.x
 
  _unbounded_and_domain_x_check!(stp, x)
- stp.meta.domainerror = _domain_check(stp.current_state, x = true)
+ stp.meta.domainerror = _domain_check(stp.current_state, x = true) ? true : stp.meta.domainerror
  if !stp.meta.domainerror
    # Optimality check
    score = _optimality_check(stp; kwargs...)
    if any(isnan, score)
     stp.meta.domainerror = true
    end
-   stp.meta.optimal = _null_test(stp, score)
+   stp.meta.optimal = _null_test(stp, score) ? true : stp.meta.optimal
 
+   _infeasibility_check!(stp, x)
    _unbounded_problem_check!(stp, x)
    _tired_check!(stp, x)
    _resources_check!(stp, x)
@@ -296,7 +297,50 @@ function stop!(stp :: AbstractStopping; kwargs...)
    _user_check!(stp, x)
  end
 
- OK = stp.meta.optimal || stp.meta.tired || stp.meta.iteration_limit || stp.meta.resources || stp.meta.unbounded || stp.meta.unbounded_pb || stp.meta.main_pb || stp.meta.domainerror || stp.meta.suboptimal || stp.meta.fail_sub_pb || stp.meta.stalled
+ OK = stp.meta.optimal || stp.meta.tired || stp.meta.iteration_limit || stp.meta.resources || stp.meta.unbounded || stp.meta.unbounded_pb || stp.meta.main_pb || stp.meta.domainerror || stp.meta.suboptimal || stp.meta.fail_sub_pb || stp.meta.stalled || stp.meta.infeasible || stp.meta.stopbyuser
+
+ _add_stop!(stp)
+
+ if stp.listofstates != nothing
+  add_to_list!(stp.listofstates, stp.current_state)
+ end
+
+ return OK
+end
+
+#New version of stop! using the StopRemoteControl
+function stop!(stp :: AbstractStopping; kwargs...)
+
+ x        = stp.current_state.x
+ src      = stp.meta.stop_remote
+
+ src.unbounded_and_domain_x_check && _unbounded_and_domain_x_check!(stp, x)
+ stp.meta.domainerror = src.domain_check && _domain_check(stp.current_state, x = true) ? true : stp.meta.domainerror
+ if !stp.meta.domainerror
+   # Optimality check
+   if src.optimality
+      score = _optimality_check(stp; kwargs...)
+      if any(isnan, score)
+       stp.meta.domainerror = true
+      end
+      stp.meta.optimal = _null_test(stp, score) ? true : stp.meta.optimal
+   end
+
+   src.infeasibility_check     && _infeasibility_check!(stp, x)
+   src.unbounded_problem_check && _unbounded_problem_check!(stp, x)
+   src.tired_check             && _tired_check!(stp, x)
+   src.resources_check         && _resources_check!(stp, x)
+   src.stalled_check           && _stalled_check!(stp, x)
+   src.iteration_check         && _iteration_check!(stp, x)
+
+   if src.main_pb_check && stp.main_stp != nothing
+       _main_pb_check!(stp, x)
+   end
+
+   src.user_check && _user_check!(stp, x)
+ end
+
+ OK = stp.meta.optimal || stp.meta.tired || stp.meta.iteration_limit || stp.meta.resources || stp.meta.unbounded || stp.meta.unbounded_pb || stp.meta.main_pb || stp.meta.domainerror || stp.meta.suboptimal || stp.meta.fail_sub_pb || stp.meta.stalled || stp.meta.infeasible || stp.meta.stopbyuser
 
  _add_stop!(stp)
 
@@ -331,9 +375,10 @@ function cheap_stop!(stp :: AbstractStopping; kwargs...)
 
  # Optimality check
  score = _optimality_check(stp; kwargs...)
- stp.meta.optimal = _null_test(stp, score)
+ stp.meta.optimal = _null_test(stp, score) ? true : stp.meta.optimal
  OK = stp.meta.optimal
 
+ OK = OK || _infeasibility_check!(stp, x) #stp.meta.infeasible
  OK = OK || _unbounded_problem_check!(stp, x) #stp.meta.unbounded_pb
  OK = OK || _tired_check!(stp, x) #stp.meta.tired
  OK = OK || _resources_check!(stp, x) #stp.meta.resources
@@ -379,9 +424,9 @@ function _iteration_check!(stp :: AbstractStopping,
                            x   :: T) where T
 
  max_iter = stp.meta.nb_of_stop >= stp.meta.max_iter
- stp.meta.iteration_limit = max_iter
+ stp.meta.iteration_limit = max_iter ? true : stp.meta.iteration_limit
 
- return max_iter
+ return stp.meta.iteration_limit
 end
 
 """
@@ -394,9 +439,7 @@ Note: By default *meta.stalled* is false by default for Abstract/Generic Stoppin
 function _stalled_check!(stp :: AbstractStopping,
                          x   :: T) where T
 
- #stp.meta.stalled = false
-
- return false
+ return stp.meta.stalled #false
 end
 
 """
@@ -419,9 +462,9 @@ function _tired_check!(stp    :: AbstractStopping,
  elapsed_time = ctime - stime
  max_time     = elapsed_time > stp.meta.max_time #NaN > 1. is false
 
- stp.meta.tired = max_time
+ stp.meta.tired = max_time ? true : stp.meta.tired
 
- return max_time
+ return stp.meta.tired
 end
 
 """
@@ -434,7 +477,7 @@ Note: By default *meta.resources* is false for Abstract/Generic Stopping.
 function _resources_check!(stp    :: AbstractStopping,
                            x      :: T) where T
 
- return false
+ return stp.meta.resources #false
 end
 
 """
@@ -464,9 +507,9 @@ function _main_pb_check!(stp    :: AbstractStopping,
  end
 
  check = max_time || resources || main_main_pb
- stp.meta.main_pb = check
+ stp.meta.main_pb = check ? true : stp.meta.main_pb
 
- return check
+ return stp.meta.main_pb
 end
 
 """
@@ -484,7 +527,7 @@ function _unbounded_and_domain_x_check!(stp  :: AbstractStopping,
 
  bigX(z :: eltype(T)) = (abs(z) >= stp.meta.unbounded_x)
  (stp.meta.unbounded, stp.meta.domainerror) = _large_and_domain_check(bigX, x)
-
+ return stp.meta.unbounded || stp.meta.domainerror
 end
 
 function _large_and_domain_check(f, itr)
@@ -510,7 +553,20 @@ Note: *meta.unbounded_pb* is false by default.
 function _unbounded_problem_check!(stp  :: AbstractStopping,
                                    x    :: T) where T
 
- return false
+ return stp.meta.unbounded_pb #false
+end
+
+"""
+\\_infeasibility\\_check!: check if problem is infeasible
+
+`_infeasibility_check!(:: AbstractStopping, :: Union{Number, AbstractVector})`
+
+Note: *meta.infeasible* is false by default.
+"""
+function _infeasibility_check!(stp  :: AbstractStopping,
+                               x    :: T) where T
+
+ return stp.meta.infeasible #false
 end
 
 """
@@ -575,7 +631,7 @@ end
 `_user_check!( :: AbstractStopping, x :: Union{Number, AbstractVector})`
 """
 function _user_check!(stp :: AbstractStopping, x   :: T) where T
- return false
+ return stp.meta.stopbyuser
 end
 
 """
@@ -596,6 +652,7 @@ The different status are:
   for the main stopping.
 - Infeasible: default return value, if nothing is done the problem is
                considered feasible.
+- StopByUser: stopped by the user.
 - DomainError: there is a NaN somewhere.
 
 Note:
@@ -615,6 +672,7 @@ function status(stp :: AbstractStopping; list = false)
             (:ResourcesExhausted, :resources),
             (:ResourcesOfMainProblemExhausted, :main_pb),
             (:Infeasible, :infeasible),
+            (:StopByUser, :stopbyuser),
             (:DomainError, :domainerror)])
 
  if list

@@ -21,7 +21,9 @@
     @test test_meta.optimal               == false
     @test test_meta.suboptimal            == false
     @test test_meta.main_pb               == false
+    @test test_meta.stopbyuser            == false
     @test test_meta.nb_of_stop            == 0
+    @test test_meta.meta_user_struct      == nothing
 
     @test_throws MethodError StoppingMeta(tol_check = x -> x)
     @test_throws MethodError StoppingMeta(tol_check_neg = x -> x)

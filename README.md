@@ -1,7 +1,7 @@
 # Stopping
 
 [![Build Status](https://travis-ci.org/vepiteski/Stopping.jl.svg?branch=master)](https://travis-ci.org/vepiteski/Stopping.jl)
-[![Coverage Status](https://coveralls.io/repos/vepiteski/Stopping.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/vepiteski/Stopping.jl?branch=julia-0.7)
+[![Coverage Status](https://coveralls.io/repos/github/vepiteski/Stopping.jl/badge.svg?branch=master)](https://coveralls.io/github/vepiteski/Stopping.jl?branch=master)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://vepiteski.github.io/Stopping.jl/dev/)
 
 ## Purpose

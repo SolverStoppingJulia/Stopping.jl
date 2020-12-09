@@ -271,9 +271,9 @@ function _resources_check!(stp    :: NLPStopping,
  max_evals = sum_counters(stp.pb) > max_cntrs[:neval_sum]
 
  # global user limit diagnostic
- stp.meta.resources = max_evals || max_f
+ stp.meta.resources = max_evals || max_f ? true : stp.meta.resources
 
- return stp
+ return stp.meta.resources
 end
 
 """
@@ -312,9 +312,39 @@ function _unbounded_problem_check!(stp  :: NLPStopping,
   c_too_large = norm(stp.current_state.cx) >= abs(stp.meta.unbounded_threshold)
  end
 
- stp.meta.unbounded_pb = f_too_large || c_too_large
+ stp.meta.unbounded_pb = f_too_large || c_too_large ? true : stp.meta.unbounded_pb
 
- return stp
+ return stp.meta.unbounded_pb
+end
+
+"""
+\\_infeasibility\\_check!: This is the NLP specialized version.
+                       
+Note:
+  - check wether the *current_score* contains Inf.
+  - check the feasibility of an optimization problem in the spirit of a convex
+  indicator function.
+"""
+function _infeasibility_check!(stp  :: NLPStopping,
+                               x    :: T) where T
+#=
+#- evaluate the constraint function if *state.cx* is *nothing* and store in *state*.
+#- check the Inf-norm of the violation ≤ stp.meta.atol
+ if stp.pb.meta.ncon != 0 #if the problems has constraints, check |c(x)|
+  cx = stp.current_state.cx
+  if cx == _init_field(typeof(stp.current_state.cx))
+   cx = cons(stp.pb, x)
+  end
+  vio = max.(max.(cx - stp.pb.meta.ucon, 0.), max.(stp.pb.meta.lcon - cx, 0.))
+  tol = Inf #stp.meta.atol
+  stp.meta.infeasible = _inequality_check(vio, stp.meta.atol, 0.) ? true : stp.meta.infeasible
+ end
+ =#
+ 
+ vio = any(z-> z==Inf, stp.current_state.current_score)
+ stp.meta.infeasible = vio ? true : stp.meta.infeasible
+ 
+ return stp.meta.infeasible
 end
 
 ################################################################################
