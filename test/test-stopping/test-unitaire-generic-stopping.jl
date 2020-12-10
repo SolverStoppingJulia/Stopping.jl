@@ -73,7 +73,7 @@ res = infinite_algorithm(substop)
 
 #The algorithm stopped because the time limit of stop is attained
 @test status(substop) == :ResourcesOfMainProblemExhausted
-@test status(stop)    == :Tired
+@test status(stop)    == :TimeLimit
 @test substop.current_state.x != x1
 
 #Reinitialize the stop
@@ -102,12 +102,12 @@ subsubstop = GenericStopping(rosenbrock, state1, main_stp = substop, max_iter = 
 start!(stop) #initialize here as infinite_algorithm has 2 "loops" only
 res3 = infinite_algorithm(subsubstop)
 
-@test status(stop) == :Tired #stop because of the main main stopping.
+@test status(stop) == :TimeLimit #stop because of the main main stopping.
 @test status(substop) == :ResourcesOfMainProblemExhausted
 @test status(subsubstop) == :ResourcesOfMainProblemExhausted
 
 stop.meta.infeasible = true
-@test status(stop, list = true) == [:Infeasible, :Tired]
+@test status(stop, list = true) == [:TimeLimit, :Infeasible]
 
 try
  fill_in!(stop, zeros(5))

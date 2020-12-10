@@ -21,9 +21,9 @@ Attributes:
                           of a subproblem.
                           If not a subproblem, then nothing.
 - (opt) listofstates : ListStates designed to store the history of States.
-- (opt) user_specific_struct : Contains any structure designed by the user.
+- (opt) stopping_user_struct : Contains any structure designed by the user.
 
-`LAStopping(:: LLSModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta() main_stp :: Union{AbstractStopping, Nothing} = nothing, user_specific_struct :: Any = nothing, kwargs...)`
+`LAStopping(:: LLSModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta() main_stp :: Union{AbstractStopping, Nothing} = nothing, stopping_user_struct :: Any = nothing, kwargs...)`
 
 Note:
 - Kwargs are forwarded to the classical constructor.
@@ -55,7 +55,7 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
      # History of states
      listofstates         :: Union{ListStates, Nothing}
      # User-specific structure
-     user_specific_struct :: Any
+     stopping_user_struct :: Any
 
      #zero is initial point
      zero_start           :: Bool
@@ -67,17 +67,17 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
                      current_state  :: T;
                      main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                      list           :: Union{ListStates, Nothing} = nothing,
-                     user_specific_struct :: Any = nothing,
+                     stopping_user_struct :: Any = nothing,
                      zero_start     :: Bool = false) where {T <: AbstractState, Pb <: Any, M <: AbstractStoppingMeta}
 
-     return LAStopping(pb, meta, current_state, main_stp, list, user_specific_struct, zero_start)
+     return LAStopping(pb, meta, current_state, main_stp, list, stopping_user_struct, zero_start)
  end
  
  function LAStopping(pb             :: Pb,
                      current_state  :: T;
                      main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                      list           :: Union{ListStates, Nothing} = nothing,
-                     user_specific_struct :: Any = nothing,
+                     stopping_user_struct :: Any = nothing,
                      zero_start     :: Bool = false,
                      kwargs...) where {T <: AbstractState, Pb <: Any}
                      
@@ -97,7 +97,7 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
 
      meta = StoppingMeta(;max_cntrs =  mcntrs, optimality_check = oc, kwargs...)
 
-     return LAStopping(pb, meta, current_state, main_stp, list, user_specific_struct, zero_start)
+     return LAStopping(pb, meta, current_state, main_stp, list, stopping_user_struct, zero_start)
  end
 
 function LAStopping(A      :: TA,

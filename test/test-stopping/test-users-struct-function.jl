@@ -4,7 +4,7 @@
 # stopping criterion.
 # We illustrate here the basic features of Stopping.
 #
-# Stopping has a mysterious attribute "user_specific_struct", we illustrate
+# Stopping has a mysterious attribute "stopping_user_struct", we illustrate
 # in this example how convenient it can be when specializing your own object.
 # stop! also calls a function _user_check! that can also be specialized by the
 # user.
@@ -26,10 +26,10 @@ mutable struct PenaltyNonlinear
 end
 
 structtest = PenaltyNonlinear(true, 1e-1)
-stop_bnd = NLPStopping(nlp, user_specific_struct = structtest)
+stop_bnd = NLPStopping(nlp, stopping_user_struct = structtest)
 
-@test stop_bnd.user_specific_struct.feasible == true
-@test stop_bnd.user_specific_struct.rho == 1e-1
+@test stop_bnd.stopping_user_struct.feasible == true
+@test stop_bnd.stopping_user_struct.rho == 1e-1
 
 import Main.Stopping._user_check!
 #We now redefine _user_check! to verify the feasibility
@@ -39,21 +39,21 @@ function _user_check!(stp :: NLPStopping, x :: T) where T <: Union{Number, Abstr
               cx - stp.pb.meta.ucon,
               stp.pb.meta.lvar - x,
               x - stp.pb.meta.uvar )
- tol = max(stp.meta.atol, stp.user_specific_struct.rho)
- stp.user_specific_struct.feasible = norm(feas, Inf) <= tol
+ tol = max(stp.meta.atol, stp.stopping_user_struct.rho)
+ stp.stopping_user_struct.feasible = norm(feas, Inf) <= tol
 end
 
 sol = 2*ones(6)
 fill_in!(stop_bnd, sol)
 stop!(stop_bnd)
-@test stop_bnd.user_specific_struct.feasible == false
+@test stop_bnd.stopping_user_struct.feasible == false
 
 sol2 = ones(6); sol2[1] = 1.0 + 1e-1
 reinit!(stop_bnd, rstate = true)
 fill_in!(stop_bnd, sol2)
 stop!(stop_bnd)
 #since violation of the constraints smaller than rho.
-@test stop_bnd.user_specific_struct.feasible == true
+@test stop_bnd.stopping_user_struct.feasible == true
 
 #remove the _user_check!(stp :: NLPStopping, x :: Main.Stopping.Iterate) from the workspace
 Base.delete_method(which(_user_check!, (NLPStopping,Union{Number, AbstractVector},)))

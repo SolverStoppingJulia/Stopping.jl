@@ -15,9 +15,9 @@
                        of a subproblem.
                        If not a subproblem, then *nothing*.
 - (opt) listofstates : ListStates designed to store the history of States.
-- (opt) user_specific_struct : Contains any structure designed by the user.
+- (opt) stopping_user_struct : Contains any structure designed by the user.
 
- Constructor: `GenericStopping(:: Any, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), main_stp :: Union{AbstractStopping, Nothing} = nothing, user_specific_struct :: Any = nothing, kwargs...)`
+ Constructor: `GenericStopping(:: Any, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), main_stp :: Union{AbstractStopping, Nothing} = nothing, stopping_user_struct :: Any = nothing, kwargs...)`
 
  Note: Metadata can be provided by the user or created with the Stopping
        constructor via kwargs. If a specific StoppingMeta is given and
@@ -63,7 +63,7 @@ mutable struct GenericStopping{T, Pb, M} <: AbstractStopping{T, Pb, M}
     listofstates         :: Union{ListStates, Nothing}
 
     # User-specific structure
-    user_specific_struct :: Any #this type should be parametric
+    stopping_user_struct :: Any #this type should be parametric
 
 end
 
@@ -72,22 +72,22 @@ function GenericStopping(pb            :: Pb,
                          current_state :: T;
                          main_stp      :: Union{AbstractStopping, Nothing} = nothing,
                          list          :: Union{ListStates, Nothing} = nothing,
-                         user_specific_struct :: Any = nothing,
+                         stopping_user_struct :: Any = nothing,
                          kwargs...) where {T <: AbstractState, Pb <: Any, M <: AbstractStoppingMeta}
 
- return GenericStopping(pb, meta, current_state, main_stp, list, user_specific_struct)
+ return GenericStopping(pb, meta, current_state, main_stp, list, stopping_user_struct)
 end
 
 function GenericStopping(pb            :: Pb,
                          current_state :: T;
                          main_stp      :: Union{AbstractStopping, Nothing} = nothing,
                          list          :: Union{ListStates, Nothing} = nothing,
-                         user_specific_struct :: Any = nothing,
+                         stopping_user_struct :: Any = nothing,
                          kwargs...) where {T <: AbstractState, Pb <: Any}
 
   meta = StoppingMeta(; kwargs...)
 
- return GenericStopping(pb, meta, current_state, main_stp, list, user_specific_struct)
+ return GenericStopping(pb, meta, current_state, main_stp, list, stopping_user_struct)
 end
 
 function GenericStopping(pb :: Any, x :: T; kwargs...) where T
@@ -645,10 +645,10 @@ The different status are:
 - UnboundedPb: unbouned problem.
 - Stalled: stalled algorithm.
 - IterationLimit: too many iterations of the algorithm.
-- Tired: algorithm too slow.
-- ResourcesExhausted: too many ressources used,
+- TimeLimit: time limit.
+- EvaluationLimit: too many ressources used,
                           i.e. too many functions evaluations.
-- ResourcesOfMainProblemExhausted: in the case of a substopping, ResourcesExhausted or Tired
+- ResourcesOfMainProblemExhausted: in the case of a substopping, EvaluationLimit or TimeLimit
   for the main stopping.
 - Infeasible: default return value, if nothing is done the problem is
                considered feasible.
@@ -668,8 +668,8 @@ function status(stp :: AbstractStopping; list = false)
             (:UnboundedPb, :unbounded_pb),
             (:Stalled, :stalled),
             (:IterationLimit, :iteration_limit),
-            (:Tired, :tired),
-            (:ResourcesExhausted, :resources),
+            (:TimeLimit, :tired),
+            (:EvaluationLimit, :resources),
             (:ResourcesOfMainProblemExhausted, :main_pb),
             (:Infeasible, :infeasible),
             (:StopByUser, :stopbyuser),

@@ -18,9 +18,9 @@ Input :
                           of a subproblem.
                           If not a subproblem, then nothing.
 - (opt) listofstates : ListStates designed to store the history of States.
-- (opt) user_specific_struct : Contains any structure designed by the user.
+- (opt) stopping_user_struct : Contains any structure designed by the user.
 
-`LS_Stopping(:: Any, :: LSAtT; meta :: AbstractStoppingMeta = StoppingMeta(), main_stp :: Union{AbstractStopping, Nothing} = nothing, user_specific_struct :: Any = nothing, kwargs...)`
+`LS_Stopping(:: Any, :: LSAtT; meta :: AbstractStoppingMeta = StoppingMeta(), main_stp :: Union{AbstractStopping, Nothing} = nothing, stopping_user_struct :: Any = nothing, kwargs...)`
 
 
  Note:
@@ -51,7 +51,7 @@ mutable struct LS_Stopping{Pb, M}  <: AbstractStopping{LSAtT, Pb, M}
     listofstates         :: Union{ListStates, Nothing}
 
     # User-specific structure
-    user_specific_struct :: Any
+    stopping_user_struct :: Any
 
 end
 
@@ -60,16 +60,16 @@ function LS_Stopping(pb             :: Pb,
                      current_state  :: LSAtT;
                      main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                      list           :: Union{ListStates, Nothing} = nothing,
-                     user_specific_struct :: Any = nothing) where {Pb <: Any, M <: AbstractStoppingMeta}
+                     stopping_user_struct :: Any = nothing) where {Pb <: Any, M <: AbstractStoppingMeta}
                      
-    return LS_Stopping(pb, meta, current_state, main_stp, list, user_specific_struct)
+    return LS_Stopping(pb, meta, current_state, main_stp, list, stopping_user_struct)
 end
 
 function LS_Stopping(pb             :: Pb,
                      current_state  :: LSAtT;
                      main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                      list           :: Union{ListStates, Nothing} = nothing,
-                     user_specific_struct :: Any = nothing,
+                     stopping_user_struct :: Any = nothing,
                      kwargs...) where {Pb <: Any}
     
     if :optimality_check in keys(kwargs)
@@ -80,7 +80,7 @@ function LS_Stopping(pb             :: Pb,
 
     meta = StoppingMeta(;optimality_check = oc, kwargs...)
 
-    return LS_Stopping(pb, meta, current_state, main_stp, list, user_specific_struct)
+    return LS_Stopping(pb, meta, current_state, main_stp, list, stopping_user_struct)
 end
 
 """

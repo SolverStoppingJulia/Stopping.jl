@@ -78,7 +78,7 @@ stop_nlp.meta.max_cntrs = Stopping._init_max_counters(obj = 3, grad = 0, hess = 
 OK = update_and_stop!(stop_nlp, evals = stop_nlp.pb.counters)
 @test OK == true
 @test stop_nlp.meta.resources == true
-@test status(stop_nlp) == :ResourcesExhausted
+@test status(stop_nlp) == :EvaluationLimit
 
 ###############################################################################
 #4) Unbounded problem

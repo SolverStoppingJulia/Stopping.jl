@@ -51,6 +51,6 @@ stop!(subsub_stop)
 @test status(sub_stop, list = true) == [:ResourcesOfMainProblemExhausted]
 @test sub_stop.meta.tired   == false
 @test sub_stop.meta.main_pb == true
-@test status(main_stop, list = true) == [:Tired]
+@test status(main_stop, list = true) == [:TimeLimit]
 @test main_stop.meta.tired   == true
 @test main_stop.meta.main_pb == false

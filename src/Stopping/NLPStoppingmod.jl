@@ -14,9 +14,9 @@ Attributes:
                           of a subproblem.
                           If not a subproblem, then nothing.
 - (opt) listofstates : ListStates designed to store the history of States.
-- (opt) user_specific_struct : Contains any structure designed by the user.
+- (opt) stopping_user_struct : Contains any structure designed by the user.
 
-`NLPStopping(:: AbstractNLPModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), max_cntrs :: Dict = _init_max_counters(), main_stp :: Union{AbstractStopping, Nothing} = nothing, list :: Union{ListStates, Nothing} = nothing, user_specific_struct :: Any = nothing, kwargs...)`
+`NLPStopping(:: AbstractNLPModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), max_cntrs :: Dict = _init_max_counters(), main_stp :: Union{AbstractStopping, Nothing} = nothing, list :: Union{ListStates, Nothing} = nothing, stopping_user_struct :: Any = nothing, kwargs...)`
 
  Note:
 - designed for *NLPAtX* State. Constructor checks that the State has the
@@ -47,7 +47,7 @@ mutable struct NLPStopping{T, Pb, M}  <: AbstractStopping{T, Pb, M}
     listofstates         :: Union{ListStates, Nothing}
 
     # User-specific structure
-    user_specific_struct :: Any
+    stopping_user_struct :: Any
 
 end
 
@@ -57,7 +57,7 @@ function NLPStopping(pb             :: Pb,
                      current_state  :: T;
                      main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                      list           :: Union{ListStates, Nothing} = nothing,
-                     user_specific_struct  :: Any = nothing,
+                     stopping_user_struct  :: Any = nothing,
                      kwargs...) where {T <: AbstractState, Pb <: AbstractNLPModel, M <: AbstractStoppingMeta}
 
     #current_state is an AbstractState with requirements
@@ -73,14 +73,14 @@ function NLPStopping(pb             :: Pb,
         throw(ErrorException("error: missing entries in the given current_state"))
     end
 
-    return NLPStopping(pb, meta, current_state, main_stp, list, user_specific_struct)
+    return NLPStopping(pb, meta, current_state, main_stp, list, stopping_user_struct)
 end
 
 function NLPStopping(pb             :: Pb,
                      current_state  :: T;
                      main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                      list           :: Union{ListStates, Nothing} = nothing,
-                     user_specific_struct  :: Any = nothing,
+                     stopping_user_struct  :: Any = nothing,
                      kwargs...) where {T <: AbstractState, Pb <: AbstractNLPModel}
     
     if :max_cntrs in keys(kwargs)
@@ -110,7 +110,7 @@ function NLPStopping(pb             :: Pb,
         throw(ErrorException("error: missing entries in the given current_state"))
     end
 
-    return NLPStopping(pb, meta, current_state, main_stp, list, user_specific_struct)
+    return NLPStopping(pb, meta, current_state, main_stp, list, stopping_user_struct)
 end
 
 function NLPStopping(pb :: AbstractNLPModel; kwargs...)
@@ -126,19 +126,19 @@ end
 
 `_init_max_counters(; obj :: Int64 = 20000, grad :: Int64 = 20000, cons :: Int64 = 20000, jcon :: Int64 = 20000, jgrad :: Int64 = 20000, jac :: Int64 = 20000, jprod :: Int64 = 20000, jtprod :: Int64 = 20000, hess :: Int64 = 20000, hprod :: Int64 = 20000, jhprod :: Int64 = 20000, sum :: Int64 = 20000*11)`
 """
-function _init_max_counters(; quick  :: T = 20000,
-                              obj    :: T = quick,
-                              grad   :: T = quick,
-                              cons   :: T = quick,
-                              jcon   :: T = quick,
-                              jgrad  :: T = quick,
-                              jac    :: T = quick,
-                              jprod  :: T = quick,
-                              jtprod :: T = quick,
-                              hess   :: T = quick,
-                              hprod  :: T = quick,
-                              jhprod :: T = quick,
-                              sum    :: T = quick*11) where {T <: Int}
+function _init_max_counters(; allevals :: T = 20000,
+                              obj      :: T = allevals,
+                              grad     :: T = allevals,
+                              cons     :: T = allevals,
+                              jcon     :: T = allevals,
+                              jgrad    :: T = allevals,
+                              jac      :: T = allevals,
+                              jprod    :: T = allevals,
+                              jtprod   :: T = allevals,
+                              hess     :: T = allevals,
+                              hprod    :: T = allevals,
+                              jhprod   :: T = allevals,
+                              sum      :: T = allevals*11) where {T <: Int}
 
   cntrs = Dict{Symbol,T}([(:neval_obj,       obj), (:neval_grad,   grad),
                           (:neval_cons,     cons), (:neval_jcon,   jcon),
@@ -150,6 +150,26 @@ function _init_max_counters(; quick  :: T = 20000,
  return cntrs
 end
 
+function max_evals!(stp :: NLPStopping, allevals :: Int)
+ stp.meta.max_cntrs = _init_max_counters(allevals = allevals)
+end
+
+function max_evals!(stp :: NLPStopping; allevals :: T = 20000,
+                              obj    :: T = allevals,
+                              grad   :: T = allevals,
+                              cons   :: T = allevals,
+                              jcon   :: T = allevals,
+                              jgrad  :: T = allevals,
+                              jac    :: T = allevals,
+                              jprod  :: T = allevals,
+                              jtprod :: T = allevals,
+                              hess   :: T = allevals,
+                              hprod  :: T = allevals,
+                              jhprod :: T = allevals,
+                              sum    :: T = allevals*11) where {T <: Int}
+ stp.meta.max_cntrs = _init_max_counters(allevals = allevals) #TODO
+end
+
 """
 \\_init\\_max\\_counters\\_NLS(): initialize the maximum number of evaluations on each of
                           the functions present in the NLSCounters (NLPModels).
@@ -157,14 +177,14 @@ https://github.com/JuliaSmoothOptimizers/NLPModels.jl/blob/master/src/NLSModels.
 
 `_init_max_counters_NLS(; residual :: Int = 20000, jac_residual :: Int = 20000, jprod_residual :: Int = 20000, jtprod_residual :: Int = 20000, hess_residual :: Int = 20000, jhess_residual :: Int = 20000, hprod_residual :: Int = 20000, kwargs...)`
 """
-function _init_max_counters_NLS(; quick           :: T = 20000,
-                                  residual        :: T = quick,
-                                  jac_residual    :: T = quick,
-                                  jprod_residual  :: T = quick,
-                                  jtprod_residual :: T = quick,
-                                  hess_residual   :: T = quick,
-                                  jhess_residual  :: T = quick,
-                                  hprod_residual  :: T = quick,
+function _init_max_counters_NLS(; allevals        :: T = 20000,
+                                  residual        :: T = allevals,
+                                  jac_residual    :: T = allevals,
+                                  jprod_residual  :: T = allevals,
+                                  jtprod_residual :: T = allevals,
+                                  hess_residual   :: T = allevals,
+                                  jhess_residual  :: T = allevals,
+                                  hprod_residual  :: T = allevals,
                                   kwargs...) where {T <: Int}
 
   cntrs_nlp = _init_max_counters(;kwargs...)
@@ -341,8 +361,13 @@ function _infeasibility_check!(stp  :: NLPStopping,
  end
  =#
  
- vio = any(z-> z==Inf, stp.current_state.current_score)
- stp.meta.infeasible = vio ? true : stp.meta.infeasible
+ if stp.pb.meta.minimize
+     vio = any(z-> z ==  Inf, stp.current_state.current_score)
+     stp.meta.infeasible = vio ? true : stp.meta.infeasible
+ else
+     vio = any(z-> z == -Inf, stp.current_state.current_score)
+     stp.meta.infeasible = vio ? true : stp.meta.infeasible
+ end
  
  return stp.meta.infeasible
 end
@@ -352,6 +377,17 @@ end
 # Available: unconstrained_check(...), optim_check_bounded(...), KKT
 ################################################################################
 include("nlp_admissible_functions.jl")
+
+
+"""
+
+
+"""
+function feasibility_optim_check(pb, state; kwargs...)
+     vio       = _feasibility(pb, state)
+     tol = Inf #stp.meta.atol
+     return _inequality_check(vio, tol, 0.)
+end
 
 ################################################################################
 # Functions computing Lagrange multipliers of a nonlinear problem

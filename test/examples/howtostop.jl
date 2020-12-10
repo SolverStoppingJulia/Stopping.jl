@@ -114,7 +114,7 @@ stop3.meta.max_iter = 3
 stop!(stop3)
 @test stop3.meta.iteration_limit == true #as stop3.meta.nb_of_stop > 3.
 #Overall we activated three flags:
-@test status(stop3, list = true) == [:Unbounded, :IterationLimit, :Tired]
+@test status(stop3, list = true) == [:TimeLimit, :Unbounded, :IterationLimit]
 
 ###############################################################################
 #Once we are done with an algorithm and want to reuse a stopping, we need to

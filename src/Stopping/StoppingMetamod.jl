@@ -17,20 +17,20 @@ struct StopRemoteControl <: AbstractStopRemoteControl
     main_pb_check                :: Bool
     user_check                   :: Bool
     
-    cheap_check                  :: Bool
+    cheap_check                  :: Bool #`stop!` and `start!` stop whenever one check worked 
     
 end
 
-function StopRemoteControl(;unbounded_and_domain_x_check :: Bool = true,
-                            domain_check                 :: Bool = true,
+function StopRemoteControl(;unbounded_and_domain_x_check :: Bool = true, #O(n)
+                            domain_check                 :: Bool = true, #O(n)
                             optimality                   :: Bool = true,
                             infeasibility_check          :: Bool = true,
-                            unbounded_problem_check      :: Bool = true,
+                            unbounded_problem_check      :: Bool = true, #O(n)
                             tired_check                  :: Bool = true,
                             resources_check              :: Bool = true,
                             stalled_check                :: Bool = true,
                             iteration_check              :: Bool = true,
-                            main_pb_check                :: Bool = true,
+                            main_pb_check                :: Bool = true, #O(n)
                             user_check                   :: Bool = true,
                             cheap_check                  :: Bool = false)
                             
@@ -41,6 +41,12 @@ function StopRemoteControl(;unbounded_and_domain_x_check :: Bool = true,
                           iteration_check, main_pb_check, 
                           user_check, cheap_check)
 end
+
+"""
+Return a StopRemoteControl with the most expansive checks at false (the O(n))
+by default in Stopping when it has a main_stp.
+"""
+function cheap_stop_remote_control() end
 
 """
 Type: StoppingMeta
@@ -120,11 +126,11 @@ mutable struct StoppingMeta{TolType <: Number, CheckType, MUS, SRC <: AbstractSt
  unbounded_x         :: Number # beyond this value, ||x||_\infty is unbounded
 
  # fine grain control on ressources
- max_f               :: Int    # max function evaluations allowed
+ max_f               :: Int    # max function evaluations allowed TODO: used?
  max_cntrs           :: Dict{Symbol,Int64} #contains the detailed max number of evaluations
 
  # global control on ressources
- max_eval            :: Int    # max evaluations (f+g+H+Hv) allowed
+ max_eval            :: Int    # max evaluations (f+g+H+Hv) allowed TODO: used?
  max_iter            :: Int    # max iterations allowed
  max_time            :: Float64 # max elapsed time allowed
 
@@ -149,6 +155,7 @@ mutable struct StoppingMeta{TolType <: Number, CheckType, MUS, SRC <: AbstractSt
  stopbyuser          :: Bool
  
  meta_user_struct    :: MUS
+ #user_check         :: Function #called dans Stopping._user_check!(stp, x)
  
  stop_remote         :: SRC
 
