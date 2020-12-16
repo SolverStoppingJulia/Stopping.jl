@@ -5,6 +5,7 @@ using Krylov, Main.Stopping
 include("random_coordinate_descent_method.jl")
 include("stop_random_coordinate_descent_method.jl")
 include("cheap_stop_random_coordinate_descent_method.jl")
+include("instate_coordinate_descent_method.jl")
 
 using ProfileView, BenchmarkTools
 
@@ -21,12 +22,17 @@ x0   = zeros(size(A,2))
 pb   = LinearSystem(A,b)
 s0   = GenericState(x0, similar(b))
 mcnt = Main.Stopping._init_max_counters_linear_operators()
+#
 @time meta = StoppingMeta(max_cntrs = mcnt,
                         atol = 1e-7, rtol = 1e-15, max_iter = 1000,
                         retol = false,
                         tol_check = (atol, rtol, opt0)->(atol + rtol * opt0),
                         optimality_check = (pb, state) -> state.res)
-@time stp3 = LAStopping(pb, meta, s0)
+
+@time stp4 = LAStopping(pb, meta, s0)
+@time StopRandomizedCD3(stp4)
+
+@time stp3 = LAStopping(pb, meta, s0)#
 #=
 @time stp3 = LAStopping(pb, s0,
                  max_cntrs = mcnt,

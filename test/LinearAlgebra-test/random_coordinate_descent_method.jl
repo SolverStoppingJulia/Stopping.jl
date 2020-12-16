@@ -54,7 +54,8 @@ function RandomizedCD(A :: AbstractMatrix,
      nAi   = @kdot(m, Ai, Ai)
      x[i] -= Aires/nAi
 
-     res = b - A*x
+     #res = b - A*x
+     res += Ai * Aires/nAi
      cntrs.nprod += 1
      nrm = norm(res,Inf)
      OK  = nrm <= atol + nrm0 * rtol

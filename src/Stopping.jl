@@ -75,6 +75,42 @@ include("State/ListOfStates.jl")
 export AbstractListStates, ListStates, VoidListStates
 export add_to_list!, length, print, getindex
 
+
+function _instate(stt :: Symbol, es :: Symbol)
+ for t in fieldnames(GenericState)
+   if es == t
+      es = esc(Symbol(stt,".$t"))
+   end
+ end
+ es
+end
+
+function _instate(state :: Symbol, a::Any)
+ a
+end
+
+function _instate(state :: Symbol, ex :: Expr)
+   for i=1:length(ex.args)
+        ex.args[i] = _instate(state, ex.args[i])
+   end
+ ex
+end
+
+"""
+`@instate state expression`
+
+Macro that set the prefix state. to all the variables whose name belong to the 
+field names of the state.
+"""
+macro instate(state :: Symbol, ex)
+ if typeof(ex) == Expr
+   ex = _instate(state, ex)
+ end
+ ex
+end
+
+export @instate
+
 """
 AbstractStoppingMeta
 

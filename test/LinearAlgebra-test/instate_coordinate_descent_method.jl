@@ -16,7 +16,7 @@ SIAM Journal on Matrix Analysis and Applications, 36(4), 1660-1690.
 
 Using Stopping
 """
-function StopRandomizedCD2(A             :: AbstractMatrix,
+function StopRandomizedCD3(A             :: AbstractMatrix,
                            b             :: AbstractVector{T};
                            is_zero_start :: Bool = true,
                            x0            :: AbstractVector{T} = zeros(T,size(A,2)),
@@ -35,10 +35,10 @@ function StopRandomizedCD2(A             :: AbstractMatrix,
                   optimality_check = (pb, state) -> state.res,
                   kwargs...)
 
- return StopRandomizedCD2(stp, is_zero_start = is_zero_start, verbose = verbose, kwargs...)
+ return StopRandomizedCD3(stp, is_zero_start = is_zero_start, verbose = verbose, kwargs...)
 end
 
-function StopRandomizedCD2(stp          :: AbstractStopping;
+function StopRandomizedCD3(stp          :: AbstractStopping;
                           is_zero_start :: Bool = true,
                           verbose       :: Int = 100,
                           kwargs...)
@@ -46,10 +46,10 @@ function StopRandomizedCD2(stp          :: AbstractStopping;
 
     A,b = stp.pb.A, stp.pb.b
     m,n = size(A)
-    x  = state.x
+    x  = stp.current_state.x
     T  = eltype(x)
 
-    state.res = is_zero_start ? b : b - A*x
+    stp.current_state.res = is_zero_start ? b : b - A*x
     #res = state.res
 
     OK = start!(stp, no_start_opt_check = true)
@@ -59,23 +59,18 @@ function StopRandomizedCD2(stp          :: AbstractStopping;
     #                 hdr_override=Dict(:nrm=>"||Ax-b||"))
     #@info log_row(Any[0, res[1], state.current_time])
 
-    while !OK
+    @macroexpand @instate state while !OK
 
-        #rand a number between 1 and n
-        #224.662 ns (4 allocations: 79 bytes) - independent of the n
         i  = mod(stp.meta.nb_of_stop,n)+1#Int(floor(rand() * n) + 1)
         Ai = A[:,i]
 
-        #ei = zeros(n); ei[i] = 1.0 #unit vector in R^n
-        #xk  = Ai == 0 ? x0 : x0 - dot(Ai,res)/norm(Ai,2)^2 * ei
-        Aires = @kdot(m, Ai, state.res)
-        nAi   = @kdot(m, Ai, Ai)
-        state.x[i] -= Aires/nAi
+        Aires = kdot(m, Ai, res)
+        nAi   = kdot(m, Ai, Ai)
+        x[i] -= Aires/nAi
 
-        #state.res = b - A*state.x #TO IMPROVE!!
-        state.res += Ai * Aires/nAi
+        res += Ai * Aires/nAi
 
-        OK = cheap_stop!(stp) #make a copy of res in current_score?
+        OK = cheap_stop!(stp)
 
         if mod(stp.meta.nb_of_stop, verbose) == 0 #print every 20 iterations
          #@info log_row(Any[stp.meta.nb_of_stop, res[1], state.current_time])
