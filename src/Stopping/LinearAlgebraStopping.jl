@@ -42,12 +42,13 @@ There is additional constructors:
 
 See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, normal\\_equation\\_check
  """
- mutable struct LAStopping{T, Pb, M} <: AbstractStopping{T, Pb, M}
+ mutable struct LAStopping{T, Pb, M, SRC} <: AbstractStopping{T, Pb, M, SRC}
 
      # problem
      pb                   :: Pb
      # Common parameters
      meta                 :: M
+     stop_remote          :: SRC
      # current state of the problem
      current_state        :: T
      # Stopping of the main problem, or nothing
@@ -64,13 +65,33 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
  
  function LAStopping(pb             :: Pb,
                      meta           :: M,
+                     stop_remote    :: SRC,
+                     current_state  :: T;
+                     main_stp       :: Union{AbstractStopping, Nothing} = nothing,
+                     list           :: Union{ListStates, Nothing} = nothing,
+                     stopping_user_struct :: Any = nothing,
+                     zero_start     :: Bool = false
+                     ) where {T   <: AbstractState, 
+                              Pb  <: Any, 
+                              M   <: AbstractStoppingMeta, 
+                              SRC <: AbstractStopRemoteControl}
+     
+     return LAStopping(pb, meta, stop_remote, current_state, 
+                       main_stp, list, stopping_user_struct, zero_start)
+ end
+ 
+ function LAStopping(pb             :: Pb,
+                     meta           :: M,
                      current_state  :: T;
                      main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                      list           :: Union{ListStates, Nothing} = nothing,
                      stopping_user_struct :: Any = nothing,
                      zero_start     :: Bool = false) where {T <: AbstractState, Pb <: Any, M <: AbstractStoppingMeta}
-
-     return LAStopping(pb, meta, current_state, main_stp, list, stopping_user_struct, zero_start)
+     
+     stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
+     
+     return LAStopping(pb, meta, stop_remote, current_state, 
+                       main_stp, list, stopping_user_struct, zero_start)
  end
  
  function LAStopping(pb             :: Pb,
@@ -96,8 +117,10 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
      end
 
      meta = StoppingMeta(;max_cntrs =  mcntrs, optimality_check = oc, kwargs...)
+     stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
 
-     return LAStopping(pb, meta, current_state, main_stp, list, stopping_user_struct, zero_start)
+     return LAStopping(pb, meta, stop_remote, current_state, 
+                       main_stp, list, stopping_user_struct, zero_start)
  end
 
 function LAStopping(A      :: TA,

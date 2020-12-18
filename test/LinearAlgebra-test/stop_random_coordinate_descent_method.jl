@@ -49,13 +49,13 @@ function StopRandomizedCD(stp           :: AbstractStopping;
     x  = state.x
     T  = eltype(x)
 
-    state.res = is_zero_start ? - b : A*x - b
+    state.res = is_zero_start ? b : b - A*x
 
     OK = start!(stp)
 
-    @info log_header([:iter, :nrm, :time], [Int, T, T],
-                     hdr_override=Dict(:nrm=>"||Ax-b||"))
-    @info log_row(Any[0, state.current_score[1], state.current_time])
+    #@info log_header([:iter, :nrm, :time], [Int, T, T],
+    #                 hdr_override=Dict(:nrm=>"||Ax-b||"))
+    #@info log_row(Any[0, state.current_score[1], state.current_time])
 
     while !OK
 
@@ -70,13 +70,12 @@ function StopRandomizedCD(stp           :: AbstractStopping;
         nAi   = @kdot(m, Ai, Ai)
         state.x[i] -= Aires/nAi
 
-        state.res = A*state.x - b
-        res = state.res
+        state.res += Ai * Aires/nAi
 
         OK = stop!(stp)
 
         if mod(stp.meta.nb_of_stop, verbose) == 0 #print every 20 iterations
-         @info log_row(Any[stp.meta.nb_of_stop, state.current_score[1], state.current_time])
+    #     @info log_row(Any[stp.meta.nb_of_stop, state.current_score[1], state.current_time])
         end
 
     end

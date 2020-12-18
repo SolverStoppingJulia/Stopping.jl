@@ -34,12 +34,13 @@ Input :
 
 See also GenericStopping, NLPStopping, LSAtT
  """
-mutable struct LS_Stopping{Pb, M}  <: AbstractStopping{LSAtT, Pb, M}
+mutable struct LS_Stopping{Pb, M, SRC}  <: AbstractStopping{LSAtT, Pb, M, SRC}
     # problem
     pb                   :: Pb
 
     # shared information with linesearch and other stopping
     meta                 :: M
+    stop_remote          :: SRC
 
     # current information on linesearch
     current_state        :: LSAtT
@@ -57,12 +58,31 @@ end
 
 function LS_Stopping(pb             :: Pb,
                      meta           :: M,
+                     stop_remote    :: SRC,
                      current_state  :: LSAtT;
                      main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                      list           :: Union{ListStates, Nothing} = nothing,
-                     stopping_user_struct :: Any = nothing) where {Pb <: Any, M <: AbstractStoppingMeta}
+                     stopping_user_struct :: Any = nothing,
+                     ) where {Pb  <: Any, 
+                              M   <: AbstractStoppingMeta, 
+                              SRC <: AbstractStopRemoteControl}
                      
-    return LS_Stopping(pb, meta, current_state, main_stp, list, stopping_user_struct)
+    return LS_Stopping(pb, meta, stop_remote, current_state, 
+                       main_stp, list, stopping_user_struct)
+end
+
+function LS_Stopping(pb             :: Pb,
+                     meta           :: M,
+                     current_state  :: LSAtT;
+                     main_stp       :: Union{AbstractStopping, Nothing} = nothing,
+                     list           :: Union{ListStates, Nothing} = nothing,
+                     stopping_user_struct :: Any = nothing,
+                     ) where {Pb <: Any, M <: AbstractStoppingMeta}
+                     
+    stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
+                     
+    return LS_Stopping(pb, meta, stop_remote, current_state, 
+                       main_stp, list, stopping_user_struct)
 end
 
 function LS_Stopping(pb             :: Pb,
@@ -79,8 +99,10 @@ function LS_Stopping(pb             :: Pb,
     end
 
     meta = StoppingMeta(;optimality_check = oc, kwargs...)
+    stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
 
-    return LS_Stopping(pb, meta, current_state, main_stp, list, stopping_user_struct)
+    return LS_Stopping(pb, meta, stop_remote, current_state, 
+                       main_stp, list, stopping_user_struct)
 end
 
 """

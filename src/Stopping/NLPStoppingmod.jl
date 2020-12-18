@@ -29,13 +29,14 @@ Attributes:
 
  Note: Kwargs are forwarded to the classical constructor.
  """
-mutable struct NLPStopping{T, Pb, M}  <: AbstractStopping{T, Pb, M}
+mutable struct NLPStopping{T, Pb, M, SRC}  <: AbstractStopping{T, Pb, M, SRC}
 
     # problem
     pb                   :: Pb
 
     # Common parameters
     meta                 :: M
+    stop_remote          :: SRC
 
     # current state of the problem
     current_state        :: T
@@ -51,14 +52,18 @@ mutable struct NLPStopping{T, Pb, M}  <: AbstractStopping{T, Pb, M}
 
 end
 
-
 function NLPStopping(pb             :: Pb,
                      meta           :: M,
+                     stop_remote    :: SRC,
                      current_state  :: T;
                      main_stp       :: Union{AbstractStopping, Nothing} = nothing,
                      list           :: Union{ListStates, Nothing} = nothing,
                      stopping_user_struct  :: Any = nothing,
-                     kwargs...) where {T <: AbstractState, Pb <: AbstractNLPModel, M <: AbstractStoppingMeta}
+                     kwargs...
+                     ) where {T   <: AbstractState, 
+                              Pb  <: AbstractNLPModel, 
+                              M   <: AbstractStoppingMeta, 
+                              SRC <: AbstractStopRemoteControl}
 
     #current_state is an AbstractState with requirements
     try
@@ -72,8 +77,41 @@ function NLPStopping(pb             :: Pb,
     catch
         throw(ErrorException("error: missing entries in the given current_state"))
     end
+    
+    stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
 
-    return NLPStopping(pb, meta, current_state, main_stp, list, stopping_user_struct)
+    return NLPStopping(pb, meta, stop_remote, current_state, 
+                       main_stp, list, stopping_user_struct)
+end
+
+function NLPStopping(pb             :: Pb,
+                     meta           :: M,
+                     current_state  :: T;
+                     main_stp       :: Union{AbstractStopping, Nothing} = nothing,
+                     list           :: Union{ListStates, Nothing} = nothing,
+                     stopping_user_struct  :: Any = nothing,
+                     kwargs...
+                     ) where {T  <: AbstractState, 
+                              Pb <: AbstractNLPModel, 
+                              M  <: AbstractStoppingMeta}
+
+    #current_state is an AbstractState with requirements
+    try
+        current_state.evals
+        current_state.fx, current_state.gx, current_state.Hx
+        #if there are bounds:
+        current_state.mu
+        if pb.meta.ncon > 0 #if there are constraints
+           current_state.Jx, current_state.cx, current_state.lambda
+        end
+    catch
+        throw(ErrorException("error: missing entries in the given current_state"))
+    end
+    
+    stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
+
+    return NLPStopping(pb, meta, stop_remote, current_state, 
+                       main_stp, list, stopping_user_struct)
 end
 
 function NLPStopping(pb             :: Pb,
@@ -96,6 +134,7 @@ function NLPStopping(pb             :: Pb,
     end
 
     meta = StoppingMeta(;max_cntrs = mcntrs, optimality_check = oc, kwargs...)
+    stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
     
     #current_state is an AbstractState with requirements
     try
@@ -110,7 +149,8 @@ function NLPStopping(pb             :: Pb,
         throw(ErrorException("error: missing entries in the given current_state"))
     end
 
-    return NLPStopping(pb, meta, current_state, main_stp, list, stopping_user_struct)
+    return NLPStopping(pb, meta, stop_remote, current_state, 
+                       main_stp, list, stopping_user_struct)
 end
 
 function NLPStopping(pb :: AbstractNLPModel; kwargs...)

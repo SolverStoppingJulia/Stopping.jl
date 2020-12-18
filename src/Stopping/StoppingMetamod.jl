@@ -1,53 +1,3 @@
-abstract type AbstractStopRemoteControl end
-
-"""
-Turn a boolean to false to cancel this check in the functions stop! and start!.
-"""
-struct StopRemoteControl <: AbstractStopRemoteControl
-    
-    unbounded_and_domain_x_check :: Bool
-    domain_check                 :: Bool
-    optimality                   :: Bool
-    infeasibility_check          :: Bool
-    unbounded_problem_check      :: Bool
-    tired_check                  :: Bool
-    resources_check              :: Bool
-    stalled_check                :: Bool
-    iteration_check              :: Bool
-    main_pb_check                :: Bool
-    user_check                   :: Bool
-    
-    cheap_check                  :: Bool #`stop!` and `start!` stop whenever one check worked 
-    
-end
-
-function StopRemoteControl(;unbounded_and_domain_x_check :: Bool = true, #O(n)
-                            domain_check                 :: Bool = true, #O(n)
-                            optimality                   :: Bool = true,
-                            infeasibility_check          :: Bool = true,
-                            unbounded_problem_check      :: Bool = true, #O(n)
-                            tired_check                  :: Bool = true,
-                            resources_check              :: Bool = true,
-                            stalled_check                :: Bool = true,
-                            iteration_check              :: Bool = true,
-                            main_pb_check                :: Bool = true, #O(n)
-                            user_check                   :: Bool = true,
-                            cheap_check                  :: Bool = false)
-                            
- return StopRemoteControl(unbounded_and_domain_x_check, domain_check, 
-                          optimality, infeasibility_check, 
-                          unbounded_problem_check, tired_check, 
-                          resources_check, stalled_check,
-                          iteration_check, main_pb_check, 
-                          user_check, cheap_check)
-end
-
-"""
-Return a StopRemoteControl with the most expansive checks at false (the O(n))
-by default in Stopping when it has a main_stp.
-"""
-function cheap_stop_remote_control() end
-
 """
 Type: StoppingMeta
 
@@ -105,7 +55,10 @@ Note:
 
 Examples: `StoppingMeta()`
 """
-mutable struct StoppingMeta{TolType <: Number, CheckType, MUS, SRC <: AbstractStopRemoteControl} <: AbstractStoppingMeta
+mutable struct StoppingMeta{TolType <: Number, 
+                            CheckType, #Type of the tol_check output
+                            MUS #Meta User Struct
+                            } <: AbstractStoppingMeta
 
  # problem tolerances
  atol                :: TolType # absolute tolerance
@@ -156,8 +109,6 @@ mutable struct StoppingMeta{TolType <: Number, CheckType, MUS, SRC <: AbstractSt
  
  meta_user_struct    :: MUS
  #user_check         :: Function #called dans Stopping._user_check!(stp, x)
- 
- stop_remote         :: SRC
 
  function StoppingMeta(;atol               :: Number   = 1.0e-6,
                        rtol                :: Number   = 1.0e-15,
@@ -174,10 +125,8 @@ mutable struct StoppingMeta{TolType <: Number, CheckType, MUS, SRC <: AbstractSt
                        max_iter            :: Int      = 5000,
                        max_time            :: Float64  = 300.0,
                        start_time          :: Float64  = NaN,
-                       meta_user_struct    :: Any      = nothing,
-                       stop_remote         :: AbstractStopRemoteControl = StopRemoteControl())
+                       meta_user_struct    :: Any      = nothing)
 
-   #throw("Error in StoppingMeta definition: tol_check and tol_check_neg must have 3 arguments")
    check_pos = tol_check(atol, rtol, optimality0)
    check_neg = tol_check_neg(atol, rtol, optimality0)
 
@@ -201,19 +150,22 @@ mutable struct StoppingMeta{TolType <: Number, CheckType, MUS, SRC <: AbstractSt
 
    nb_of_stop = 0
 
-   return new{typeof(atol), typeof(check_pos), typeof(meta_user_struct), typeof(stop_remote)}(
+   return new{typeof(atol), typeof(check_pos), typeof(meta_user_struct)}(
                  atol, rtol, optimality0,
                  tol_check, tol_check_neg,
                  check_pos, check_neg, optimality_check, retol,
                  unbounded_threshold, unbounded_x,
-                 max_f, max_cntrs, max_eval, max_iter, max_time, nb_of_stop, start_time,
+                 max_f, max_cntrs, max_eval, max_iter, 
+                 max_time, nb_of_stop, start_time,
                  fail_sub_pb, unbounded, unbounded_pb, tired, stalled,
                  iteration_limit, resources, optimal, infeasible, main_pb,
-                 domainerror, suboptimal, stopbyuser, meta_user_struct, stop_remote)
+                 domainerror, suboptimal, stopbyuser, 
+                 meta_user_struct)
  end
 end
 
-function tol_check(meta :: StoppingMeta{TolType, CheckType, MUS}) where {TolType <: Number, CheckType, MUS, SRC <: AbstractStopRemoteControl}
+function tol_check(meta :: StoppingMeta{TolType, CheckType, MUS}
+                  ) where {TolType <: Number, CheckType, MUS}
 
  if meta.retol
    atol, rtol, opt0 = meta.atol, meta.rtol, meta.optimality0
@@ -227,7 +179,8 @@ end
 function update_tol!(meta        :: StoppingMeta{TolType, CheckType, MUS};
                      atol        :: Union{TolType,Nothing} = nothing,
                      rtol        :: Union{TolType,Nothing} = nothing,
-                     optimality0 :: Union{TolType,Nothing} = nothing) where {TolType <: Number, CheckType, MUS, SRC <: AbstractStopRemoteControl}
+                     optimality0 :: Union{TolType,Nothing} = nothing
+                     ) where {TolType <: Number, CheckType, MUS}
  meta.retol = true
 
  atol != nothing        && setfield!(meta, :atol, atol)

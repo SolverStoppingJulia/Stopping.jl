@@ -21,9 +21,9 @@ printstyled("UserSpecificStructure tests... ")
 include("test-stopping/test-users-struct-function.jl")
 printstyled("passed ✓ \n", color = :green)
 
-printstyled("StoppingMeta tests... ")
-include("test-stopping/test-unitaire-stopping-meta.jl")
-printstyled("passed ✓ \n", color = :green)
+include("test-stopping/unit-test-stopping-meta.jl")
+include("test-stopping/unit-test-remote-control.jl")
+
 printstyled("GenericStopping tests... ")
 include("test-stopping/test-unitaire-generic-stopping.jl")
 printstyled("passed ✓ \n", color = :green)

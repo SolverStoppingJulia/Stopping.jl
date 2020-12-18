@@ -9,14 +9,12 @@ include("instate_coordinate_descent_method.jl")
 
 using ProfileView, BenchmarkTools
 
-n=400;
+n=5000;
 A=rand(n,n)
 sol=rand(n)
 b=A*sol
 
 #@time stp = StopRandomizedCD(A,b, max_iter = 1000)
-
-#@time stp2 = StopRandomizedCD2(A,b, max_iter = 1000)
 
 x0   = zeros(size(A,2))
 pb   = LinearSystem(A,b)
@@ -24,15 +22,15 @@ s0   = GenericState(x0, similar(b))
 mcnt = Main.Stopping._init_max_counters_linear_operators()
 #
 @time meta = StoppingMeta(max_cntrs = mcnt,
-                        atol = 1e-7, rtol = 1e-15, max_iter = 1000,
+                        atol = 1e-7, rtol = 1e-15, max_iter = 99,
                         retol = false,
                         tol_check = (atol, rtol, opt0)->(atol + rtol * opt0),
                         optimality_check = (pb, state) -> state.res)
 
-@time stp4 = LAStopping(pb, meta, s0)
-@time StopRandomizedCD3(stp4)
+#@time stp4 = LAStopping(pb, meta, s0)
+#@time StopRandomizedCD3(stp4)
 
-@time stp3 = LAStopping(pb, meta, s0)#
+#@time stp3 = LAStopping(pb, meta, s0)#
 #=
 @time stp3 = LAStopping(pb, s0,
                  max_cntrs = mcnt,
@@ -41,11 +39,31 @@ mcnt = Main.Stopping._init_max_counters_linear_operators()
                  tol_check = (atol, rtol, opt0)->(atol + rtol * opt0),
                  optimality_check = (pb, state) -> state.res)
 =#
-@time StopRandomizedCD2(stp3)
+#@time StopRandomizedCD2(stp3)
 #Before the loop: 0.119287 seconds (214.95 k allocations: 11.009 MiB)
 #Overall: 0.197434 seconds (218.95 k allocations: 22.960 MiB)
 
-@time x, OK = RandomizedCD(A,b, max_iter = 1000)
+@time meta = StoppingMeta(max_cntrs = mcnt,
+                        atol = 1e-7, rtol = 1e-15, max_iter = 99,
+                        retol = false,
+                        tol_check = (atol, rtol, opt0)->(atol + rtol * opt0),
+                        optimality_check = (pb, state) -> state.res)
+s0   = GenericState(x0, similar(b))
+@time stp2 = LAStopping(pb, meta, s0)
+@time StopRandomizedCD(stp2)
+
+@time meta = StoppingMeta(max_cntrs = mcnt,
+                        atol = 1e-7, rtol = 1e-15, max_iter = 99,
+                        retol = false,
+                        tol_check = (atol, rtol, opt0)->(atol + rtol * opt0),
+                        optimality_check = (pb, state) -> state.res,
+                        stop_remote = Main.Stopping.cheap_stop_remote_control())
+s0   = GenericState(x0, similar(b))
+@time stp = LAStopping(pb, meta, s0)
+@time StopRandomizedCD(stp)
+
+
+@time x, OK = RandomizedCD(A,b, max_iter = 100)
 
 #@btime cheap_stop!(stp3);
 #  187.915 ns (0 allocations: 0 bytes)
