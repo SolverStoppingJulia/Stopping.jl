@@ -138,6 +138,25 @@ abstract type AbstractStopping{T   <: AbstractState,
 
 export AbstractStopping
 
+import Base.show
+function show(io :: IO, stp :: AbstractStopping)
+  println(io, typeof(stp))
+  println(io, "with the current state $(typeof(stp.current_state)) and metadata $(typeof(stp.meta)).")
+  if stp.main_stp != nothing
+   println(io, "it has a main_stp $(typeof(stp.main_stp))")
+  end
+  if stp.listofstates != nothing
+   nmax = stp.listofstates.n == -1 ? Inf : stp.listofstates.n
+   println(io, "it handles a list of states $(typeof(stp.listofstates)) of maximum length $(nmax)")
+  end
+  try
+      print("Problem is ")
+      show(io, stp.pb)
+  catch
+      print("Problem is $(typeof(stp.pb)).")
+  end
+end
+
 # Stopping
 include("Stopping/GenericStoppingmod.jl")
 include("Stopping/LineSearchStoppingmod.jl")

@@ -257,10 +257,10 @@ end
 
      sum, max_f = 0, false
 
-     for f in fieldnames(NLSCounters)
+     for f in intersect(fieldnames(NLSCounters), keys(max_cntrs))
       max_f = f != :counters ? (max_f || (getfield(cntrs, f) > max_cntrs[f])) : max_f
      end
-     for f in fieldnames(Counters)
+     for f in intersect(fieldnames(Counters), keys(max_cntrs))
       max_f = max_f || (getfield(cntrs.counters, f) > max_cntrs[f])
      end
 

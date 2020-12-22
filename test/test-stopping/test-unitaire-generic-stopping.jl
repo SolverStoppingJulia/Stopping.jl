@@ -42,6 +42,7 @@ x1 = zeros(6)
 state1 = GenericState(x1)
 ABigInt = 100000000000000000 #to avoid the stop by counting stop calls
 substop = GenericStopping(rosenbrock, state1, main_stp = stop, max_iter = ABigInt, rtol = 0.0 )
+substop.stop_remote = StopRemoteControl()
 #If rtol != 0, any point is a solution as optimality0 = Inf.
 
 @test start!(substop) == false
