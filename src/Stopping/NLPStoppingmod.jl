@@ -329,7 +329,7 @@ function _resources_check!(stp    :: NLPStopping,
  max_evals = sum_counters(stp.pb) > max_cntrs[:neval_sum]
 
  # global user limit diagnostic
- stp.meta.resources = max_evals || max_f ? true : stp.meta.resources
+ if (max_evals || max_f) stp.meta.resources = true end
 
  return stp.meta.resources
 end
@@ -370,7 +370,7 @@ function _unbounded_problem_check!(stp  :: NLPStopping,
   c_too_large = norm(stp.current_state.cx) >= abs(stp.meta.unbounded_threshold)
  end
 
- stp.meta.unbounded_pb = f_too_large || c_too_large ? true : stp.meta.unbounded_pb
+ if (f_too_large || c_too_large) stp.meta.unbounded_pb = true end
 
  return stp.meta.unbounded_pb
 end
@@ -401,10 +401,10 @@ function _infeasibility_check!(stp  :: NLPStopping,
  
  if stp.pb.meta.minimize
      vio = any(z-> z ==  Inf, stp.current_state.current_score)
-     stp.meta.infeasible = vio ? true : stp.meta.infeasible
+     if vio stp.meta.infeasible = true end
  else
      vio = any(z-> z == -Inf, stp.current_state.current_score)
-     stp.meta.infeasible = vio ? true : stp.meta.infeasible
+     if vio stp.meta.infeasible = true end
  end
  
  return stp.meta.infeasible

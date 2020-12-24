@@ -163,7 +163,7 @@ include("Stopping/LineSearchStoppingmod.jl")
 include("Stopping/NLPStoppingmod.jl")
 
 export GenericStopping, start!, stop!, cheap_stop!, update_and_start!
-export update_and_stop!, cheap_update_and_stop!
+export update_and_stop!, cheap_update_and_stop!, cheap_update_and_start!
 export fill_in!, reinit!, status
 export LS_Stopping
 export NLPStopping, unconstrained_check, unconstrained2nd_check

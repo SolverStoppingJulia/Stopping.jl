@@ -150,6 +150,14 @@ function update_and_start!(stp :: AbstractStopping;
     return OK
 end
 
+function cheap_update_and_start!(stp :: AbstractStopping; kwargs...)
+
+ _smart_update!(stp.current_state; kwargs...)
+ OK = start!(stp)
+
+ return OK
+end
+
 """
  Update the Stopping and return *true* if we must stop.
 
@@ -176,12 +184,12 @@ function start!(stp :: AbstractStopping; no_start_opt_check :: Bool = false, kwa
  x     = state.x
 
  #Initialize the time counter
- if isnan(stp.meta.start_time)
+ if src.tired_check && isnan(stp.meta.start_time)
   stp.meta.start_time = time()
  end
  #and synchornize with the State
- if isnan(state.current_time)
-   _update_time!(state, time())
+ if src.tired_check && isnan(state.current_time)
+   _update_time!(state, stp.meta.start_time)
  end
 
  if !no_start_opt_check
@@ -200,7 +208,7 @@ function start!(stp :: AbstractStopping; no_start_opt_check :: Bool = false, kwa
         stp.meta.optimality0 = norm_optimality0
     end
 
-    stp.meta.optimal = _null_test(stp, optimality0) ? true : stp.meta.optimal
+    if _null_test(stp, optimality0) stp.meta.optimal = true end
    end
  end
  
@@ -328,7 +336,7 @@ function stop!(stp :: AbstractStopping; kwargs...)
       if any(isnan, score)
        stp.meta.domainerror = true
       end
-      stp.meta.optimal = _null_test(stp, score) ? true : stp.meta.optimal
+      if _null_test(stp, score) stp.meta.optimal = true end
    end
 
    src.infeasibility_check     && _infeasibility_check!(stp, x)
@@ -382,7 +390,7 @@ function cheap_stop!(stp :: AbstractStopping; kwargs...)
  # Optimality check
  if src.optimality
     score = _optimality_check(stp; kwargs...)
-    stp.meta.optimal = _null_test(stp, score) ? true : stp.meta.optimal
+    if _null_test(stp, score) stp.meta.optimal = true end
  end
  OK = stp.meta.optimal
 
@@ -432,7 +440,7 @@ function _iteration_check!(stp :: AbstractStopping,
                            x   :: T) where T
 
  max_iter = stp.meta.nb_of_stop >= stp.meta.max_iter
- stp.meta.iteration_limit = max_iter ? true : stp.meta.iteration_limit
+ if max_iter stp.meta.iteration_limit = true end
 
  return stp.meta.iteration_limit
 end
@@ -470,7 +478,7 @@ function _tired_check!(stp    :: AbstractStopping,
  elapsed_time = ctime - stime
  max_time     = elapsed_time > stp.meta.max_time #NaN > 1. is false
 
- stp.meta.tired = max_time ? true : stp.meta.tired
+ if max_time stp.meta.tired = true end
 
  return stp.meta.tired
 end
@@ -515,7 +523,8 @@ function _main_pb_check!(stp    :: AbstractStopping,
  end
 
  check = max_time || resources || main_main_pb
- stp.meta.main_pb = check ? true : stp.meta.main_pb
+
+ if check stp.meta.main_pb = true end
 
  return stp.meta.main_pb
 end

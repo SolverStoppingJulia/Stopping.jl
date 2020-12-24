@@ -123,9 +123,10 @@ function _unbounded_problem_check!(stp :: LS_Stopping,
  end
  f_too_large = !isnan(stp.current_state.ht) && norm(stp.current_state.ht) >= stp.meta.unbounded_threshold
 
- stp.meta.unbounded_pb = f_too_large
+ #stp.meta.unbounded_pb = f_too_large ? true : stp.meta.unbounded_pb
+ if f_too_large stp.meta.unbounded_pb = true end
 
- return stp
+ return stp.meta.unbounded_pb
 end
 
 """
@@ -139,18 +140,15 @@ Note: If the problem is an AbstractNLPModel check the number of evaluations of *
 function _resources_check!(stp :: LS_Stopping,
                            x   :: T) where T <: Union{Number, AbstractVector}
 
- max_evals = false
- max_f     = false
-
  if typeof(stp.pb) <: AbstractNLPModel
   max_f = stp.meta.max_f < neval_obj(stp.pb)
   max_evals = stp.meta.max_eval < sum_counters(stp.pb)
+  # global limit diagnostic
+  #stp.meta.resources = (max_evals || max_f) ? true : stp.meta.resources
+  if (max_evals || max_f) stp.meta.resources=true end
  end
 
- # global limit diagnostic
- stp.meta.resources = max_evals || max_f
-
- return stp
+ return stp.meta.resources
 end
 
 ################################################################################
