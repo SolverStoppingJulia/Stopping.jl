@@ -140,10 +140,12 @@ Returns the optimality status of the problem as a boolean.
 
  Note: Kwargs are forwarded to the *update!* call.
 """
-function update_and_start!(stp :: AbstractStopping; kwargs...)
+function update_and_start!(stp :: AbstractStopping; 
+                           no_start_opt_check :: Bool = false, 
+                           kwargs...)
 
     update!(stp.current_state; kwargs...)
-    OK = start!(stp)
+    OK = start!(stp, no_start_opt_check = no_start_opt_check)
 
     return OK
 end
