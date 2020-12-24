@@ -16,6 +16,7 @@ struct StopRemoteControl <: AbstractStopRemoteControl
     iteration_check              :: Bool
     main_pb_check                :: Bool
     user_check                   :: Bool
+    user_check_start             :: Bool
     
     cheap_check                  :: Bool #`stop!` and `start!` stop whenever one check worked 
                                          #not used now
@@ -33,6 +34,7 @@ function StopRemoteControl(;unbounded_and_domain_x_check :: Bool = true, #O(n)
                             iteration_check              :: Bool = true,
                             main_pb_check                :: Bool = true, #O(n)
                             user_check                   :: Bool = true,
+                            user_check_start             :: Bool = true,
                             cheap_check                  :: Bool = false)
                             
  return StopRemoteControl(unbounded_and_domain_x_check, domain_check, 
@@ -40,7 +42,8 @@ function StopRemoteControl(;unbounded_and_domain_x_check :: Bool = true, #O(n)
                           unbounded_problem_check, tired_check, 
                           resources_check, stalled_check,
                           iteration_check, main_pb_check, 
-                          user_check, cheap_check)
+                          user_check, user_check_start,
+                          cheap_check)
 end
 
 """
@@ -58,6 +61,7 @@ function cheap_stop_remote_control(;unbounded_and_domain_x_check :: Bool = false
                                     iteration_check              :: Bool = true,
                                     main_pb_check                :: Bool = false,
                                     user_check                   :: Bool = true,
+                                    user_check_start             :: Bool = true,
                                     cheap_check                  :: Bool = true)
                             
  return StopRemoteControl(unbounded_and_domain_x_check, domain_check, 
@@ -65,5 +69,6 @@ function cheap_stop_remote_control(;unbounded_and_domain_x_check :: Bool = false
                           unbounded_problem_check, tired_check, 
                           resources_check, stalled_check,
                           iteration_check, main_pb_check, 
-                          user_check, cheap_check)                        
+                          user_check, user_check_start,
+                          cheap_check)                        
 end

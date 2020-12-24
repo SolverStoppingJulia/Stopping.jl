@@ -77,8 +77,6 @@ function NLPStopping(pb             :: Pb,
     catch
         throw(ErrorException("error: missing entries in the given current_state"))
     end
-    
-    stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
 
     return NLPStopping(pb, meta, stop_remote, current_state, 
                        main_stp, list, stopping_user_struct)

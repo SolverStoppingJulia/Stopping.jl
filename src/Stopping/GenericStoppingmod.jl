@@ -149,23 +149,28 @@ function update_and_start!(stp :: AbstractStopping; kwargs...)
 end
 
 """
- start!: update the Stopping and return a boolean true if we must stop.
+ Update the Stopping and return *true* if we must stop.
 
  `start!(:: AbstractStopping; no_start_opt_check :: Bool = false, kwargs...)`
 
  Purpose is to know if there is a need to even perform an optimization algorithm
- or if we are at an optimal solution from the beginning. Set *no\\_start\\_opt\\_check*
- to *true* to avoid checking optimality.
+ or if we are at an optimal solution from the beginning. 
+ Set `no_start_opt_check` to *true* to avoid checking optimality and domain errors.
 
- The function *start!* successively calls: *\\_domain\\_check*, *\\_optimality\\_check*,
- *\\_null\\_test*
+ The function `start!` successively calls: `_domain_check(stp, x)`,
+ `_optimality_check(stp, x)`, `_null_test(stp, x)` and 
+ `_user_check!(stp, x, true)`.
 
- Note: - *start!* initialize the start\\_time (if not done before) and *meta.optimality0*.
-       - Keywords argument are sent to the *\\_optimality\\_check!* call.
+ Note: - `start!` initializes `stp.meta.start_time` (if not done before),
+ `stp.current_state.current_time` and `stp.meta.optimality0` 
+ (if `no_start_opt_check` is false).   
+       - Keywords argument are passed to the `_optimality_check!` call.   
+       - Compatible with the `StopRemoteControl`.   
 """
 function start!(stp :: AbstractStopping; no_start_opt_check :: Bool = false, kwargs...)
 
  state = stp.current_state
+ src   = stp.stop_remote
  x     = state.x
 
  #Initialize the time counter
@@ -178,20 +183,28 @@ function start!(stp :: AbstractStopping; no_start_opt_check :: Bool = false, kwa
  end
 
  if !no_start_opt_check
-  stp.meta.domainerror = _domain_check(state) ? true : stp.meta.domainerror
-  if !stp.meta.domainerror
+  stp.meta.domainerror = if src.domain_check
+                            _domain_check(stp.current_state)
+                        else 
+                            stp.meta.domainerror
+                        end
+  if !stp.meta.domainerror && src.optimality
     # Optimality check
     optimality0          = _optimality_check(stp; kwargs...)
-    stp.meta.optimality0 = norm(optimality0, Inf)
-    if (true in isnan.(optimality0))
+    norm_optimality0     = norm(optimality0, Inf)
+    if src.domain_check && isnan(norm_optimality0)
        stp.meta.domainerror = true
+    else
+        stp.meta.optimality0 = norm_optimality0
     end
 
     stp.meta.optimal = _null_test(stp, optimality0) ? true : stp.meta.optimal
    end
  end
+ 
+ src.user_check_start && _user_check!(stp, x, true)
 
- OK = stp.meta.optimal || stp.meta.domainerror
+ OK = stp.meta.optimal || stp.meta.domainerror || stp.meta.stopbyuser
 
  return OK
 end
@@ -621,10 +634,16 @@ end
 """
 \\_user\\_check: nothing by default.
 
-`_user_check!( :: AbstractStopping, x :: Union{Number, AbstractVector})`
+`_user_check!( :: AbstractStopping, x :: Union{Number, AbstractVector}, start :: Bool)`
+
+The boolean `start` is `true` when called from the `start!` function.
 """
-function _user_check!(stp :: AbstractStopping, x :: T) where T
+function _user_check!(stp :: AbstractStopping, x :: T, start :: Bool) where T
  return stp.meta.stopbyuser
+end
+
+function _user_check!(stp :: AbstractStopping, x :: T) where T
+ return _user_check!(stp, x, false)
 end
 
 """
