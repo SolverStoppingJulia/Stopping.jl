@@ -34,7 +34,7 @@ Input :
 
 See also GenericStopping, NLPStopping, LSAtT
  """
-mutable struct LS_Stopping{Pb, M, SRC, LoS}  <: AbstractStopping{Pb, M, SRC, LSAtT, LoS}
+mutable struct LS_Stopping{Pb, M, SRC, MStp, LoS, Uss}  <: AbstractStopping{Pb, M, SRC, LSAtT, MStp, LoS, Uss}
     # problem
     pb                   :: Pb
 
@@ -46,13 +46,13 @@ mutable struct LS_Stopping{Pb, M, SRC, LoS}  <: AbstractStopping{Pb, M, SRC, LSA
     current_state        :: LSAtT
 
     # Stopping of the main problem, or nothing
-    main_stp             :: AbstractStopping
+    main_stp             :: MStp
 
     # History of states
     listofstates         :: LoS
 
     # User-specific structure
-    stopping_user_struct :: Any
+    stopping_user_struct :: Uss
 
 end
 

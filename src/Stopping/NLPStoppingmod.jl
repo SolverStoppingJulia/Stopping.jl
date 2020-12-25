@@ -29,7 +29,7 @@ Attributes:
 
  Note: Kwargs are forwarded to the classical constructor.
  """
-mutable struct NLPStopping{Pb, M, SRC, T, LoS}  <: AbstractStopping{Pb, M, SRC, T, LoS}
+mutable struct NLPStopping{Pb, M, SRC, T, MStp, LoS, Uss}  <: AbstractStopping{Pb, M, SRC, T, MStp, LoS, Uss}
 
     # problem
     pb                   :: Pb
@@ -42,13 +42,13 @@ mutable struct NLPStopping{Pb, M, SRC, T, LoS}  <: AbstractStopping{Pb, M, SRC, 
     current_state        :: T
 
     # Stopping of the main problem, or nothing
-    main_stp             :: AbstractStopping
+    main_stp             :: MStp
 
     # History of states
     listofstates         :: LoS
 
     # User-specific structure
-    stopping_user_struct :: Any
+    stopping_user_struct :: Uss
 
 end
 

@@ -45,7 +45,7 @@
  Examples:
  GenericStopping(pb, x0, rtol = 1e-1)
 """
-mutable struct GenericStopping{Pb, M, SRC, T, LoS} <: AbstractStopping{Pb, M, SRC, T, LoS}
+mutable struct GenericStopping{Pb, M, SRC, T, MStp, LoS, Uss} <: AbstractStopping{Pb, M, SRC, T, MStp, LoS, Uss}
 
     # Problem
     pb                   :: Pb
@@ -58,13 +58,13 @@ mutable struct GenericStopping{Pb, M, SRC, T, LoS} <: AbstractStopping{Pb, M, SR
     current_state        :: T
 
     # Stopping of the main problem, or nothing
-    main_stp             :: AbstractStopping
+    main_stp             :: MStp
 
     # History of states
     listofstates         :: LoS
 
     # User-specific structure
-    stopping_user_struct :: Any #this type should be parametric
+    stopping_user_struct :: Uss
 
 end
 
@@ -133,7 +133,7 @@ function fill_in!(stp :: AbstractStopping, x :: T) where T
 end
 
 """
-update\\_and\\_start!: update the values in the State and initialize the Stopping.
+update\\_and\\_start!: update values in the State and initialize the Stopping.
 Returns the optimality status of the problem as a boolean.
 
 `update_and_start!(:: AbstractStopping; kwargs...)`
@@ -171,7 +171,7 @@ end
 
  Purpose is to know if there is a need to even perform an optimization algorithm
  or if we are at an optimal solution from the beginning. 
- Set `no_start_opt_check` to *true* to avoid checking optimality and domain errors.
+ Set `no_start_opt_check` to *true* avoid checking optimality and domain errors.
 
  The function `start!` successively calls: `_domain_check(stp, x)`,
  `_optimality_check(stp, x)`, `_null_test(stp, x)` and 
@@ -183,7 +183,9 @@ end
        - Keywords argument are passed to the `_optimality_check!` call.   
        - Compatible with the `StopRemoteControl`.   
 """
-function start!(stp :: AbstractStopping; no_start_opt_check :: Bool = false, kwargs...)
+function start!(stp :: AbstractStopping; 
+                no_start_opt_check :: Bool = false,
+                kwargs...)
 
  state = stp.current_state
  src   = stp.stop_remote
@@ -603,8 +605,8 @@ end
 `_optimality_check(:: AbstractStopping; kwargs...)`
 
 """
-function _optimality_check(stp :: AbstractStopping{Pb, M, SRC, T, LoS};
-                           kwargs...) where {Pb, M, SRC, T, LoS}
+function _optimality_check(stp :: AbstractStopping{Pb, M, SRC, T, MStp, LoS, Uss};
+                           kwargs...) where {Pb, M, SRC, T, MStp, LoS, Uss}
 
  setfield!(stp.current_state, :current_score,
            stp.meta.optimality_check(stp.pb, stp.current_state; kwargs...))

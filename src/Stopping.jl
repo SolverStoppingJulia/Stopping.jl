@@ -131,15 +131,17 @@ AbstractStopping
 Abstract type, if specialized stopping were to be implemented they would need to
 be subtypes of AbstractStopping
 """
-abstract type AbstractStopping{Pb  <: Any, 
-                               M   <: AbstractStoppingMeta, 
-                               SRC <: AbstractStopRemoteControl,
-                               T   <: AbstractState,
-                               LoS <: AbstractListStates} end
+abstract type AbstractStopping{Pb   <: Any, 
+                               M    <: AbstractStoppingMeta, 
+                               SRC  <: AbstractStopRemoteControl,
+                               T    <: AbstractState,
+                               MStp <: Any, #AbstractStopping
+                               LoS  <: AbstractListStates,
+                               Uss  <: Any} end
 
-struct VoidStopping{Pb, M, SRC, T, LoS} <: AbstractStopping{Pb, M, SRC, T, LoS} end
+struct VoidStopping{Pb, M, SRC, T, MStp, LoS, Uss} <: AbstractStopping{Pb, M, SRC, T, MStp, LoS, Uss} end
 function VoidStopping() 
-    return VoidStopping{Any, StoppingMeta, StopRemoteControl, GenericState, VoidListStates}() 
+    return VoidStopping{Any, StoppingMeta, StopRemoteControl, GenericState, Nothing, VoidListStates, Nothing}() 
 end
 
 export AbstractStopping, VoidStopping

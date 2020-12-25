@@ -42,7 +42,7 @@ There is additional constructors:
 
 See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, normal\\_equation\\_check
  """
- mutable struct LAStopping{Pb, M, SRC, T, LoS} <: AbstractStopping{Pb, M, SRC, T, LoS}
+ mutable struct LAStopping{Pb, M, SRC, T, MStp, LoS, Uss} <: AbstractStopping{Pb, M, SRC, T, MStp, LoS, Uss}
 
      # problem
      pb                   :: Pb
@@ -52,11 +52,11 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
      # current state of the problem
      current_state        :: T
      # Stopping of the main problem, or nothing
-     main_stp             :: AbstractStopping
+     main_stp             :: MStp
      # History of states
      listofstates         :: LoS
      # User-specific structure
-     stopping_user_struct :: Any
+     stopping_user_struct :: Uss
 
      #zero is initial point
      zero_start           :: Bool
