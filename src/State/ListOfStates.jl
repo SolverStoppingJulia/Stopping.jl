@@ -54,9 +54,11 @@ add\\_to\\_list!: add a State to the list of maximal size n.
 If a n+1-th State is added, the first one in the list is removed.
 The given is State is compressed before being added in the list (via State.copy\\_compress\\_state).
 
-`add_to_list!(:: ListStates, :: AbstractState; kwargs...)`
+`add_to_list!(:: AbstractListStates, :: AbstractState; kwargs...)`
 
-Note: kwargs are passed to the compress_state call.
+Note: 
+ -  kwargs are passed to the compress_state call.
+ -  does nothing for `VoidListStates`
 
 see also: ListStates, State.compress\\_state, State.copy\\_compress\\_state
 """
@@ -76,6 +78,10 @@ function add_to_list!(list :: AbstractListStates, state :: AbstractState; kwargs
   list.i += 1
  end
 
+ return list
+end
+
+function add_to_list!(list :: VoidListStates, state :: AbstractState; kwargs...)
  return list
 end
 

@@ -358,21 +358,16 @@ function stop!(stp :: AbstractStopping; kwargs...)
    src.resources_check         && _resources_check!(stp, x)
    src.stalled_check           && _stalled_check!(stp, x)
    src.iteration_check         && _iteration_check!(stp, x)
-
-   if src.main_pb_check && !(typeof(stp.main_stp) <: VoidStopping)
-       _main_pb_check!(stp, x)
-   end
-
-   src.user_check && _user_check!(stp, x)
+   src.main_pb_check           && _main_pb_check!(stp, x)
+   src.user_check              && _user_check!(stp, x)
  end
 
  OK = stp.meta.optimal || stp.meta.tired || stp.meta.iteration_limit || stp.meta.resources || stp.meta.unbounded || stp.meta.unbounded_pb || stp.meta.main_pb || stp.meta.domainerror || stp.meta.suboptimal || stp.meta.fail_sub_pb || stp.meta.stalled || stp.meta.infeasible || stp.meta.stopbyuser
 
  _add_stop!(stp)
 
- if typeof(stp.listofstates) != VoidListStates
+  #do nothing if typeof(stp.listofstates) == VoidListStates
   add_to_list!(stp.listofstates, stp.current_state)
- end
 
  return OK
 end
@@ -402,24 +397,23 @@ function cheap_stop!(stp :: AbstractStopping; kwargs...)
 
  # Optimality check
  if src.optimality_check
-    score = _optimality_check(stp; kwargs...)
+    score = _optimality_check(stp; kwargs...) #update state.current_score
     if _null_test(stp, score) stp.meta.optimal = true end
  end
  OK = stp.meta.optimal
 
- OK = OK || (src.infeasibility_check     && _infeasibility_check!(stp, x)) #stp.meta.infeasible
- OK = OK || (src.unbounded_problem_check && _unbounded_problem_check!(stp, x)) #stp.meta.unbounded_pb
- OK = OK || (src.tired_check             && _tired_check!(stp, x)) #stp.meta.tired
- OK = OK || (src.resources_check         && _resources_check!(stp, x)) #stp.meta.resources
- OK = OK || (src.iteration_check         && _iteration_check!(stp, x)) #stp.meta.iteration_limit
+ OK = OK || (src.infeasibility_check     && _infeasibility_check!(stp, x))
+ OK = OK || (src.unbounded_problem_check && _unbounded_problem_check!(stp, x))
+ OK = OK || (src.tired_check             && _tired_check!(stp, x))
+ OK = OK || (src.resources_check         && _resources_check!(stp, x))
+ OK = OK || (src.iteration_check         && _iteration_check!(stp, x))
 
  OK = OK || (src.user_check              && _user_check!(stp, x))
 
  _add_stop!(stp)
 
- if typeof(stp.listofstates) != VoidListStates
-  add_to_list!(stp.listofstates, stp.current_state)
- end
+ #do nothing if typeof(stp.listofstates) == VoidListStates
+ add_to_list!(stp.listofstates, stp.current_state)
 
  return OK
 end
@@ -429,8 +423,8 @@ end
 
 `_add_stop!(:: AbstractStopping)`
 
-Fonction called everytime *stop!* is called. In theory should be called once every
-iteration of an algorithm.
+Fonction called everytime *stop!* is called. In theory should be called once 
+every iteration of an algorithm.
 
 Note: update *meta.nb\\_of\\_stop*.
 """
@@ -442,8 +436,8 @@ function _add_stop!(stp :: AbstractStopping)
 end
 
 """
-\\_iteration\\_check!: check if the optimization algorithm has reached the iteration
-limit.
+\\_iteration\\_check!: check if the optimization algorithm has reached the 
+iteration limit.
 
 `_iteration_check!(:: AbstractStopping,  :: Union{Number, AbstractVector})`
 
@@ -468,7 +462,7 @@ Note: By default *meta.stalled* is false by default for Abstract/Generic Stoppin
 function _stalled_check!(stp :: AbstractStopping,
                          x   :: T) where T
 
- return stp.meta.stalled #false
+ return stp.meta.stalled
 end
 
 """
@@ -479,8 +473,8 @@ end
 Note: - Return false if *meta.start_time* is NaN (by default).
   - Update *meta.tired*.
 """
-function _tired_check!(stp    :: AbstractStopping,
-                       x      :: T) where T
+function _tired_check!(stp :: AbstractStopping,
+                       x   :: T) where T
 
  stime = stp.meta.start_time #can be NaN
  ctime = time()
@@ -496,6 +490,11 @@ function _tired_check!(stp    :: AbstractStopping,
  return stp.meta.tired
 end
 
+function _tired_check!(stp :: VoidStopping,
+                       x   :: T) where T
+ return false
+end
+
 """
 \\_resources\\_check!: check if the optimization algorithm has exhausted the resources.
 
@@ -503,10 +502,16 @@ end
 
 Note: By default *meta.resources* is false for Abstract/Generic Stopping.
 """
-function _resources_check!(stp    :: AbstractStopping,
-                           x      :: T) where T
+function _resources_check!(stp :: AbstractStopping,
+                           x   :: T) where T
 
  return stp.meta.resources #false
+end
+
+function _resources_check!(stp :: VoidStopping,
+                           x   :: T) where T
+
+ return false
 end
 
 """
@@ -516,30 +521,25 @@ end
 
 Note: - Modify the meta of the *main_stp*.
       - By default `meta.main_pb = false`.
+      - return `false` for VoidStopping.
 """
-function _main_pb_check!(stp    :: AbstractStopping,
-                         x      :: T) where T
+function _main_pb_check!(stp :: AbstractStopping,
+                         x   :: T) where T
 
- # Time check
- _tired_check!(stp.main_stp, x)
- max_time = stp.main_stp.meta.tired
-
- # Resource check
- _resources_check!(stp.main_stp, x)
- resources = stp.main_stp.meta.resources
-
- if !(typeof(stp.main_stp.main_stp) <: VoidStopping)
-   _main_pb_check!(stp.main_stp, x)
-   main_main_pb = stp.main_stp.meta.main_pb
- else
-   main_main_pb = false
- end
+ max_time     = _tired_check!(stp.main_stp, x)
+ resources    = _resources_check!(stp.main_stp, x)
+ main_main_pb = _main_pb_check!(stp.main_stp, x)
 
  check = max_time || resources || main_main_pb
 
  if check stp.meta.main_pb = true end
 
  return stp.meta.main_pb
+end
+
+function _main_pb_check!(stp :: VoidStopping,
+                         x   :: T) where T
+ return false
 end
 
 """
@@ -552,8 +552,8 @@ Note:
 - it also checks *NaN* and *missing* and update *meta.domainerror*.
 - short-circuiting if one of the two is true.
 """
-function _unbounded_and_domain_x_check!(stp  :: AbstractStopping,
-                                        x    :: T) where T
+function _unbounded_and_domain_x_check!(stp :: AbstractStopping,
+                                        x   :: T) where T
 
  bigX(z :: eltype(T)) = (abs(z) >= stp.meta.unbounded_x)
  (stp.meta.unbounded, stp.meta.domainerror) = _large_and_domain_check(bigX, x)
@@ -580,10 +580,10 @@ end
 
 Note: *meta.unbounded_pb* is false by default.
 """
-function _unbounded_problem_check!(stp  :: AbstractStopping,
-                                   x    :: T) where T
+function _unbounded_problem_check!(stp :: AbstractStopping,
+                                   x   :: T) where T
 
- return stp.meta.unbounded_pb #false
+ return stp.meta.unbounded_pb
 end
 
 """
@@ -593,10 +593,10 @@ end
 
 Note: *meta.infeasible* is false by default.
 """
-function _infeasibility_check!(stp  :: AbstractStopping,
-                               x    :: T) where T
+function _infeasibility_check!(stp :: AbstractStopping,
+                               x   :: T) where T
 
- return stp.meta.infeasible #false
+ return stp.meta.infeasible
 end
 
 """
