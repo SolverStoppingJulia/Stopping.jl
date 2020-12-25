@@ -144,16 +144,22 @@ function update_and_start!(stp :: AbstractStopping;
                            no_start_opt_check :: Bool = false, 
                            kwargs...)
 
-    update!(stp.current_state; kwargs...)
-    OK = start!(stp, no_start_opt_check = no_start_opt_check)
+  if stp.stop_remote.cheap_check
+      update!(stp.current_state; kwargs...)
+  else
+      _smart_update!(stp.current_state; kwargs...)
+  end
+  OK = start!(stp, no_start_opt_check = no_start_opt_check)
 
-    return OK
+  return OK
 end
 
-function cheap_update_and_start!(stp :: AbstractStopping; kwargs...)
+function cheap_update_and_start!(stp :: AbstractStopping; 
+                                 no_start_opt_check :: Bool = false, 
+                                 kwargs...)
 
  _smart_update!(stp.current_state; kwargs...)
- OK = start!(stp)
+ OK = start!(stp, no_start_opt_check = no_start_opt_check)
 
  return OK
 end
@@ -198,7 +204,7 @@ function start!(stp :: AbstractStopping; no_start_opt_check :: Bool = false, kwa
                         else 
                             stp.meta.domainerror
                         end
-  if !stp.meta.domainerror && src.optimality
+  if !stp.meta.domainerror && src.optimality_check
     # Optimality check
     optimality0          = _optimality_check(stp; kwargs...)
     norm_optimality0     = norm(optimality0, Inf)
@@ -212,7 +218,7 @@ function start!(stp :: AbstractStopping; no_start_opt_check :: Bool = false, kwa
    end
  end
  
- src.user_check_start && _user_check!(stp, x, true)
+ src.user_start_check && _user_check!(stp, x, true)
 
  OK = stp.meta.optimal || stp.meta.domainerror || stp.meta.stopbyuser
 
@@ -277,9 +283,14 @@ return the optimality status of the problem as a boolean.
 Note: Kwargs are forwarded to the *update!* call.
 """
 function update_and_stop!(stp :: AbstractStopping; kwargs...)
-
- update!(stp.current_state; kwargs...)
- OK = stop!(stp)
+    
+  if stp.stop_remote.cheap_check
+    update!(stp.current_state; kwargs...)
+    OK = stop!(stp)
+  else
+    _smart_update!(stp.current_state; kwargs...)
+    OK = cheap_stop!(stp)
+  end
 
  return OK
 end
@@ -331,7 +342,7 @@ function stop!(stp :: AbstractStopping; kwargs...)
                        end
  if !stp.meta.domainerror
    # Optimality check
-   if src.optimality
+   if src.optimality_check
       score = _optimality_check(stp; kwargs...)
       if any(isnan, score)
        stp.meta.domainerror = true
@@ -388,7 +399,7 @@ function cheap_stop!(stp :: AbstractStopping; kwargs...)
  src = stp.stop_remote
 
  # Optimality check
- if src.optimality
+ if src.optimality_check
     score = _optimality_check(stp; kwargs...)
     if _null_test(stp, score) stp.meta.optimal = true end
  end

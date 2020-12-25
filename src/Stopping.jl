@@ -46,7 +46,7 @@ the Stopping to reuse for another call.
 """
 module Stopping
 
-using LinearAlgebra, LinearOperators, SparseArrays, DataFrames, NLPModels
+using LinearAlgebra, LinearOperators, SparseArrays, DataFrames, NLPModels, Printf
 
 const Iterate           = Union{Number, AbstractVector, Nothing}
 const FloatVoid         = Union{Number, Nothing}
@@ -142,6 +142,7 @@ import Base.show
 function show(io :: IO, stp :: AbstractStopping)
   println(io, typeof(stp))
   println(io, "with the current state $(typeof(stp.current_state)) and metadata $(typeof(stp.meta)).")
+  show(io, stp.stop_remote)
   if stp.main_stp != nothing
    println(io, "it has a main_stp $(typeof(stp.main_stp))")
   end
