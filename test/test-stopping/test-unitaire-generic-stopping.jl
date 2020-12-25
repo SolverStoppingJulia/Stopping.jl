@@ -3,7 +3,7 @@ include("rosenbrock.jl")
 #We build a first stopping: to test the change of tol_check function
 x0 = ones(6)
 state0 = GenericState(x0)
-stop0 = GenericStopping(rosenbrock, state0, tol_check = (atol,rtol,opt0) -> atol + rtol * opt0 )
+stop0 = GenericStopping(rosenbrock, state0, tol_check = (atol,rtol,opt0) -> atol + rtol * opt0, list = ListStates(state0) )
 
 @test start!(stop0) == true #opt0 = Inf as default meta.optimality_check returns Inf, so any point is optimal.
 @test status(stop0) == :Optimal
@@ -16,10 +16,10 @@ stop!(stop0)
 #- there are no NaN in the score
 #- if the listofstates != nothing, stop! increases the list of states with the current_state.
 stop0.meta.optimality_check = (a,b) -> NaN
-stop0.listofstates = ListStates(state0)
+#stop0.listofstates = ListStates(state0)
 stop!(stop0)
 @test :DomainError in status(stop0, list = true)
-@test length(stop0.listofstates) == 2
+@test length(stop0.listofstates) == 3
 
 #Initialize a GenericStopping by default
 stop_def = GenericStopping(rosenbrock, x0, atol = 1.0)
@@ -53,7 +53,7 @@ function infinite_algorithm(stp :: AbstractStopping)
  x0 = stp.current_state.x
  smallest_f = stp.pb(x0) #stp.pb is a function here
 
- if stp.main_stp != nothing
+ if !(typeof(stp.main_stp) <: VoidStopping)
   start!(stp.main_stp) #start the time counter of the upper loop
  end
  OK = start!(stp)

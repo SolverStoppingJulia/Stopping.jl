@@ -29,7 +29,7 @@ Attributes:
 
  Note: Kwargs are forwarded to the classical constructor.
  """
-mutable struct NLPStopping{T, Pb, M, SRC}  <: AbstractStopping{T, Pb, M, SRC}
+mutable struct NLPStopping{Pb, M, SRC, T, LoS}  <: AbstractStopping{Pb, M, SRC, T, LoS}
 
     # problem
     pb                   :: Pb
@@ -42,10 +42,10 @@ mutable struct NLPStopping{T, Pb, M, SRC}  <: AbstractStopping{T, Pb, M, SRC}
     current_state        :: T
 
     # Stopping of the main problem, or nothing
-    main_stp             :: Union{AbstractStopping, Nothing}
+    main_stp             :: AbstractStopping
 
     # History of states
-    listofstates         :: Union{ListStates, Nothing}
+    listofstates         :: LoS
 
     # User-specific structure
     stopping_user_struct :: Any
@@ -56,14 +56,14 @@ function NLPStopping(pb             :: Pb,
                      meta           :: M,
                      stop_remote    :: SRC,
                      current_state  :: T;
-                     main_stp       :: Union{AbstractStopping, Nothing} = nothing,
-                     list           :: Union{ListStates, Nothing} = nothing,
+                     main_stp       :: AbstractStopping = VoidStopping(),
+                     list           :: AbstractListStates = VoidListStates(),
                      stopping_user_struct  :: Any = nothing,
                      kwargs...
-                     ) where {T   <: AbstractState, 
-                              Pb  <: AbstractNLPModel, 
+                     ) where {Pb  <: AbstractNLPModel, 
                               M   <: AbstractStoppingMeta, 
-                              SRC <: AbstractStopRemoteControl}
+                              SRC <: AbstractStopRemoteControl,
+                              T   <: AbstractState}
 
     #current_state is an AbstractState with requirements
     try
@@ -85,13 +85,13 @@ end
 function NLPStopping(pb             :: Pb,
                      meta           :: M,
                      current_state  :: T;
-                     main_stp       :: Union{AbstractStopping, Nothing} = nothing,
-                     list           :: Union{ListStates, Nothing} = nothing,
+                     main_stp       :: AbstractStopping = VoidStopping(),
+                     list           :: AbstractListStates = VoidListStates(),
                      stopping_user_struct  :: Any = nothing,
                      kwargs...
-                     ) where {T  <: AbstractState, 
-                              Pb <: AbstractNLPModel, 
-                              M  <: AbstractStoppingMeta}
+                     ) where {Pb <: AbstractNLPModel, 
+                              M  <: AbstractStoppingMeta,
+                              T  <: AbstractState}
 
     #current_state is an AbstractState with requirements
     try
@@ -114,10 +114,11 @@ end
 
 function NLPStopping(pb             :: Pb,
                      current_state  :: T;
-                     main_stp       :: Union{AbstractStopping, Nothing} = nothing,
-                     list           :: Union{ListStates, Nothing} = nothing,
+                     main_stp       :: AbstractStopping = VoidStopping(),
+                     list           :: AbstractListStates = VoidListStates(),
                      stopping_user_struct  :: Any = nothing,
-                     kwargs...) where {T <: AbstractState, Pb <: AbstractNLPModel}
+                     kwargs...
+                     ) where {Pb <: AbstractNLPModel, T <: AbstractState}
     
     if :max_cntrs in keys(kwargs)
         mcntrs = kwargs[:max_cntrs]

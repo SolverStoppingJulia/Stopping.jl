@@ -112,7 +112,7 @@ end
 export @instate
 
 include("Stopping/StopRemoteControl.jl")
-export StopRemoteControl, cheap_stop_remote_control
+export AbstractStopRemoteControl, StopRemoteControl, cheap_stop_remote_control
 
 """
 AbstractStoppingMeta
@@ -131,14 +131,23 @@ AbstractStopping
 Abstract type, if specialized stopping were to be implemented they would need to
 be subtypes of AbstractStopping
 """
-abstract type AbstractStopping{T   <: AbstractState, 
-                               Pb  <: Any, 
+abstract type AbstractStopping{Pb  <: Any, 
                                M   <: AbstractStoppingMeta, 
-                               SRC <: AbstractStopRemoteControl} end
+                               SRC <: AbstractStopRemoteControl,
+                               T   <: AbstractState,
+                               LoS <: AbstractListStates} end
 
-export AbstractStopping
+struct VoidStopping{Pb, M, SRC, T, LoS} <: AbstractStopping{Pb, M, SRC, T, LoS} end
+function VoidStopping() 
+    return VoidStopping{Any, StoppingMeta, StopRemoteControl, GenericState, VoidListStates}() 
+end
+
+export AbstractStopping, VoidStopping
 
 import Base.show
+function show(io :: IO, stp :: VoidStopping)
+    println(io, typeof(stp))
+end
 function show(io :: IO, stp :: AbstractStopping)
   println(io, typeof(stp))
   println(io, "with the current state $(typeof(stp.current_state)) and metadata $(typeof(stp.meta)).")

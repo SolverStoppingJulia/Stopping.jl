@@ -34,7 +34,7 @@ Input :
 
 See also GenericStopping, NLPStopping, LSAtT
  """
-mutable struct LS_Stopping{Pb, M, SRC}  <: AbstractStopping{LSAtT, Pb, M, SRC}
+mutable struct LS_Stopping{Pb, M, SRC, LoS}  <: AbstractStopping{Pb, M, SRC, LSAtT, LoS}
     # problem
     pb                   :: Pb
 
@@ -46,10 +46,10 @@ mutable struct LS_Stopping{Pb, M, SRC}  <: AbstractStopping{LSAtT, Pb, M, SRC}
     current_state        :: LSAtT
 
     # Stopping of the main problem, or nothing
-    main_stp             :: Union{AbstractStopping, Nothing}
+    main_stp             :: AbstractStopping
 
     # History of states
-    listofstates         :: Union{ListStates, Nothing}
+    listofstates         :: LoS
 
     # User-specific structure
     stopping_user_struct :: Any
@@ -60,8 +60,8 @@ function LS_Stopping(pb             :: Pb,
                      meta           :: M,
                      stop_remote    :: SRC,
                      current_state  :: LSAtT;
-                     main_stp       :: Union{AbstractStopping, Nothing} = nothing,
-                     list           :: Union{ListStates, Nothing} = nothing,
+                     main_stp       :: AbstractStopping = VoidStopping(),
+                     list           :: AbstractListStates = VoidListStates(),
                      stopping_user_struct :: Any = nothing,
                      ) where {Pb  <: Any, 
                               M   <: AbstractStoppingMeta, 
@@ -74,8 +74,8 @@ end
 function LS_Stopping(pb             :: Pb,
                      meta           :: M,
                      current_state  :: LSAtT;
-                     main_stp       :: Union{AbstractStopping, Nothing} = nothing,
-                     list           :: Union{ListStates, Nothing} = nothing,
+                     main_stp       :: AbstractStopping = VoidStopping(),
+                     list           :: AbstractListStates = VoidListStates(),
                      stopping_user_struct :: Any = nothing,
                      ) where {Pb <: Any, M <: AbstractStoppingMeta}
                      
@@ -87,8 +87,8 @@ end
 
 function LS_Stopping(pb             :: Pb,
                      current_state  :: LSAtT;
-                     main_stp       :: Union{AbstractStopping, Nothing} = nothing,
-                     list           :: Union{ListStates, Nothing} = nothing,
+                     main_stp       :: AbstractStopping = VoidStopping(),
+                     list           :: AbstractListStates = VoidListStates(),
                      stopping_user_struct :: Any = nothing,
                      kwargs...) where {Pb <: Any}
     

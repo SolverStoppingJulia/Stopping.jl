@@ -45,7 +45,7 @@
  Examples:
  GenericStopping(pb, x0, rtol = 1e-1)
 """
-mutable struct GenericStopping{T, Pb, M, SRC} <: AbstractStopping{T, Pb, M, SRC}
+mutable struct GenericStopping{Pb, M, SRC, T, LoS} <: AbstractStopping{Pb, M, SRC, T, LoS}
 
     # Problem
     pb                   :: Pb
@@ -58,10 +58,10 @@ mutable struct GenericStopping{T, Pb, M, SRC} <: AbstractStopping{T, Pb, M, SRC}
     current_state        :: T
 
     # Stopping of the main problem, or nothing
-    main_stp             :: Union{AbstractStopping, Nothing}
+    main_stp             :: AbstractStopping
 
     # History of states
-    listofstates         :: Union{ListStates, Nothing}
+    listofstates         :: LoS
 
     # User-specific structure
     stopping_user_struct :: Any #this type should be parametric
@@ -72,14 +72,14 @@ function GenericStopping(pb            :: Pb,
                          meta          :: M,
                          stop_remote   :: SRC,
                          current_state :: T;
-                         main_stp      :: Union{AbstractStopping, Nothing} = nothing,
-                         list          :: Union{ListStates, Nothing} = nothing,
+                         main_stp      :: AbstractStopping = VoidStopping(),
+                         list          :: AbstractListStates = VoidListStates(),
                          stopping_user_struct :: Any = nothing,
                          kwargs...
-                         ) where {T   <: AbstractState, 
-                                  Pb  <: Any, 
+                         ) where {Pb  <: Any, 
                                   M   <: AbstractStoppingMeta, 
-                                  SRC <: AbstractStopRemoteControl}
+                                  SRC <: AbstractStopRemoteControl,
+                                  T   <: AbstractState}
 
  return GenericStopping(pb, meta, stop_remote, current_state, 
                         main_stp, list, stopping_user_struct)
@@ -88,13 +88,13 @@ end
 function GenericStopping(pb            :: Pb,
                          meta          :: M,
                          current_state :: T;
-                         main_stp      :: Union{AbstractStopping, Nothing} = nothing,
-                         list          :: Union{ListStates, Nothing} = nothing,
+                         main_stp      :: AbstractStopping = VoidStopping(),
+                         list          :: AbstractListStates = VoidListStates(),
                          stopping_user_struct :: Any = nothing,
                          kwargs...
-                         ) where {T  <: AbstractState, 
-                                  Pb <: Any, 
-                                  M  <: AbstractStoppingMeta}
+                         ) where {Pb <: Any, 
+                                  M  <: AbstractStoppingMeta,
+                                  T  <: AbstractState}
                                   
  stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
  
@@ -104,11 +104,11 @@ end
 
 function GenericStopping(pb            :: Pb,
                          current_state :: T;
-                         main_stp      :: Union{AbstractStopping, Nothing} = nothing,
-                         list          :: Union{ListStates, Nothing} = nothing,
+                         main_stp      :: AbstractStopping = VoidStopping(),
+                         list          :: AbstractListStates = VoidListStates(),
                          stopping_user_struct :: Any = nothing,
                          kwargs...
-                         ) where {T <: AbstractState, Pb <: Any}
+                         ) where {Pb <: Any, T <: AbstractState}
 
   meta = StoppingMeta(; kwargs...)
   stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
@@ -145,9 +145,9 @@ function update_and_start!(stp :: AbstractStopping;
                            kwargs...)
 
   if stp.stop_remote.cheap_check
-      update!(stp.current_state; kwargs...)
+    _smart_update!(stp.current_state; kwargs...)
   else
-      _smart_update!(stp.current_state; kwargs...)
+    update!(stp.current_state; kwargs...)
   end
   OK = start!(stp, no_start_opt_check = no_start_opt_check)
 
@@ -262,8 +262,8 @@ function reinit!(stp    :: AbstractStopping;
  stp.meta.nb_of_stop = 0
 
  #reinitialize the list of states
- if rlist && (stp.listofstates != nothing)
-  list = rstate ? nothing : ListStates(stp.current_state)
+ if rlist && (typeof(stp.listofstates) != VoidListStates)
+  list = rstate ? VoidListStates() : ListStates(stp.current_state)
  end
 
  #reinitialize the state
@@ -285,11 +285,11 @@ Note: Kwargs are forwarded to the *update!* call.
 function update_and_stop!(stp :: AbstractStopping; kwargs...)
     
   if stp.stop_remote.cheap_check
-    update!(stp.current_state; kwargs...)
-    OK = stop!(stp)
-  else
     _smart_update!(stp.current_state; kwargs...)
     OK = cheap_stop!(stp)
+  else
+    update!(stp.current_state; kwargs...)
+    OK = stop!(stp)
   end
 
  return OK
@@ -326,7 +326,7 @@ The function *stop!* successively calls: *\\_domain\\_check*, *\\_optimality\\_c
 
 Note:
 - Kwargs are sent to the *\\_optimality\\_check!* call.
-- If listofstates != nothing, call add\\_to\\_list! to update the list of State.
+- If listofstates != VoidListStates, call add\\_to\\_list! to update the list of State.
 """
 function stop!(stp :: AbstractStopping; kwargs...)
 
@@ -357,7 +357,7 @@ function stop!(stp :: AbstractStopping; kwargs...)
    src.stalled_check           && _stalled_check!(stp, x)
    src.iteration_check         && _iteration_check!(stp, x)
 
-   if src.main_pb_check && stp.main_stp != nothing
+   if src.main_pb_check && !(typeof(stp.main_stp) <: VoidStopping)
        _main_pb_check!(stp, x)
    end
 
@@ -368,7 +368,7 @@ function stop!(stp :: AbstractStopping; kwargs...)
 
  _add_stop!(stp)
 
- if stp.listofstates != nothing
+ if typeof(stp.listofstates) != VoidListStates
   add_to_list!(stp.listofstates, stp.current_state)
  end
 
@@ -391,7 +391,7 @@ The function *cheap_stop!* successively calls:
 
 Note:
 - Kwargs are sent to the *\\_optimality\\_check!* call.
-- If listofstates != nothing, call add\\_to\\_list! to update the list of State.
+- If listofstates != VoidListStates, call add\\_to\\_list! to update the list of State.
 """
 function cheap_stop!(stp :: AbstractStopping; kwargs...)
 
@@ -415,7 +415,7 @@ function cheap_stop!(stp :: AbstractStopping; kwargs...)
 
  _add_stop!(stp)
 
- if stp.listofstates != nothing
+ if typeof(stp.listofstates) != VoidListStates
   add_to_list!(stp.listofstates, stp.current_state)
  end
 
@@ -508,7 +508,7 @@ function _resources_check!(stp    :: AbstractStopping,
 end
 
 """
-\\_main\\_pb\\_check!: check the resources and the time of the upper problem (if main_stp != nothing).
+\\_main\\_pb\\_check!: check the resources and the time of the upper problem (if main_stp != VoidStopping.
 
 `_main_pb_check!(:: AbstractStopping, :: Union{Number, AbstractVector})`
 
@@ -526,7 +526,7 @@ function _main_pb_check!(stp    :: AbstractStopping,
  _resources_check!(stp.main_stp, x)
  resources = stp.main_stp.meta.resources
 
- if stp.main_stp.main_stp != nothing
+ if !(typeof(stp.main_stp.main_stp) <: VoidStopping)
    _main_pb_check!(stp.main_stp, x)
    main_main_pb = stp.main_stp.meta.main_pb
  else
@@ -603,8 +603,8 @@ end
 `_optimality_check(:: AbstractStopping; kwargs...)`
 
 """
-function _optimality_check(stp :: AbstractStopping{T, Pb, M, SRC};
-                           kwargs...) where {T, Pb, M, SRC}
+function _optimality_check(stp :: AbstractStopping{Pb, M, SRC, T, LoS};
+                           kwargs...) where {Pb, M, SRC, T, LoS}
 
  setfield!(stp.current_state, :current_score,
            stp.meta.optimality_check(stp.pb, stp.current_state; kwargs...))

@@ -106,12 +106,12 @@ the returned DataFrame still contains all the columns.
 see also: add\\_to\\_list!, length, ListStates
 """
 function print(list :: AbstractListStates; verbose :: Bool = true, print_sym :: Union{Nothing,Array{Symbol,1}} = nothing)
-
-   df = DataFrame()
-
+   
+   tab = zeros(0, length(list.list))#Array{Any,2}(undef, length(fieldnames(typeof(list.list[1,1]))))
    for k in fieldnames(typeof(list.list[1,1]))
-       df[!,k] = [getfield(i[1], k) for i in list.list]
+      tab = vcat(tab, [getfield(i[1], k) for i in list.list]');
    end
+   df = DataFrame(tab)
 
    if print_sym == nothing
     verbose && print(df)
