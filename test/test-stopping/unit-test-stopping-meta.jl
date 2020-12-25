@@ -22,6 +22,7 @@
     @test test_meta.suboptimal            == false
     @test test_meta.main_pb               == false
     @test test_meta.stopbyuser            == false
+    @test test_meta.infeasible            == false
     @test test_meta.nb_of_stop            == 0
     @test test_meta.meta_user_struct      == nothing
 
@@ -38,6 +39,13 @@
     @test test_meta.retol == true
     @test test_meta.atol  == 1e-1
     @test tol_check(test_meta) == (0.1, -0.1)
+    
+    @test !OK_check(test_meta)
+    test_meta.suboptimal = true
+    @test OK_check(test_meta)
+    reinit!(test_meta)
+    @test !test_meta.suboptimal
+    @test !OK_check(test_meta)
     
     @test_throws ErrorException("StoppingMeta: tol_check should be greater than tol_check_neg.") StoppingMeta(tol_check_neg = (a,b,c) -> Inf)
 end

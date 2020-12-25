@@ -222,7 +222,7 @@ function start!(stp :: AbstractStopping;
  
  src.user_start_check && _user_check!(stp, x, true)
 
- OK = stp.meta.optimal || stp.meta.domainerror || stp.meta.stopbyuser
+ OK = OK_check(stp.meta)
 
  return OK
 end
@@ -248,24 +248,15 @@ function reinit!(stp    :: AbstractStopping;
  stp.meta.optimality0 = 1.0
 
  #reinitialize the boolean status
- stp.meta.fail_sub_pb     = false
- stp.meta.unbounded       = false
- stp.meta.unbounded_pb    = false
- stp.meta.tired           = false
- stp.meta.stalled         = false
- stp.meta.iteration_limit = false
- stp.meta.resources       = false
- stp.meta.optimal         = false
- stp.meta.suboptimal      = false
- stp.meta.main_pb         = false
- stp.meta.domainerror     = false
+ reinit!(stp.meta)
 
  #reinitialize the counter of stop
  stp.meta.nb_of_stop = 0
 
  #reinitialize the list of states
  if rlist && (typeof(stp.listofstates) != VoidListStates)
-  list = rstate ? VoidListStates() : ListStates(stp.current_state)
+  #TODO: Warning we cannot change the type of ListStates 
+  stp.listofstates = rstate ? VoidListStates() : ListStates(stp.current_state)
  end
 
  #reinitialize the state
@@ -362,8 +353,8 @@ function stop!(stp :: AbstractStopping; kwargs...)
    src.user_check              && _user_check!(stp, x)
  end
 
- OK = stp.meta.optimal || stp.meta.tired || stp.meta.iteration_limit || stp.meta.resources || stp.meta.unbounded || stp.meta.unbounded_pb || stp.meta.main_pb || stp.meta.domainerror || stp.meta.suboptimal || stp.meta.fail_sub_pb || stp.meta.stalled || stp.meta.infeasible || stp.meta.stopbyuser
-
+ OK = OK_check(stp.meta)
+ 
  _add_stop!(stp)
 
   #do nothing if typeof(stp.listofstates) == VoidListStates
@@ -407,7 +398,6 @@ function cheap_stop!(stp :: AbstractStopping; kwargs...)
  OK = OK || (src.tired_check             && _tired_check!(stp, x))
  OK = OK || (src.resources_check         && _resources_check!(stp, x))
  OK = OK || (src.iteration_check         && _iteration_check!(stp, x))
-
  OK = OK || (src.user_check              && _user_check!(stp, x))
 
  _add_stop!(stp)
