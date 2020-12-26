@@ -41,7 +41,7 @@ GenericState(x, current\\_score = 1.0)
 
 See also: Stopping, NLPAtX
 """
-mutable struct GenericState{S,T<:Union{AbstractFloat,AbstractVector}} <: AbstractState{S,T}
+mutable struct GenericState{S, T <: Union{AbstractFloat,AbstractVector}} <: AbstractState{S, T}
 
     x   :: T
 
@@ -288,4 +288,10 @@ function copy_compress_state(stateatx        :: AbstractState;
                              kwargs...)
  cstate = copy(stateatx)
  return compress_state!(cstate; save_matrix = save_matrix, max_vector_size = max_vector_size, pnorm = pnorm, kwargs...)
+end
+
+import Base.show
+function show(io :: IO, state :: AbstractState)
+    varlines = "$(typeof(state)) with an iterate of type $(xtype(state)) and a score of type $(scoretype(state))."
+    println(io, varlines)
 end

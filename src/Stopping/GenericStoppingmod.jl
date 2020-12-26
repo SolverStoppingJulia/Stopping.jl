@@ -653,6 +653,9 @@ end
 The boolean `start` is `true` when called from the `start!` function.
 """
 function _user_check!(stp :: AbstractStopping, x :: T, start :: Bool) where T
+ #callback function furnished by the user
+ stp.meta.user_check_func!(stp, start)
+ 
  return stp.meta.stopbyuser
 end
 

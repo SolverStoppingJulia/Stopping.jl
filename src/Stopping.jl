@@ -121,9 +121,6 @@ Abstract type, if specialized meta for stopping were to be implemented they
 would need to be subtypes of AbstractStoppingMeta
 """
 abstract type AbstractStoppingMeta end
-include("Stopping/StoppingMetamod.jl")
-
-export AbstractStoppingMeta, StoppingMeta, tol_check, update_tol!, OK_check
 
 """
 AbstractStopping
@@ -139,6 +136,10 @@ abstract type AbstractStopping{Pb   <: Any,
                                LoS  <: AbstractListStates,
                                Uss  <: Any} end
 
+include("Stopping/StoppingMetamod.jl")
+
+export AbstractStoppingMeta, StoppingMeta, tol_check, update_tol!, OK_check
+
 struct VoidStopping{Pb, M, SRC, T, MStp, LoS, Uss} <: AbstractStopping{Pb, M, SRC, T, MStp, LoS, Uss} end
 function VoidStopping() 
     return VoidStopping{Any, StoppingMeta, StopRemoteControl, GenericState, Nothing, VoidListStates, Nothing}() 
@@ -152,20 +153,35 @@ function show(io :: IO, stp :: VoidStopping)
 end
 function show(io :: IO, stp :: AbstractStopping)
   println(io, typeof(stp))
-  println(io, "with the current state $(typeof(stp.current_state)) and metadata $(typeof(stp.meta)).")
-  show(io, stp.stop_remote)
-  if stp.main_stp != nothing
-   println(io, "it has a main_stp $(typeof(stp.main_stp))")
+  print(io, stp.meta)
+  print(io, stp.stop_remote)
+  print(io, stp.current_state)
+  if !(typeof(stp.main_stp) <: VoidStopping)
+   println(io, "It has a main_stp $(typeof(stp.main_stp))")
+  else
+      println(io, "It has no main_stp.")
   end
-  if stp.listofstates != nothing
+  if typeof(stp.listofstates) != VoidListStates
    nmax = stp.listofstates.n == -1 ? Inf : stp.listofstates.n
-   println(io, "it handles a list of states $(typeof(stp.listofstates)) of maximum length $(nmax)")
+   println(io, "It handles a list of states $(typeof(stp.listofstates)) of maximum length $(nmax)")
+  else
+      println(io, "It doesn't keep track of the state history.")
   end
   try
       print("Problem is ")
       show(io, stp.pb)
   catch
       print("Problem is $(typeof(stp.pb)).")
+  end
+  if stp.stopping_user_struct != nothing
+     try
+        print("The user-defined structure is ")
+        show(io, stp.stopping_user_struct)
+     catch
+        print("The user-defined structure is  of type $(typeof(stp.stopping_user_struct)).")
+     end
+  else
+      print(io, "No user-defined structure is furnished.")
   end
 end
 

@@ -37,6 +37,7 @@ Attributes:
 - stopbyuser : status
 
 - meta_user_struct :  Any
+- user_check_func! : Function (AbstractStopping, Bool) -> callback.
 
 `StoppingMeta(;atol :: Number = 1.0e-6, rtol :: Number = 1.0e-15, optimality0 :: Number = 1.0, tol_check :: Function = (atol,rtol,opt0) -> max(atol,rtol*opt0), unbounded_threshold :: Number = 1.0e50, unbounded_x :: Number = 1.0e50, max_f :: Int = typemax(Int), max_eval :: Int = 20000, max_iter :: Int = 5000, max_time :: Number = 300.0, start_time :: Float64 = NaN, meta_user_struct :: Any = nothing, kwargs...)`
 
@@ -109,7 +110,7 @@ mutable struct StoppingMeta{TolType <: Number,
  stopbyuser          :: Bool
  
  meta_user_struct    :: MUS
- #user_check         :: Function #called dans Stopping._user_check!(stp, x)
+ user_check_func!    :: Function #called dans Stopping._user_check!(stp, x)
 
 end
 
@@ -128,7 +129,8 @@ function StoppingMeta(;atol               :: Number   = 1.0e-6,
                       max_iter            :: Int      = 5000,
                       max_time            :: Float64  = 300.0,
                       start_time          :: Float64  = NaN,
-                      meta_user_struct    :: Any      = nothing)
+                      meta_user_struct    :: Any      = nothing,
+                      user_check_func!    :: Function = (stp :: AbstractStopping, start :: Bool) -> nothing)
 
   check_pos = tol_check(atol, rtol, optimality0)
   check_neg = tol_check_neg(atol, rtol, optimality0)
@@ -163,8 +165,22 @@ function StoppingMeta(;atol               :: Number   = 1.0e-6,
                       fail_sub_pb, unbounded, unbounded_pb, tired, stalled,
                       iteration_limit, resources, optimal, infeasible, main_pb,
                       domainerror, suboptimal, stopbyuser, 
-                      meta_user_struct)
+                      meta_user_struct, user_check_func!)
 end
+
+const meta_statuses = [:fail_sub_pb,
+                       :unbounded,
+                       :unbounded_pb,
+                       :tired,
+                       :stalled,
+                       :iteration_limit,
+                       :resources,
+                       :optimal,
+                       :suboptimal,
+                       :main_pb,
+                       :domainerror,
+                       :infeasible,
+                       :stopbyuser]
 
 """
 `OK_check(meta :: StoppingMeta)`
@@ -213,20 +229,6 @@ function update_tol!(meta     :: StoppingMeta{TolType, CheckType, MUS, IntType};
 
  return meta
 end
-
-const meta_statuses = [:fail_sub_pb,
-                       :unbounded,
-                       :unbounded_pb,
-                       :tired,
-                       :stalled,
-                       :iteration_limit,
-                       :resources,
-                       :optimal,
-                       :suboptimal,
-                       :main_pb,
-                       :domainerror,
-                       :infeasible,
-                       :stopbyuser]
 
 function reinit!(meta :: StoppingMeta{TolType, CheckType, MUS, IntType}
                 ) where {TolType, CheckType, MUS, IntType}
