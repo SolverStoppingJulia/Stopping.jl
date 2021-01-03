@@ -23,11 +23,11 @@ ListStates(-1)
 ListStates(-1, [(state1, VoidListStates), (state2, VoidListStates)], 2)
 ListStates(-1, [(state1, another_list)], 1)
 """
-mutable struct ListStates <: AbstractListStates
+mutable struct ListStates{T <: Array} <: AbstractListStates
 
   n     :: Int #If length of the list is knwon, -1 if unknown
   i     :: Int #current index in the list/length
-  list  :: Array #Array{Tuple{AbstractState, AbstractListStates},1}
+  list  :: T #Array{Tuple{AbstractState, AbstractListStates},1}
                  #Tanj: \TODO Tuple instead of an Array would be better, I think
 
 end
@@ -111,7 +111,9 @@ the returned DataFrame still contains all the columns.
 
 see also: add\\_to\\_list!, length, ListStates
 """
-function print(list :: AbstractListStates; verbose :: Bool = true, print_sym :: Union{Nothing,Array{Symbol,1}} = nothing)
+function print(list :: AbstractListStates; 
+               verbose :: Bool = true, 
+               print_sym :: Union{Nothing,Array{Symbol,1}} = nothing)
    
    tab = zeros(0, length(list.list))#Array{Any,2}(undef, length(fieldnames(typeof(list.list[1,1]))))
    for k in fieldnames(typeof(list.list[1,1]))

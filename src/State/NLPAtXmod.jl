@@ -44,7 +44,8 @@ Note:
 
 See also: GenericState, update!, update\\_and\\_start!, update\\_and\\_stop!, reinit!
 """
-mutable struct 	NLPAtX{S, T <: AbstractVector, MT <: AbstractMatrix}  <: AbstractState{S, T}
+mutable struct 	NLPAtX{S, T <: AbstractVector, 
+                       MT <: AbstractMatrix}  <: AbstractState{S, T}
 
 #Unconstrained State
     x            :: T     # current point
@@ -80,11 +81,13 @@ mutable struct 	NLPAtX{S, T <: AbstractVector, MT <: AbstractMatrix}  <: Abstrac
                  d             :: T = _init_field(T),
                  res           :: T = _init_field(T),
                  current_time  :: Float64 = NaN,
-                 evals         :: Counters = Counters()) where {S, T <: AbstractVector}
+                 evals         :: Counters = Counters()
+                 ) where {S, T <: AbstractVector}
 
   _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
 
-  return new{S, T, Matrix{eltype(T)}}(x, fx, gx, Hx, mu, cx, Jx, lambda, d, res, current_time, current_score, evals)
+  return new{S, T, Matrix{eltype(T)}}(x, fx, gx, Hx, mu, cx, Jx, lambda, d, 
+                                      res, current_time, current_score, evals)
  end
 end
 
@@ -100,7 +103,8 @@ function NLPAtX(x             :: T,
                 res           :: T = _init_field(T),
                 current_time  :: Float64  = NaN,
                 current_score :: Union{T,eltype(T)} = _init_field(eltype(T)),
-                evals         :: Counters     = Counters()) where T <: AbstractVector
+                evals         :: Counters     = Counters()
+                ) where T <: AbstractVector
 
  _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
 
@@ -116,9 +120,11 @@ function NLPAtX(x             :: T;
                 mu            :: T = _init_field(T),
                 current_time  :: Float64 = NaN,
                 current_score :: Union{T,eltype(T)} = _init_field(eltype(T)),
-                evals         :: Counters     = Counters()) where {T <: AbstractVector}
+                evals         :: Counters     = Counters()
+                ) where {T <: AbstractVector}
 
-    _size_check(x, zeros(eltype(T),0), fx, gx, Hx, mu, _init_field(T), _init_field(Matrix{eltype(T)}))
+    _size_check(x, zeros(eltype(T),0), fx, gx, Hx, mu, 
+                _init_field(T), _init_field(Matrix{eltype(T)}))
 
 	return NLPAtX(x, zeros(eltype(T),0), current_score, fx = fx, gx = gx,
                   Hx = Hx, mu = mu, current_time = current_time,
@@ -135,17 +141,55 @@ reinit!: function that set all the entries at void except the mandatory x
 Note: if *x*, *lambda* or *evals* are given as keyword arguments they will be
 prioritized over the existing *x*, *lambda* and the default *Counters*.
 """
-function reinit!(stateatx :: NLPAtX, x :: AbstractVector, l :: AbstractVector; kwargs...)
+function reinit!(stateatx :: NLPAtX{S, T, MT}, 
+                 x        :: T, 
+                 l        :: T; 
+                 kwargs...) where {S, T, MT}
 
  for k ∈ fieldnames(NLPAtX)
-   if k ∉ [:x,:lambda,:evals] setfield!(stateatx, k, _init_field(typeof(getfield(stateatx, k)))) end
+   if k ∉ [:x,:lambda] 
+       setfield!(stateatx, k, _init_field(typeof(getfield(stateatx, k)))) 
+   end
+ end
+ 
+ setfield!(stateatx, :x, x)
+ setfield!(stateatx, :lambda, l)
+ 
+ if length(kwargs)==0 
+     return stateatx #save the update! call if no other kwargs than x
  end
 
- return update!(stateatx; x=x, lambda = l, evals = Counters(), kwargs...)
+ return update!(stateatx; kwargs...)
+end
+
+function reinit!(stateatx :: NLPAtX{S, T, MT}, 
+                 x        :: T; 
+                 kwargs...) where {S, T, MT}
+
+ for k ∈ fieldnames(NLPAtX)
+   if k ∉ [:x,:lambda] 
+       setfield!(stateatx, k, _init_field(typeof(getfield(stateatx, k)))) 
+   end
+ end
+ 
+ setfield!(stateatx, :x, x)
+ 
+ if length(kwargs)==0 
+     return stateatx #save the update! call if no other kwargs than x
+ end
+
+ return update!(stateatx; kwargs...)
 end
 
 function reinit!(stateatx :: NLPAtX; kwargs...)
- return reinit!(stateatx, stateatx.x, stateatx.lambda; kwargs...)
+ 
+ for k ∈ fieldnames(NLPAtX)
+   if k ∉ [:x,:lambda] 
+       setfield!(stateatx, k, _init_field(typeof(getfield(stateatx, k)))) 
+   end
+ end
+
+ return update!(stateatx; kwargs...)
 end
 
 """

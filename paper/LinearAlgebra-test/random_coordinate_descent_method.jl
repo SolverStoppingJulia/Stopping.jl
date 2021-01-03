@@ -1,4 +1,4 @@
-using LinearAlgebra, Krylov, LinearOperators, SparseArrays, Main.Stopping
+using LinearAlgebra, Krylov, LinearOperators, SparseArrays, Stopping
 
 #Krylov @kdot
 macro kdot(n, x, y)
@@ -21,7 +21,7 @@ function RandomizedCD(A :: AbstractMatrix,
                       rtol :: AbstractFloat = 1e-15,
                       max_iter :: Int = size(A,2)^2,
                       max_time :: Float64 = 60.,
-                      max_cntrs = Main.Stopping._init_max_counters_linear_operators(quick=20000),
+                      max_cntrs = Stopping._init_max_counters_linear_operators(quick=20000),
                       verbose :: Int = 100,
                       kwargs...) where T <: AbstractFloat
 
@@ -75,5 +75,5 @@ function RandomizedCD(A :: AbstractMatrix,
 
     end
 
- return x, OK
+ return x, OK, k
 end

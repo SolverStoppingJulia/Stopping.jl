@@ -57,7 +57,8 @@ mutable struct GenericState{S, T <: Union{AbstractFloat,AbstractVector}} <: Abst
                           current_score :: S;
                           d             :: T = _init_field(T),
                           res           :: T = _init_field(T),
-                          current_time  :: Float64    = NaN) where {S, T <:AbstractVector}
+                          current_time  :: Float64    = NaN
+                          ) where {S, T <: AbstractVector}
 
       return new{S,T}(x, d, res, current_time, current_score)
    end
@@ -67,13 +68,16 @@ function GenericState(x             :: T;
                       d             :: T = _init_field(T),
                       res           :: T = _init_field(T),
                       current_time  :: Float64    = NaN,
-                      current_score :: Union{T,eltype(T)} = _init_field(eltype(T))) where T <:AbstractVector
+                      current_score :: Union{T,eltype(T)} = _init_field(eltype(T))
+                      ) where T <: AbstractVector
 
-  return GenericState(x, current_score, d = d, res = res, current_time = current_time)
+  return GenericState(x, current_score, 
+                      d = d, res = res, current_time = current_time)
 end
 
 scoretype(typestate :: AbstractState{S,T}) where {S, T} = S
 xtype(typestate :: AbstractState{S,T}) where {S, T} = T
+
 """
 update!: generic update function for the State
 
@@ -92,7 +96,9 @@ update!(state1, convert = true, current\\_time = 2.0)
 
 See also: GenericState, reinit!, update\\_and\\_start!, update\\_and\\_stop!
 """
-function update!(stateatx :: T; convert :: Bool = false, kwargs...) where T <: AbstractState
+function update!(stateatx :: T; 
+                 convert  :: Bool = false, 
+                 kwargs...) where T <: AbstractState
 
  fnames = fieldnames(T)
  for k ∈ keys(kwargs)
@@ -123,7 +129,8 @@ So, affecting a value to nothing or a different type will return an error.
 
 See also: update!, GenericState, reinit!, update\\_and\\_start!, update\\_and\\_stop!
 """
-function _smart_update!(stateatx :: T; kwargs...) where T <: AbstractState
+function _smart_update!(stateatx :: T; 
+                        kwargs...) where T <: AbstractState
 
  for k ∈ keys(kwargs)
    setfield!(stateatx, k, kwargs[k])
@@ -133,7 +140,8 @@ function _smart_update!(stateatx :: T; kwargs...) where T <: AbstractState
 end
 #https://github.com/JuliaLang/julia/blob/f3252bf50599ba16640ef08eb1e43c632eacf264/base/Base.jl#L34
 
-function _update_time!(stateatx :: T, current_time :: Float64) where T <: AbstractState
+function _update_time!(stateatx     :: T, 
+                       current_time :: Float64) where T <: AbstractState
 
  setfield!(stateatx, :current_time, current_time)
 
@@ -159,18 +167,35 @@ Examples:
 reinit!(state2)
 reinit!(state2, current_time = 1.0)
 """
-function reinit!(stateatx :: T, x :: Any; kwargs...)  where T <: AbstractState
+function reinit!(stateatx :: St, 
+                 x        :: T; 
+                 kwargs...)  where {S, T, St <: AbstractState{S,T}}
 
 #for k not in the kwargs
- for k ∈ setdiff(fieldnames(T), keys(kwargs))
-   if k != :x setfield!(stateatx, k, _init_field(typeof(getfield(stateatx, k)))) end
+ for k ∈ setdiff(fieldnames(St), keys(kwargs))
+   if k != :x 
+       setfield!(stateatx, k, _init_field(typeof(getfield(stateatx, k)))) 
+   end
+ end
+ 
+ setfield!(stateatx, :x, x)
+ 
+ if length(kwargs)==0 
+     return stateatx #save the update! call if no other kwargs than x
  end
 
- return update!(stateatx; x = x, kwargs...)
+ return update!(stateatx; kwargs...)
 end
 
-function reinit!(stateatx :: AbstractState; kwargs...)
- return reinit!(stateatx, stateatx.x; kwargs...)
+function reinit!(stateatx :: T; kwargs...) where T <: AbstractState
+ 
+ for k ∈ setdiff(fieldnames(T), keys(kwargs))
+     if k != :x 
+       setfield!(stateatx, k, _init_field(typeof(getfield(stateatx, k)))) 
+     end
+ end
+ 
+ return update!(stateatx; kwargs...)
 end
 
 """
@@ -257,11 +282,15 @@ function compress_state!(stateatx        :: T;
    end
    if typeof(getfield(stateatx, k)) <: AbstractVector
        katt = getfield(stateatx, k)
-       if (length(katt) > max_vector_size)  setfield!(stateatx, k, [norm(katt, pnorm)]) end
+       if (length(katt) > max_vector_size)  
+           setfield!(stateatx, k, [norm(katt, pnorm)]) 
+       end
    elseif typeof(getfield(stateatx, k)) <: Union{AbstractArray, AbstractMatrix}
        if save_matrix
         katt = getfield(stateatx, k)
-        if maximum(size(katt)) > max_vector_size setfield!(stateatx, k, norm(getfield(stateatx, k))*ones(1,1)) end
+        if maximum(size(katt)) > max_vector_size 
+            setfield!(stateatx, k, norm(getfield(stateatx, k))*ones(1,1)) 
+        end
        else #save_matrix is false
         setfield!(stateatx, k, _init_field(typeof(getfield(stateatx, k))))
        end
@@ -287,7 +316,9 @@ function copy_compress_state(stateatx        :: AbstractState;
                              pnorm           :: Float64 = Inf,
                              kwargs...)
  cstate = copy(stateatx)
- return compress_state!(cstate; save_matrix = save_matrix, max_vector_size = max_vector_size, pnorm = pnorm, kwargs...)
+ return compress_state!(cstate; save_matrix = save_matrix, 
+                                max_vector_size = max_vector_size, 
+                                pnorm = pnorm, kwargs...)
 end
 
 import Base.show

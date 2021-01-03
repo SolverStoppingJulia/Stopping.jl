@@ -117,6 +117,23 @@ function GenericStopping(pb            :: Pb,
                         main_stp, list, stopping_user_struct)
 end
 
+function GenericStopping(pb            :: Pb,
+                         stop_remote   :: SRC,
+                         current_state :: T;
+                         main_stp      :: AbstractStopping = VoidStopping(),
+                         list          :: AbstractListStates = VoidListStates(),
+                         stopping_user_struct :: Any = nothing,
+                         kwargs...
+                         ) where {Pb  <: Any, 
+                                  SRC <: AbstractStopRemoteControl,
+                                  T   <: AbstractState}
+                                  
+ meta = StoppingMeta(; kwargs...)
+ 
+ return GenericStopping(pb, meta, stop_remote, current_state, 
+                        main_stp, list, stopping_user_struct)
+end
+
 function GenericStopping(pb :: Any, x :: T; kwargs...) where T
  return GenericStopping(pb, GenericState(x); kwargs...)
 end

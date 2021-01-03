@@ -135,9 +135,10 @@ function StoppingMeta(;atol               :: Number   = 1.0e-6,
   check_pos = tol_check(atol, rtol, optimality0)
   check_neg = tol_check_neg(atol, rtol, optimality0)
 
-  if (true in (check_pos .< check_neg))
-      throw(ErrorException("StoppingMeta: tol_check should be greater than tol_check_neg."))
-  end
+ # This might be an expansive step.
+ # if (true in (check_pos .< check_neg)) #any(x -> x, check_pos .< check_neg)
+ #     throw(ErrorException("StoppingMeta: tol_check should be greater than tol_check_neg."))
+ # end
 
   fail_sub_pb     = false
   unbounded       = false

@@ -47,5 +47,5 @@
     @test !test_meta.suboptimal
     @test !OK_check(test_meta)
     
-    @test_throws ErrorException("StoppingMeta: tol_check should be greater than tol_check_neg.") StoppingMeta(tol_check_neg = (a,b,c) -> Inf)
+    #@test_throws ErrorException("StoppingMeta: tol_check should be greater than tol_check_neg.") StoppingMeta(tol_check_neg = (a,b,c) -> Inf)
 end
