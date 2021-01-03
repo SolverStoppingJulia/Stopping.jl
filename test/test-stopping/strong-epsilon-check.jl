@@ -1,3 +1,4 @@
+@testset "Test constrained NLP vector score" begin
 ###############################################################################
 #
 # The Stopping structure eases the implementation of algorithms and the
@@ -29,13 +30,13 @@ function KKTvect(pb    :: AbstractNLPModel,
                  kwargs...)
 
     #Check the gradient of the Lagrangian
-    gLagx      = Main.Stopping._grad_lagrangian(pb, state)
+    gLagx      = Stopping._grad_lagrangian(pb, state)
     #Check the complementarity condition for the bounds
-    dual_res_bounds = Main.Stopping._sign_multipliers_bounds(pb, state)
+    dual_res_bounds = Stopping._sign_multipliers_bounds(pb, state)
     #Check the complementarity condition for the constraints
-    res_nonlin = Main.Stopping._sign_multipliers_nonlin(pb, state)
+    res_nonlin = Stopping._sign_multipliers_nonlin(pb, state)
     #Check the feasibility
-    feas       = Main.Stopping._feasibility(pb, state)
+    feas       = Stopping._feasibility(pb, state)
 
     res = vcat(gLagx, feas, dual_res_bounds, res_nonlin)
 
@@ -93,4 +94,6 @@ try
    @test false
 catch
    @test true
+end
+
 end

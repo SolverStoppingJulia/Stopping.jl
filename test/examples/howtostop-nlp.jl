@@ -1,3 +1,4 @@
+@testset "How to stop NLP" begin
 ###############################################################################
 #
 # The Stopping structure eases the implementation of algorithms and the
@@ -107,3 +108,5 @@ OK = stop!(stop_nlp_2, a = 0.0)
 reinit!(stop_nlp_2)
 OK = update_and_stop!(stop_nlp_2, a = 0.0)
 @test OK == false
+
+end

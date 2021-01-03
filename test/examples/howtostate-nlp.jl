@@ -1,3 +1,4 @@
+@testset "Test How to State NLP" begin
 ###############################################################################
 #
 # The data used through the algorithmic process in the Stopping framework
@@ -108,3 +109,5 @@ fill_in!(stop, x0, matrix_info = false)
 
 # We can now use the updated step in the algorithmic procedure
 @test start!(stop) #return true
+
+end

@@ -1,3 +1,4 @@
+@testset "Test How to State" begin
 ###############################################################################
 #
 # The data used through the algorithmic process in the Stopping framework
@@ -61,3 +62,5 @@ OK = Stopping._domain_check(state1) #function returns a boolean
 @test Stopping._domain_check(state2) == false
 update!(state2, x=[NaN, 0.0])
 @test Stopping._domain_check(state2) == true
+
+end

@@ -1,3 +1,4 @@
+@testset "Test LAStopping" begin
 ###############################################################################
 #
 # The Stopping structure eases the implementation of algorithms and the
@@ -111,3 +112,5 @@ update!(la_stop.current_state, x = xref)
 @test normal_equation_check(la_stop.pb, la_stop.current_state) <= la_stop.meta.atol
 update!(op_stop.current_state, x = xref)
 @test normal_equation_check(op_stop.pb, op_stop.current_state) <= la_stop.meta.atol
+
+end

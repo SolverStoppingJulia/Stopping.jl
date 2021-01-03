@@ -1,3 +1,4 @@
+@testset "Test How to Stop I" begin
 ###############################################################################
 #
 # The Stopping structure eases the implementation of algorithms and the
@@ -131,3 +132,5 @@ reinit!(stop3)
 reinit!(stop3, rstate =  true, x = zeros(2))
 @test isnan(stop3.current_state.current_time)
 @test stop3.current_state.x == zeros(2)
+
+end

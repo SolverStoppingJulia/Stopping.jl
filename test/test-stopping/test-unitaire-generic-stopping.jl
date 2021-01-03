@@ -1,5 +1,6 @@
+@testset "Test GenericStopping" begin
+    
 include("rosenbrock.jl")
-
 #We build a first stopping: to test the change of tol_check function
 x0 = ones(6)
 state0 = GenericState(x0)
@@ -115,4 +116,6 @@ try
  @test false
 catch
  @test true
+end
+
 end

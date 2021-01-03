@@ -1,3 +1,7 @@
+import NLPModels.sum_counters
+
+#@testset "Test NLP Evals" begin
+
 x0 = zeros(2)
 
 nlp = ADNLPModel(x -> norm(x.^2), x0)
@@ -27,7 +31,6 @@ Stopping._resources_check!(nls_stop_evals, x0)
 @test nls_stop_evals.meta.resources == true
 
 #Test the case with a counters different from Counters and NLSCounters in NLPStopping
-import NLPModels.sum_counters
 mutable struct Test_cntrs
     neval     :: Int
 end
@@ -43,3 +46,5 @@ pb = Test_pb(Test_cntrs(0.0), NLPModelMeta(5, x0 = zeros(5)))
 nls_stop_evals = NLPStopping(pb, max_cntrs = maxcount)
 Stopping._resources_check!(nls_stop_evals, x0)
 @test nls_stop_evals.meta.resources == true
+
+#end

@@ -1,3 +1,5 @@
+@testset "Test Line-Search Stopping" begin
+
 mutable struct Tpb
     d :: Number
 end
@@ -95,3 +97,5 @@ stop.meta.optimality_check = (x,y) -> 0.0
 #@test Stopping._null_test(stop, Stopping._optimality_check(stop))
 #stop.meta.tol_check_neg = (a,b,c) -> 0.5
 #@test !(Stopping._null_test(stop, Stopping._optimality_check(stop)))
+
+end

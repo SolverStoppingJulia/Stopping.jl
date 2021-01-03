@@ -1,3 +1,4 @@
+@testset "Test How to Stop II" begin
 ###############################################################################
 #
 # The Stopping structure eases the implementation of algorithms and the
@@ -54,3 +55,5 @@ stop!(subsub_stop)
 @test status(main_stop, list = true) == [:TimeLimit]
 @test main_stop.meta.tired   == true
 @test main_stop.meta.main_pb == false
+
+end

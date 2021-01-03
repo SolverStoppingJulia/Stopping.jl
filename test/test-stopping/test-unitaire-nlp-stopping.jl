@@ -1,3 +1,5 @@
+@testset "Test NLP Stopping unconstrained" begin
+
 # We create a simple function to test
 A = rand(5, 5);
 Q = A' * A
@@ -93,4 +95,6 @@ try
  @test false
 catch
  @test true
+end
+
 end
