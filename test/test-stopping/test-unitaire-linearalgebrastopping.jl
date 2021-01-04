@@ -57,10 +57,15 @@ Randomized block Kaczmarz
 """
 function RandomizedBlockKaczmarz(stp :: AbstractStopping; kwargs...)
 
-    A,b = stp.pb.A, stp.pb.b
+    b   = stp.pb.b
     x0  = stp.current_state.x
+    m, n = length(b), length(x0) 
+    A   = try 
+           stp.pb.A #LSSModel.A does not exist
+       catch
+           sparse(stp.pb.Arows, stp.pb.Acols, stp.pb.Avals, m, n)
+       end
 
-    m,n = size(A)
     xk  = x0
 
     OK = start!(stp)
@@ -69,10 +74,16 @@ function RandomizedBlockKaczmarz(stp :: AbstractStopping; kwargs...)
 
      i  = Int(floor(rand() * m)+1) #rand a number between 1 and m
      Ai = A[i,:]
-     xk  = Ai == 0 ? x0 : x0 - (dot(Ai,x0)-b[i])/dot(Ai,Ai) * Ai
+     xk = Ai == 0 ? x0 : x0 - (dot(Ai,x0)-b[i])/dot(Ai,Ai) * Ai
      #xk  = Ai == 0 ? x0 : x0 - (Ai' * x0-b[i])/(Ai' * Ai) * Ai
-
-     OK = update_and_stop!(stp, x = xk, res = [])
+     
+     if xtype(stp.current_state) <: SparseVector && !(typeof(xk) <: SparseVector)
+        OK = update_and_stop!(stp, x = sparse(xk), res = sparse(Float64[]))
+     elseif xtype(stp.current_state) <: Vector && typeof(xk) <: SparseVector
+        OK = update_and_stop!(stp, x = convert(Vector, xk), res = Float64[])
+     else
+        OK = update_and_stop!(stp, x = xk, res = Stopping._init_field(typeof(stp.current_state.res)))
+     end
      x0  = xk
 
     end
@@ -88,12 +99,22 @@ b    = A * xref
 #Our initial guess
 x0 = zeros(n)
 
-la_stop = LAStopping(A, b, GenericState(x0), max_iter = 150000, rtol = 1e-6, max_cntrs = Stopping._init_max_counters_NLS(residual = 150000))
+la_stop = LAStopping(A, b, GenericState(x0), 
+                     max_iter = 150000, 
+                     rtol = 1e-6, 
+                     max_cntrs = Stopping._init_max_counters_NLS(residual = 150000))
 #Be careful using GenericState(x0) would not work here without forcing convert = true
 #in the update function. As the iterate will be a SparseVector to the contrary of initial guess.
 #Tangi: maybe start! should send a Warning for such problem !?
-sa_stop = LAStopping(sparse(A), b, GenericState(sparse(x0)), max_iter = 150000, rtol = 1e-6)
-op_stop = LAStopping(LinearSystem(LinearOperator(A), b), GenericState(x0), max_iter = 150000, rtol = 1e-6, max_cntrs =  Stopping._init_max_counters_linear_operators(nprod = 150000))
+sa_stop = LAStopping(sparse(A), b, GenericState(sparse(x0)), 
+                     max_iter = 150000, 
+                     rtol = 1e-6,
+                     max_cntrs = Stopping._init_max_counters_NLS(residual = 150000))
+op_stop = LAStopping(LinearSystem(LinearOperator(A), b), 
+                     GenericState(x0), 
+                     max_iter = 150000, 
+                     rtol = 1e-6, 
+                     max_cntrs = Stopping._init_max_counters_linear_operators(nprod = 150000))
 opbis_stop = LAStopping(LinearOperator(A), b)
 
 try
@@ -101,12 +122,13 @@ try
  @test status(la_stop) == :Optimal
  @time RandomizedBlockKaczmarz(sa_stop)
  @test status(sa_stop) == :Optimal
- @time RandomizedBlockKaczmarz(op_stop)
- @test status(op_stop) == :Optimal
 catch
     @warn "If LSSModel.A does not exist consider [la_stop.pb.Avals[i,j] for (i) in la_stop.pb.Arows, j in la_stop.pb.Acols]"
     #https://github.com/JuliaSmoothOptimizers/NLPModels.jl/blob/master/src/lls_model.jl
 end
+
+@time RandomizedBlockKaczmarz(op_stop)
+@test status(op_stop) == :Optimal
 
 update!(la_stop.current_state, x = xref)
 @test normal_equation_check(la_stop.pb, la_stop.current_state) <= la_stop.meta.atol

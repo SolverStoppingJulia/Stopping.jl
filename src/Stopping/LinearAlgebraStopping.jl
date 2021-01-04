@@ -295,8 +295,14 @@ function linear_system_check(pb    :: LLSModel,
                              state :: AbstractState;
                              pnorm :: Float64 = Inf,
                              kwargs...)
+
  if state.res == _init_field(typeof(state.res))
-  update!(state, res = residual(pb, state.x))
+  Axmb = if xtype(state) <: SparseVector 
+      sparse(residual(pb, state.x)) 
+  else
+      residual(pb, state.x)
+  end
+  update!(state, res = Axmb)
  end
 
  return norm(state.res, pnorm)
