@@ -1,6 +1,13 @@
 @testset "StoppingMeta" begin
     #Checked the default constructor
     test_meta = StoppingMeta()
+    
+    print(test_meta) #improve coverage
+    
+    @test Stopping.checktype(test_meta) == Float64
+    @test Stopping.toltype(test_meta)   == Float64
+    @test Stopping.metausertype(test_meta) == Nothing
+    @test Stopping.inttype(test_meta) == Int64
 
     @test test_meta.optimality0           == 1.0
     @test test_meta.optimality_check(1,1) == Inf

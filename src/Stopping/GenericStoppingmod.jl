@@ -191,7 +191,7 @@ end
  Set `no_start_opt_check` to *true* avoid checking optimality and domain errors.
 
  The function `start!` successively calls: `_domain_check(stp, x)`,
- `_optimality_check(stp, x)`, `_null_test(stp, x)` and 
+ `_optimality_check!(stp, x)`, `_null_test(stp, x)` and 
  `_user_check!(stp, x, true)`.
 
  Note: - `start!` initializes `stp.meta.start_time` (if not done before),
@@ -225,7 +225,7 @@ function start!(stp :: AbstractStopping;
                         end
   if !stp.meta.domainerror && src.optimality_check
     # Optimality check
-    optimality0          = _optimality_check(stp; kwargs...)
+    optimality0          = _optimality_check!(stp; kwargs...)
     norm_optimality0     = norm(optimality0, Inf)
     if src.domain_check && isnan(norm_optimality0)
        stp.meta.domainerror = true
@@ -353,7 +353,7 @@ function stop!(stp :: AbstractStopping; kwargs...)
  if !stp.meta.domainerror
    # Optimality check
    if src.optimality_check
-      score = _optimality_check(stp; kwargs...)
+      score = _optimality_check!(stp; kwargs...)
       if any(isnan, score)
        stp.meta.domainerror = true
       end
@@ -405,7 +405,7 @@ function cheap_stop!(stp :: AbstractStopping; kwargs...)
 
  # Optimality check
  if src.optimality_check
-    score = _optimality_check(stp; kwargs...) #update state.current_score
+    score = _optimality_check!(stp; kwargs...) #update state.current_score
     if _null_test(stp, score) stp.meta.optimal = true end
  end
  OK = stp.meta.optimal
@@ -609,10 +609,10 @@ end
 """
 \\_optimality\\_check: compute the optimality score.
 
-`_optimality_check(:: AbstractStopping; kwargs...)`
+`_optimality_check!(:: AbstractStopping; kwargs...)`
 
 """
-function _optimality_check(stp :: AbstractStopping{Pb, M, SRC, T, MStp, LoS, Uss};
+function _optimality_check!(stp :: AbstractStopping{Pb, M, SRC, T, MStp, LoS, Uss};
                            kwargs...) where {Pb, M, SRC, T, MStp, LoS, Uss}
 
  setfield!(stp.current_state, :current_score,

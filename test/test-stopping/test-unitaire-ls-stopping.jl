@@ -52,7 +52,7 @@ reinit!(stop, rstate = true, x = 1.0)
 @test stop.current_state.x == 1.0
 @test isnan(stop.current_state.ht)
 
-## _optimality_check and _null_test are tested with NLP
+## _optimality_check! and _null_test are tested with NLP
 try
 armijo(stop.pb, stop.current_state)
 @test false #nothing entries in the stop
@@ -94,8 +94,8 @@ stop.meta.optimality_check = (x,y) -> 0.0
 #stop.current_state.ht = 0.0
 #@test stop.current_state.ht == 0.0
 #stop.meta.tol_check = (a,b,c) -> 1.0
-#@test Stopping._null_test(stop, Stopping._optimality_check(stop))
+#@test Stopping._null_test(stop, Stopping._optimality_check!(stop))
 #stop.meta.tol_check_neg = (a,b,c) -> 0.5
-#@test !(Stopping._null_test(stop, Stopping._optimality_check(stop)))
+#@test !(Stopping._null_test(stop, Stopping._optimality_check!(stop)))
 
 end
