@@ -36,13 +36,15 @@ Constructors:
  `NLPAtX(:: T, :: T; fx :: eltype(T) = _init_field(eltype(T)), gx :: T = _init_field(T), Hx :: Matrix{eltype(T)} = _init_field(Matrix{eltype(T)}), mu :: T = _init_field(T), cx :: T = _init_field(T), Jx :: Matrix{eltype(T)} = _init_field(Matrix{eltype(T)}), d :: T = _init_field(T), res :: T = _init_field(T), current_time :: Float64  = NaN, current_score :: Union{T,eltype(T)} = _init_field(eltype(T)), evals :: Counters = Counters()) where T <: AbstractVector`
 
 Note:
-      - By default, unknown entries are set using *\\_init\\_field* (except evals).
-      - All these information (except for *x* and *lambda*) are optionnal and need to be update when
-        required. The update is done through the update! function.
-      - *x* and *lambda* are mandatory entries. If no constraints `lambda = []`.
-      - The constructor check the size of the entries.
+ - By default, unknown entries are set using `_init_field` (except evals).  
+ - By default the type of `current_score` is `eltype(x)` and cannot be changed once the State is created.  
+    To have a vectorized `current_score` of length n, try something like `GenericState(x, Array{eltype(x),1}(undef, n))`.  
+ - All these information (except for `x` and `lambda`) are optionnal and need to be update when
+    required. The update is done through the `update!` function.  
+ - `x` and `lambda` are mandatory entries. If no constraints `lambda = []`.  
+ - The constructor check the size of the entries.  
 
-See also: GenericState, update!, update\\_and\\_start!, update\\_and\\_stop!, reinit!
+See also: `GenericState`, `update!`, `update_and_start!`, `update_and_stop!`, `reinit!`
 """
 mutable struct 	NLPAtX{S, T <: AbstractVector, 
                        MT <: AbstractMatrix}  <: AbstractState{S, T}

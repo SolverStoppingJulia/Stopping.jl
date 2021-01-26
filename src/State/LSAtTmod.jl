@@ -21,7 +21,10 @@ Constructors:
 
  `LSAtT(:: T; ht :: T = _init_field(T), gt :: T = _init_field(T), h₀ :: T = _init_field(T), g₀ :: T = _init_field(T), current_time :: Float64 = NaN, current_score :: T = _init_field(T))  where T <: Number`
 
-Note: By default, unknown entries are set using *_init_field*.
+Note: 
+ - By default, unknown entries are set using `_init_field`.  
+ - By default the type of `current_score` is `eltype(x)` and cannot be changed once the State is created. 
+   To have a vectorized `current_score` of length n, try something like `GenericState(x, Array{eltype(x),1}(undef, n))`.
 """
 mutable struct 	LSAtT{S, T <: Number} <: AbstractState{S, T}
 

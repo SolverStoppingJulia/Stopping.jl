@@ -32,12 +32,16 @@ Constructors:
 
  `GenericState(:: T; d :: T = _init_field(T), res :: T = _init_field(T), current_time :: Float64 = NaN, current_score :: Union{T,eltype(T)} = _init_field(eltype(T))) where T <:AbstractVector`
 
-Note: By default, unknown entries are set using *\\_init\\_field*.
+Note: 
+ - By default, unknown entries are set using `_init_field`.
+ - By default the type of `current_score` is `eltype(x)` and cannot be changed once the State is created. 
+   To have a vectorized `current_score` of length n, try something like `GenericState(x, Array{eltype(x),1}(undef, n))`.
 
 Examples:
-GenericState(x)
-GenericState(x, current\\_time = 1.0)
-GenericState(x, current\\_score = 1.0)
+  GenericState(x)  
+  GenericState(x, Array{eltype(x),1}(undef, length(x)))   
+  GenericState(x, current\\_time = 1.0)   
+  GenericState(x, current\\_score = 1.0)   
 
 See also: Stopping, NLPAtX
 """
@@ -103,7 +107,6 @@ function update!(stateatx :: T;
  fnames = fieldnames(T)
  for k ∈ keys(kwargs)
   #check if k is in fieldnames and type compatibility
-  #two calls to getfield...
   if (k ∈ fnames) && typeof(kwargs[k]) <: typeof(getfield(stateatx, k))
    setfield!(stateatx, k, kwargs[k])
   end
