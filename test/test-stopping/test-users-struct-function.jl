@@ -30,6 +30,8 @@
     structtest = PenaltyNonlinear(true, 1e-1)
     stop_bnd = NLPStopping(nlp, stopping_user_struct = structtest)
 
+    show(stop_bnd)
+
     @test stop_bnd.stopping_user_struct.feasible == true
     @test stop_bnd.stopping_user_struct.rho == 1e-1
 

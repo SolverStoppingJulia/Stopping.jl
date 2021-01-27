@@ -6,6 +6,8 @@ x0 = ones(6)
 state0 = GenericState(x0)
 stop0 = GenericStopping(rosenbrock, state0, tol_check = (atol,rtol,opt0) -> atol + rtol * opt0, list = ListStates(state0) )
 
+show(stop0)
+
 @test start!(stop0) == true #opt0 = Inf as default meta.optimality_check returns Inf, so any point is optimal.
 @test status(stop0) == :Optimal
 #We now illustrate the impact of the choice of the norm for the unboundedness of the iterate
@@ -34,6 +36,8 @@ state = GenericState(x0)
 stop = GenericStopping(rosenbrock, state, max_time = 2.0, rtol = 0.0)
 #If rtol != 0, any point is a solution as optimality0 = Inf.
 
+@show(stop)
+
 @test start!(stop) == false
 @test stop.meta.start_time != NaN
 @test stop!(stop) == false
@@ -45,6 +49,8 @@ ABigInt = 100000000000000000 #to avoid the stop by counting stop calls
 substop = GenericStopping(rosenbrock, state1, main_stp = stop, max_iter = ABigInt, rtol = 0.0 )
 substop.stop_remote = StopRemoteControl()
 #If rtol != 0, any point is a solution as optimality0 = Inf.
+
+show(substop)
 
 @test start!(substop) == false
 @test stop!(substop) == false
