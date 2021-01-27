@@ -24,11 +24,19 @@ opA = LinearOperator(A)
 mLO = LinearSystem(A, b)
 sLO = LLSModel(sA, b)
 opLO = LinearSystem(opA, b)
+meta = StoppingMeta(max_cntrs =  Stopping._init_max_counters_linear_operators())
+mLOstp_meta = LAStopping(mLO, meta, GenericState(x0)) #this is different because of optimality_check
 mLOstp = LAStopping(mLO, GenericState(x0), max_cntrs =  Stopping._init_max_counters_linear_operators())
 sLOstp = LAStopping(sLO, GenericState(x0))
 short_stop = LAStopping(A,b, sparse = true) #note that sparse is true by default
 maxcn = Stopping._init_max_counters_linear_operators(nprod = 1)
 opLOstp = LAStopping(opLO, GenericState(x0), max_cntrs = maxcn)
+
+opLOstp2 = LAStopping(opLO, GenericState(x0), optimality_check = linear_system_check)
+@test opLOstp2.meta.max_cntrs == Stopping._init_max_counters_linear_operators()
+@test opLOstp2.meta.optimality_check == opLOstp.meta.optimality_check
+
+mLOstp_src = LAStopping(mLO, meta, StopRemoteControl(), GenericState(x0))
 
 @test typeof(mLOstp.pb.counters) <: LACounters
 @test typeof(sLOstp.pb.counters) <: NLSCounters
