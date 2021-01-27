@@ -8,8 +8,8 @@
 
     show(stop0)
 
-    meta = StoppingMeta(tol_check = (atol,rtol,opt0) -> atol + rtol * opt0, list = ListStates(state0))
-    stop0_meta = GenericStopping(rosenbrock, meta, state0)
+    meta = StoppingMeta(tol_check = (atol,rtol,opt0) -> atol + rtol * opt0)
+    stop0_meta = GenericStopping(rosenbrock, meta, state0, list = ListStates(state0))
     stop0_src = GenericStopping(rosenbrock, meta, cheap_stop_remote_control(), state0)
     stop0_src_without_meta = GenericStopping(rosenbrock, StopRemoteControl(), state0, 
                                              tol_check = (atol,rtol,opt0) -> atol + rtol * opt0, 
