@@ -194,7 +194,7 @@ export GenericStopping, start!, stop!, cheap_stop!, update_and_start!
 export update_and_stop!, cheap_update_and_stop!, cheap_update_and_start!
 export fill_in!, reinit!, status
 export LS_Stopping
-export NLPStopping, unconstrained_check, unconstrained2nd_check
+export NLPStopping, unconstrained_check, unconstrained2nd_check, max_evals!
 export optim_check_bounded, KKT
 
 using LinearAlgebra, SparseArrays, LinearOperators #v.1.0.1

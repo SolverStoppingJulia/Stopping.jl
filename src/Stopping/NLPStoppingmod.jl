@@ -190,23 +190,13 @@ function _init_max_counters(; allevals :: T = 20000,
 end
 
 function max_evals!(stp :: NLPStopping, allevals :: Int)
- stp.meta.max_cntrs = _init_max_counters(allevals = allevals)
+  stp.meta.max_cntrs = _init_max_counters(allevals = allevals)
+  return stp
 end
 
-function max_evals!(stp :: NLPStopping; allevals :: T = 20000,
-                              obj    :: T = allevals,
-                              grad   :: T = allevals,
-                              cons   :: T = allevals,
-                              jcon   :: T = allevals,
-                              jgrad  :: T = allevals,
-                              jac    :: T = allevals,
-                              jprod  :: T = allevals,
-                              jtprod :: T = allevals,
-                              hess   :: T = allevals,
-                              hprod  :: T = allevals,
-                              jhprod :: T = allevals,
-                              sum    :: T = allevals*11) where {T <: Int}
- stp.meta.max_cntrs = _init_max_counters(allevals = allevals) #TODO
+function max_evals!(stp :: NLPStopping; allevals :: T = 20000, kwargs...) where {T <: Int}
+  stp.meta.max_cntrs = _init_max_counters(allevals = allevals; kwargs...)
+  return stp
 end
 
 """
@@ -336,44 +326,42 @@ function _resources_check!(stp    :: NLPStopping,
 end
 
 """
-\\_unbounded\\_problem\\_check!: This is the NLP specialized version that takes into account
+`_unbounded_problem_check!`: This is the NLP specialized version that takes into account
                    that the problem might be unbounded if the objective or the
                    constraint function are unbounded.
 
-`_unbounded_problem_check!(:: NLPStopping, :: Iterate)`
+`_unbounded_problem_check!(:: NLPStopping, :: AbstractVector)`
 
 Note:
-- evaluate the objective function if *state.fx* is *nothing* and store in *state*.
-- evaluate the constraint function if *state.cx* is *nothing* and store in *state*.
+- evaluate the objective function if `state.fx` is `_init_field` and store in `state`.
+- do NOT evaluate the constraint function if `state.cx` is `_init_field` and store in `state`.
 - if minimize problem (i.e. nlp.meta.minimize is true) check if
-*state.fx* <= *- meta.unbounded_threshold*,
-otherwise check *state.fx* >= *meta.unbounded_threshold*.
-- *state.cx* is unbounded if larger than *|meta.unbounded_threshold|*.
+`state.fx <= - meta.unbounded_threshold`,
+otherwise check `state.fx >= meta.unbounded_threshold`.
+- `state.cx` is unbounded if larger than `|meta.unbounded_threshold|``.
 """
 function _unbounded_problem_check!(stp  :: NLPStopping,
                                    x    :: AbstractVector)
 
- if isnan(stp.current_state.fx)
-	 stp.current_state.fx = obj(stp.pb, x)
- end
-
- if stp.pb.meta.minimize
-  f_too_large = stp.current_state.fx <= - stp.meta.unbounded_threshold
- else
-  f_too_large = stp.current_state.fx >=   stp.meta.unbounded_threshold
- end
-
- c_too_large = false
- if stp.pb.meta.ncon != 0 #if the problems has constraints, check |c(x)|
-  if stp.current_state.cx == _init_field(typeof(stp.current_state.cx))
-   stp.current_state.cx = cons(stp.pb, x)
+  if isnan(stp.current_state.fx)
+	stp.current_state.fx = obj(stp.pb, x)
   end
-  c_too_large = norm(stp.current_state.cx) >= abs(stp.meta.unbounded_threshold)
- end
 
- if (f_too_large || c_too_large) stp.meta.unbounded_pb = true end
+  if stp.pb.meta.minimize
+    f_too_large = stp.current_state.fx <= - stp.meta.unbounded_threshold
+  else
+    f_too_large = stp.current_state.fx >=   stp.meta.unbounded_threshold
+  end
 
- return stp.meta.unbounded_pb
+  c_too_large = false
+  #we do not evaluate the constraint if not in the state.
+  if stp.pb.meta.ncon != 0 && (stp.current_state.cx != _init_field(typeof(stp.current_state.cx)))
+    c_too_large = norm(stp.current_state.cx) >= abs(stp.meta.unbounded_threshold)
+  end
+
+  if (f_too_large || c_too_large) stp.meta.unbounded_pb = true end
+
+  return stp.meta.unbounded_pb
 end
 
 """
@@ -417,16 +405,17 @@ end
 ################################################################################
 include("nlp_admissible_functions.jl")
 
-
+#=
 """
 
 
 """
 function feasibility_optim_check(pb, state; kwargs...)
-     vio       = _feasibility(pb, state)
+     vio = _feasibility(pb, state)
      tol = Inf #stp.meta.atol
      return _inequality_check(vio, tol, 0.)
 end
+=#
 
 ################################################################################
 # Functions computing Lagrange multipliers of a nonlinear problem

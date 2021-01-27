@@ -7,12 +7,12 @@ using Stopping: _init_field
 
 printstyled("State tests...\n")
 
-include("test/stopping/unit-test-voidstopping.jl")
 include("test-state/unit-test-GenericStatemod.jl")
 include("test-state/unit-test-LSAtTmod.jl")
 include("test-state/unit-test-NLPAtXmod.jl")
 include("test-state/unit-test-ListOfStates.jl")
 
+include("test-stopping/unit-test-voidstopping.jl")
 include("test-stopping/test-users-struct-function.jl")
 include("test-stopping/unit-test-stopping-meta.jl")
 include("test-stopping/unit-test-remote-control.jl")
