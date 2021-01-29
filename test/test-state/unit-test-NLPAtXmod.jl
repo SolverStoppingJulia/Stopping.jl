@@ -59,6 +59,12 @@ reinit!(uncons_nlp_at_x)
 reinit!(uncons_nlp_at_x, x = zeros(10))
 @test uncons_nlp_at_x.x == zeros(10)
 @test isnan(uncons_nlp_at_x.fx)
+reinit!(uncons_nlp_at_x, zeros(10))
+@test uncons_nlp_at_x.x == zeros(10)
+@test isnan(uncons_nlp_at_x.fx)
+reinit!(uncons_nlp_at_x, zeros(10), l = zeros(0))
+@test uncons_nlp_at_x.x == zeros(10)
+@test isnan(uncons_nlp_at_x.fx)
 
 c_uncons_nlp_at_x = copy_compress_state(uncons_nlp_at_x, max_vector_size = 5)
 

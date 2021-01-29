@@ -42,3 +42,10 @@ reinit!(state0, current_time = 0.5)
 @test ismissing(Main.Stopping._init_field(Missing))
 @test !_init_field(typeof(true))
 @test _init_field(typeof(1)) == -9223372036854775808
+
+#_check_nan_miss
+@test !Stopping._check_nan_miss(nothing)
+@test !Stopping._check_nan_miss(Counters())
+@test !Stopping._check_nan_miss(spzeros(0))
+@test !Stopping._check_nan_miss(zeros(0))
+@test !Stopping._check_nan_miss(missing)
