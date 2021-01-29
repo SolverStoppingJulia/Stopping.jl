@@ -171,16 +171,6 @@ function update_and_start!(stp :: AbstractStopping;
   return OK
 end
 
-function cheap_update_and_start!(stp :: AbstractStopping; 
-                                 no_start_opt_check :: Bool = false, 
-                                 kwargs...)
-
- _smart_update!(stp.current_state; kwargs...)
- OK = start!(stp, no_start_opt_check = no_start_opt_check)
-
- return OK
-end
-
 """
  Update the Stopping and return *true* if we must stop.
 
@@ -228,9 +218,11 @@ function start!(stp :: AbstractStopping;
     optimality0          = _optimality_check!(stp; kwargs...)
     norm_optimality0     = norm(optimality0, Inf)
     if src.domain_check && isnan(norm_optimality0)
-       stp.meta.domainerror = true
+      stp.meta.domainerror = true
+    elseif norm_optimality0 == Inf
+      stp.meta.optimality0 = one(typeof(norm_optimality0))
     else
-        stp.meta.optimality0 = norm_optimality0
+      stp.meta.optimality0 = norm_optimality0
     end
 
     if _null_test(stp, optimality0) stp.meta.optimal = true end
@@ -301,22 +293,6 @@ function update_and_stop!(stp :: AbstractStopping; kwargs...)
     update!(stp.current_state; kwargs...)
     OK = stop!(stp)
   end
-
- return OK
-end
-
-"""
-update\\_and\\_stop!: update the values in the State and
-return the optimality status of the problem as a boolean.
-
-`update_and_stop!(stp :: AbstractStopping; kwargs...)`
-
-Note: Kwargs are forwarded to the *update!* call.
-"""
-function cheap_update_and_stop!(stp :: AbstractStopping; kwargs...)
-
- _smart_update!(stp.current_state; kwargs...)
- OK = cheap_stop!(stp)
 
  return OK
 end
@@ -646,11 +622,17 @@ _inequality_check(opt :: Number, check_pos :: Number, check_neg :: Number) = (op
 _inequality_check(opt, check_pos :: Number, check_neg :: Number) :: Bool = !any(z->(ismissing(z) || (z > check_pos) || (z < check_neg)), opt)
 function _inequality_check(opt :: T, check_pos :: T, check_neg :: T) where T
 
-    n = size(opt)
+  size_check = try
+                 n = size(opt)
+                 ncp, ncn = size(check_pos), size(check_neg)
+                 n != ncp || n != ncn
+               catch
+                 false
+               end
 
-    if n != size(check_pos) || n != size(check_neg)
-        throw("Error: incompatible size in _null_test wrong size of optimality, tol_check and tol_check_neg")
-    end
+  if size_check
+    throw(ErrorException("Error: incompatible size in _null_test wrong size of optimality, tol_check and tol_check_neg"))
+  end
 
     for (o, cp, cn) in zip(opt, check_pos, check_neg)
         v = o > cp || o < cn

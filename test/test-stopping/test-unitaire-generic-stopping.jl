@@ -15,12 +15,12 @@
                                              tol_check = (atol,rtol,opt0) -> atol + rtol * opt0, 
                                              list = ListStates(state0) )
 
-    @test start!(stop0) == true #opt0 = Inf as default meta.optimality_check returns Inf, so any point is optimal.
-    @test status(stop0) == :Optimal
+    @test start!(stop0) == false
+    @test status(stop0) == :Unknown
     #We now illustrate the impact of the choice of the norm for the unboundedness of the iterate
     stop0.meta.unbounded_x = sqrt(6)
     stop!(stop0)
-    @test status(stop0, list = true) == [:Optimal] #ok as ||x||_\infty = 1 < sqrt(6)
+    @test status(stop0, list = true) == [:Unknown] #ok as ||x||_\infty = 1 < sqrt(6)
 
     #We now test that stop! verifies that:
     #- there are no NaN in the score
@@ -35,7 +35,7 @@
     stop_def = GenericStopping(rosenbrock, x0, atol = 1.0)
     @test stop_def.current_state.x == x0
     @test stop_def.meta.atol == 1.0
-    @test start!(stop_def) == true
+    @test start!(stop_def) == false
 
     #We build a first stopping:
     x0 = ones(6)
@@ -96,7 +96,7 @@
     timesave, opt0save = stop.meta.start_time, stop.meta.optimality0
     reinit!(stop)
     @test timesave != stop.meta.start_time
-    @test opt0save != stop.meta.optimality0
+    #@test opt0save != stop.meta.optimality0
 
     #Solve again the problem
     res2 = infinite_algorithm(stop)
@@ -130,5 +130,27 @@
     catch
         @test true
     end
+
+    #Test with the cheap remote
+    stop = GenericStopping(nothing, cheap_stop_remote_control(), GenericState(rand(2)), rtol = 0.)
+    @test stop.stop_remote.cheap_check
+    OK = update_and_start!(stop, x = ones(2))
+    @test !OK
+    OK = update_and_stop!(stop, x=zeros(2))
+    @test !OK
+
+    #Test _inequality_check
+    @test Stopping._inequality_check(0., 1., -1.) == true
+    @test Stopping._inequality_check(0., 1.,  1.) == false
+    @test Stopping._inequality_check(Inf, Inf, -1.) == true
+    @test Stopping._inequality_check(NaN, NaN, -1.) == false
+    #works with tuple:
+    @test Stopping._inequality_check((0.,1.), 1.,  -1.) == true
+    @test Stopping._inequality_check((0.,1.5), 1.,  -1.) == false
+    @test Stopping._inequality_check(-ones(4), 1.,  -1.) == true
+    @test Stopping._inequality_check(vcat(0.,2*ones(4)), 1.,  -1.) == false
+    #same types
+    @test Stopping._inequality_check((0.,1.), (1.,1.),  (-1.,-1.)) == true
+    @test_throws ErrorException Stopping._inequality_check(zeros(2), ones(3),  -ones(2))
 
 end
