@@ -48,8 +48,12 @@
     @test tol_check(test_meta) == (0.1, -0.1)
     
     @test !OK_check(test_meta)
+    test_meta.retol = false
     test_meta.suboptimal = true
     @test OK_check(test_meta)
+    
+    show(test_meta)
+    
     reinit!(test_meta)
     @test !test_meta.suboptimal
     @test !OK_check(test_meta)
