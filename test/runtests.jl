@@ -1,41 +1,41 @@
-using DataFrames, LinearAlgebra, NLPModels, Printf, Stopping, Test
+using Test
 
-printstyled("Generic State tests... ")
-include("test-state/test-unitaire-GenericStatemod.jl")
-printstyled("passed ✓ \n", color = :green)
-printstyled("LSAtT tests... ")
-include("test-state/test-unitaire-LSAtTmod.jl")
-printstyled("passed ✓ \n", color = :green)
-printstyled("NLPAtX tests... ")
-include("test-state/test-unitaire-NLPAtXmod.jl")
-printstyled("passed ✓ \n", color = :green)
-printstyled("ListOfStates tests... ")
-include("test-state/test-unitaire-ListOfStates.jl")
-printstyled("passed ✓ \n", color = :green)
-printstyled("UserSpecificStructure tests... ")
+using DataFrames, LinearAlgebra, NLPModels, Printf, SparseArrays
+
+using Stopping
+using Stopping: _init_field
+
+printstyled("State tests...\n")
+
+include("test-state/unit-test-GenericStatemod.jl")
+include("test-state/unit-test-LSAtTmod.jl")
+include("test-state/unit-test-NLPAtXmod.jl")
+include("test-state/unit-test-ListOfStates.jl")
+
+include("test-stopping/unit-test-voidstopping.jl")
 include("test-stopping/test-users-struct-function.jl")
-printstyled("passed ✓ \n", color = :green)
+include("test-stopping/unit-test-stopping-meta.jl")
+include("test-stopping/unit-test-remote-control.jl")
 
-printstyled("StoppingMeta tests... ")
-include("test-stopping/test-unitaire-stopping-meta.jl")
-printstyled("passed ✓ \n", color = :green)
-printstyled("GenericStopping tests... ")
+printstyled("Stopping tests...\n")
+
 include("test-stopping/test-unitaire-generic-stopping.jl")
-printstyled("passed ✓ \n", color = :green)
-printstyled("LineSearch stopping tests... ")
+#printstyled("passed ✓ \n", color = :green)
+#printstyled("LineSearch stopping tests... ")
 include("test-stopping/test-unitaire-ls-stopping.jl")
-printstyled(" passed ✓ \n", color = :green)
+#printstyled(" passed ✓ \n", color = :green)
 printstyled("Unconsmin tests... ")
 include("test-stopping/test-unitaire-nlp-stopping.jl")
 include("test-stopping/test-unitaire-nlp-evals.jl")
 printstyled(" passed ✓ \n", color = :green)
-printstyled("Consmin tests... ")
+#printstyled("Consmin tests... ")
 include("test-stopping/test-unitaire-nlp-stopping_2.jl")
 include("test-stopping/strong-epsilon-check.jl")
-printstyled("passed ✓ \n", color = :green)
-printstyled("LAStopping tests... ")
+#printstyled("passed ✓ \n", color = :green)
+#printstyled("LAStopping tests... ")
 include("test-stopping/test-unitaire-linearalgebrastopping.jl")
-printstyled("passed ✓ \n", color = :green)
+#printstyled("passed ✓ \n", color = :green)
 
 printstyled("HowTo tests...\n")
+
 include("examples/runhowto.jl")

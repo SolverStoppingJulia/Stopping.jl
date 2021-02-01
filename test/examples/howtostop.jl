@@ -1,3 +1,4 @@
+@testset "Test How to Stop I" begin
 ###############################################################################
 #
 # The Stopping structure eases the implementation of algorithms and the
@@ -24,7 +25,7 @@ stop2 = GenericStopping(pb, state1, rtol = 1e-1)
 
 #Both ways give the same result:
 @test stop1.current_state.x == stop2.current_state.x
-@test stop1.current_state.current_time == stop2.current_state.current_time
+@test isnan(stop1.current_state.current_time) && isnan(stop2.current_state.current_time)
 #Keywords given in the Stopping creator are forwarded to the StoppingMeta.
 @test stop1.meta.rtol == 1e-1
 
@@ -55,16 +56,16 @@ start!(stop1) #we will compare with stop2
 @test !isnan(stop1.meta.start_time)
 #b) optimality0 in the META (used to check the relative error)
 @test stop2.meta.optimality0 == 1.0 #default value was 1.0
-@test stop1.meta.optimality0 == Inf #GenericStopping has no specified measure
+@test stop1.meta.optimality0 == 1.0 #GenericStopping has no specified measure, but get 1. if optimality is Inf
 #c) the time measured is also updated in the State (if void)
 @test stop1.current_state.current_time != nothing
 #d) in the case where optimality0 is NaN, meta.domainerror becomes true
 @test stop1.meta.domainerror == false
 #e) the problem would be already solved if optimality0 pass a _null_test
-#Since optimality0 is Inf, any value would pass the relative error check:
-@test Stopping._null_test(stop1, Inf) == true
-@test stop1.meta.optimal == true
-@test :Optimal in status(stop1, list = true)
+#Since optimality0 is 1., any value would pass the relative error check:
+@test Stopping._null_test(stop1, Inf) == false
+@test stop1.meta.optimal == false
+@test :SubOptimal in status(stop1, list = true)
 #The Stopping determines the optimality by testing a score at zero.
 #The test at zero is controlled by the function meta.tol_check which
 #takes 3 arguments: atol, rtol, optimality0. By default it check if the score
@@ -114,7 +115,7 @@ stop3.meta.max_iter = 3
 stop!(stop3)
 @test stop3.meta.iteration_limit == true #as stop3.meta.nb_of_stop > 3.
 #Overall we activated three flags:
-@test status(stop3, list = true) == [:Unbounded, :IterationLimit, :Tired]
+@test status(stop3, list = true) == [:TimeLimit, :Unbounded, :IterationLimit]
 
 ###############################################################################
 #Once we are done with an algorithm and want to reuse a stopping, we need to
@@ -129,5 +130,7 @@ reinit!(stop3)
 #This can be done by switching the keyword rstate to true.
 #In this case, keywords are forwarded to the reinit! of current_state.
 reinit!(stop3, rstate =  true, x = zeros(2))
-@test stop3.current_state.current_time == nothing
+@test isnan(stop3.current_state.current_time)
 @test stop3.current_state.x == zeros(2)
+
+end

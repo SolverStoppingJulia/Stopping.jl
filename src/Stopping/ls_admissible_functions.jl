@@ -16,7 +16,7 @@ function armijo(h      :: Any, #LineModel
                 τ₀     :: Float64 = 0.01,
                 kwargs...)
 
-    if (h_at_t.ht == nothing) || (h_at_t.h₀ == nothing) || (h_at_t.g₀ == nothing)
+    if isnan(h_at_t.ht) || isnan(h_at_t.h₀) || isnan(h_at_t.g₀)
      #printstyled("Warning: Nothing entries in the State.\n", color = :red)
      return throw(error("Nothing entries in the State. ht, h₀ and g₀ are mandatory."))
     else
@@ -47,7 +47,7 @@ function wolfe(h      :: Any, #LineModel,
                τ₁     :: Float64 = 0.99,
                kwargs...)
 
-    if (h_at_t.g₀ == nothing) || (h_at_t.gt == nothing)
+    if isnan(h_at_t.g₀) || isnan(h_at_t.gt)
      return throw(error("Nothing entries in the State."))
     else
 
@@ -73,8 +73,7 @@ function armijo_wolfe(h      :: Any, #LineModel,
                       τ₁     :: Float64 = 0.99,
                       kwargs...)
 
-   if (h_at_t.ht == nothing) || (h_at_t.gt == nothing) || (h_at_t.h₀ == nothing) || (h_at_t.g₀ == nothing)
-    #printstyled("Warning: Nothing entries in the State.\n", color = :red)
+   if isnan(h_at_t.ht) || isnan(h_at_t.gt) || isnan(h_at_t.h₀) || isnan(h_at_t.g₀)
     return throw(error("Nothing entries in the State. ht, h₀, gt and g₀ are mandatory."))
    else
     wolfe  = abs(h_at_t.gt) - τ₁ * abs(h_at_t.g₀)

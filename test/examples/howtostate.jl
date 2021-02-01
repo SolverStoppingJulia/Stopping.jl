@@ -1,3 +1,4 @@
+@testset "Test How to State" begin
 ###############################################################################
 #
 # The data used through the algorithmic process in the Stopping framework
@@ -14,7 +15,7 @@ state1 = GenericState(ones(2)) #takes a Vector as a mandatory input
 state2 = GenericState(ones(2), current_time = 1.0)
 
 #By default if a non-mandatory entry is not specified it is void:
-@test state1.current_time == nothing
+@test isnan(state1.current_time)
 @test state2.current_time == 1.0
 
 ###############################################################################
@@ -32,19 +33,19 @@ update!(state1, current_time = 2) #does nothing as it is the wrong type
 @test state1.current_time == 1.0
 #An advanced user can force the update even if the type is not the same by
 #turning the keyword convert as true (it is false by default).
-update!(state1, convert = true, current_time = 2)
-@test state1.current_time == 2
+#update!(state1, convert = true, current_time = 2) NON!!!
+#@test state1.current_time == 2
 #Non-required entry in the State can always be set as void without convert
-update!(state1, current_time = nothing)
-@test state1.current_time == nothing
+update!(state1, current_time = NaN)
+@test isnan(state1.current_time)
 
 #A shorter way to empty the State is to use the reinit! function.
 #This function is particularly useful, when there are many entries.
 reinit!(state2)
-@test state2.x == ones(2) && state2.current_time == nothing
+@test state2.x == ones(2) && isnan(state2.current_time)
 #If we want to reinit! with a different value of the mandatory entry:
 reinit!(state2, zeros(2))
-@test state2.x == zeros(2) && state2.current_time == nothing
+@test state2.x == zeros(2) && isnan(state2.current_time)
 #After reinitializing the State reinit! can update entries passed as keywords.
 #either in the default call:
 reinit!(state2, current_time = 1.0)
@@ -58,9 +59,8 @@ reinit!(state2, ones(2), current_time = 1.0)
 OK = Stopping._domain_check(state1) #function returns a boolean
 @test OK == false #no NaN
 
-update!(state1, current_time = NaN)
-@test Stopping._domain_check(state1) == true
-
 @test Stopping._domain_check(state2) == false
 update!(state2, x=[NaN, 0.0])
 @test Stopping._domain_check(state2) == true
+
+end

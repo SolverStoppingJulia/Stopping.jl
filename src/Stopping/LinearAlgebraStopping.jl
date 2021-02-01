@@ -21,9 +21,9 @@ Attributes:
                           of a subproblem.
                           If not a subproblem, then nothing.
 - (opt) listofstates : ListStates designed to store the history of States.
-- (opt) user_specific_struct : Contains any structure designed by the user.
+- (opt) stopping_user_struct : Contains any structure designed by the user.
 
-`LAStopping(:: LLSModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta() main_stp :: Union{AbstractStopping, Nothing} = nothing, user_specific_struct :: Any = nothing, kwargs...)`
+`LAStopping(:: LLSModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta() main_stp :: Union{AbstractStopping, Nothing} = nothing, stopping_user_struct :: Any = nothing, kwargs...)`
 
 Note:
 - Kwargs are forwarded to the classical constructor.
@@ -37,43 +37,93 @@ Note:
 There is additional constructors:
 
 `LAStopping(:: Union{AbstractLinearOperator, AbstractMatrix}, :: AbstractVector, kwargs...)`
+
 `LAStopping(:: Union{AbstractLinearOperator, AbstractMatrix}, :: AbstractVector, :: AbstractState, kwargs...)`
 
 See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, normal\\_equation\\_check
  """
- mutable struct LAStopping{T <: AbstractState, Pb <: Any} <: AbstractStopping
+ mutable struct LAStopping{Pb, M, SRC, T, MStp, LoS, Uss} <: AbstractStopping{Pb, M, SRC, T, MStp, LoS, Uss}
 
      # problem
      pb                   :: Pb
      # Common parameters
-     meta                 :: AbstractStoppingMeta
+     meta                 :: M
+     stop_remote          :: SRC
      # current state of the problem
      current_state        :: T
      # Stopping of the main problem, or nothing
-     main_stp             :: Union{AbstractStopping, Nothing}
+     main_stp             :: MStp
      # History of states
-     listofstates         :: Union{ListStates, Nothing}
+     listofstates         :: LoS
      # User-specific structure
-     user_specific_struct :: Any
+     stopping_user_struct :: Uss
 
      #zero is initial point
      zero_start           :: Bool
 
-     function LAStopping(pb             :: Pb,
-                         current_state  :: T;
-                         meta           :: AbstractStoppingMeta = StoppingMeta(max_cntrs = _init_max_counters_NLS(), optimality_check = linear_system_check),
-                         main_stp       :: Union{AbstractStopping, Nothing} = nothing,
-                         list           :: Union{ListStates, Nothing} = nothing,
-                         user_specific_struct :: Any = nothing,
-                         zero_start     :: Bool = false,
-                         kwargs...) where {T <: AbstractState, Pb <: Any}
-
-         if !(isempty(kwargs))
-            meta = StoppingMeta(;max_cntrs = _init_max_counters_NLS(), optimality_check = linear_system_check, kwargs...)
-         end
-
-         return new{T,Pb}(pb, meta, current_state, main_stp, list, user_specific_struct, zero_start)
+ end
+ 
+ function LAStopping(pb             :: Pb,
+                     meta           :: M,
+                     stop_remote    :: SRC,
+                     current_state  :: T;
+                     main_stp       :: AbstractStopping = VoidStopping(),
+                     list           :: AbstractListStates = VoidListStates(),
+                     stopping_user_struct :: Any = nothing,
+                     zero_start     :: Bool = false
+                     ) where {Pb  <: Any, 
+                              M   <: AbstractStoppingMeta, 
+                              SRC <: AbstractStopRemoteControl,
+                              T   <: AbstractState}
+     
+     return LAStopping(pb, meta, stop_remote, current_state, 
+                       main_stp, list, stopping_user_struct, zero_start)
+ end
+ 
+ function LAStopping(pb             :: Pb,
+                     meta           :: M,
+                     current_state  :: T;
+                     main_stp       :: AbstractStopping = VoidStopping(),
+                     list           :: AbstractListStates = VoidListStates(),
+                     stopping_user_struct :: Any = nothing,
+                     zero_start     :: Bool = false
+                     ) where {Pb <: Any, 
+                              M  <: AbstractStoppingMeta,
+                              T  <: AbstractState}
+     
+     stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
+     
+     return LAStopping(pb, meta, stop_remote, current_state, 
+                       main_stp, list, stopping_user_struct, zero_start)
+ end
+ 
+ function LAStopping(pb             :: Pb,
+                     current_state  :: T;
+                     main_stp       :: AbstractStopping = VoidStopping(),
+                     list           :: AbstractListStates = VoidListStates(),
+                     stopping_user_struct :: Any = nothing,
+                     zero_start     :: Bool = false,
+                     kwargs...) where {Pb <: Any, T <: AbstractState}
+                     
+     if :max_cntrs in keys(kwargs)
+         mcntrs = kwargs[:max_cntrs]
+     elseif Pb <: LLSModel
+         mcntrs = _init_max_counters_NLS()
+     else
+         mcntrs = _init_max_counters_linear_operators()
      end
+     
+     if :optimality_check in keys(kwargs)
+         oc = kwargs[:optimality_check]
+     else
+         oc = linear_system_check
+     end
+
+     meta = StoppingMeta(;max_cntrs =  mcntrs, optimality_check = oc, kwargs...)
+     stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
+
+     return LAStopping(pb, meta, stop_remote, current_state, 
+                       main_stp, list, stopping_user_struct, zero_start)
  end
 
 function LAStopping(A      :: TA,
@@ -104,16 +154,20 @@ end
 """
 Type: LACounters
 """
-mutable struct  LACounters
+mutable struct  LACounters{T <: Int}
 
-    nprod   :: Int
-    ntprod  :: Int
-    nctprod :: Int
-    sum     :: Int
+    nprod   :: T
+    ntprod  :: T
+    nctprod :: T
+    sum     :: T
 
-    function LACounters(;nprod :: Int = 0, ntprod :: Int = 0, nctprod :: Int = 0, sum :: Int = 0)
-        return new(nprod, ntprod, nctprod, sum)
+    function LACounters(nprod :: T, ntprod :: T, nctprod :: T, sum :: T) where T <: Int
+        return new{T}(nprod, ntprod, nctprod, sum)
     end
+end
+
+function LACounters(;nprod :: Int64 = 0, ntprod :: Int64 = 0, nctprod :: Int64 = 0, sum :: Int64 = 0)
+    return LACounters(nprod, ntprod, nctprod, sum)
 end
 
 """
@@ -121,12 +175,13 @@ end
 
 `_init_max_counters_linear_operators(;nprod :: Int = 20000, ntprod  :: Int = 20000, nctprod :: Int = 20000, sum :: Int = 20000*11)`
 """
-function _init_max_counters_linear_operators(;nprod   :: Int = 20000,
-                                              ntprod  :: Int = 20000,
-                                              nctprod :: Int = 20000,
-                                              sum     :: Int = 20000*11)
+function _init_max_counters_linear_operators(;quick   :: T = 20000,
+                                              nprod   :: T = quick,
+                                              ntprod  :: T = quick,
+                                              nctprod :: T = quick,
+                                              sum     :: T = quick*11) where T <: Int
 
-  cntrs = Dict([(:nprod,   nprod),   (:ntprod, ntprod),
+  cntrs = Dict{Symbol,T}([(:nprod,   nprod),   (:ntprod, ntprod),
                 (:nctprod, nctprod), (:neval_sum,    sum)])
 
  return cntrs
@@ -178,41 +233,41 @@ end
  function _resources_check!(stp    :: LAStopping,
                             x      :: AbstractVector)
 
-   cntrs = stp.pb.counters
-   update!(stp.current_state, evals = cntrs)
-   max_cntrs = stp.meta.max_cntrs
+  #GenericState has no field evals.
+  #_smart_update!(stp.current_state, evals = cntrs)
 
-   # check all the entries in the counter
-   max_f = false
-   sum   = 0
-
-   sum, max_f = _counters_loop(cntrs, max_cntrs, max_f, sum)
-
-  # Maximum number of function and derivative(s) computation
-  max_evals = sum > max_cntrs[:neval_sum]
-
+  # check all the entries in the counter
   # global user limit diagnostic
-  stp.meta.resources = max_evals || max_f
+  stp.meta.resources = _counters_loop!(stp.pb.counters, stp.meta.max_cntrs)
 
-  return stp
+  return stp.meta.resources
  end
 
- function _counters_loop(cntrs :: LACounters, max_cntrs :: Dict, max_f :: Bool, sum :: Int)
-     for f in [:nprod, :ntprod, :nctprod]
-      max_f = max_f || (getfield(cntrs, f) > max_cntrs[f])
-      sum  += getfield(cntrs, f)
+ function _counters_loop!(cntrs :: LACounters{T}, max_cntrs :: Dict{Symbol,T}) where T
+
+     sum, max_f = 0, false
+
+     for f in (:nprod, :ntprod, :nctprod)
+      ff    = getfield(cntrs, f)
+      max_f = max_f || (ff > max_cntrs[f])
+      sum  += ff
      end
-     return sum, max_f
+
+     return max_f || (sum > max_cntrs[:neval_sum])
  end
 
- function _counters_loop(cntrs :: NLSCounters, max_cntrs :: Dict, max_f :: Bool, sum :: Int)
-     for f in fieldnames(NLSCounters)
+ function _counters_loop!(cntrs :: NLSCounters, max_cntrs :: Dict{Symbol,T}) where T
+
+     sum, max_f = 0, false
+
+     for f in intersect(fieldnames(NLSCounters), keys(max_cntrs))
       max_f = f != :counters ? (max_f || (getfield(cntrs, f) > max_cntrs[f])) : max_f
      end
-     for f in fieldnames(Counters)
+     for f in intersect(fieldnames(Counters), keys(max_cntrs))
       max_f = max_f || (getfield(cntrs.counters, f) > max_cntrs[f])
      end
-     return sum, max_f
+
+     return max_f || (sum > max_cntrs[:neval_sum])
  end
 
 """
@@ -229,7 +284,7 @@ function linear_system_check(pb    :: LinearSystem,
                              pnorm :: Float64 = Inf,
                              kwargs...)
  pb.counters.nprod += 1
- if state.res == nothing
+ if state.res == _init_field(typeof(state.res))
   update!(state, res = pb.A * state.x - pb.b)
  end
 
@@ -240,8 +295,14 @@ function linear_system_check(pb    :: LLSModel,
                              state :: AbstractState;
                              pnorm :: Float64 = Inf,
                              kwargs...)
- if state.res == nothing
-  update!(state, res = residual(pb, state.x))
+
+ if state.res == _init_field(typeof(state.res))
+  Axmb = if xtype(state) <: SparseVector 
+      sparse(residual(pb, state.x)) 
+  else
+      residual(pb, state.x)
+  end
+  update!(state, res = Axmb)
  end
 
  return norm(state.res, pnorm)

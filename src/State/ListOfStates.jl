@@ -1,5 +1,7 @@
 abstract type AbstractListStates end
 
+struct VoidListStates <: AbstractListStates end
+
 """
 Type: list of States
 
@@ -17,24 +19,33 @@ component is a ListStates (or nothing).
 Examples:
 ListStates(state)
 ListStates(state, n = 2)
-ListStates(n = -1, list = [[state1, nothing], [state2, nothing]], i = 2)
-ListStates(n = -1, list = [[state1, another_list]], i = 1)
+ListStates(-1)
+ListStates(-1, [(state1, VoidListStates), (state2, VoidListStates)], 2)
+ListStates(-1, [(state1, another_list)], 1)
 """
-mutable struct ListStates <: AbstractListStates
+mutable struct ListStates{T <: Array} <: AbstractListStates
 
   n     :: Int #If length of the list is knwon, -1 if unknown
   i     :: Int #current index in the list/length
-  list  :: Array #list of [States, list]
+  list  :: T #Array{Tuple{AbstractState, AbstractListStates},1}
+                 #Tanj: \TODO Tuple instead of an Array would be better, I think
 
 end
 
-function ListStates(n :: Int; list :: Array = Array{Any}(nothing, n), i :: Int = 0)
+function ListStates(n :: T) where T <: Int
+  list = Array{Any}(nothing, max(n, zero(T)))
+  i = 0
+  return ListStates(n, i, list)
+end
+
+function ListStates(n :: T, list :: Array) where T <: Int
+  i = length(list)
   return ListStates(n, i, list)
 end
 
 function ListStates(state :: AbstractState; n :: Int = -1, kwargs...)
     i =  1
-    list = [[copy_compress_state(state; kwargs...), nothing]]
+    list = [(copy_compress_state(state; kwargs...), VoidListStates())]
   return ListStates(n, i, list)
 end
 
@@ -43,9 +54,11 @@ add\\_to\\_list!: add a State to the list of maximal size n.
 If a n+1-th State is added, the first one in the list is removed.
 The given is State is compressed before being added in the list (via State.copy\\_compress\\_state).
 
-`add_to_list!(:: ListStates, :: AbstractState; kwargs...)`
+`add_to_list!(:: AbstractListStates, :: AbstractState; kwargs...)`
 
-Note: kwargs are passed to the compress_state call.
+Note: 
+ -  kwargs are passed to the compress_state call.
+ -  does nothing for `VoidListStates`
 
 see also: ListStates, State.compress\\_state, State.copy\\_compress\\_state
 """
@@ -59,12 +72,16 @@ function add_to_list!(list :: AbstractListStates, state :: AbstractState; kwargs
       list.i += 1
   end
   cstate = copy_compress_state(state; kwargs...)
-  push!(list.list, [cstate, nothing])
+  push!(list.list, (cstate, VoidListStates()))
  else
-  push!(list.list, [copy_compress_state(state; kwargs...), nothing])
+  push!(list.list, (copy_compress_state(state; kwargs...), VoidListStates()))
   list.i += 1
  end
 
+ return list
+end
+
+function add_to_list!(list :: VoidListStates, state :: AbstractState; kwargs...)
  return list
 end
 
@@ -94,13 +111,15 @@ the returned DataFrame still contains all the columns.
 
 see also: add\\_to\\_list!, length, ListStates
 """
-function print(list :: AbstractListStates; verbose :: Bool = true, print_sym :: Union{Nothing,Array{Symbol,1}} = nothing)
-
-   df = DataFrame()
-
+function print(list :: AbstractListStates; 
+               verbose :: Bool = true, 
+               print_sym :: Union{Nothing,Array{Symbol,1}} = nothing)
+   
+   tab = zeros(0, length(list.list))#Array{Any,2}(undef, length(fieldnames(typeof(list.list[1,1]))))
    for k in fieldnames(typeof(list.list[1,1]))
-       df[!,k] = [getfield(i[1], k) for i in list.list]
+      tab = vcat(tab, [getfield(i[1], k) for i in list.list]');
    end
+   df = DataFrame(tab)
 
    if print_sym == nothing
     verbose && print(df)

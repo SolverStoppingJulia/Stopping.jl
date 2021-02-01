@@ -1,43 +1,40 @@
-# Fonction qu'on veut tester
-# include("../NLPAtXmod.jl")
-# importall NLPAtXmod
-
-# On vérifie que le constructeur pour problème sans contrainte fonctionne
+@testset "NLPAtX" begin
+#Test unconstrained NLPAtX
 uncons_nlp_at_x = NLPAtX(zeros(10))
 
 @test uncons_nlp_at_x.x == zeros(10)
-@test uncons_nlp_at_x.fx == nothing
-@test uncons_nlp_at_x.gx == nothing
-@test uncons_nlp_at_x.Hx == nothing
-@test uncons_nlp_at_x.mu == nothing
-@test uncons_nlp_at_x.cx == nothing
-@test uncons_nlp_at_x.Jx == nothing
+@test isnan(uncons_nlp_at_x.fx)
+@test uncons_nlp_at_x.gx == zeros(0)
+@test uncons_nlp_at_x.Hx == zeros(0,0)
+@test uncons_nlp_at_x.mu == zeros(0)
+@test uncons_nlp_at_x.cx == zeros(0)
+@test uncons_nlp_at_x.Jx == zeros(0,0)
 
 @test uncons_nlp_at_x.lambda == zeros(0)
-@test uncons_nlp_at_x.current_time == nothing
-@test uncons_nlp_at_x.current_score == nothing
-@test (!(uncons_nlp_at_x.evals == nothing))
+@test isnan(uncons_nlp_at_x.current_time)
+@test isnan(uncons_nlp_at_x.current_score)
+@test (!(uncons_nlp_at_x.evals == zeros(0,0)))
 
-# On vérifie que le constucteur pour problème avec contrainte fonctionne
+#check constrained NLPAtX
 cons_nlp_at_x = NLPAtX(zeros(10), zeros(10))
 
 @test cons_nlp_at_x.x == zeros(10)
-@test cons_nlp_at_x.fx == nothing
-@test cons_nlp_at_x.gx == nothing
-@test cons_nlp_at_x.Hx == nothing
-@test cons_nlp_at_x.mu == nothing
-@test cons_nlp_at_x.cx == nothing
-@test cons_nlp_at_x.Jx == nothing
+@test isnan(cons_nlp_at_x.fx)
+@test cons_nlp_at_x.gx == zeros(0)
+@test cons_nlp_at_x.Hx == zeros(0,0)
+@test cons_nlp_at_x.mu == zeros(0)
+@test cons_nlp_at_x.cx == zeros(0)
+@test cons_nlp_at_x.Jx == zeros(0,0)
 @test (false in (cons_nlp_at_x.lambda .== 0.0)) == false
-@test cons_nlp_at_x.current_time == nothing
-@test cons_nlp_at_x.current_score == nothing
+@test isnan(cons_nlp_at_x.current_time)
+@test isnan(cons_nlp_at_x.current_score)
 
 update!(cons_nlp_at_x, Hx = ones(20,20), gx = ones(2), lambda = zeros(2))
 compress_state!(cons_nlp_at_x, max_vector_size = 5, lambda = zeros(0), gx = true)
-@test cons_nlp_at_x.Hx     == nothing
+@test cons_nlp_at_x.Hx     == zeros(0,0)
 @test cons_nlp_at_x.x      == [0.0]
-@test cons_nlp_at_x.lambda == zeros(2) #doesn't disapear because mandatory
-@test cons_nlp_at_x.gx     == nothing
+@test cons_nlp_at_x.lambda == zeros(0)
+@test cons_nlp_at_x.gx     == zeros(0)
 
 
 # On vérifie que la fonction update! fonctionne
@@ -54,14 +51,20 @@ update!(uncons_nlp_at_x, Hx = ones(10,10), mu = ones(10), cx = ones(10), Jx = on
 @test (false in (uncons_nlp_at_x.Jx .== 1.0)) == false
 @test (false in (uncons_nlp_at_x.lambda .== 1.0)) == false
 @test uncons_nlp_at_x.current_time == 1.0
-@test uncons_nlp_at_x.current_score == nothing
+@test isnan(uncons_nlp_at_x.current_score)
 
 reinit!(uncons_nlp_at_x)
 @test uncons_nlp_at_x.x == ones(10)
-@test uncons_nlp_at_x.fx == nothing
+@test isnan(uncons_nlp_at_x.fx)
 reinit!(uncons_nlp_at_x, x = zeros(10))
 @test uncons_nlp_at_x.x == zeros(10)
-@test uncons_nlp_at_x.fx == nothing
+@test isnan(uncons_nlp_at_x.fx)
+reinit!(uncons_nlp_at_x, zeros(10))
+@test uncons_nlp_at_x.x == zeros(10)
+@test isnan(uncons_nlp_at_x.fx)
+reinit!(uncons_nlp_at_x, zeros(10), l = zeros(0))
+@test uncons_nlp_at_x.x == zeros(10)
+@test isnan(uncons_nlp_at_x.fx)
 
 c_uncons_nlp_at_x = copy_compress_state(uncons_nlp_at_x, max_vector_size = 5)
 
@@ -111,8 +114,9 @@ catch
     @test true
 end
 try
-    NLPAtX(ones(5), zeros(1), cx = zeros(0))
+    NLPAtX(ones(5), zeros(1), cx = zeros(2))
     @test false
 catch
     @test true
+end
 end

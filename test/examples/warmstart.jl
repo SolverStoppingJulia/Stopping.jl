@@ -1,5 +1,7 @@
 ###############################################################################
 #
+# # ListStates tutorial : 1/2
+#
 # We illustrate here the use of ListStates in dealing with a warm start
 # procedure.
 #
@@ -28,7 +30,7 @@ end
 
 include("../test-stopping/rosenbrock.jl")
 x0 = 1.5*ones(6)
-nlp = ADNLPModel(rosenbrock,  x0, lvar = zeros(6), uvar = ones(6))
+nlp = ADNLPModel(rosenbrock,  x0, zeros(6), ones(6))
 
 state = NLPAtX(x0)
 stop_lstt = NLPStopping(nlp, state,

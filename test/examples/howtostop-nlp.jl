@@ -1,3 +1,4 @@
+@testset "How to stop NLP" begin
 ###############################################################################
 #
 # The Stopping structure eases the implementation of algorithms and the
@@ -46,16 +47,16 @@ stop_nlp_lazy = NLPStopping(nlp2) #use nlp.meta.x0 as initial point
 fill_in!(stop_nlp, x1, matrix_info = false)
 @test stop_nlp.current_state.x  == x1
 @test stop_nlp.current_state.fx == 5.
-@test stop_nlp.current_state.Hx == nothing
+@test stop_nlp.current_state.Hx == zeros(0,0)
 #Note that since there are no constraints, c(x) and J(x) are not called:
-@test stop_nlp.current_state.Jx == nothing
-@test stop_nlp.current_state.cx == nothing
+@test stop_nlp.current_state.Jx == zeros(0,0)
+@test stop_nlp.current_state.cx == zeros(0)
 #Since there are no bounds on x, the Lagrange multiplier is not updated:
-@test stop_nlp.current_state.mu == nothing
+@test stop_nlp.current_state.mu == zeros(0)
 
 #would give Hx if matrix_info = true
 fill_in!(stop_nlp_lazy, x1)
-@test stop_nlp_lazy.current_state.Hx != nothing
+@test stop_nlp_lazy.current_state.Hx != zeros(0,0)
 #stop_nlp_lazy.pb has bounds, so mu is a vector of size x
 @test size(x0) == size(stop_nlp_lazy.current_state.mu)
 
@@ -78,7 +79,7 @@ stop_nlp.meta.max_cntrs = Stopping._init_max_counters(obj = 3, grad = 0, hess = 
 OK = update_and_stop!(stop_nlp, evals = stop_nlp.pb.counters)
 @test OK == true
 @test stop_nlp.meta.resources == true
-@test status(stop_nlp) == :ResourcesExhausted
+@test status(stop_nlp) == :EvaluationLimit
 
 ###############################################################################
 #4) Unbounded problem
@@ -107,3 +108,5 @@ OK = stop!(stop_nlp_2, a = 0.0)
 reinit!(stop_nlp_2)
 OK = update_and_stop!(stop_nlp_2, a = 0.0)
 @test OK == false
+
+end

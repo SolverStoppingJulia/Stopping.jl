@@ -1,5 +1,6 @@
-include("rosenbrock.jl")
+@testset "Test NLP Stopping constrained" begin
 
+include("rosenbrock.jl")
 #Warning: see https://github.com/JuliaSmoothOptimizers/NLPModels.jl/blob/master/src/autodiff_model.jl
 #for the proper way of defining an ADNLPModel
 x0 = ones(6)
@@ -42,3 +43,5 @@ stop_nlp_kargs = NLPStopping(nlp2, nlp_at_x_c, optimality_check =  (x,y; test = 
 fill_in!(stop_nlp_kargs, sol)
 @test stop!(stop_nlp_kargs) == false
 @test stop!(stop_nlp_kargs, test = 0.0) == true
+
+end

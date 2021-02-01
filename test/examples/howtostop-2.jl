@@ -1,3 +1,4 @@
+@testset "Test How to Stop II" begin
 ###############################################################################
 #
 # The Stopping structure eases the implementation of algorithms and the
@@ -23,7 +24,7 @@ main_stop = GenericStopping(pb, x0)
 #the main_stop as a keyword argument:
 sub_stop = GenericStopping(subpb, x0, main_stp = main_stop, tol_check = (atol, rtol, opt0) -> atol)
 #Note that by default main_stp is void
-@test main_stop.main_stp == nothing
+@test main_stop.main_stp == VoidStopping()
 
 #The only difference appears in the event of a call to stop!, which now also
 #check the time and resources of the main_pb.
@@ -51,6 +52,8 @@ stop!(subsub_stop)
 @test status(sub_stop, list = true) == [:ResourcesOfMainProblemExhausted]
 @test sub_stop.meta.tired   == false
 @test sub_stop.meta.main_pb == true
-@test status(main_stop, list = true) == [:Tired]
+@test status(main_stop, list = true) == [:TimeLimit]
 @test main_stop.meta.tired   == true
 @test main_stop.meta.main_pb == false
+
+end

@@ -1,3 +1,7 @@
+import NLPModels.sum_counters
+
+#@testset "Test NLP Evals" begin
+
 x0 = zeros(2)
 
 nlp = ADNLPModel(x -> norm(x.^2), x0)
@@ -26,8 +30,16 @@ nls_stop_evals.meta.max_cntrs[:neval_residual] = -1
 Stopping._resources_check!(nls_stop_evals, x0)
 @test nls_stop_evals.meta.resources == true
 
+max_evals!(nlp_stop_evals, 10)
+@test nlp_stop_evals.meta.max_cntrs[:neval_obj] == 10
+@test nlp_stop_evals.meta.max_cntrs[:neval_sum] == 110
+
+max_evals!(nlp_stop_evals, allevals = 10, obj = 2)
+@test nlp_stop_evals.meta.max_cntrs[:neval_cons] == 10
+@test nlp_stop_evals.meta.max_cntrs[:neval_sum]  == 110
+@test nlp_stop_evals.meta.max_cntrs[:neval_obj] == 2
+
 #Test the case with a counters different from Counters and NLSCounters in NLPStopping
-import NLPModels.sum_counters
 mutable struct Test_cntrs
     neval     :: Int
 end
@@ -43,3 +55,5 @@ pb = Test_pb(Test_cntrs(0.0), NLPModelMeta(5, x0 = zeros(5)))
 nls_stop_evals = NLPStopping(pb, max_cntrs = maxcount)
 Stopping._resources_check!(nls_stop_evals, x0)
 @test nls_stop_evals.meta.resources == true
+
+#end

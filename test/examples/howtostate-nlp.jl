@@ -1,3 +1,4 @@
+@testset "Test How to State NLP" begin
 ###############################################################################
 #
 # The data used through the algorithmic process in the Stopping framework
@@ -43,8 +44,8 @@ state_con = NLPAtX(x0, y0)
 #In the unconstrained case lambda is a vector of length 0
 @test !(state_unc.lambda == nothing)
 #From the default initialization, all the other entries are void:
-@test state_unc.mu == nothing && state_con.mu == nothing
-@test state_unc.fx == nothing && state_con.fx == nothing
+@test state_unc.mu == [] && state_con.mu == []
+@test isnan(state_unc.fx) && isnan(state_con.fx)
 #exception is the counters which is initialized as a default Counters:
 @test (sum_counters(state_unc.evals) + sum_counters(state_con.evals)) == 0
 
@@ -73,20 +74,12 @@ update!(state_bnd, fx = 1.0, blah = 1) #update! ignores unnecessary keywords
 #reinit! by default reuse x and lambda and reset all the entries at their
 #default values (void or empty Counters):
 reinit!(state_bnd, mu = ones(6))
-@test state_bnd.mu == ones(6) && state_bnd.fx == nothing
+@test state_bnd.mu == ones(6) && isnan(state_bnd.fx)
 @test state_bnd.x == x0 && state_bnd.lambda == zeros(0)
-#Trying to inherit reinit!(AbstractState, Vector) would not work here as
-#lambda is a mandatory entry.
-try
- reinit!(state_bnd, 2 * ones(6))
- @test false
-catch
- @test true
-end
 #However, we can specify both entries
 reinit!(state_bnd, 2 * ones(6), zeros(0))
 @test state_bnd.x == 2*ones(6) && state_bnd.lambda == zeros(0)
-@test state_bnd.mu == nothing && sum_counters(state_bnd.evals) == 0
+@test state_bnd.mu == [] && sum_counters(state_bnd.evals) == 0
 #Giving a new Counters update as well:
 test = Counters(); setfield!(test, :neval_obj, 102)
 reinit!(state_bnd, evals = test)
@@ -97,7 +90,7 @@ reinit!(state_bnd, evals = test)
 #III. Domain Error
 #Similar to the GenericState we can use _domain_check to verify there are no NaN
 @test Stopping._domain_check(state_bnd) == false
-update!(state_bnd, fx = NaN)
+update!(state_bnd, mu = [NaN])
 @test Stopping._domain_check(state_bnd) == true
 
 ###############################################################################
@@ -112,7 +105,9 @@ stop = NLPStopping(nlp, state_unc, optimality_check = (x,y) -> unconstrained_che
 fill_in!(stop, x0, matrix_info = false)
 
 #printstyled("Hx has not been updated: ",stop.current_state.Hx == nothing,"\n")
-@test stop.current_state.Hx == nothing
+@test stop.current_state.Hx == zeros(0,0)
 
 # We can now use the updated step in the algorithmic procedure
 @test start!(stop) #return true
+
+end

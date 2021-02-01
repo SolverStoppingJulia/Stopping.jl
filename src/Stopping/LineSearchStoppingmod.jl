@@ -18,9 +18,9 @@ Input :
                           of a subproblem.
                           If not a subproblem, then nothing.
 - (opt) listofstates : ListStates designed to store the history of States.
-- (opt) user_specific_struct : Contains any structure designed by the user.
+- (opt) stopping_user_struct : Contains any structure designed by the user.
 
-`LS_Stopping(:: Any, :: LSAtT; meta :: AbstractStoppingMeta = StoppingMeta(), main_stp :: Union{AbstractStopping, Nothing} = nothing, user_specific_struct :: Any = nothing, kwargs...)`
+`LS_Stopping(:: Any, :: LSAtT; meta :: AbstractStoppingMeta = StoppingMeta(), main_stp :: Union{AbstractStopping, Nothing} = nothing, stopping_user_struct :: Any = nothing, kwargs...)`
 
 
  Note:
@@ -34,40 +34,75 @@ Input :
 
 See also GenericStopping, NLPStopping, LSAtT
  """
-mutable struct LS_Stopping <: AbstractStopping
+mutable struct LS_Stopping{Pb, M, SRC, MStp, LoS, Uss}  <: AbstractStopping{Pb, M, SRC, LSAtT, MStp, LoS, Uss}
     # problem
-    pb                   :: Any
+    pb                   :: Pb
 
     # shared information with linesearch and other stopping
-    meta                 :: AbstractStoppingMeta
+    meta                 :: M
+    stop_remote          :: SRC
 
     # current information on linesearch
     current_state        :: LSAtT
 
     # Stopping of the main problem, or nothing
-    main_stp             :: Union{AbstractStopping, Nothing}
+    main_stp             :: MStp
 
     # History of states
-    listofstates         :: Union{ListStates, Nothing}
+    listofstates         :: LoS
 
     # User-specific structure
-    user_specific_struct :: Any
+    stopping_user_struct :: Uss
 
-    function LS_Stopping(pb             :: Any,
-                         current_state  :: LSAtT;
-                         meta           :: AbstractStoppingMeta = StoppingMeta(),
-                         main_stp       :: Union{AbstractStopping, Nothing} = nothing,
-                         list           :: Union{ListStates, Nothing} = nothing,
-                         user_specific_struct :: Any = nothing,
-                         kwargs...)
+end
 
-        if !(isempty(kwargs))
-           meta = StoppingMeta(;optimality_check = armijo, kwargs...)
-        end
+function LS_Stopping(pb             :: Pb,
+                     meta           :: M,
+                     stop_remote    :: SRC,
+                     current_state  :: LSAtT;
+                     main_stp       :: AbstractStopping = VoidStopping(),
+                     list           :: AbstractListStates = VoidListStates(),
+                     stopping_user_struct :: Any = nothing,
+                     ) where {Pb  <: Any, 
+                              M   <: AbstractStoppingMeta, 
+                              SRC <: AbstractStopRemoteControl}
+                     
+    return LS_Stopping(pb, meta, stop_remote, current_state, 
+                       main_stp, list, stopping_user_struct)
+end
 
-        return new(pb, meta, current_state, main_stp, list, user_specific_struct)
+function LS_Stopping(pb             :: Pb,
+                     meta           :: M,
+                     current_state  :: LSAtT;
+                     main_stp       :: AbstractStopping = VoidStopping(),
+                     list           :: AbstractListStates = VoidListStates(),
+                     stopping_user_struct :: Any = nothing,
+                     ) where {Pb <: Any, M <: AbstractStoppingMeta}
+                     
+    stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
+                     
+    return LS_Stopping(pb, meta, stop_remote, current_state, 
+                       main_stp, list, stopping_user_struct)
+end
+
+function LS_Stopping(pb             :: Pb,
+                     current_state  :: LSAtT;
+                     main_stp       :: AbstractStopping = VoidStopping(),
+                     list           :: AbstractListStates = VoidListStates(),
+                     stopping_user_struct :: Any = nothing,
+                     kwargs...) where {Pb <: Any}
+    
+    if :optimality_check in keys(kwargs)
+        oc = kwargs[:optimality_check]
+    else
+        oc = armijo
     end
 
+    meta = StoppingMeta(;optimality_check = oc, kwargs...)
+    stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
+
+    return LS_Stopping(pb, meta, stop_remote, current_state, 
+                       main_stp, list, stopping_user_struct)
 end
 
 """
@@ -83,14 +118,15 @@ Note: evaluate the objective function is *state.ht* is void.
 function _unbounded_problem_check!(stp :: LS_Stopping,
                                    x   :: T) where T <: Union{Number, AbstractVector}
 
- if stp.current_state.ht == nothing && typeof(stp.pb) <: AbstractNLPModel && typeof(x) <: AbstractVector
+ if isnan(stp.current_state.ht) && typeof(stp.pb) <: AbstractNLPModel && typeof(x) <: AbstractVector
      stp.current_state.ht = obj(stp.pb, x)
  end
- f_too_large = stp.current_state.ht != nothing && norm(stp.current_state.ht) >= stp.meta.unbounded_threshold
+ f_too_large = !isnan(stp.current_state.ht) && norm(stp.current_state.ht) >= stp.meta.unbounded_threshold
 
- stp.meta.unbounded_pb = f_too_large
+ #stp.meta.unbounded_pb = f_too_large ? true : stp.meta.unbounded_pb
+ if f_too_large stp.meta.unbounded_pb = true end
 
- return stp
+ return stp.meta.unbounded_pb
 end
 
 """
@@ -104,18 +140,15 @@ Note: If the problem is an AbstractNLPModel check the number of evaluations of *
 function _resources_check!(stp :: LS_Stopping,
                            x   :: T) where T <: Union{Number, AbstractVector}
 
- max_evals = false
- max_f     = false
-
  if typeof(stp.pb) <: AbstractNLPModel
   max_f = stp.meta.max_f < neval_obj(stp.pb)
   max_evals = stp.meta.max_eval < sum_counters(stp.pb)
+  # global limit diagnostic
+  #stp.meta.resources = (max_evals || max_f) ? true : stp.meta.resources
+  if (max_evals || max_f) stp.meta.resources=true end
  end
 
- # global limit diagnostic
- stp.meta.resources = max_evals || max_f
-
- return stp
+ return stp.meta.resources
 end
 
 ################################################################################
