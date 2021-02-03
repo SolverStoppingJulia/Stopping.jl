@@ -7,6 +7,7 @@ makedocs(
     modules = [Stopping],
     pages = [
              "Home" => "index.md",
+"Home2" => "index2.md",
              "API" => "api.md",
              "Examples and tutorials" => "tutorial.md",
              "How to State" => "howtostate.md",
