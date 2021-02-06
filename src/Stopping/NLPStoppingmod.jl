@@ -65,19 +65,6 @@ function NLPStopping(pb             :: Pb,
                               SRC <: AbstractStopRemoteControl,
                               T   <: AbstractState}
 
-    #current_state is an AbstractState with requirements
-    try
-        current_state.evals
-        current_state.fx, current_state.gx, current_state.Hx
-        #if there are bounds:
-        current_state.mu
-        if pb.meta.ncon > 0 #if there are constraints
-           current_state.Jx, current_state.cx, current_state.lambda
-        end
-    catch
-        throw(ErrorException("error: missing entries in the given current_state"))
-    end
-
     return NLPStopping(pb, meta, stop_remote, current_state, 
                        main_stp, list, stopping_user_struct)
 end
@@ -92,19 +79,6 @@ function NLPStopping(pb             :: Pb,
                      ) where {Pb <: AbstractNLPModel, 
                               M  <: AbstractStoppingMeta,
                               T  <: AbstractState}
-
-    #current_state is an AbstractState with requirements
-    try
-        current_state.evals
-        current_state.fx, current_state.gx, current_state.Hx
-        #if there are bounds:
-        current_state.mu
-        if pb.meta.ncon > 0 #if there are constraints
-           current_state.Jx, current_state.cx, current_state.lambda
-        end
-    catch
-        throw(ErrorException("error: missing entries in the given current_state"))
-    end
     
     stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
 
@@ -134,19 +108,6 @@ function NLPStopping(pb             :: Pb,
 
     meta = StoppingMeta(;max_cntrs = mcntrs, optimality_check = oc, kwargs...)
     stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
-    
-    #current_state is an AbstractState with requirements
-    try
-        current_state.evals
-        current_state.fx, current_state.gx, current_state.Hx
-        #if there are bounds:
-        current_state.mu
-        if pb.meta.ncon > 0 #if there are constraints
-           current_state.Jx, current_state.cx, current_state.lambda
-        end
-    catch
-        throw(ErrorException("error: missing entries in the given current_state"))
-    end
 
     return NLPStopping(pb, meta, stop_remote, current_state, 
                        main_stp, list, stopping_user_struct)
@@ -405,10 +366,16 @@ end
 ################################################################################
 include("nlp_admissible_functions.jl")
 
+################################################################################
+# line search admissibility functions
+#
+# TODO: change the ls_admissible_functions and use tol_check et tol_check_neg to
+# handle the inequality instead of a max.
+################################################################################
+include("ls_admissible_functions.jl")
+
 #=
 """
-
-
 """
 function feasibility_optim_check(pb, state; kwargs...)
      vio = _feasibility(pb, state)
