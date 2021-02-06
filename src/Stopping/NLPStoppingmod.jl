@@ -251,12 +251,16 @@ Note:
 - all the NLPModels have an attribute *counters* and a function *sum_counters(nlp)*.
 """
 function _resources_check!(stp    :: NLPStopping,
-                           x      :: T) where T <: {AbstractVector,AbstractFloat}
+                           x      :: T) where T <: Union{AbstractVector,AbstractFloat}
 
   cntrs = stp.pb.counters
   update!(stp.current_state, evals = cntrs)
 
   max_cntrs = stp.meta.max_cntrs
+
+  if max_cntrs == Dict{Symbol,Int64}()
+    return stp.meta.resources
+  end
 
   # check all the entries in the counter
   max_f = false
@@ -277,8 +281,10 @@ function _resources_check!(stp    :: NLPStopping,
    end
   end
 
- # Maximum number of function and derivative(s) computation
- max_evals = sum_counters(stp.pb) > max_cntrs[:neval_sum]
+  # Maximum number of function and derivative(s) computation
+  if :neval_sum in keys(stp.meta.max_cntrs)
+    max_evals = sum_counters(stp.pb) > max_cntrs[:neval_sum]
+  end
 
  # global user limit diagnostic
  if (max_evals || max_f) stp.meta.resources = true end
@@ -294,18 +300,19 @@ end
 `_unbounded_problem_check!(:: NLPStopping, :: AbstractVector)`
 
 Note:
-- evaluate the objective function if `state.fx` is `_init_field` and store in `state`.
+- evaluate the objective function if `state.fx` for NLPAtX or `state.ht` for LSAtT is `_init_field` and store in `state`.
 - do NOT evaluate the constraint function if `state.cx` is `_init_field` and store in `state`.
 - if minimize problem (i.e. nlp.meta.minimize is true) check if
 `state.fx <= - meta.unbounded_threshold`,
 otherwise check `state.fx >= meta.unbounded_threshold`.
 - `state.cx` is unbounded if larger than `|meta.unbounded_threshold|``.
 """
-function _unbounded_problem_check!(stp  :: NLPStopping,
-                                   x    :: T) where T <: Union{AbstractVector, AbstractFloat}
+function _unbounded_problem_check!(stp  :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS, Uss},
+                                   x    :: AbstractVector
+                                  ) where {Pb, M, SRC, Stt <: NLPAtX, MStp, LoS, Uss}
 
   if isnan(stp.current_state.fx)
-	stp.current_state.fx = obj(stp.pb, x)
+	  stp.current_state.fx = obj(stp.pb, x)
   end
 
   if stp.pb.meta.minimize
@@ -325,6 +332,21 @@ function _unbounded_problem_check!(stp  :: NLPStopping,
   return stp.meta.unbounded_pb
 end
 
+function _unbounded_problem_check!(stp  :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS, Uss},
+                                   x    :: AbstractVector
+                                  ) where {Pb, M, SRC, Stt <: LSAtT, MStp, LoS, Uss}
+  if isnan(stp.current_state.ht)
+	  stp.current_state.ht = obj(stp.pb, x)
+  end  
+
+  if stp.pb.meta.minimize
+    f_too_large = stp.current_state.ht <= - stp.meta.unbounded_threshold
+  else
+    f_too_large = stp.current_state.ht >=   stp.meta.unbounded_threshold
+  end
+
+  return stp.meta.unbounded_pb
+end
 """
 \\_infeasibility\\_check!: This is the NLP specialized version.
                        
