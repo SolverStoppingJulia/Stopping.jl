@@ -15,14 +15,6 @@
   src = StopRemoteControl()
   stop_nlp_src = NLPStopping(nlp, meta, src, nlp_at_x)
 
-  #You cannot create an NLPStopping with a GenericState
-  try
-    fail_stop = NLPStopping(nlp, GenericState(zeros(5)))
-    @test false
-  catch
-    @test true
-  end
-
   a = zeros(5)
   fill_in!(stop_nlp, a)
 
@@ -95,20 +87,5 @@
   update!(stop_bnd.current_state, fx = NaN, current_score = 0.0)
   stop!(stop_bnd)
   @test !isnan(stop_bnd.current_state.fx)
-
-  try
-   meta = StoppingMeta(atol = 0.)
-   NLPStopping(nlp_bnd, meta, GenericState(x0)) #would not work as there is an entry check
-   @test false
-  catch
-    @test true
-  end
-  try
-    meta = StoppingMeta(atol = 0.)
-    NLPStopping(nlp_bnd, meta, StopRemoteControl(), GenericState(x0)) #would not work as there is an entry check
-    @test false
-  catch
-    @test true
-  end
 
 end

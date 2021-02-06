@@ -10,7 +10,8 @@
     # Create the stopping object to test
     stop = NLPStopping(pb, lsatx, max_iter = 10, optimality_check = armijo)
     stop_without_check = NLPStopping(pb, lsatx, max_iter = 10)
-    @test stop_without_check.meta.optimality_check == stop.meta.optimality_check
+    @test stop_without_check.meta.optimality_check == KKT
+    @test stop.meta.optimality_check == armijo
 
     meta = StoppingMeta(max_iter = 10, optimality_check = (x,y)-> armijo(x,y))
     stop_meta = NLPStopping(pb, meta, lsatx)
@@ -64,28 +65,28 @@
 
     ## _optimality_check! and _null_test are tested with NLP
     try
-    armijo(stop.pb, stop.current_state)
-    @test false #nothing entries in the stop
+        armijo(stop.pb, stop.current_state)
+        @test false #nothing entries in the stop
     catch
-    @test true
+        @test true
     end
     try
-    wolfe(stop.pb, stop.current_state)
-    @test false #nothing entries in the stop
+        wolfe(stop.pb, stop.current_state)
+        @test false #nothing entries in the stop
     catch
-    @test true
+        @test true
     end
     try
-    armijo_wolfe(stop.pb, stop.current_state)
-    @test false #nothing entries in the stop
+        armijo_wolfe(stop.pb, stop.current_state)
+        @test false #nothing entries in the stop
     catch
-    @test true
+        @test true
     end
     update!(stop.current_state, h₀ = 1.0, ht = 0.0, g₀ = 1.0, gt = 0.0)
     @test wolfe(stop.pb, stop.current_state) == 0.0
     @test armijo_wolfe(stop.pb, stop.current_state) == 0.0
 
-    @test shamanskii_stop(stop.pb, stop.current_state) == 0.0 #specific LineModel
+    #@test shamanskii_stop(stop.pb, stop.current_state) == 0.0 #specific LineModel
     @test goldstein(stop.pb, stop.current_state) >= 0.0
 
     stop.meta.optimality_check = (x,y) -> 0.0
