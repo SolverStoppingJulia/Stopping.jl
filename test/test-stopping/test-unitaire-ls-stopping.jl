@@ -1,19 +1,20 @@
 @testset "Test Line-Search Stopping" begin
 
-    mutable struct Tpb
-        d :: Number
-    end
-    h = Tpb(0.0)
     lsatx = LSAtT(0.0)
 
+    pb = ADNLPModel(x -> 0., ones(1)) #NLPModels of size 1
+
+    @test pb.meta.nvar == 1
+    @test unconstrained(pb)
+
     # Create the stopping object to test
-    stop = LS_Stopping(h, lsatx, max_iter = 10, optimality_check = armijo)
-    stop_without_check = LS_Stopping(h, lsatx, max_iter = 10)
+    stop = NLPStopping(pb, lsatx, max_iter = 10, optimality_check = armijo)
+    stop_without_check = NLPStopping(pb, lsatx, max_iter = 10)
     @test stop_without_check.meta.optimality_check == stop.meta.optimality_check
 
     meta = StoppingMeta(max_iter = 10, optimality_check = (x,y)-> armijo(x,y))
-    stop_meta = LS_Stopping(h, meta, lsatx)
-    stop_meta_src = LS_Stopping(h, meta, StopRemoteControl(), lsatx)
+    stop_meta = NLPStopping(pb, meta, lsatx)
+    stop_meta_src = NLPStopping(pb, meta, StopRemoteControl(), lsatx)
 
     @test stop_meta_src.stop_remote.cheap_check == stop.stop_remote.cheap_check
     @test stop_meta.stop_remote.cheap_check == stop.stop_remote.cheap_check

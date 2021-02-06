@@ -187,7 +187,6 @@ end
 
 # Stopping
 include("Stopping/GenericStoppingmod.jl")
-include("Stopping/LineSearchStoppingmod.jl")
 include("Stopping/NLPStoppingmod.jl")
 
 export GenericStopping, start!, stop!, cheap_stop!, update_and_start!
