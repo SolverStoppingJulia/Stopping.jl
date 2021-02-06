@@ -251,7 +251,7 @@ Note:
 - all the NLPModels have an attribute *counters* and a function *sum_counters(nlp)*.
 """
 function _resources_check!(stp    :: NLPStopping,
-                           x      :: AbstractVector)
+                           x      :: T) where T <: {AbstractVector,AbstractFloat}
 
   cntrs = stp.pb.counters
   update!(stp.current_state, evals = cntrs)
@@ -302,7 +302,7 @@ otherwise check `state.fx >= meta.unbounded_threshold`.
 - `state.cx` is unbounded if larger than `|meta.unbounded_threshold|``.
 """
 function _unbounded_problem_check!(stp  :: NLPStopping,
-                                   x    :: AbstractVector)
+                                   x    :: T) where T <: Union{AbstractVector, AbstractFloat}
 
   if isnan(stp.current_state.fx)
 	stp.current_state.fx = obj(stp.pb, x)
