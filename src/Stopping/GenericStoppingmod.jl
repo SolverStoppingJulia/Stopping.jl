@@ -196,7 +196,6 @@ function start!(stp :: AbstractStopping;
 
  state = stp.current_state
  src   = stp.stop_remote
- x     = state.x
 
  #Initialize the time counter
  if src.tired_check && isnan(stp.meta.start_time)
@@ -209,7 +208,8 @@ function start!(stp :: AbstractStopping;
 
  if !no_start_opt_check
   stp.meta.domainerror = if src.domain_check
-                            _domain_check(stp.current_state)
+                          #don't check current_score
+                            _domain_check(stp.current_state, current_score = true)
                         else 
                             stp.meta.domainerror
                         end
@@ -229,7 +229,7 @@ function start!(stp :: AbstractStopping;
    end
  end
  
- src.user_start_check && _user_check!(stp, x, true)
+ src.user_start_check && _user_check!(stp, state.x, true)
 
  OK = OK_check(stp.meta)
 
@@ -316,13 +316,14 @@ Note:
 """
 function stop!(stp :: AbstractStopping; kwargs...)
 
- x        = stp.current_state.x
- src      = stp.stop_remote
+ x   = stp.current_state.x
+ src = stp.stop_remote
 
  src.unbounded_and_domain_x_check && _unbounded_and_domain_x_check!(stp, x)
  stp.meta.domainerror = if src.domain_check
-                           #don't check x
-                           _domain_check(stp.current_state, x = true)
+                           #don't check x and current_score
+                           _domain_check(stp.current_state, x = true, 
+                                                            current_score = true)
                        else 
                            stp.meta.domainerror
                        end
