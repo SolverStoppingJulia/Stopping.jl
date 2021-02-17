@@ -10,7 +10,7 @@ using SolverTools: LineModel
 printstyled("State tests...\n")
 
 include("test-state/unit-test-GenericStatemod.jl")
-include("test-state/unit-test-LSAtTmod.jl")
+include("test-state/unit-test-OneDAtXmod.jl")
 include("test-state/unit-test-NLPAtXmod.jl")
 include("test-state/unit-test-ListOfStates.jl")
 

@@ -1,6 +1,6 @@
 @testset "Test Line-Search Stopping" begin
 
-    lsatx = LSAtT(0.0)
+    lsatx = OneDAtX(0.0)
 
     pb = ADNLPModel(x -> 0., ones(1)) #NLPModels of size 1
 
@@ -22,26 +22,26 @@
 
     # We tests different functions of stopping
     #This is no longer true as NaN is the _init_field for the quantities
-    #OK = update_and_start!(stop, x = 1.0, g₀ = NaN, h₀ = NaN, ht = NaN)
+    #OK = update_and_start!(stop, x = 1.0, g₀ = NaN, f₀ = NaN, fx = NaN)
     #@test OK == true
     #@test status(stop) == :DomainError
     #@test stop.current_state.x == 1.0
 
     reinit!(stop)
     @test stop.meta.domainerror == false
-    update!(lsatx, g₀ = 0.0, h₀ = 0.0, ht = 10.0)
+    update!(lsatx, g₀ = 0.0, f₀ = 0.0, fx = 10.0)
     @test (stop.current_state.g₀ == lsatx.g₀) && (lsatx.g₀ == 0.0)
-    @test (stop.current_state.h₀ == lsatx.h₀) && (lsatx.h₀ == 0.0)
-    @test (stop.current_state.ht == lsatx.ht) && (lsatx.ht == 10.0)
+    @test (stop.current_state.f₀ == lsatx.f₀) && (lsatx.f₀ == 0.0)
+    @test (stop.current_state.fx == lsatx.fx) && (lsatx.fx == 10.0)
     @test start!(stop) == false
     @test status(stop) == :Unknown
     #
-    @test update_and_stop!(stop, ht = -10.0) == true
+    @test update_and_stop!(stop, fx = -10.0) == true
     @test status(stop) == :Optimal
 
     reinit!(stop)
     @test stop.meta.optimal == false
-    update!(stop.current_state, ht = 10.0)
+    update!(stop.current_state, fx = 10.0)
     # Check if _tired_check works
     @test isnan(stop.meta.start_time) #default time value is NaN
     start!(stop) #start initializes the start_time
@@ -61,7 +61,7 @@
 
     reinit!(stop, rstate = true, x = 1.0)
     @test stop.current_state.x == 1.0
-    @test isnan(stop.current_state.ht)
+    @test isnan(stop.current_state.fx)
 
     ## _optimality_check! and _null_test are tested with NLP
     try
@@ -82,7 +82,7 @@
     catch
         @test true
     end
-    update!(stop.current_state, h₀ = 1.0, ht = 0.0, g₀ = 1.0, gt = 0.0)
+    update!(stop.current_state, f₀ = 1.0, fx = 0.0, g₀ = 1.0, gx = 0.0)
     @test wolfe(stop.pb, stop.current_state) == 0.0
     @test armijo_wolfe(stop.pb, stop.current_state) == 0.0
 
@@ -95,15 +95,15 @@
     #stop.pb = ADNLPModel(x -> 0.0, [1.0]) #Can't do that
     #stop.meta.max_f = -1
     #reinit!(stop.current_state, 0.0)
-    #@test stop.current_state.ht == nothing
+    #@test stop.current_state.fx == nothing
     #@test stop!(stop) == true
-    #@test stop.current_state.ht == nothing
+    #@test stop.current_state.fx == nothing
     #@test stop.meta.resources == true
 
     #We now check the tol_check_neg function
-    #stop.meta.optimality_check = (x,y) -> y.ht
-    #stop.current_state.ht = 0.0
-    #@test stop.current_state.ht == 0.0
+    #stop.meta.optimality_check = (x,y) -> y.fx
+    #stop.current_state.fx = 0.0
+    #@test stop.current_state.fx == 0.0
     #stop.meta.tol_check = (a,b,c) -> 1.0
     #@test Stopping._null_test(stop, Stopping._optimality_check!(stop))
     #stop.meta.tol_check_neg = (a,b,c) -> 0.5

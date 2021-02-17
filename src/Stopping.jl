@@ -27,7 +27,7 @@ The *GenericStopping* (with *GenericState*) provides a complete structure to han
 Then, depending on the problem structure, you can specialize a new Stopping by
 redefining a State and some functions specific to your problem.
 
-See also *NLPStopping*, *NLPAtX*, *LS_Stopping*, *LSAtT*
+See also *NLPStopping*, *NLPAtX*, *LS_Stopping*, *OneDAtX*
 
 In these examples, the function `optimality_residual` computes the residual of the optimality conditions is an additional attribute of the types.
 
@@ -62,12 +62,12 @@ abstract type AbstractState{S,T} end
 
 # State
 include("State/GenericStatemod.jl")
-include("State/LSAtTmod.jl")
+include("State/OneDAtXmod.jl")
 include("State/NLPAtXmod.jl")
 
 export scoretype, xtype
 export AbstractState, GenericState, update!, copy, compress_state!, copy_compress_state
-export LSAtT, update!
+export OneDAtX, update!
 export NLPAtX, update!
 
 include("State/ListOfStates.jl")
@@ -192,7 +192,6 @@ include("Stopping/NLPStoppingmod.jl")
 export GenericStopping, start!, stop!, cheap_stop!, update_and_start!
 export update_and_stop!, cheap_update_and_stop!, cheap_update_and_start!
 export fill_in!, reinit!, status
-export LS_Stopping
 export NLPStopping, unconstrained_check, unconstrained2nd_check, max_evals!
 export optim_check_bounded, KKT
 

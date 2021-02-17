@@ -194,7 +194,7 @@ fill_in!: (NLPStopping version) a function that fill in the required values in t
 
 `fill_in!( :: NLPStopping, :: Iterate; fx :: Iterate = nothing, gx :: Iterate = nothing, Hx :: Iterate = nothing, cx :: Iterate = nothing, Jx :: Iterate = nothing, lambda :: Iterate = nothing, mu :: Iterate = nothing, matrix_info :: Bool = true, kwargs...)`
 """
-function fill_in!(stp         :: NLPStopping,
+function fill_in!(stp         :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS, Uss},
                   x           :: AbstractVector;
                   fx          :: Iterate = nothing,
                   gx          :: Iterate = nothing,
@@ -204,7 +204,7 @@ function fill_in!(stp         :: NLPStopping,
                   lambda      :: Iterate = nothing,
                   mu          :: Iterate = nothing,
                   matrix_info :: Bool    = true,
-                  kwargs...)
+                  kwargs...) where {Pb, M, SRC, Stt <: NLPAtX, MStp, LoS, Uss}
 
  gfx = fx == nothing  ? obj(stp.pb, x)   : fx
  ggx = gx == nothing  ? grad(stp.pb, x)  : gx
@@ -237,6 +237,24 @@ function fill_in!(stp         :: NLPStopping,
                                         lambda = lc)
 end
 
+
+function fill_in!(stp         :: NLPStopping{Pb, M, SRC, OneDAtX{S,T}, MStp, LoS, Uss},
+                  x           :: T;
+                  fx          :: Union{T, Nothing} = nothing,
+                  gx          :: Union{T, Nothing} = nothing,
+                  f₀          :: Union{T, Nothing} = nothing,
+                  g₀          :: Union{T, Nothing} = nothing,
+                  kwargs...) where {Pb, M, SRC, S, T, MStp, LoS, Uss}
+
+ gfx = isnothing(fx) ? obj(stp.pb, x)    : fx
+ ggx = isnothing(gx) ? grad(stp.pb, x)   : gx
+ gf₀ = isnothing(f₀) ? obj(stp.pb, 0.0)  : f₀
+ gg₀ = isnothing(g₀) ? grad(stp.pb, 0.0) : g₀
+
+ return update!(stp.current_state, x=x, fx = gfx, gx = ggx, f₀ = gf₀, g₀ = gg₀)
+end
+
+
 """
 \\_resources\\_check!: check if the optimization algorithm has exhausted the resources.
                    This is the NLP specialized version that takes into account
@@ -251,7 +269,7 @@ Note:
 - all the NLPModels have an attribute *counters* and a function *sum_counters(nlp)*.
 """
 function _resources_check!(stp    :: NLPStopping,
-                           x      :: T) where T <: Union{AbstractVector,AbstractFloat}
+                           x      :: T) where T <: Union{AbstractVector, Number}
 
   cntrs = stp.pb.counters
   update!(stp.current_state, evals = cntrs)
@@ -300,7 +318,7 @@ end
 `_unbounded_problem_check!(:: NLPStopping, :: AbstractVector)`
 
 Note:
-- evaluate the objective function if `state.fx` for NLPAtX or `state.ht` for LSAtT is `_init_field` and store in `state`.
+- evaluate the objective function if `state.fx` for NLPAtX or `state.fx` for OneDAtX is `_init_field` and store in `state`.
 - do NOT evaluate the constraint function if `state.cx` is `_init_field` and store in `state`.
 - if minimize problem (i.e. nlp.meta.minimize is true) check if
 `state.fx <= - meta.unbounded_threshold`,
@@ -333,16 +351,16 @@ function _unbounded_problem_check!(stp  :: NLPStopping{Pb, M, SRC, Stt, MStp, Lo
 end
 
 function _unbounded_problem_check!(stp  :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS, Uss},
-                                   x    :: AbstractVector
-                                  ) where {Pb, M, SRC, Stt <: LSAtT, MStp, LoS, Uss}
-  if isnan(stp.current_state.ht)
-	  stp.current_state.ht = obj(stp.pb, x)
+                                   x    :: Union{AbstractVector, Number}
+                                  ) where {Pb, M, SRC, Stt <: OneDAtX, MStp, LoS, Uss}
+  if isnan(stp.current_state.fx)
+	  stp.current_state.fx = obj(stp.pb, x)
   end  
 
   if stp.pb.meta.minimize
-    f_too_large = stp.current_state.ht <= - stp.meta.unbounded_threshold
+    f_too_large = stp.current_state.fx <= - stp.meta.unbounded_threshold
   else
-    f_too_large = stp.current_state.ht >=   stp.meta.unbounded_threshold
+    f_too_large = stp.current_state.fx >=   stp.meta.unbounded_threshold
   end
 
   return stp.meta.unbounded_pb
