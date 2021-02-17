@@ -277,6 +277,43 @@ function fill_in!(stp         :: NLPStopping,
 end
 
 """
+For NLPStopping, `rcounters` set as true also reinitialize the counters.
+"""
+function reinit!(stp       :: NLPStopping;
+                 rstate    :: Bool = false,
+                 rlist     :: Bool = true,
+                 rcounters :: Bool = false,
+                 kwargs...)
+
+  stp.meta.start_time  = NaN
+  stp.meta.optimality0 = 1.0
+
+  #reinitialize the boolean status
+  reinit!(stp.meta)
+
+  #reinitialize the counter of stop
+  stp.meta.nb_of_stop = 0
+
+  #reinitialize the list of states
+  if rlist && (typeof(stp.listofstates) != VoidListStates)
+    #TODO: Warning we cannot change the type of ListStates 
+    stp.listofstates = rstate ? VoidListStates() : ListStates(stp.current_state)
+  end
+
+  #reinitialize the state
+  if rstate
+    reinit!(stp.current_state; kwargs...)
+  end
+
+  #reinitialize the NLPModel Counters
+  if rcounters && typeof(stp.pb) <: AbstractNLPModel
+    NLPModels.reset!(stp.pb)
+  end
+
+  return stp
+end
+
+"""
 \\_resources\\_check!: check if the optimization algorithm has exhausted the resources.
                    This is the NLP specialized version that takes into account
                    the evaluation of the functions following the sum_counters
