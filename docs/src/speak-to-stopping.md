@@ -1,6 +1,6 @@
 ## Do you speak Stopping?
 
-When using a Stopping-compatible algorithm, a.k.a an algorithm that takes a Stopping as an input and return it,
+When using a Stopping-compatible algorithm, a.k.a an algorithm that takes a Stopping as an input and update it,
 the user is free to explore the results and influence the execution of the algorithm.
 
 First, we need to create a Stopping.
@@ -14,13 +14,13 @@ One can also creates separately a state and a meta to form a Stopping:
 ```julia
 state = GenericState(x)
 meta  = StoppingMeta(max_time = 10.)
-stp = GenericStopping(pb, meta, state)
+stp   = GenericStopping(pb, meta, state)
 ```
-Once the `Stopping` has been initialized, we can call the algorithm and exploit the output.
+Once the `Stopping` has been initialized, we call the algorithm and exploit the output.
 ```julia
 stp = rand_solver(stp, x) #call your favorite solver
 ```
-To get the reason why the algorithm stopped we use `status`.
+To understand why the algorithm stopped we use `status`.
 ```julia
 status(stp) #or `status(stp, rlist = true)` to have the complete list.
 ```

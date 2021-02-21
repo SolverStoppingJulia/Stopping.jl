@@ -16,17 +16,20 @@ Usual instances of `AbstractStopping` contains a `StopRemoteControl <: AbstractS
 - `cheap_check                  :: Bool`
 Only the last attributes, `cheap_check`, is not related with a specific check. Set as `true`, it stopped whenever one of the checks is successful and the algorithm needs to stop. It is `false` by default. All the other entries are set as `true` by default, i.e.
 ```julia
-src = StopRemoteControl() #initializes a remote control with all the checks on.
+#initializes a remote control with all the checks on.
+src = StopRemoteControl()
 ```
 In order to remove some checks, it suffices to use keywords:
 ```julia
-src = StopRemoteControl(tired_check = false, iteration_check = false) #remove time and iteration checks.
+#remove time and iteration checks.
+src = StopRemoteControl(tired_check = false, iteration_check = false)
 ```
 
 ### FAQ: Is there performance issues with all these checks?
 Assuming that `x` is a vector of length `n`, some of these checks are indeed in O(n), which can be undesirable for some applications. In this case, you can either initialize a "cheap" remote control as follows
 ```julia
-src = cheap_stop_remote_control() #initialize a StopRemoteControl with 0(n) checks set as false
+#initialize a StopRemoteControl with 0(n) checks set as false
+src = cheap_stop_remote_control()
 ```
 or deactivate the tests by hand as shown previously.
 
