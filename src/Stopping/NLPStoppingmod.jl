@@ -245,27 +245,27 @@ function fill_in!(stp         :: NLPStopping,
                   matrix_info :: Bool    = true,
                   kwargs...)
 
- gfx = fx == nothing  ? obj(stp.pb, x)   : fx
- ggx = gx == nothing  ? grad(stp.pb, x)  : gx
+ gfx = isnothing(fx)  ? obj(stp.pb, x)   : fx
+ ggx = isnothing(gx)  ? grad(stp.pb, x)  : gx
 
- if Hx == nothing && matrix_info
+ if isnothing(Hx) && matrix_info
    gHx = hess(stp.pb, x)
  else
    gHx = Hx
  end
 
  if stp.pb.meta.ncon > 0
-     gJx = Jx == nothing ? jac(stp.pb, x)  : Jx
-     gcx = cx == nothing ? cons(stp.pb, x) : cx
+     gJx = isnothing(Jx) ? jac(stp.pb, x)  : Jx
+     gcx = isnothing(cx) ? cons(stp.pb, x) : cx
  else
      gJx = stp.current_state.Jx
      gcx = stp.current_state.cx
  end
 
  #update the Lagrange multiplier if one of the 2 is asked
- if (stp.pb.meta.ncon > 0 || has_bounds(stp.pb)) && (lambda == nothing || mu == nothing)
+ if (stp.pb.meta.ncon > 0 || has_bounds(stp.pb)) && (isnothing(lambda) || isnothing(mu))
   lb, lc = _compute_mutliplier(stp.pb, x, ggx, gcx, gJx; kwargs...)
- elseif  stp.pb.meta.ncon == 0 && !has_bounds(stp.pb) && lambda == nothing
+ elseif  stp.pb.meta.ncon == 0 && !has_bounds(stp.pb) && isnothing(lambda)
   lb, lc = mu, stp.current_state.lambda
  else
   lb, lc = mu, lambda

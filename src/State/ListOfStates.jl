@@ -121,7 +121,7 @@ function print(list :: AbstractListStates;
    end
    df = DataFrame(tab)
 
-   if print_sym == nothing
+   if isnothing(print_sym)
     verbose && print(df)
    else
     verbose && print(df[!, print_sym])

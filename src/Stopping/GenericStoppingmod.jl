@@ -711,7 +711,7 @@ function status(stp :: AbstractStopping; list = false)
   if list_status == zeros(0) list_status = [:Unknown] end
  else
   list_status = findfirst(x -> getfield(stp.meta, x), tt)
-  if list_status == nothing list_status = :Unknown end
+  if isnothing(list_status) list_status = :Unknown end
  end
 
  return list_status
