@@ -171,7 +171,7 @@ function show(io :: IO, stp :: AbstractStopping)
       print("Problem is ")
       show(io, stp.pb)
   catch
-      print("Problem is $(typeof(stp.pb)).")
+      print("Problem is $(typeof(stp.pb)). ")
   end
   if !isnothing(stp.stopping_user_struct)
      try

@@ -670,8 +670,10 @@ status: returns the status of the algorithm:
 
 `status(:: AbstractStopping; list = false)`
 
-The different status are:
+The different statuses are:
 - Optimal: reached an optimal solution.
+- SubProblemFailure
+- SubOptimal: reached an acceptable solution.
 - Unbounded: current iterate too large in norm.
 - UnboundedPb: unbouned problem.
 - Stalled: stalled algorithm.
@@ -685,6 +687,8 @@ The different status are:
                considered feasible.
 - StopByUser: stopped by the user.
 - DomainError: there is a NaN somewhere.
+- Exception: unhandled exception
+- Unknwon: if stopped for reasons unknown by Stopping.
 
 Note:
   - Set keyword argument *list* to true, to get an Array with all the status.
@@ -692,27 +696,28 @@ Note:
 """
 function status(stp :: AbstractStopping; list = false)
 
- tt = Dict([(:Optimal, :optimal),
-            (:SubProblemFailure, :fail_sub_pb),
-            (:SubOptimal, :suboptimal),
-            (:Unbounded, :unbounded),
-            (:UnboundedPb, :unbounded_pb),
-            (:Stalled, :stalled),
-            (:IterationLimit, :iteration_limit),
-            (:TimeLimit, :tired),
-            (:EvaluationLimit, :resources),
-            (:ResourcesOfMainProblemExhausted, :main_pb),
-            (:Infeasible, :infeasible),
-            (:StopByUser, :stopbyuser),
-            (:DomainError, :domainerror)])
+  tt = Dict([(:Optimal, :optimal),
+             (:SubProblemFailure, :fail_sub_pb),
+             (:SubOptimal, :suboptimal),
+             (:Unbounded, :unbounded),
+             (:UnboundedPb, :unbounded_pb),
+             (:Stalled, :stalled),
+             (:IterationLimit, :iteration_limit),
+             (:TimeLimit, :tired),
+             (:EvaluationLimit, :resources),
+             (:ResourcesOfMainProblemExhausted, :main_pb),
+             (:Infeasible, :infeasible),
+             (:StopByUser, :stopbyuser),
+             (:Exception, :exception),
+             (:DomainError, :domainerror)])
 
- if list
-  list_status = findall(x -> getfield(stp.meta, x), tt)
-  if list_status == zeros(0) list_status = [:Unknown] end
- else
-  list_status = findfirst(x -> getfield(stp.meta, x), tt)
-  if isnothing(list_status) list_status = :Unknown end
- end
+  if list
+    list_status = findall(x -> getfield(stp.meta, x), tt)
+    if list_status == zeros(0) list_status = [:Unknown] end
+  else
+    list_status = findfirst(x -> getfield(stp.meta, x), tt)
+    if isnothing(list_status) list_status = :Unknown end
+  end
 
- return list_status
+  return list_status
 end
