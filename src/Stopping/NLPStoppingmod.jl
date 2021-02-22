@@ -245,27 +245,27 @@ function fill_in!(stp         :: NLPStopping,
                   matrix_info :: Bool    = true,
                   kwargs...)
 
- gfx = fx == nothing  ? obj(stp.pb, x)   : fx
- ggx = gx == nothing  ? grad(stp.pb, x)  : gx
+ gfx = isnothing(fx)  ? obj(stp.pb, x)   : fx
+ ggx = isnothing(gx)  ? grad(stp.pb, x)  : gx
 
- if Hx == nothing && matrix_info
+ if isnothing(Hx) && matrix_info
    gHx = hess(stp.pb, x)
  else
    gHx = Hx
  end
 
  if stp.pb.meta.ncon > 0
-     gJx = Jx == nothing ? jac(stp.pb, x)  : Jx
-     gcx = cx == nothing ? cons(stp.pb, x) : cx
+     gJx = isnothing(Jx) ? jac(stp.pb, x)  : Jx
+     gcx = isnothing(cx) ? cons(stp.pb, x) : cx
  else
      gJx = stp.current_state.Jx
      gcx = stp.current_state.cx
  end
 
  #update the Lagrange multiplier if one of the 2 is asked
- if (stp.pb.meta.ncon > 0 || has_bounds(stp.pb)) && (lambda == nothing || mu == nothing)
+ if (stp.pb.meta.ncon > 0 || has_bounds(stp.pb)) && (isnothing(lambda) || isnothing(mu))
   lb, lc = _compute_mutliplier(stp.pb, x, ggx, gcx, gJx; kwargs...)
- elseif  stp.pb.meta.ncon == 0 && !has_bounds(stp.pb) && lambda == nothing
+ elseif  stp.pb.meta.ncon == 0 && !has_bounds(stp.pb) && isnothing(lambda)
   lb, lc = mu, stp.current_state.lambda
  else
   lb, lc = mu, lambda
@@ -274,6 +274,43 @@ function fill_in!(stp         :: NLPStopping,
  return update!(stp.current_state, x=x, fx = gfx,    gx = ggx, Hx = gHx,
                                         cx = gcx,    Jx = gJx, mu = lb,
                                         lambda = lc)
+end
+
+"""
+For NLPStopping, `rcounters` set as true also reinitialize the counters.
+"""
+function reinit!(stp       :: NLPStopping;
+                 rstate    :: Bool = false,
+                 rlist     :: Bool = true,
+                 rcounters :: Bool = false,
+                 kwargs...)
+
+  stp.meta.start_time  = NaN
+  stp.meta.optimality0 = 1.0
+
+  #reinitialize the boolean status
+  reinit!(stp.meta)
+
+  #reinitialize the counter of stop
+  stp.meta.nb_of_stop = 0
+
+  #reinitialize the list of states
+  if rlist && (typeof(stp.listofstates) != VoidListStates)
+    #TODO: Warning we cannot change the type of ListStates 
+    stp.listofstates = rstate ? VoidListStates() : ListStates(stp.current_state)
+  end
+
+  #reinitialize the state
+  if rstate
+    reinit!(stp.current_state; kwargs...)
+  end
+
+  #reinitialize the NLPModel Counters
+  if rcounters && typeof(stp.pb) <: AbstractNLPModel
+    NLPModels.reset!(stp.pb)
+  end
+
+  return stp
 end
 
 """

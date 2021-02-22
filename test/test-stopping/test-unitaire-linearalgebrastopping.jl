@@ -126,16 +126,16 @@ op_stop = LAStopping(LinearSystem(LinearOperator(A), b),
 opbis_stop = LAStopping(LinearOperator(A), b)
 
 try
- @time RandomizedBlockKaczmarz(la_stop)
+ @timed RandomizedBlockKaczmarz(la_stop)
  @test status(la_stop) == :Optimal
- @time RandomizedBlockKaczmarz(sa_stop)
+ @timed RandomizedBlockKaczmarz(sa_stop)
  @test status(sa_stop) == :Optimal
 catch
     @warn "If LSSModel.A does not exist consider [la_stop.pb.Avals[i,j] for (i) in la_stop.pb.Arows, j in la_stop.pb.Acols]"
     #https://github.com/JuliaSmoothOptimizers/NLPModels.jl/blob/master/src/lls_model.jl
 end
 
-@time RandomizedBlockKaczmarz(op_stop)
+@timed RandomizedBlockKaczmarz(op_stop)
 @test status(op_stop) == :Optimal
 
 update!(la_stop.current_state, x = xref)

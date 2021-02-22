@@ -119,9 +119,9 @@ function print(list :: AbstractListStates;
    for k in fieldnames(typeof(list.list[1,1]))
       tab = vcat(tab, [getfield(i[1], k) for i in list.list]');
    end
-   df = DataFrame(tab)
+   df = DataFrame(tab, :auto)
 
-   if print_sym == nothing
+   if isnothing(print_sym)
     verbose && print(df)
    else
     verbose && print(df[!, print_sym])

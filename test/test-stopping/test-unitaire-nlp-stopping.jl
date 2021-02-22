@@ -81,13 +81,15 @@
   stop_bnd.meta.optimality_check = (x,y) -> NaN
   start!(stop_bnd)
   @test stop_bnd.meta.domainerror == true
-  reinit!(stop_bnd)
+  reinit!(stop_bnd, rcounters = true)
+  @test neval_grad(stop_bnd.pb) == 0
   @test stop_bnd.meta.domainerror == false
   stop!(stop_bnd)
   @test stop_bnd.meta.domainerror == true
 
   stop_bnd.meta.optimality_check = (x,y) -> 0.0
-  reinit!(stop_bnd)
+  reinit!(stop_bnd, rcounters = true)
+  @test neval_grad(stop_bnd.pb) == 0
   fill_in!(stop_bnd, zeros(5), mu = ones(5), lambda = zeros(0))
   @test stop_bnd.current_state.mu == ones(5)
   @test stop_bnd.current_state.lambda == zeros(0)

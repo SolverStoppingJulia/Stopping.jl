@@ -153,9 +153,9 @@ function show(io :: IO, stp :: VoidStopping)
 end
 function show(io :: IO, stp :: AbstractStopping)
   println(io, typeof(stp))
-  print(io, stp.meta)
-  print(io, stp.stop_remote)
-  print(io, stp.current_state)
+  #print(io, stp.meta) #we can always print stp.meta
+  #print(io, stp.stop_remote) #we can always print stp.stop_remote
+  #print(io, stp.current_state) #we can always print stp.current_state
   if !(typeof(stp.main_stp) <: VoidStopping)
    println(io, "It has a main_stp $(typeof(stp.main_stp))")
   else
@@ -171,17 +171,17 @@ function show(io :: IO, stp :: AbstractStopping)
       print("Problem is ")
       show(io, stp.pb)
   catch
-      print("Problem is $(typeof(stp.pb)).")
+      print("Problem is $(typeof(stp.pb)). ")
   end
-  if stp.stopping_user_struct != nothing
+  if !isnothing(stp.stopping_user_struct)
      try
         print("The user-defined structure is ")
         show(io, stp.stopping_user_struct)
      catch
-        print("The user-defined structure is  of type $(typeof(stp.stopping_user_struct)).")
+        print("The user-defined structure is  of type $(typeof(stp.stopping_user_struct)).\n")
      end
   else
-      print(io, "No user-defined structure is furnished.")
+      print(io, "No user-defined structure is furnished.\n")
   end
 end
 

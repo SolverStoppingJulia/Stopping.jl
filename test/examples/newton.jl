@@ -31,7 +31,7 @@ function newton(stp :: NLPStopping)
 
     while !OK
         #Compute the Newton direction
-        d = (state.Hx + state.Hx' - diagm(0 => diag(state.Hx))) \ (- state.gx)
+        d = Symmetric(state.Hx, :L) \ (- state.gx)
         #Update the iterate
         xt = xt + d
         #Update the State and call the Stopping with stop!

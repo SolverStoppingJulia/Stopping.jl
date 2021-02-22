@@ -39,3 +39,6 @@ include("test-stopping/test-unitaire-linearalgebrastopping.jl")
 printstyled("HowTo tests...\n")
 
 include("examples/runhowto.jl")
+
+#printstyled("Run OptimSolver tests...\n")
+#include("examples/run-optimsolver.jl")

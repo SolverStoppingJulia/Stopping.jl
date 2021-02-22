@@ -1,8 +1,7 @@
 name = "Stopping"
 uuid = "c4fe5a9e-e7fb-5c3d-89d5-7f405ab2214f"
-authors = ["Jean-Pierre Dussault <Jean-Pierre.Dussault@USherbrooke.CA>","Tangi Migot <tangi.migot@gmail.com>","Sam Goyette <samuel.goyette@usherbrooke.ca>"]
+authors = ["Jean-Pierre Dussault <Jean-Pierre.Dussault@USherbrooke.CA>", "Tangi Migot <tangi.migot@gmail.com>", "Sam Goyette <samuel.goyette@usherbrooke.ca>"]
 version = "0.2.5"
-
 
 [deps]
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
@@ -14,7 +13,6 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
-#NLPModels = "0.10.0, 1"
 julia = "^1.0.0"
 
 [extras]

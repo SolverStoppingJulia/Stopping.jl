@@ -158,7 +158,7 @@ Returns the optimality status of the problem as a boolean.
  Note: Kwargs are forwarded to the *update!* call.
 """
 function update_and_start!(stp :: AbstractStopping; 
-                           no_start_opt_check :: Bool = false, 
+                           no_opt_check :: Bool = false, 
                            kwargs...)
 
   if stp.stop_remote.cheap_check
@@ -166,7 +166,7 @@ function update_and_start!(stp :: AbstractStopping;
   else
     update!(stp.current_state; kwargs...)
   end
-  OK = start!(stp, no_start_opt_check = no_start_opt_check)
+  OK = start!(stp, no_opt_check = no_opt_check)
 
   return OK
 end
@@ -174,11 +174,11 @@ end
 """
  Update the Stopping and return *true* if we must stop.
 
- `start!(:: AbstractStopping; no_start_opt_check :: Bool = false, kwargs...)`
+ `start!(:: AbstractStopping; no_opt_check :: Bool = false, kwargs...)`
 
  Purpose is to know if there is a need to even perform an optimization algorithm
  or if we are at an optimal solution from the beginning. 
- Set `no_start_opt_check` to *true* avoid checking optimality and domain errors.
+ Set `no_opt_check` to *true* avoid checking optimality and domain errors.
 
  The function `start!` successively calls: `_domain_check(stp, x)`,
  `_optimality_check!(stp, x)`, `_null_test(stp, x)` and 
@@ -186,17 +186,16 @@ end
 
  Note: - `start!` initializes `stp.meta.start_time` (if not done before),
  `stp.current_state.current_time` and `stp.meta.optimality0` 
- (if `no_start_opt_check` is false).   
+ (if `no_opt_check` is false).   
        - Keywords argument are passed to the `_optimality_check!` call.   
        - Compatible with the `StopRemoteControl`.   
 """
 function start!(stp :: AbstractStopping; 
-                no_start_opt_check :: Bool = false,
+                no_opt_check :: Bool = false,
                 kwargs...)
 
  state = stp.current_state
  src   = stp.stop_remote
- x     = state.x
 
  #Initialize the time counter
  if src.tired_check && isnan(stp.meta.start_time)
@@ -207,9 +206,10 @@ function start!(stp :: AbstractStopping;
    _update_time!(state, stp.meta.start_time)
  end
 
- if !no_start_opt_check
+ if !no_opt_check
   stp.meta.domainerror = if src.domain_check
-                            _domain_check(stp.current_state)
+                          #don't check current_score
+                            _domain_check(stp.current_state, current_score = true)
                         else 
                             stp.meta.domainerror
                         end
@@ -229,7 +229,7 @@ function start!(stp :: AbstractStopping;
    end
  end
  
- src.user_start_check && _user_check!(stp, x, true)
+ src.user_start_check && _user_check!(stp, state.x, true)
 
  OK = OK_check(stp.meta)
 
@@ -314,19 +314,22 @@ Note:
 - Kwargs are sent to the *\\_optimality\\_check!* call.
 - If listofstates != VoidListStates, call add\\_to\\_list! to update the list of State.
 """
-function stop!(stp :: AbstractStopping; kwargs...)
+function stop!(stp :: AbstractStopping; 
+               no_opt_check :: Bool = false, 
+               kwargs...)
 
- x        = stp.current_state.x
- src      = stp.stop_remote
+ x   = stp.current_state.x
+ src = stp.stop_remote
 
  src.unbounded_and_domain_x_check && _unbounded_and_domain_x_check!(stp, x)
  stp.meta.domainerror = if src.domain_check
-                           #don't check x
-                           _domain_check(stp.current_state, x = true)
+                           #don't check x and current_score
+                           _domain_check(stp.current_state, x = true, 
+                                                            current_score = true)
                        else 
                            stp.meta.domainerror
                        end
- if !stp.meta.domainerror
+ if !no_opt_check && !stp.meta.domainerror
    # Optimality check
    if src.optimality_check
       score = _optimality_check!(stp; kwargs...)
@@ -667,8 +670,10 @@ status: returns the status of the algorithm:
 
 `status(:: AbstractStopping; list = false)`
 
-The different status are:
+The different statuses are:
 - Optimal: reached an optimal solution.
+- SubProblemFailure
+- SubOptimal: reached an acceptable solution.
 - Unbounded: current iterate too large in norm.
 - UnboundedPb: unbouned problem.
 - Stalled: stalled algorithm.
@@ -682,6 +687,8 @@ The different status are:
                considered feasible.
 - StopByUser: stopped by the user.
 - DomainError: there is a NaN somewhere.
+- Exception: unhandled exception
+- Unknwon: if stopped for reasons unknown by Stopping.
 
 Note:
   - Set keyword argument *list* to true, to get an Array with all the status.
@@ -689,27 +696,28 @@ Note:
 """
 function status(stp :: AbstractStopping; list = false)
 
- tt = Dict([(:Optimal, :optimal),
-            (:SubProblemFailure, :fail_sub_pb),
-            (:SubOptimal, :suboptimal),
-            (:Unbounded, :unbounded),
-            (:UnboundedPb, :unbounded_pb),
-            (:Stalled, :stalled),
-            (:IterationLimit, :iteration_limit),
-            (:TimeLimit, :tired),
-            (:EvaluationLimit, :resources),
-            (:ResourcesOfMainProblemExhausted, :main_pb),
-            (:Infeasible, :infeasible),
-            (:StopByUser, :stopbyuser),
-            (:DomainError, :domainerror)])
+  tt = Dict([(:Optimal, :optimal),
+             (:SubProblemFailure, :fail_sub_pb),
+             (:SubOptimal, :suboptimal),
+             (:Unbounded, :unbounded),
+             (:UnboundedPb, :unbounded_pb),
+             (:Stalled, :stalled),
+             (:IterationLimit, :iteration_limit),
+             (:TimeLimit, :tired),
+             (:EvaluationLimit, :resources),
+             (:ResourcesOfMainProblemExhausted, :main_pb),
+             (:Infeasible, :infeasible),
+             (:StopByUser, :stopbyuser),
+             (:Exception, :exception),
+             (:DomainError, :domainerror)])
 
- if list
-  list_status = findall(x -> getfield(stp.meta, x), tt)
-  if list_status == zeros(0) list_status = [:Unknown] end
- else
-  list_status = findfirst(x -> getfield(stp.meta, x), tt)
-  if list_status == nothing list_status = :Unknown end
- end
+  if list
+    list_status = findall(x -> getfield(stp.meta, x), tt)
+    if list_status == zeros(0) list_status = [:Unknown] end
+  else
+    list_status = findfirst(x -> getfield(stp.meta, x), tt)
+    if isnothing(list_status) list_status = :Unknown end
+  end
 
- return list_status
+  return list_status
 end
