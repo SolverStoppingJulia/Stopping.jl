@@ -6,7 +6,7 @@ makedocs(
     format = Documenter.HTML(assets = ["assets/style.css"], prettyurls = get(ENV, "CI", nothing) == "true"),
     modules = [Stopping],
     pages = [
-             "Home" => "index.md"
+             "Home" => "index.md",
              "API" => "api.md",
              "Stopping's ID" => "idcard.md",
              "State's ID" => "idcard-state.md",
