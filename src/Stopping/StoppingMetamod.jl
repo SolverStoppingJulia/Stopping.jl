@@ -132,7 +132,8 @@ function StoppingMeta(;atol               :: Number   = 1.0e-6,
                       max_time            :: Float64  = 300.0,
                       start_time          :: Float64  = NaN,
                       meta_user_struct    :: Any      = nothing,
-                      user_check_func!    :: Function = (stp :: AbstractStopping, start :: Bool) -> nothing)
+                      user_check_func!    :: Function = (stp :: AbstractStopping, start :: Bool) -> nothing,
+                      kwargs...)
 
   check_pos = tol_check(atol, rtol, optimality0)
   check_neg = tol_check_neg(atol, rtol, optimality0)
