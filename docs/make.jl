@@ -14,7 +14,7 @@ makedocs(
              "Optimality in Stopping" => "howstopcheckoptimality.md",
              "Stopping in action" => "example-basic-Newton.md",
              "Stop remote control" => "idcard-stopremote.md",
-             "Stopping workflow" => "stop!-workflow.md",
+             "Stopping workflow" => "stop-workflow.md",
              "NLPStopping" => "nlpstopping.md",
              "LAStopping" => "lastopping.md",
              "Readme" => "index_tuto.md",
