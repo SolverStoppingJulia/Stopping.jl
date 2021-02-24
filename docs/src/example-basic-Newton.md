@@ -6,8 +6,11 @@ We present here a typical iterative algorithm to illustrate how to use Stopping.
 function rand_solver(stp :: AbstractStopping, x0 :: AbstractVector)
 
     x = x0
-    #First, call start! to check optimality and set an initial configuration
-    OK = update_and_start!(stp, x = x)
+    #First, call update and start! to check optimality and set an initial configuration
+    update(stp, x = x)
+    OK = start!(stp)
+    # which may be combined in a single call equivalent
+    #OK = update_and_start!(stp, x = x)
 
     while !OK
         #Run some computations and update the iterate
