@@ -23,7 +23,7 @@ end
 ```
 This example shows the most basic features of Stopping. It does many checks for you. In this innocent-looking algorithm, the call to `update_and_start!` and `update_and_stop!` will verifies unboundedness of `x`, the time spent in the algorithm, the number of iterations (= number of call to `stop!`), and the domain of `x` (in case some of its components become `NaN` for instance).
 
-### FAQ: How can I remove some checks done by Stopping?
+### FAQ: How can I disable some checks done by Stopping?
 The native instances of `AbstractStopping` available in Stopping.jl all contain an attribute `stop_remote`.
 This is a remote control for Stopping's checks.
 ```julia
