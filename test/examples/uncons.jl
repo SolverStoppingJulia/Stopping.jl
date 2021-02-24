@@ -48,7 +48,7 @@ function global_newton(stp       :: NLPStopping,
     #main loop
     while !OK
         #Compute the Newton direction
-        d = (state.Hx + state.Hx' - diagm(0 => diag(state.Hx))) \ (-state.gx)
+        d = Symmetric(state.Hx, :L) \ (-state.gx)
 
         #Prepare the substopping
         #We reinitialize the stopping before each new use

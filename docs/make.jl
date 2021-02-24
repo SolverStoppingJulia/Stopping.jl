@@ -7,8 +7,17 @@ makedocs(
     modules = [Stopping],
     pages = [
              "Home" => "index.md",
-"Home2" => "index2.md",
              "API" => "api.md",
+             "Stopping's ID" => "idcard.md",
+             "State's ID" => "idcard-state.md",
+             "Meta's ID" => "idcard-stoppingmeta.md",
+             "Optimality in Stopping" => "howstopcheckoptimality.md",
+             "Stopping in action" => "example-basic-Newton.md",
+             "Stop remote control" => "idcard-stopremote.md",
+             "Stopping workflow" => "stop-workflow.md",
+             "NLPStopping" => "nlpstopping.md",
+             "LAStopping" => "lastopping.md",
+             "Readme" => "index_tuto.md",
              "Examples and tutorials" => "tutorial.md",
              "How to State" => "howtostate.md",
              "How to State for NLPs" => "howtostate-nlp.md",
@@ -31,5 +40,4 @@ makedocs(
 # See "Hosting Documentation" and deploydocs() in the Documenter manual
 # for more information.
 deploydocs(repo = "github.com/vepiteski/Stopping.jl")
-#deploydocs(repo = "github.com/Goysa2/Stopping.jl")#
 #https://juliadocs.github.io/Documenter.jl/stable/man/hosting/ ?

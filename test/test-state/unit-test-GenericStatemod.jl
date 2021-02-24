@@ -2,6 +2,8 @@
 x0 = ones(6)
 state0 = GenericState(x0)
 
+show(state0)
+
 @test scoretype(state0) == Float64
 @test xtype(state0) == Array{Float64,1}
 
@@ -49,3 +51,4 @@ reinit!(state0, current_time = 0.5)
 @test !Stopping._check_nan_miss(spzeros(0))
 @test !Stopping._check_nan_miss(zeros(0))
 @test !Stopping._check_nan_miss(missing)
+@test !Stopping._check_nan_miss(spzeros(0,0))

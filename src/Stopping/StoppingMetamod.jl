@@ -34,7 +34,8 @@ Attributes:
 - main_pb : status.
 - domainerror : status.
 - suboptimal : status.
-- stopbyuser : status
+- stopbyuser : status.
+- exception : status.
 
 - meta_user_struct :  Any
 - user_check_func! : Function (AbstractStopping, Bool) -> callback.
@@ -62,55 +63,56 @@ mutable struct StoppingMeta{TolType <: Number,
                             IntType <: Int
                             } <: AbstractStoppingMeta
 
- # problem tolerances
- atol                :: TolType # absolute tolerance
- rtol                :: TolType # relative tolerance
- optimality0         :: TolType # value of the optimality residual at starting point
- tol_check           :: Function #function of atol, rtol and optimality0
-                                 #by default: tol_check = max(atol, rtol * optimality0)
-                                 #other example: atol + rtol * optimality0
- tol_check_neg       :: Function # function of atol, rtol and optimality0
- check_pos           :: CheckType #pre-allocation for positive tolerance
- check_neg           :: CheckType #pre-allocation for negative tolerance
- optimality_check    :: Function # stopping criterion
-                                 # Function of (pb, state; kwargs...)
-                                 #return type  :: Union{Number, eltype(stp.meta)}
- retol               :: Bool #true if tolerances are updated
+  # problem tolerances
+  atol                :: TolType # absolute tolerance
+  rtol                :: TolType # relative tolerance
+  optimality0         :: TolType # value of the optimality residual at starting point
+  tol_check           :: Function #function of atol, rtol and optimality0
+                                  #by default: tol_check = max(atol, rtol * optimality0)
+                                  #other example: atol + rtol * optimality0
+  tol_check_neg       :: Function # function of atol, rtol and optimality0
+  check_pos           :: CheckType #pre-allocation for positive tolerance
+  check_neg           :: CheckType #pre-allocation for negative tolerance
+  optimality_check    :: Function # stopping criterion
+                                  # Function of (pb, state; kwargs...)
+                                  #return type  :: Union{Number, eltype(stp.meta)}
+  retol               :: Bool #true if tolerances are updated
 
- unbounded_threshold :: TolType # beyond this value, the problem is declared unbounded
- unbounded_x         :: TolType # beyond this value, ||x||_\infty is unbounded
+  unbounded_threshold :: TolType # beyond this value, the problem is declared unbounded
+  unbounded_x         :: TolType # beyond this value, ||x||_\infty is unbounded
 
- # fine grain control on ressources
- max_f               :: IntType    # max function evaluations allowed TODO: used?
- max_cntrs           :: Dict{Symbol,Int64} #contains the detailed max number of evaluations
+  # fine grain control on ressources
+  max_f               :: IntType    # max function evaluations allowed TODO: used?
+  max_cntrs           :: Dict{Symbol,Int64} #contains the detailed max number of evaluations
 
- # global control on ressources
- max_eval            :: IntType    # max evaluations (f+g+H+Hv) allowed TODO: used?
- max_iter            :: IntType    # max iterations allowed
- max_time            :: Float64 # max elapsed time allowed
+  # global control on ressources
+  max_eval            :: IntType    # max evaluations (f+g+H+Hv) allowed TODO: used?
+  max_iter            :: IntType    # max iterations allowed
+  max_time            :: Float64 # max elapsed time allowed
 
- #intern Counters
- nb_of_stop          :: IntType
- #intern start_time
- start_time          :: Float64
+  #intern Counters
+  nb_of_stop          :: IntType
+  #intern start_time
+  start_time          :: Float64
 
- # stopping properties status of the problem)
- fail_sub_pb         :: Bool
- unbounded           :: Bool
- unbounded_pb        :: Bool
- tired               :: Bool
- stalled             :: Bool
- iteration_limit     :: Bool
- resources           :: Bool
- optimal             :: Bool
- infeasible          :: Bool
- main_pb             :: Bool
- domainerror         :: Bool
- suboptimal          :: Bool
- stopbyuser          :: Bool
- 
- meta_user_struct    :: MUS
- user_check_func!    :: Function #called dans Stopping._user_check!(stp, x)
+  # stopping properties status of the problem)
+  fail_sub_pb         :: Bool
+  unbounded           :: Bool
+  unbounded_pb        :: Bool
+  tired               :: Bool
+  stalled             :: Bool
+  iteration_limit     :: Bool
+  resources           :: Bool
+  optimal             :: Bool
+  infeasible          :: Bool
+  main_pb             :: Bool
+  domainerror         :: Bool
+  suboptimal          :: Bool
+  stopbyuser          :: Bool
+  exception           :: Bool
+  
+  meta_user_struct    :: MUS
+  user_check_func!    :: Function #called dans Stopping._user_check!(stp, x)
 
 end
 
@@ -130,15 +132,16 @@ function StoppingMeta(;atol               :: Number   = 1.0e-6,
                       max_time            :: Float64  = 300.0,
                       start_time          :: Float64  = NaN,
                       meta_user_struct    :: Any      = nothing,
-                      user_check_func!    :: Function = (stp :: AbstractStopping, start :: Bool) -> nothing)
+                      user_check_func!    :: Function = (stp :: AbstractStopping, start :: Bool) -> nothing,
+                      kwargs...)
 
   check_pos = tol_check(atol, rtol, optimality0)
   check_neg = tol_check_neg(atol, rtol, optimality0)
 
- # This might be an expansive step.
- # if (true in (check_pos .< check_neg)) #any(x -> x, check_pos .< check_neg)
- #     throw(ErrorException("StoppingMeta: tol_check should be greater than tol_check_neg."))
- # end
+  # This might be an expansive step.
+  # if (true in (check_pos .< check_neg)) #any(x -> x, check_pos .< check_neg)
+  #     throw(ErrorException("StoppingMeta: tol_check should be greater than tol_check_neg."))
+  # end
 
   fail_sub_pb     = false
   unbounded       = false
@@ -153,6 +156,7 @@ function StoppingMeta(;atol               :: Number   = 1.0e-6,
   domainerror     = false
   suboptimal      = false
   stopbyuser      = false
+  exception       = false
 
   nb_of_stop = 0
 
@@ -165,7 +169,7 @@ function StoppingMeta(;atol               :: Number   = 1.0e-6,
                       max_time, nb_of_stop, start_time,
                       fail_sub_pb, unbounded, unbounded_pb, tired, stalled,
                       iteration_limit, resources, optimal, infeasible, main_pb,
-                      domainerror, suboptimal, stopbyuser, 
+                      domainerror, suboptimal, stopbyuser, exception,
                       meta_user_struct, user_check_func!)
 end
 
@@ -181,7 +185,8 @@ const meta_statuses = [:fail_sub_pb,
                        :main_pb,
                        :domainerror,
                        :infeasible,
-                       :stopbyuser]
+                       :stopbyuser,
+                       :exception]
 
 """
 `OK_check(meta :: StoppingMeta)`

@@ -29,6 +29,7 @@
     @test test_meta.suboptimal            == false
     @test test_meta.main_pb               == false
     @test test_meta.stopbyuser            == false
+    @test test_meta.exception             == false
     @test test_meta.infeasible            == false
     @test test_meta.nb_of_stop            == 0
     @test test_meta.meta_user_struct      == nothing

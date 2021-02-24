@@ -46,7 +46,7 @@ function unconstrained2nd_check(pb    :: AbstractNLPModel,
     end
 
     res = max(norm(state.gx, pnorm),
-              max(- eigmin(state.Hx + state.Hx' - diagm(0 => diag(state.Hx))), 0.0))
+              max(- eigmin(Symmetric(state.Hx, :L)), 0.0))
 
     return res
 end
