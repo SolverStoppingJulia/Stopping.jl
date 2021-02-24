@@ -17,7 +17,7 @@ function rand_solver(stp :: AbstractStopping, x0 :: AbstractVector)
         d = rand(length(x))
         x += d
 
-        #Update the State and call the Stopping with stop!
+        #Update the State and call the Stopping with a combined call to update_and_stop!
         OK = update_and_stop!(stp, x = x, d = d)
     end
 
