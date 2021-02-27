@@ -5,10 +5,12 @@ using DataFrames, LinearAlgebra, NLPModels, Printf, SparseArrays
 using Stopping
 using Stopping: _init_field
 
+using SolverTools: LineModel
+
 printstyled("State tests...\n")
 
 include("test-state/unit-test-GenericStatemod.jl")
-include("test-state/unit-test-LSAtTmod.jl")
+include("test-state/unit-test-OneDAtXmod.jl")
 include("test-state/unit-test-NLPAtXmod.jl")
 include("test-state/unit-test-ListOfStates.jl")
 
@@ -23,6 +25,7 @@ include("test-stopping/test-unitaire-generic-stopping.jl")
 #printstyled("passed ✓ \n", color = :green)
 #printstyled("LineSearch stopping tests... ")
 include("test-stopping/test-unitaire-ls-stopping.jl")
+include("test-stopping/unit-test-line-model.jl")
 #printstyled(" passed ✓ \n", color = :green)
 printstyled("Unconsmin tests... ")
 include("test-stopping/test-unitaire-nlp-stopping.jl")

@@ -65,19 +65,6 @@ function NLPStopping(pb             :: Pb,
                               SRC <: AbstractStopRemoteControl,
                               T   <: AbstractState}
 
-    #current_state is an AbstractState with requirements
-    try
-        current_state.evals
-        current_state.fx, current_state.gx, current_state.Hx
-        #if there are bounds:
-        current_state.mu
-        if pb.meta.ncon > 0 #if there are constraints
-           current_state.Jx, current_state.cx, current_state.lambda
-        end
-    catch
-        throw(ErrorException("error: missing entries in the given current_state"))
-    end
-
     return NLPStopping(pb, meta, stop_remote, current_state, 
                        main_stp, list, stopping_user_struct)
 end
@@ -92,19 +79,6 @@ function NLPStopping(pb             :: Pb,
                      ) where {Pb <: AbstractNLPModel, 
                               M  <: AbstractStoppingMeta,
                               T  <: AbstractState}
-
-    #current_state is an AbstractState with requirements
-    try
-        current_state.evals
-        current_state.fx, current_state.gx, current_state.Hx
-        #if there are bounds:
-        current_state.mu
-        if pb.meta.ncon > 0 #if there are constraints
-           current_state.Jx, current_state.cx, current_state.lambda
-        end
-    catch
-        throw(ErrorException("error: missing entries in the given current_state"))
-    end
     
     stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
 
@@ -134,19 +108,6 @@ function NLPStopping(pb             :: Pb,
 
     meta = StoppingMeta(;max_cntrs = mcntrs, optimality_check = oc, kwargs...)
     stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
-    
-    #current_state is an AbstractState with requirements
-    try
-        current_state.evals
-        current_state.fx, current_state.gx, current_state.Hx
-        #if there are bounds:
-        current_state.mu
-        if pb.meta.ncon > 0 #if there are constraints
-           current_state.Jx, current_state.cx, current_state.lambda
-        end
-    catch
-        throw(ErrorException("error: missing entries in the given current_state"))
-    end
 
     return NLPStopping(pb, meta, stop_remote, current_state, 
                        main_stp, list, stopping_user_struct)
@@ -233,7 +194,7 @@ fill_in!: (NLPStopping version) a function that fill in the required values in t
 
 `fill_in!( :: NLPStopping, :: Iterate; fx :: Iterate = nothing, gx :: Iterate = nothing, Hx :: Iterate = nothing, cx :: Iterate = nothing, Jx :: Iterate = nothing, lambda :: Iterate = nothing, mu :: Iterate = nothing, matrix_info :: Bool = true, kwargs...)`
 """
-function fill_in!(stp         :: NLPStopping,
+function fill_in!(stp         :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS, Uss},
                   x           :: AbstractVector;
                   fx          :: Iterate = nothing,
                   gx          :: Iterate = nothing,
@@ -243,7 +204,7 @@ function fill_in!(stp         :: NLPStopping,
                   lambda      :: Iterate = nothing,
                   mu          :: Iterate = nothing,
                   matrix_info :: Bool    = true,
-                  kwargs...)
+                  kwargs...) where {Pb, M, SRC, Stt <: NLPAtX, MStp, LoS, Uss}
 
  gfx = isnothing(fx)  ? obj(stp.pb, x)   : fx
  ggx = isnothing(gx)  ? grad(stp.pb, x)  : gx
@@ -275,6 +236,24 @@ function fill_in!(stp         :: NLPStopping,
                                         cx = gcx,    Jx = gJx, mu = lb,
                                         lambda = lc)
 end
+
+
+function fill_in!(stp         :: NLPStopping{Pb, M, SRC, OneDAtX{S,T}, MStp, LoS, Uss},
+                  x           :: T;
+                  fx          :: Union{T, Nothing} = nothing,
+                  gx          :: Union{T, Nothing} = nothing,
+                  f₀          :: Union{T, Nothing} = nothing,
+                  g₀          :: Union{T, Nothing} = nothing,
+                  kwargs...) where {Pb, M, SRC, S, T, MStp, LoS, Uss}
+
+ gfx = isnothing(fx) ? obj(stp.pb, x)    : fx
+ ggx = isnothing(gx) ? grad(stp.pb, x)   : gx
+ gf₀ = isnothing(f₀) ? obj(stp.pb, 0.0)  : f₀
+ gg₀ = isnothing(g₀) ? grad(stp.pb, 0.0) : g₀
+
+ return update!(stp.current_state, x=x, fx = gfx, gx = ggx, f₀ = gf₀, g₀ = gg₀)
+end
+
 
 """
 For NLPStopping, `rcounters` set as true also reinitialize the counters.
@@ -327,12 +306,16 @@ Note:
 - all the NLPModels have an attribute *counters* and a function *sum_counters(nlp)*.
 """
 function _resources_check!(stp    :: NLPStopping,
-                           x      :: AbstractVector)
+                           x      :: T) where T <: Union{AbstractVector, Number}
 
   cntrs = stp.pb.counters
   update!(stp.current_state, evals = cntrs)
 
   max_cntrs = stp.meta.max_cntrs
+
+  if max_cntrs == Dict{Symbol,Int64}()
+    return stp.meta.resources
+  end
 
   # check all the entries in the counter
   max_f = false
@@ -353,8 +336,10 @@ function _resources_check!(stp    :: NLPStopping,
    end
   end
 
- # Maximum number of function and derivative(s) computation
- max_evals = sum_counters(stp.pb) > max_cntrs[:neval_sum]
+  # Maximum number of function and derivative(s) computation
+  if :neval_sum in keys(stp.meta.max_cntrs)
+    max_evals = sum_counters(stp.pb) > max_cntrs[:neval_sum]
+  end
 
  # global user limit diagnostic
  if (max_evals || max_f) stp.meta.resources = true end
@@ -370,18 +355,19 @@ end
 `_unbounded_problem_check!(:: NLPStopping, :: AbstractVector)`
 
 Note:
-- evaluate the objective function if `state.fx` is `_init_field` and store in `state`.
+- evaluate the objective function if `state.fx` for NLPAtX or `state.fx` for OneDAtX is `_init_field` and store in `state`.
 - do NOT evaluate the constraint function if `state.cx` is `_init_field` and store in `state`.
 - if minimize problem (i.e. nlp.meta.minimize is true) check if
 `state.fx <= - meta.unbounded_threshold`,
 otherwise check `state.fx >= meta.unbounded_threshold`.
 - `state.cx` is unbounded if larger than `|meta.unbounded_threshold|``.
 """
-function _unbounded_problem_check!(stp  :: NLPStopping,
-                                   x    :: AbstractVector)
+function _unbounded_problem_check!(stp  :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS, Uss},
+                                   x    :: AbstractVector
+                                  ) where {Pb, M, SRC, Stt <: NLPAtX, MStp, LoS, Uss}
 
   if isnan(stp.current_state.fx)
-	stp.current_state.fx = obj(stp.pb, x)
+	  stp.current_state.fx = obj(stp.pb, x)
   end
 
   if stp.pb.meta.minimize
@@ -401,6 +387,21 @@ function _unbounded_problem_check!(stp  :: NLPStopping,
   return stp.meta.unbounded_pb
 end
 
+function _unbounded_problem_check!(stp  :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS, Uss},
+                                   x    :: Union{AbstractVector, Number}
+                                  ) where {Pb, M, SRC, Stt <: OneDAtX, MStp, LoS, Uss}
+  if isnan(stp.current_state.fx)
+	  stp.current_state.fx = obj(stp.pb, x)
+  end  
+
+  if stp.pb.meta.minimize
+    f_too_large = stp.current_state.fx <= - stp.meta.unbounded_threshold
+  else
+    f_too_large = stp.current_state.fx >=   stp.meta.unbounded_threshold
+  end
+
+  return stp.meta.unbounded_pb
+end
 """
 \\_infeasibility\\_check!: This is the NLP specialized version.
                        
@@ -442,10 +443,16 @@ end
 ################################################################################
 include("nlp_admissible_functions.jl")
 
+################################################################################
+# line search admissibility functions
+#
+# TODO: change the ls_admissible_functions and use tol_check et tol_check_neg to
+# handle the inequality instead of a max.
+################################################################################
+include("ls_admissible_functions.jl")
+
 #=
 """
-
-
 """
 function feasibility_optim_check(pb, state; kwargs...)
      vio = _feasibility(pb, state)
