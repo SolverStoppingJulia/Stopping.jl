@@ -111,7 +111,7 @@ end
                            that the problem might be unbounded if the objective function
                            is unbounded from below. This is the LS\\_Stopping specialization.
 
-`_unbounded_problem_check!(stp :: LS_Stopping, x :: Iterate)`
+`_unbounded_problem_check!(stp :: LS_Stopping, x :: T)`
 
 Note: evaluate the objective function is *state.ht* is void.
 """
@@ -133,7 +133,7 @@ end
 \\_resources\\_check!: check if the optimization algorithm has exhausted the resources.
 This is the LS\\_Stopping specialization.
 
-`_resources_check!(:: LS_Stopping, :: Iterate)`
+`_resources_check!(:: LS_Stopping, :: T)`
 
 Note: If the problem is an AbstractNLPModel check the number of evaluations of *f* and *sum*.
 """

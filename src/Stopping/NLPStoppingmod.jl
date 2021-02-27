@@ -232,19 +232,19 @@ end
 """
 fill_in!: (NLPStopping version) a function that fill in the required values in the *NLPAtX*
 
-`fill_in!( :: NLPStopping, :: Iterate; fx :: Iterate = nothing, gx :: Iterate = nothing, Hx :: Iterate = nothing, cx :: Iterate = nothing, Jx :: Iterate = nothing, lambda :: Iterate = nothing, mu :: Iterate = nothing, matrix_info :: Bool = true, kwargs...)`
+`fill_in!( :: NLPStopping, :: Union{AbstractVector, Nothing}; fx :: Union{AbstractVector, Nothing} = nothing, gx :: Union{AbstractVector, Nothing} = nothing, Hx :: Union{MatrixType, Nothing} = nothing, cx :: Union{AbstractVector, Nothing} = nothing, Jx :: Union{MatrixType, Nothing} = nothing, lambda :: Union{AbstractVector, Nothing} = nothing, mu :: Union{AbstractVector, Nothing} = nothing, matrix_info :: Bool = true, kwargs...)`
 """
 function fill_in!(stp         :: NLPStopping,
                   x           :: AbstractVector;
-                  fx          :: Iterate = nothing,
-                  gx          :: Iterate = nothing,
-                  Hx          :: Iterate = nothing,
-                  cx          :: Iterate = nothing,
-                  Jx          :: Iterate = nothing,
-                  lambda      :: Iterate = nothing,
-                  mu          :: Iterate = nothing,
+                  fx          :: Union{AbstractVector, Nothing} = nothing,
+                  gx          :: Union{AbstractVector, Nothing} = nothing,
+                  Hx          :: Union{MatrixType, Nothing}     = nothing,
+                  cx          :: Union{AbstractVector, Nothing} = nothing,
+                  Jx          :: Union{MatrixType, Nothing}     = nothing,
+                  lambda      :: Union{AbstractVector, Nothing} = nothing,
+                  mu          :: Union{AbstractVector, Nothing} = nothing,
                   matrix_info :: Bool    = true,
-                  kwargs...)
+                  kwargs...) where T
 
   gfx = isnothing(fx)  ? obj(stp.pb, x)   : fx
   ggx = isnothing(gx)  ? grad(stp.pb, x)  : gx
@@ -320,7 +320,7 @@ end
                    the evaluation of the functions following the sum_counters
                    structure from NLPModels.
 
-`_resources_check!(:: NLPStopping, :: Iterate)`
+`_resources_check!(:: NLPStopping, :: T)`
 
 Note:
 - function uses counters in `stp.pb`, and update the counters in the state.     

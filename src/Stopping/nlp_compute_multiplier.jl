@@ -2,7 +2,7 @@
 _compute_mutliplier: Additional function to estimate Lagrange multiplier of the problems
     (guarantee if LICQ holds)
 
-`_compute_mutliplier(pb :: AbstractNLPModel, x :: Iterate, gx :: Iterate, cx :: Iterate, Jx :: MatrixType; active_prec_c :: Float64 = 1e-6, active_prec_b :: Float64 = 1e-6)`
+`_compute_mutliplier(pb :: AbstractNLPModel, x :: T, gx :: T, cx :: T, Jx :: MT; active_prec_c :: Float64 = 1e-6, active_prec_b :: Float64 = 1e-6)`
 """
 function _compute_mutliplier(pb    :: AbstractNLPModel,
                              x     :: T,

@@ -153,7 +153,7 @@ end
 """
 reinit!: function that set all the entries at *\\_init\\_field* except the mandatory *x*.
 
-`reinit!(:: AbstractState, :: Iterate; kwargs...)`
+`reinit!(:: AbstractState, :: T; kwargs...)`
 
 Note: If *x* is given as a kargs it will be prioritized over
 the second argument.

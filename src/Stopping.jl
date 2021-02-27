@@ -40,23 +40,27 @@ The tool provides two main functions:
 Stopping uses the informations furnished by the State to evaluate its functions. Communication between the two can be done through the following functions:
 * `update_and_start!(stp :: AbstractStopping; kwargs...)` updates the states with informations furnished as kwargs and then call start!.
 * `update_and_stop!(stp :: AbstractStopping; kwargs...)` updates the states with informations furnished as kwargs and then call stop!.
-* `fill_in!(stp :: AbstractStopping, x :: Iterate)` a function that fill in all the State with all the informations required to correctly evaluate the stopping functions. This can reveal useful, for instance, if the user do not trust the informations furnished by the algorithm in the State.
+* `fill_in!(stp :: AbstractStopping, x :: T)` a function that fill in all the State with all the informations required to correctly evaluate the stopping functions. This can reveal useful, for instance, if the user do not trust the informations furnished by the algorithm in the State.
 * `reinit!(stp :: AbstractStopping)` reinitialize the entries of
 the Stopping to reuse for another call.
 """
 module Stopping
 
-  using LinearAlgebra, LinearOperators, SparseArrays, DataFrames, NLPModels, Printf
+  using LinearAlgebra, SparseArrays, DataFrames, Printf
+  using LinearOperators, NLPModels
 
-  const Iterate           = Union{Number, AbstractVector, Nothing}
-  const FloatVoid         = Union{Number, Nothing}
-  const MatrixType        = Union{Number, AbstractArray, AbstractMatrix, Nothing, AbstractLinearOperator} #Krylov.PreallocatedLinearOperator,
+  const MatrixType = Union{Number, 
+                           AbstractArray, 
+                           AbstractMatrix, 
+                           Nothing, 
+                           AbstractLinearOperator} 
+                           #Krylov.PreallocatedLinearOperator,
 
   """
-  AbstractState
+  AbstractState: 
 
   Abstract type, if specialized state were to be implemented they would need to
-  be subtypes of AbstractState
+  be subtypes of `AbstractState`.
   """
   abstract type AbstractState{S,T} end
 
