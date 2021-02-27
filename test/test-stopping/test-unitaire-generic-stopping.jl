@@ -4,17 +4,17 @@
     #We build a first stopping: to test the change of tol_check function
     x0 = ones(6)
     state0 = GenericState(x0)
-    stop0 = GenericStopping(rosenbrock, state0, tol_check = (atol,rtol,opt0) -> atol + rtol * opt0, list = ListStates(state0) )
+    stop0 = GenericStopping(rosenbrock, state0, tol_check = (atol,rtol,opt0) -> atol + rtol * opt0, list = ListofStates(state0) )
 
     show(stop0)
     stop0.listofstates[1]
 
     meta = StoppingMeta(tol_check = (atol,rtol,opt0) -> atol + rtol * opt0)
-    stop0_meta = GenericStopping(rosenbrock, meta, state0, list = ListStates(state0))
+    stop0_meta = GenericStopping(rosenbrock, meta, state0, list = ListofStates(state0))
     stop0_src = GenericStopping(rosenbrock, meta, cheap_stop_remote_control(), state0)
     stop0_src_without_meta = GenericStopping(rosenbrock, StopRemoteControl(), state0, 
                                              tol_check = (atol,rtol,opt0) -> atol + rtol * opt0, 
-                                             list = ListStates(state0) )
+                                             list = ListofStates(state0) )
 
     @test start!(stop0) == false
     @test status(stop0) == :Unknown
@@ -27,7 +27,7 @@
     #- there are no NaN in the score
     #- if the listofstates != nothing, stop! increases the list of states with the current_state.
     stop0.meta.optimality_check = (a,b) -> NaN
-    #stop0.listofstates = ListStates(state0)
+    #stop0.listofstates = ListofStates(state0)
     stop!(stop0)
     @test :DomainError in status(stop0, list = true)
     @test length(stop0.listofstates) == 3

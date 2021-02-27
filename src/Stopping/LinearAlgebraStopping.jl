@@ -20,7 +20,7 @@ Attributes:
 - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
                           of a subproblem.
                           If not a subproblem, then nothing.
-- (opt) listofstates : ListStates designed to store the history of States.
+- (opt) listofstates : ListofStates designed to store the history of States.
 - (opt) stopping_user_struct : Contains any structure designed by the user.
 
 `LAStopping(:: LLSModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta() main_stp :: Union{AbstractStopping, Nothing} = nothing, stopping_user_struct :: Any = nothing, kwargs...)`
@@ -68,7 +68,7 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
                      stop_remote    :: SRC,
                      current_state  :: T;
                      main_stp       :: AbstractStopping = VoidStopping(),
-                     list           :: AbstractListStates = VoidListStates(),
+                     list           :: AbstractListofStates = VoidListofStates(),
                      stopping_user_struct :: Any = nothing,
                      zero_start     :: Bool = false
                      ) where {Pb  <: Any, 
@@ -84,7 +84,7 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
                      meta           :: M,
                      current_state  :: T;
                      main_stp       :: AbstractStopping = VoidStopping(),
-                     list           :: AbstractListStates = VoidListStates(),
+                     list           :: AbstractListofStates = VoidListofStates(),
                      stopping_user_struct :: Any = nothing,
                      zero_start     :: Bool = false
                      ) where {Pb <: Any, 
@@ -100,7 +100,7 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
  function LAStopping(pb             :: Pb,
                      current_state  :: T;
                      main_stp       :: AbstractStopping = VoidStopping(),
-                     list           :: AbstractListStates = VoidListStates(),
+                     list           :: AbstractListofStates = VoidListofStates(),
                      stopping_user_struct :: Any = nothing,
                      zero_start     :: Bool = false,
                      kwargs...) where {Pb <: Any, T <: AbstractState}

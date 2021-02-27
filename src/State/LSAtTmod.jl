@@ -28,25 +28,25 @@ Note:
 """
 mutable struct 	LSAtT{S, T <: Number} <: AbstractState{S, T}
 
-    x            :: T
-    ht           :: T  # h(θ)
-    gt           :: T  # h'(θ)
-    h₀           :: T  # h(0)
-    g₀           :: T  # h'(0)
+  x            :: T
+  ht           :: T  # h(θ)
+  gt           :: T  # h'(θ)
+  h₀           :: T  # h(0)
+  g₀           :: T  # h'(0)
 
-    current_time   :: Float64
-    current_score  :: S
+  current_time   :: Float64
+  current_score  :: S
 
- function LSAtT(t             :: T,
-                current_score :: S;
-                ht            :: T = _init_field(T),
-                gt            :: T = _init_field(T),
-                h₀            :: T = _init_field(T),
-                g₀            :: T = _init_field(T),
-                current_time  :: Float64 = NaN) where {S, T <: Number}
+  function LSAtT(t             :: T,
+                 current_score :: S;
+                 ht            :: T = _init_field(T),
+                 gt            :: T = _init_field(T),
+                 h₀            :: T = _init_field(T),
+                 g₀            :: T = _init_field(T),
+                 current_time  :: Float64 = NaN) where {S, T <: Number}
 
-  return new{S, T}(t, ht, gt, h₀, g₀, current_time, current_score)
- end
+    return new{S, T}(t, ht, gt, h₀, g₀, current_time, current_score)
+  end
 end
 
 function LSAtT(t             :: T;
@@ -57,5 +57,5 @@ function LSAtT(t             :: T;
                current_time  :: Float64 = NaN,
                current_score :: T = _init_field(T))  where T <: Number
 
- return LSAtT(t, current_score, ht = ht, gt = gt, h₀ = h₀, g₀ = g₀, current_time = current_time)
+  return LSAtT(t, current_score, ht = ht, gt = gt, h₀ = h₀, g₀ = g₀, current_time = current_time)
 end

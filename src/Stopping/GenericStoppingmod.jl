@@ -14,7 +14,7 @@
 - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
                        of a subproblem.
                        If not a subproblem, then *nothing*.
-- (opt) listofstates : ListStates designed to store the history of States.
+- (opt) listofstates : ListofStates designed to store the history of States.
 - (opt) stopping_user_struct : Contains any structure designed by the user.
 
  Constructor: `GenericStopping(:: Any, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), main_stp :: Union{AbstractStopping, Nothing} = nothing, stopping_user_struct :: Any = nothing, kwargs...)`
@@ -73,7 +73,7 @@ function GenericStopping(pb            :: Pb,
                          stop_remote   :: SRC,
                          current_state :: T;
                          main_stp      :: AbstractStopping = VoidStopping(),
-                         list          :: AbstractListStates = VoidListStates(),
+                         list          :: AbstractListofStates = VoidListofStates(),
                          stopping_user_struct :: Any = nothing,
                          kwargs...
                          ) where {Pb  <: Any, 
@@ -89,7 +89,7 @@ function GenericStopping(pb            :: Pb,
                          meta          :: M,
                          current_state :: T;
                          main_stp      :: AbstractStopping = VoidStopping(),
-                         list          :: AbstractListStates = VoidListStates(),
+                         list          :: AbstractListofStates = VoidListofStates(),
                          stopping_user_struct :: Any = nothing,
                          kwargs...
                          ) where {Pb <: Any, 
@@ -105,7 +105,7 @@ end
 function GenericStopping(pb            :: Pb,
                          current_state :: T;
                          main_stp      :: AbstractStopping = VoidStopping(),
-                         list          :: AbstractListStates = VoidListStates(),
+                         list          :: AbstractListofStates = VoidListofStates(),
                          stopping_user_struct :: Any = nothing,
                          kwargs...
                          ) where {Pb <: Any, T <: AbstractState}
@@ -121,7 +121,7 @@ function GenericStopping(pb            :: Pb,
                          stop_remote   :: SRC,
                          current_state :: T;
                          main_stp      :: AbstractStopping = VoidStopping(),
-                         list          :: AbstractListStates = VoidListStates(),
+                         list          :: AbstractListofStates = VoidListofStates(),
                          stopping_user_struct :: Any = nothing,
                          kwargs...
                          ) where {Pb  <: Any, 
@@ -258,7 +258,7 @@ end
 - If `rstate` is set as `true` it reinitializes the current State
 (with the kwargs).
 - If `rlist` is set as true the list of states is also reinitialized, either
-set as a `VoidListStates` if `rstate` is `true` or a list containing only the current
+set as a `VoidListofStates` if `rstate` is `true` or a list containing only the current
 state otherwise.
 """
 function reinit!(stp    :: AbstractStopping;
@@ -276,9 +276,9 @@ function reinit!(stp    :: AbstractStopping;
   stp.meta.nb_of_stop = 0
 
   #reinitialize the list of states
-  if rlist && (typeof(stp.listofstates) != VoidListStates)
-    #TODO: Warning we cannot change the type of ListStates 
-    stp.listofstates = rstate ? VoidListStates() : ListStates(stp.current_state)
+  if rlist && (typeof(stp.listofstates) != VoidListofStates)
+    #TODO: Warning we cannot change the type of ListofStates 
+    stp.listofstates = rstate ? VoidListofStates() : ListofStates(stp.current_state)
   end
 
   #reinitialize the state
@@ -325,7 +325,7 @@ The function `stop!` successively calls: `_domain_check`, `_optimality_check`,
 
 Note:
 - kwargs are sent to the `_optimality_check!` call.
-- If `listofstates != VoidListStates`, call `add_to_list!`.
+- If `listofstates != VoidListofStates`, call `add_to_list!`.
 """
 function stop!(stp          :: AbstractStopping; 
                no_opt_check :: Bool = false, 
@@ -366,7 +366,7 @@ function stop!(stp          :: AbstractStopping;
  
   _add_stop!(stp)
 
-  #do nothing if typeof(stp.listofstates) == VoidListStates
+  #do nothing if typeof(stp.listofstates) == VoidListofStates
   add_to_list!(stp.listofstates, stp.current_state)
 
   return OK
@@ -387,7 +387,7 @@ The function `cheap_stop!` successively calls:
 
 Note:
 - kwargs are sent to the `_optimality_check!` call.
-- If `listofstates != VoidListStates`, call `add_to_list!`.
+- If `listofstates != VoidListofStates`, call `add_to_list!`.
 """
 function cheap_stop!(stp :: AbstractStopping; kwargs...)
 
@@ -410,7 +410,7 @@ function cheap_stop!(stp :: AbstractStopping; kwargs...)
 
   _add_stop!(stp)
 
-  #do nothing if typeof(stp.listofstates) == VoidListStates
+  #do nothing if typeof(stp.listofstates) == VoidListofStates
   add_to_list!(stp.listofstates, stp.current_state)
 
   return OK

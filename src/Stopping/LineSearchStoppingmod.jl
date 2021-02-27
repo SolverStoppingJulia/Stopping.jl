@@ -17,7 +17,7 @@ Input :
 - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
                           of a subproblem.
                           If not a subproblem, then nothing.
-- (opt) listofstates : ListStates designed to store the history of States.
+- (opt) listofstates : ListofStates designed to store the history of States.
 - (opt) stopping_user_struct : Contains any structure designed by the user.
 
 `LS_Stopping(:: Any, :: LSAtT; meta :: AbstractStoppingMeta = StoppingMeta(), main_stp :: Union{AbstractStopping, Nothing} = nothing, stopping_user_struct :: Any = nothing, kwargs...)`
@@ -61,7 +61,7 @@ function LS_Stopping(pb             :: Pb,
                      stop_remote    :: SRC,
                      current_state  :: LSAtT;
                      main_stp       :: AbstractStopping = VoidStopping(),
-                     list           :: AbstractListStates = VoidListStates(),
+                     list           :: AbstractListofStates = VoidListofStates(),
                      stopping_user_struct :: Any = nothing,
                      ) where {Pb  <: Any, 
                               M   <: AbstractStoppingMeta, 
@@ -75,7 +75,7 @@ function LS_Stopping(pb             :: Pb,
                      meta           :: M,
                      current_state  :: LSAtT;
                      main_stp       :: AbstractStopping = VoidStopping(),
-                     list           :: AbstractListStates = VoidListStates(),
+                     list           :: AbstractListofStates = VoidListofStates(),
                      stopping_user_struct :: Any = nothing,
                      ) where {Pb <: Any, M <: AbstractStoppingMeta}
                      
@@ -88,7 +88,7 @@ end
 function LS_Stopping(pb             :: Pb,
                      current_state  :: LSAtT;
                      main_stp       :: AbstractStopping = VoidStopping(),
-                     list           :: AbstractListStates = VoidListStates(),
+                     list           :: AbstractListofStates = VoidListofStates(),
                      stopping_user_struct :: Any = nothing,
                      kwargs...) where {Pb <: Any}
     

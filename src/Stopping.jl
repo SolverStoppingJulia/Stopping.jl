@@ -76,7 +76,7 @@ module Stopping
 
   include("State/ListOfStates.jl")
 
-  export AbstractListStates, ListStates, VoidListStates
+  export AbstractListofStates, ListofStates, VoidListofStates
   export add_to_list!, length, print, getindex
 
 
@@ -137,7 +137,7 @@ module Stopping
                                 SRC  <: AbstractStopRemoteControl,
                                 T    <: AbstractState,
                                 MStp <: Any, #AbstractStopping
-                                LoS  <: AbstractListStates,
+                                LoS  <: AbstractListofStates,
                                 Uss  <: Any} end
 
   include("Stopping/StoppingMetamod.jl")
@@ -146,7 +146,7 @@ module Stopping
 
   struct VoidStopping{Pb, M, SRC, T, MStp, LoS, Uss} <: AbstractStopping{Pb, M, SRC, T, MStp, LoS, Uss} end
   function VoidStopping() 
-    return VoidStopping{Any, StoppingMeta, StopRemoteControl, GenericState, Nothing, VoidListStates, Nothing}() 
+    return VoidStopping{Any, StoppingMeta, StopRemoteControl, GenericState, Nothing, VoidListofStates, Nothing}() 
   end
 
   export AbstractStopping, VoidStopping
@@ -165,7 +165,7 @@ module Stopping
     else
       println(io, "It has no main_stp.")
     end
-    if typeof(stp.listofstates) != VoidListStates
+    if typeof(stp.listofstates) != VoidListofStates
       nmax = stp.listofstates.n == -1 ? Inf : stp.listofstates.n
       println(io, "It handles a list of states $(typeof(stp.listofstates)) of maximum length $(nmax)")
     else
@@ -174,6 +174,7 @@ module Stopping
     try
       print("Problem is ")
       show(io, stp.pb)
+      print(" ")
     catch
       print("Problem is $(typeof(stp.pb)). ")
     end

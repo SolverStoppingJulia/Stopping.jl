@@ -13,10 +13,10 @@ Attributes:
 - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
                           of a subproblem.
                           If not a subproblem, then nothing.
-- (opt) listofstates : ListStates designed to store the history of States.
+- (opt) listofstates : ListofStates designed to store the history of States.
 - (opt) stopping_user_struct : Contains any structure designed by the user.
 
-`NLPStopping(:: AbstractNLPModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), max_cntrs :: Dict = _init_max_counters(), main_stp :: Union{AbstractStopping, Nothing} = nothing, list :: Union{ListStates, Nothing} = nothing, stopping_user_struct :: Any = nothing, kwargs...)`
+`NLPStopping(:: AbstractNLPModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), max_cntrs :: Dict = _init_max_counters(), main_stp :: Union{AbstractStopping, Nothing} = nothing, list :: Union{ListofStates, Nothing} = nothing, stopping_user_struct :: Any = nothing, kwargs...)`
 
  Note:
 - designed for *NLPAtX* State. Constructor checks that the State has the
@@ -58,7 +58,7 @@ function NLPStopping(pb             :: Pb,
                      stop_remote    :: SRC,
                      current_state  :: T;
                      main_stp       :: AbstractStopping = VoidStopping(),
-                     list           :: AbstractListStates = VoidListStates(),
+                     list           :: AbstractListofStates = VoidListofStates(),
                      stopping_user_struct  :: Any = nothing,
                      kwargs...
                      ) where {Pb  <: AbstractNLPModel, 
@@ -87,7 +87,7 @@ function NLPStopping(pb             :: Pb,
                      meta           :: M,
                      current_state  :: T;
                      main_stp       :: AbstractStopping = VoidStopping(),
-                     list           :: AbstractListStates = VoidListStates(),
+                     list           :: AbstractListofStates = VoidListofStates(),
                      stopping_user_struct  :: Any = nothing,
                      kwargs...
                      ) where {Pb <: AbstractNLPModel, 
@@ -116,7 +116,7 @@ end
 function NLPStopping(pb             :: Pb,
                      current_state  :: T;
                      main_stp       :: AbstractStopping = VoidStopping(),
-                     list           :: AbstractListStates = VoidListStates(),
+                     list           :: AbstractListofStates = VoidListofStates(),
                      stopping_user_struct  :: Any = nothing,
                      kwargs...
                      ) where {Pb <: AbstractNLPModel, T <: AbstractState}
@@ -296,9 +296,9 @@ function reinit!(stp       :: NLPStopping;
   stp.meta.nb_of_stop = 0
 
   #reinitialize the list of states
-  if rlist && (typeof(stp.listofstates) != VoidListStates)
-    #TODO: Warning we cannot change the type of ListStates 
-    stp.listofstates = rstate ? VoidListStates() : ListStates(stp.current_state)
+  if rlist && (typeof(stp.listofstates) != VoidListofStates)
+    #TODO: Warning we cannot change the type of ListofStates 
+    stp.listofstates = rstate ? VoidListofStates() : ListofStates(stp.current_state)
   end
 
   #reinitialize the state
