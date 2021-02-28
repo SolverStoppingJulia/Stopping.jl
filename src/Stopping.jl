@@ -77,7 +77,7 @@ module Stopping
   include("State/ListOfStates.jl")
 
   export AbstractListofStates, ListofStates, VoidListofStates
-  export add_to_list!, length, print, getindex
+  export add_to_list!, length, print, getindex, state_type
 
 
   function _instate(stt :: Symbol, es :: Symbol)

@@ -5,12 +5,14 @@
     s2 = GenericState(NaN*ones(10), current_time = 1.0, current_score = 0.0)
     
     @test typeof(ListofStates(s0)) <: AbstractListofStates
-    @test typeof(ListofStates(-1)) <: AbstractListofStates
-    @test typeof(ListofStates(1)) <: AbstractListofStates
-    @test typeof(ListofStates(-1, 3, [])) <: AbstractListofStates
-    @test typeof(ListofStates(-1, [])) <: AbstractListofStates
+    @test typeof(ListofStates(-1, Val{GenericState}())) <: AbstractListofStates
+    @test typeof(ListofStates(1, Val{GenericState}())) <: AbstractListofStates
+    #@test typeof(ListofStates(-1, 3, [])) <: AbstractListofStates
+    #@test typeof(ListofStates(-1, [])) <: AbstractListofStates
 
     stest = ListofStates(s0, max_vector_size = 2, pnorm = Inf)
+
+    @test state_type(stest) == GenericState{Float64,Array{Float64,1}}
 
     add_to_list!(stest, s1, max_vector_size = 2, pnorm = Inf)
     add_to_list!(stest, s2, max_vector_size = 2, pnorm = Inf)
@@ -45,5 +47,9 @@
     stest5 = ListofStates(-1, [(s0, stest3)])
 
     df5 = print(stest5[1,2], verbose = false)
+    
+    stest7 = ListofStates(-1, [s0, s1, s2])
+    
+    @test length(stest7) == 3
 
 end

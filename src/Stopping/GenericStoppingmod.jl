@@ -227,26 +227,29 @@ function start!(stp :: AbstractStopping;
                             else 
                               stp.meta.domainerror
                             end
-  if !stp.meta.domainerror && src.optimality_check
-    optimality0          = _optimality_check!(stp; kwargs...)
-    norm_optimality0     = norm(optimality0, Inf)
-    if src.domain_check && isnan(norm_optimality0)
-      stp.meta.domainerror = true
-    elseif norm_optimality0 == Inf
-      stp.meta.optimality0 = one(typeof(norm_optimality0))
-    else
-      stp.meta.optimality0 = norm_optimality0
+    if !stp.meta.domainerror && src.optimality_check
+      optimality0          = _optimality_check!(stp; kwargs...)
+      norm_optimality0     = norm(optimality0, Inf)
+      if src.domain_check && isnan(norm_optimality0)
+        stp.meta.domainerror = true
+      elseif norm_optimality0 == Inf
+        stp.meta.optimality0 = one(typeof(norm_optimality0))
+      else
+        stp.meta.optimality0 = norm_optimality0
+      end
+
+      if _null_test(stp, optimality0) stp.meta.optimal = true end
     end
-
-    if _null_test(stp, optimality0) stp.meta.optimal = true end
-   end
- end
+  end
  
- src.user_start_check && _user_check!(stp, state.x, true)
+  src.user_start_check && _user_check!(stp, state.x, true)
 
- OK = OK_check(stp.meta)
+  OK = OK_check(stp.meta)
 
- return OK
+  #do nothing if typeof(stp.listofstates) == VoidListofStates
+  add_to_list!(stp.listofstates, stp.current_state)
+
+  return OK
 end
 
 """

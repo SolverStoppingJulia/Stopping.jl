@@ -31,7 +31,7 @@
     #stop0.listofstates = ListofStates(state0)
     stop!(stop0)
     @test :DomainError in status(stop0, list = true)
-    @test length(stop0.listofstates) == 3
+    @test length(stop0.listofstates) == 4
 
     #Initialize a GenericStopping by default
     stop_def = GenericStopping(rosenbrock, x0, atol = 1.0)

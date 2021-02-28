@@ -9,41 +9,57 @@ Constructor:
 
 `ListofStates(:: AbstractState)`
 
+`ListofStates(n :: Int, :: Val{AbstractState})`
+
+`ListofStates(n :: Int, list :: Array{AbstractState,1})`
+
+`ListofStates(state :: S; n :: Int = -1, kwargs...)`
+
 Note:
-- If n != -1, then it stores at most n AbstractState.
-- add additional methods following https://docs.julialang.org/en/v1/base/collections/
-- ListofStates recursively handles sub-list of states as the attribute list is
-an array of pair whose first component is a, AbstractState and the second
-component is a ListofStates (or nothing).
+- If `n != -1`, then it stores at most n `AbstractState`.
+- `ListofStates` recursively handles sub-list of states as the attribute list is
+an array of pair whose first component is a, `AbstractState` and the second
+component is a `ListofStates` (or `VoidListofStates`).
 
 Examples:
-ListofStates(state)
-ListofStates(state, n = 2)
-ListofStates(-1)
-ListofStates(-1, [(state1, VoidListofStates), (state2, VoidListofStates)], 2)
-ListofStates(-1, [(state1, another_list)], 1)
+`ListofStates(state)`    
+`ListofStates(state, n = 2)`    
+`ListofStates(-1, Val{NLPAtX}())`    
+`ListofStates(-1, [(state1, VoidListofStates), (state2, VoidListofStates)], 2)`    
 """
-mutable struct ListofStates{T <: Array} <: AbstractListofStates
+mutable struct ListofStates{S <: AbstractState, T} <: AbstractListofStates
 
   n     :: Int #If length of the list is knwon, -1 if unknown
   i     :: Int #current index in the list/length
-  list  :: T #Array{Tuple{AbstractState, AbstractListofStates},1}
+  list  :: Array{Tuple{S, T},1}
                  #Tanj: \TODO Tuple instead of an Array would be better, I think
 
 end
 
-function ListofStates(n :: T) where T <: Int
-  list = Array{Any}(nothing, max(n, zero(T)))
+state_type(:: ListofStates{S, T}) where {S <: AbstractState, T} = S
+
+
+function ListofStates(n :: T, :: Val{S}) where {T <: Int, S <: AbstractState}
+  list = Array{Tuple{S, VoidListofStates},1}(undef, 0)
   i = 0
   return ListofStates(n, i, list)
 end
 
-function ListofStates(n :: T, list :: Array) where T <: Int
+function ListofStates(n :: Ti, list :: Array{S,1}) where {S <: AbstractState, Ti <: Int}
   i = length(list)
+  tuple_list = Array{Tuple{S, VoidListofStates},1}(undef, 0)
+  for j=1:i
+    push!(tuple_list, (list[j], VoidListofStates()))
+  end
+  return ListofStates(n, i, tuple_list)
+end
+
+function ListofStates(n :: Ti, list :: Array{Tuple{S, T},1}) where {S <: AbstractState, T, Ti <: Int}
+  i   = length(list)
   return ListofStates(n, i, list)
 end
 
-function ListofStates(state :: AbstractState; n :: Int = -1, kwargs...)
+function ListofStates(state :: S; n :: Int = -1, kwargs...) where S <: AbstractState
   i =  1
   list = [(copy_compress_state(state; kwargs...), VoidListofStates())]
   return ListofStates(n, i, list)
