@@ -197,7 +197,7 @@ module Stopping
 
   export GenericStopping, start!, stop!, cheap_stop!, update_and_start!
   export update_and_stop!, cheap_update_and_stop!, cheap_update_and_start!
-  export fill_in!, reinit!, status
+  export fill_in!, reinit!, status, elapsed_time
   export LS_Stopping
   export NLPStopping, unconstrained_check, unconstrained2nd_check, max_evals!
   export optim_check_bounded, KKT

@@ -15,13 +15,14 @@
     stop0_src_without_meta = GenericStopping(rosenbrock, StopRemoteControl(), state0, 
                                              tol_check = (atol,rtol,opt0) -> atol + rtol * opt0, 
                                              list = ListofStates(state0) )
-
+    @test isnan(elapsed_time(stop0))
     @test start!(stop0) == false
     @test status(stop0) == :Unknown
     #We now illustrate the impact of the choice of the norm for the unboundedness of the iterate
     stop0.meta.unbounded_x = sqrt(6)
     stop!(stop0)
     @test status(stop0, list = true) == [:Unknown] #ok as ||x||_\infty = 1 < sqrt(6)
+    @test !isnan(elapsed_time(stop0))
 
     #We now test that stop! verifies that:
     #- there are no NaN in the score

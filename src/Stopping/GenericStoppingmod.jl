@@ -736,3 +736,14 @@ function status(stp :: AbstractStopping; list = false)
 
   return list_status
 end
+
+"""
+elapsed_time: returns the elapsed time.
+
+`elapsed_time(:: AbstractStopping)`
+
+`current_time` and `start_time` are NaN if not initialized.
+"""
+function elapsed_time(stp :: AbstractStopping)
+  return stp.current_state.current_time - stp.meta.start_time
+end
