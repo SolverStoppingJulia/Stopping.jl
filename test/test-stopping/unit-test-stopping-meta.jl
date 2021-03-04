@@ -39,17 +39,17 @@
     
     @test tol_check(test_meta) == (1.0e-6, -1.0e-6)
     
-    test_meta.retol = false #if retol is false, tol_check don't reevaluate the functions
+    test_meta.recomp_tol = false #if recomp_tol is false, tol_check don't reevaluate the functions
     test_meta.atol  = 1e-2
     @test tol_check(test_meta) == (1.0e-6, -1.0e-6)
     
     update_tol!(test_meta, atol = 1e-1)
-    @test test_meta.retol == true
+    @test test_meta.recomp_tol == true
     @test test_meta.atol  == 1e-1
     @test tol_check(test_meta) == (0.1, -0.1)
     
     @test !OK_check(test_meta)
-    test_meta.retol = false
+    test_meta.recomp_tol = false
     test_meta.suboptimal = true
     @test OK_check(test_meta)
     

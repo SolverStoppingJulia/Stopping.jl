@@ -7,7 +7,7 @@ Usual instances of `AbstractStopping` contains a `StoppingMeta <: <: AbstractSto
 - `tol_check           :: Function = (atol :: Number, rtol :: Number, opt0 :: Number) -> max(atol,rtol*opt0)`
 - `tol_check_neg       :: Function = (atol :: Number, rtol :: Number, opt0 :: Number) -> - tol_check(atol,rtol,opt0)`
 - `optimality_check    :: Function = (a,b) -> Inf`
-- `retol               :: Bool     = true`
+- `recomp_tol          :: Bool     = true`
 - `unbounded_threshold :: Number   = 1.0e50, #typemax(Float64)`
 - `unbounded_x         :: Number   = 1.0e50`
 - `max_f               :: Int      = typemax(Int)`

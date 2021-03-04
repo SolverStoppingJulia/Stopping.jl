@@ -34,4 +34,4 @@ The disjunction of two score (OR condition) are represented as tuple.
 
 ### FAQ: Do Stopping really computes the tolerances each time?
 
-It does unless `meta.retol` is set as `true`. This entry can be set as true from the beginning as the `tol_check` functions are evaluated once at the initialization of the `meta`.
+It does unless `meta.recomp_tol` is set as `true`. This entry can be set as true from the beginning as the `tol_check` functions are evaluated once at the initialization of the `meta`.

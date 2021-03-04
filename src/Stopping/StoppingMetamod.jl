@@ -11,7 +11,7 @@ Attributes:
 - tol_check_neg : Function of *atol*, *rtol* and *optimality0* testing a score to zero.
 - check_pos : pre-allocation for positive tolerance
 - check_neg : pre-allocation for negative tolerance
-- retol : true if tolerances are updated
+- recomp_tol : true if tolerances are updated
 - optimality_check : a stopping criterion via an admissibility function
 - unbounded_threshold : threshold for unboundedness of the problem.
 - unbounded_x : threshold for unboundedness of the iterate.
@@ -76,7 +76,7 @@ mutable struct StoppingMeta{TolType <: Number,
   optimality_check    :: Function # stopping criterion
                                   # Function of (pb, state; kwargs...)
                                   #return type  :: Union{Number, eltype(stp.meta)}
-  retol               :: Bool #true if tolerances are updated
+  recomp_tol          :: Bool #true if tolerances are updated
 
   unbounded_threshold :: TolType # beyond this value, the problem is declared unbounded
   unbounded_x         :: TolType # beyond this value, ||x||_\infty is unbounded
@@ -122,7 +122,7 @@ function StoppingMeta(;atol               :: Number   = 1.0e-6,
                       tol_check           :: Function = (atol :: Number, rtol :: Number, opt0 :: Number) -> max(atol,rtol*opt0),
                       tol_check_neg       :: Function = (atol :: Number, rtol :: Number, opt0 :: Number) -> - tol_check(atol,rtol,opt0),
                       optimality_check    :: Function = (a,b) -> Inf,
-                      retol               :: Bool     = true,
+                      recomp_tol          :: Bool     = true,
                       unbounded_threshold :: Number   = 1.0e50, #typemax(Float64)
                       unbounded_x         :: Number   = 1.0e50,
                       max_f               :: Int      = typemax(Int),
@@ -163,7 +163,7 @@ function StoppingMeta(;atol               :: Number   = 1.0e-6,
   #new{TolType, typeof(check_pos), typeof(meta_user_struct)}
   return StoppingMeta(atol, rtol, optimality0,
                       tol_check, tol_check_neg,
-                      check_pos, check_neg, optimality_check, retol,
+                      check_pos, check_neg, optimality_check, recomp_tol,
                       unbounded_threshold, unbounded_x,
                       max_f, max_cntrs, max_eval, max_iter, 
                       max_time, nb_of_stop, start_time,
@@ -203,12 +203,12 @@ end
 """
 `tol_check(meta :: StoppingMeta)`
 
-Return the pair of tolerances, recomputed if `meta.retol` is true.
+Return the pair of tolerances, recomputed if `meta.recomp_tol` is `true`.
 """
 function tol_check(meta :: StoppingMeta{TolType, CheckType, MUS, IntType}
                   ) where {TolType, CheckType, MUS, IntType}
 
-  if meta.retol
+  if meta.recomp_tol
     atol, rtol, opt0 = meta.atol, meta.rtol, meta.optimality0
     setfield!(meta, :check_pos, meta.tol_check(atol, rtol, opt0))
     setfield!(meta, :check_neg, meta.tol_check_neg(atol, rtol, opt0))
@@ -220,7 +220,7 @@ end
 """
 `update_tol!(meta :: StoppingMeta; atol = meta.atol, rtol = meta.rtol, optimality0 = meta.optimality0)`
 
-Update the tolerances parameters. Set `meta.retol` as *true*.
+Update the tolerances parameters. Set `meta.recomp_tol` as `true`.
 """
 function update_tol!(meta     :: StoppingMeta{TolType, CheckType, MUS, IntType};
                      atol        :: TolType = meta.atol,
@@ -228,7 +228,7 @@ function update_tol!(meta     :: StoppingMeta{TolType, CheckType, MUS, IntType};
                      optimality0 :: TolType = meta.optimality0
                      ) where {TolType, CheckType, MUS, IntType}
 
-  setfield!(meta, :retol, true)
+  setfield!(meta, :recomp_tol, true)
   setfield!(meta, :atol, atol)
   setfield!(meta, :rtol, rtol)
   setfield!(meta, :optimality0, optimality0)
@@ -285,7 +285,7 @@ function show(io :: IO, meta :: AbstractStoppingMeta)
     varlines=string(varlines, " now no true statuses.\n")
   end
   varlines=string(varlines,  "The return type of tol check functions is $(checktype(meta))")
-  if meta.retol
+  if meta.recomp_tol
     varlines=string(varlines, ", and these functions are reevaluated at each stop!.\n")
   else
     varlines=string(varlines, ".\n")
