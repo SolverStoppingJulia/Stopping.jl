@@ -13,10 +13,10 @@ Attributes:
 - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
                           of a subproblem.
                           If not a subproblem, then nothing.
-- (opt) listofstates : ListStates designed to store the history of States.
+- (opt) listofstates : ListofStates designed to store the history of States.
 - (opt) stopping_user_struct : Contains any structure designed by the user.
 
-`NLPStopping(:: AbstractNLPModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), max_cntrs :: Dict = _init_max_counters(), main_stp :: Union{AbstractStopping, Nothing} = nothing, list :: Union{ListStates, Nothing} = nothing, stopping_user_struct :: Any = nothing, kwargs...)`
+`NLPStopping(:: AbstractNLPModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), max_cntrs :: Dict = _init_max_counters(), main_stp :: Union{AbstractStopping, Nothing} = nothing, list :: Union{ListofStates, Nothing} = nothing, stopping_user_struct :: Any = nothing, kwargs...)`
 
  Note:
 - designed for *NLPAtX* State. Constructor checks that the State has the
@@ -29,26 +29,27 @@ Attributes:
 
  Note: Kwargs are forwarded to the classical constructor.
  """
-mutable struct NLPStopping{Pb, M, SRC, T, MStp, LoS, Uss}  <: AbstractStopping{Pb, M, SRC, T, MStp, LoS, Uss}
+mutable struct NLPStopping{Pb, M, SRC, T, MStp, LoS, Uss
+                          }  <: AbstractStopping{Pb, M, SRC, T, MStp, LoS, Uss}
 
-    # problem
-    pb                   :: Pb
+  # problem
+  pb                   :: Pb
 
-    # Common parameters
-    meta                 :: M
-    stop_remote          :: SRC
+  # Common parameters
+  meta                 :: M
+  stop_remote          :: SRC
 
-    # current state of the problem
-    current_state        :: T
+  # current state of the problem
+  current_state        :: T
 
-    # Stopping of the main problem, or nothing
-    main_stp             :: MStp
+  # Stopping of the main problem, or nothing
+  main_stp             :: MStp
 
-    # History of states
-    listofstates         :: LoS
+  # History of states
+  listofstates         :: LoS
 
-    # User-specific structure
-    stopping_user_struct :: Uss
+  # User-specific structure
+  stopping_user_struct :: Uss
 
 end
 
@@ -57,7 +58,7 @@ function NLPStopping(pb             :: Pb,
                      stop_remote    :: SRC,
                      current_state  :: T;
                      main_stp       :: AbstractStopping = VoidStopping(),
-                     list           :: AbstractListStates = VoidListStates(),
+                     list           :: AbstractListofStates = VoidListofStates(),
                      stopping_user_struct  :: Any = nothing,
                      kwargs...
                      ) where {Pb  <: AbstractNLPModel, 
@@ -73,51 +74,51 @@ function NLPStopping(pb             :: Pb,
                      meta           :: M,
                      current_state  :: T;
                      main_stp       :: AbstractStopping = VoidStopping(),
-                     list           :: AbstractListStates = VoidListStates(),
+                     list           :: AbstractListofStates = VoidListofStates(),
                      stopping_user_struct  :: Any = nothing,
                      kwargs...
                      ) where {Pb <: AbstractNLPModel, 
                               M  <: AbstractStoppingMeta,
                               T  <: AbstractState}
     
-    stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
+  stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
 
-    return NLPStopping(pb, meta, stop_remote, current_state, 
-                       main_stp, list, stopping_user_struct)
+  return NLPStopping(pb, meta, stop_remote, current_state, 
+                     main_stp, list, stopping_user_struct)
 end
 
 function NLPStopping(pb             :: Pb,
                      current_state  :: T;
                      main_stp       :: AbstractStopping = VoidStopping(),
-                     list           :: AbstractListStates = VoidListStates(),
+                     list           :: AbstractListofStates = VoidListofStates(),
                      stopping_user_struct  :: Any = nothing,
                      kwargs...
                      ) where {Pb <: AbstractNLPModel, T <: AbstractState}
     
-    if :max_cntrs in keys(kwargs)
-        mcntrs = kwargs[:max_cntrs]
-    else
-        mcntrs = _init_max_counters()
-    end
+  if :max_cntrs in keys(kwargs)
+    mcntrs = kwargs[:max_cntrs]
+  else
+    mcntrs = _init_max_counters()
+  end
     
-    if :optimality_check in keys(kwargs)
-        oc = kwargs[:optimality_check]
-    else
-        oc = KKT
-    end
+  if :optimality_check in keys(kwargs)
+    oc = kwargs[:optimality_check]
+  else
+    oc = KKT
+  end
 
     meta = StoppingMeta(;max_cntrs = mcntrs, optimality_check = oc, kwargs...)
     stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
 
-    return NLPStopping(pb, meta, stop_remote, current_state, 
-                       main_stp, list, stopping_user_struct)
+  return NLPStopping(pb, meta, stop_remote, current_state, 
+                     main_stp, list, stopping_user_struct)
 end
 
 function NLPStopping(pb :: AbstractNLPModel; kwargs...)
- #Create a default NLPAtX
- nlp_at_x = NLPAtX(pb.meta.x0)
+  #Create a default NLPAtX
+  nlp_at_x = NLPAtX(pb.meta.x0)
 
- return NLPStopping(pb, nlp_at_x; optimality_check = KKT, kwargs...)
+  return NLPStopping(pb, nlp_at_x; optimality_check = KKT, kwargs...)
 end
 
 """
@@ -147,7 +148,7 @@ function _init_max_counters(; allevals :: T = 20000,
                           (:neval_hess,     hess), (:neval_hprod,  hprod),
                           (:neval_jhprod, jhprod), (:neval_sum,    sum)])
 
- return cntrs
+  return cntrs
 end
 
 function max_evals!(stp :: NLPStopping, allevals :: Int)
@@ -186,55 +187,55 @@ function _init_max_counters_NLS(; allevals        :: T = 20000,
                           (:neval_jhess_residual, jhess_residual),
                           (:neval_hprod_residual, hprod_residual)])
 
- return merge(cntrs_nlp, cntrs)
+  return merge(cntrs_nlp, cntrs)
 end
 
 """
 fill_in!: (NLPStopping version) a function that fill in the required values in the *NLPAtX*
 
-`fill_in!( :: NLPStopping, :: Iterate; fx :: Iterate = nothing, gx :: Iterate = nothing, Hx :: Iterate = nothing, cx :: Iterate = nothing, Jx :: Iterate = nothing, lambda :: Iterate = nothing, mu :: Iterate = nothing, matrix_info :: Bool = true, kwargs...)`
+`fill_in!( :: NLPStopping, :: Union{AbstractVector, Nothing}; fx :: Union{AbstractVector, Nothing} = nothing, gx :: Union{AbstractVector, Nothing} = nothing, Hx :: Union{MatrixType, Nothing} = nothing, cx :: Union{AbstractVector, Nothing} = nothing, Jx :: Union{MatrixType, Nothing} = nothing, lambda :: Union{AbstractVector, Nothing} = nothing, mu :: Union{AbstractVector, Nothing} = nothing, matrix_info :: Bool = true, kwargs...)`
 """
 function fill_in!(stp         :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS, Uss},
                   x           :: AbstractVector;
-                  fx          :: Iterate = nothing,
-                  gx          :: Iterate = nothing,
-                  Hx          :: Iterate = nothing,
-                  cx          :: Iterate = nothing,
-                  Jx          :: Iterate = nothing,
-                  lambda      :: Iterate = nothing,
-                  mu          :: Iterate = nothing,
+                  fx          :: Union{AbstractVector, Nothing} = nothing,
+                  gx          :: Union{AbstractVector, Nothing} = nothing,
+                  Hx          :: Union{MatrixType, Nothing}     = nothing,
+                  cx          :: Union{AbstractVector, Nothing} = nothing,
+                  Jx          :: Union{MatrixType, Nothing}     = nothing,
+                  lambda      :: Union{AbstractVector, Nothing} = nothing,
+                  mu          :: Union{AbstractVector, Nothing} = nothing,
                   matrix_info :: Bool    = true,
                   kwargs...) where {Pb, M, SRC, Stt <: NLPAtX, MStp, LoS, Uss}
 
- gfx = isnothing(fx)  ? obj(stp.pb, x)   : fx
- ggx = isnothing(gx)  ? grad(stp.pb, x)  : gx
+  gfx = isnothing(fx)  ? obj(stp.pb, x)   : fx
+  ggx = isnothing(gx)  ? grad(stp.pb, x)  : gx
 
- if isnothing(Hx) && matrix_info
-   gHx = hess(stp.pb, x)
- else
-   gHx = Hx
- end
+  if isnothing(Hx) && matrix_info
+    gHx = hess(stp.pb, x)
+  else
+    gHx = Hx
+  end
 
- if stp.pb.meta.ncon > 0
-     gJx = isnothing(Jx) ? jac(stp.pb, x)  : Jx
-     gcx = isnothing(cx) ? cons(stp.pb, x) : cx
- else
-     gJx = stp.current_state.Jx
-     gcx = stp.current_state.cx
- end
+  if stp.pb.meta.ncon > 0
+    gJx = isnothing(Jx) ? jac(stp.pb, x)  : Jx
+    gcx = isnothing(cx) ? cons(stp.pb, x) : cx
+  else
+    gJx = stp.current_state.Jx
+    gcx = stp.current_state.cx
+  end
 
- #update the Lagrange multiplier if one of the 2 is asked
- if (stp.pb.meta.ncon > 0 || has_bounds(stp.pb)) && (isnothing(lambda) || isnothing(mu))
-  lb, lc = _compute_mutliplier(stp.pb, x, ggx, gcx, gJx; kwargs...)
- elseif  stp.pb.meta.ncon == 0 && !has_bounds(stp.pb) && isnothing(lambda)
-  lb, lc = mu, stp.current_state.lambda
- else
-  lb, lc = mu, lambda
- end
+  #update the Lagrange multiplier if one of the 2 is asked
+  if (stp.pb.meta.ncon > 0 || has_bounds(stp.pb)) && (isnothing(lambda) || isnothing(mu))
+    lb, lc = _compute_mutliplier(stp.pb, x, ggx, gcx, gJx; kwargs...)
+  elseif  stp.pb.meta.ncon == 0 && !has_bounds(stp.pb) && isnothing(lambda)
+    lb, lc = mu, stp.current_state.lambda
+  else
+    lb, lc = mu, lambda
+  end
 
- return update!(stp.current_state, x=x, fx = gfx,    gx = ggx, Hx = gHx,
-                                        cx = gcx,    Jx = gJx, mu = lb,
-                                        lambda = lc)
+  return update!(stp, x = x, fx = gfx, gx = ggx, Hx = gHx,
+                             cx = gcx, Jx = gJx, mu = lb,
+                             lambda = lc)
 end
 
 
@@ -274,9 +275,9 @@ function reinit!(stp       :: NLPStopping;
   stp.meta.nb_of_stop = 0
 
   #reinitialize the list of states
-  if rlist && (typeof(stp.listofstates) != VoidListStates)
-    #TODO: Warning we cannot change the type of ListStates 
-    stp.listofstates = rstate ? VoidListStates() : ListStates(stp.current_state)
+  if rlist && (typeof(stp.listofstates) != VoidListofStates)
+    #TODO: Warning we cannot change the type of ListofStates 
+    stp.listofstates = rstate ? VoidListofStates() : ListofStates(stp.current_state)
   end
 
   #reinitialize the state
@@ -298,18 +299,18 @@ end
                    the evaluation of the functions following the sum_counters
                    structure from NLPModels.
 
-`_resources_check!(:: NLPStopping, :: Iterate)`
+`_resources_check!(:: NLPStopping, :: T)`
 
 Note:
-- function uses counters in *stp.pb*, and update the counters in the state.
-- function is compatible with *Counters*, *NLSCounters*, and any type whose entries match the entries of *max_cntrs*.
-- all the NLPModels have an attribute *counters* and a function *sum_counters(nlp)*.
+- function uses counters in `stp.pb`, and update the counters in the state.     
+- function is compatible with `Counters`, `NLSCounters`, and any type whose entries match the entries of `max_cntrs`.   
+- all the NLPModels have an attribute `counters` and a function `sum_counters(nlp)`.  
 """
 function _resources_check!(stp    :: NLPStopping,
                            x      :: T) where T <: Union{AbstractVector, Number}
 
   cntrs = stp.pb.counters
-  update!(stp.current_state, evals = cntrs)
+  update!(stp, evals = cntrs)
 
   max_cntrs = stp.meta.max_cntrs
 
@@ -320,20 +321,20 @@ function _resources_check!(stp    :: NLPStopping,
   # check all the entries in the counter
   max_f = false
   if typeof(stp.pb.counters) == Counters
-   for f in intersect(fieldnames(Counters), keys(max_cntrs))
-       max_f = max_f || (getfield(cntrs, f) > max_cntrs[f])
-   end
+    for f in intersect(fieldnames(Counters), keys(max_cntrs))
+      max_f = max_f || (getfield(cntrs, f) > max_cntrs[f])
+    end
   elseif typeof(stp.pb.counters) == NLSCounters
     for f in intersect(fieldnames(NLSCounters), keys(max_cntrs))
-     max_f = f != :counters ? (max_f || (getfield(cntrs, f) > max_cntrs[f])) : max_f
+      max_f = f != :counters ? (max_f || (getfield(cntrs, f) > max_cntrs[f])) : max_f
     end
     for f in intersect(fieldnames(Counters), keys(max_cntrs))
-        max_f = max_f || (getfield(cntrs.counters, f) > max_cntrs[f])
+      max_f = max_f || (getfield(cntrs.counters, f) > max_cntrs[f])
     end
   else #Unknown counters type
-   for f in intersect(fieldnames(typeof(stp.pb.counters)), keys(max_cntrs))
-    max_f = max_f || (getfield(cntrs, f) > max_cntrs[f])
-   end
+    for f in intersect(fieldnames(typeof(stp.pb.counters)), keys(max_cntrs))
+      max_f = max_f || (getfield(cntrs, f) > max_cntrs[f])
+    end
   end
 
   # Maximum number of function and derivative(s) computation
@@ -341,10 +342,10 @@ function _resources_check!(stp    :: NLPStopping,
     max_evals = sum_counters(stp.pb) > max_cntrs[:neval_sum]
   end
 
- # global user limit diagnostic
- if (max_evals || max_f) stp.meta.resources = true end
+  # global user limit diagnostic
+  if (max_evals || max_f) stp.meta.resources = true end
 
- return stp.meta.resources
+  return stp.meta.resources
 end
 
 """
@@ -359,8 +360,8 @@ Note:
 - do NOT evaluate the constraint function if `state.cx` is `_init_field` and store in `state`.
 - if minimize problem (i.e. nlp.meta.minimize is true) check if
 `state.fx <= - meta.unbounded_threshold`,
-otherwise check `state.fx >= meta.unbounded_threshold`.
-- `state.cx` is unbounded if larger than `|meta.unbounded_threshold|``.
+otherwise check `state.fx ≥ meta.unbounded_threshold`.
+- `state.cx` is unbounded if larger than `|meta.unbounded_threshold|`.
 """
 function _unbounded_problem_check!(stp  :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS, Uss},
                                    x    :: AbstractVector
@@ -406,7 +407,7 @@ end
 \\_infeasibility\\_check!: This is the NLP specialized version.
                        
 Note:
-  - check wether the *current_score* contains Inf.
+  - check wether the `current_score` contains Inf.
   - check the feasibility of an optimization problem in the spirit of a convex
   indicator function.
 """
@@ -426,15 +427,15 @@ function _infeasibility_check!(stp  :: NLPStopping,
  end
  =#
  
- if stp.pb.meta.minimize
-     vio = any(z-> z ==  Inf, stp.current_state.current_score)
-     if vio stp.meta.infeasible = true end
- else
-     vio = any(z-> z == -Inf, stp.current_state.current_score)
-     if vio stp.meta.infeasible = true end
- end
+  if stp.pb.meta.minimize
+    vio = any(z-> z ==  Inf, stp.current_state.current_score)
+    if vio stp.meta.infeasible = true end
+  else
+    vio = any(z-> z == -Inf, stp.current_state.current_score)
+    if vio stp.meta.infeasible = true end
+  end
  
- return stp.meta.infeasible
+  return stp.meta.infeasible
 end
 
 ################################################################################

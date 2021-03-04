@@ -14,7 +14,7 @@
 - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
                        of a subproblem.
                        If not a subproblem, then *nothing*.
-- (opt) listofstates : ListStates designed to store the history of States.
+- (opt) listofstates : ListofStates designed to store the history of States.
 - (opt) stopping_user_struct : Contains any structure designed by the user.
 
  Constructor: `GenericStopping(:: Any, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), main_stp :: Union{AbstractStopping, Nothing} = nothing, stopping_user_struct :: Any = nothing, kwargs...)`
@@ -47,24 +47,24 @@
 """
 mutable struct GenericStopping{Pb, M, SRC, T, MStp, LoS, Uss} <: AbstractStopping{Pb, M, SRC, T, MStp, LoS, Uss}
 
-    # Problem
-    pb                   :: Pb
+  # Problem
+  pb                   :: Pb
 
-    # Problem stopping criterion
-    meta                 :: M
-    stop_remote          :: SRC
+  # Problem stopping criterion
+  meta                 :: M
+  stop_remote          :: SRC
 
-    # Current information on the problem
-    current_state        :: T
+  # Current information on the problem
+  current_state        :: T
 
-    # Stopping of the main problem, or nothing
-    main_stp             :: MStp
+  # Stopping of the main problem, or nothing
+  main_stp             :: MStp
 
-    # History of states
-    listofstates         :: LoS
+  # History of states
+  listofstates         :: LoS
 
-    # User-specific structure
-    stopping_user_struct :: Uss
+  # User-specific structure
+  stopping_user_struct :: Uss
 
 end
 
@@ -73,7 +73,7 @@ function GenericStopping(pb            :: Pb,
                          stop_remote   :: SRC,
                          current_state :: T;
                          main_stp      :: AbstractStopping = VoidStopping(),
-                         list          :: AbstractListStates = VoidListStates(),
+                         list          :: AbstractListofStates = VoidListofStates(),
                          stopping_user_struct :: Any = nothing,
                          kwargs...
                          ) where {Pb  <: Any, 
@@ -81,7 +81,7 @@ function GenericStopping(pb            :: Pb,
                                   SRC <: AbstractStopRemoteControl,
                                   T   <: AbstractState}
 
- return GenericStopping(pb, meta, stop_remote, current_state, 
+  return GenericStopping(pb, meta, stop_remote, current_state, 
                         main_stp, list, stopping_user_struct)
 end
 
@@ -89,23 +89,23 @@ function GenericStopping(pb            :: Pb,
                          meta          :: M,
                          current_state :: T;
                          main_stp      :: AbstractStopping = VoidStopping(),
-                         list          :: AbstractListStates = VoidListStates(),
+                         list          :: AbstractListofStates = VoidListofStates(),
                          stopping_user_struct :: Any = nothing,
                          kwargs...
                          ) where {Pb <: Any, 
                                   M  <: AbstractStoppingMeta,
                                   T  <: AbstractState}
                                   
- stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
+  stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
  
- return GenericStopping(pb, meta, stop_remote, current_state, 
+  return GenericStopping(pb, meta, stop_remote, current_state, 
                         main_stp, list, stopping_user_struct)
 end
 
 function GenericStopping(pb            :: Pb,
                          current_state :: T;
                          main_stp      :: AbstractStopping = VoidStopping(),
-                         list          :: AbstractListStates = VoidListStates(),
+                         list          :: AbstractListofStates = VoidListofStates(),
                          stopping_user_struct :: Any = nothing,
                          kwargs...
                          ) where {Pb <: Any, T <: AbstractState}
@@ -113,7 +113,7 @@ function GenericStopping(pb            :: Pb,
   meta = StoppingMeta(; kwargs...)
   stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
 
- return GenericStopping(pb, meta, stop_remote, current_state, 
+  return GenericStopping(pb, meta, stop_remote, current_state, 
                         main_stp, list, stopping_user_struct)
 end
 
@@ -121,21 +121,32 @@ function GenericStopping(pb            :: Pb,
                          stop_remote   :: SRC,
                          current_state :: T;
                          main_stp      :: AbstractStopping = VoidStopping(),
-                         list          :: AbstractListStates = VoidListStates(),
+                         list          :: AbstractListofStates = VoidListofStates(),
                          stopping_user_struct :: Any = nothing,
                          kwargs...
                          ) where {Pb  <: Any, 
                                   SRC <: AbstractStopRemoteControl,
                                   T   <: AbstractState}
                                   
- meta = StoppingMeta(; kwargs...)
+  meta = StoppingMeta(; kwargs...)
  
- return GenericStopping(pb, meta, stop_remote, current_state, 
+  return GenericStopping(pb, meta, stop_remote, current_state, 
                         main_stp, list, stopping_user_struct)
 end
 
 function GenericStopping(pb :: Any, x :: T; kwargs...) where T
- return GenericStopping(pb, GenericState(x); kwargs...)
+  return GenericStopping(pb, GenericState(x); kwargs...)
+end
+
+"""
+update!: generic update function for the Stopping
+
+`update!(:: AbstractStopping; kwargs...)`
+
+Shortcut for update!(stp.current_state; kwargs...)
+"""
+function update!(stp :: AbstractStopping; kwargs...)
+  return update!(stp.current_state; kwargs...)
 end
 
 """
@@ -146,7 +157,7 @@ fill_in!: fill in the unspecified values of the AbstractState.
 Note: NotImplemented for Abstract/Generic-Stopping.
 """
 function fill_in!(stp :: AbstractStopping, x :: T) where T
- return throw(error("NotImplemented function"))
+  return throw(error("NotImplemented function"))
 end
 
 """
@@ -155,16 +166,18 @@ Returns the optimality status of the problem as a boolean.
 
 `update_and_start!(:: AbstractStopping; kwargs...)`
 
- Note: Kwargs are forwarded to the *update!* call.
+ Note: 
+  - Kwargs are forwarded to the `update!` call.  
+  - `no_opt_check` skip optimality check in `start!` (`false` by default).  
 """
-function update_and_start!(stp :: AbstractStopping; 
+function update_and_start!(stp          :: AbstractStopping; 
                            no_opt_check :: Bool = false, 
                            kwargs...)
 
   if stp.stop_remote.cheap_check
     _smart_update!(stp.current_state; kwargs...)
   else
-    update!(stp.current_state; kwargs...)
+    update!(stp; kwargs...)
   end
   OK = start!(stp, no_opt_check = no_opt_check)
 
@@ -172,13 +185,13 @@ function update_and_start!(stp :: AbstractStopping;
 end
 
 """
- Update the Stopping and return *true* if we must stop.
+ Update the Stopping and return `true` if we must stop.
 
  `start!(:: AbstractStopping; no_opt_check :: Bool = false, kwargs...)`
 
  Purpose is to know if there is a need to even perform an optimization algorithm
  or if we are at an optimal solution from the beginning. 
- Set `no_opt_check` to *true* avoid checking optimality and domain errors.
+ Set `no_opt_check` to `true` avoid checking optimality and domain errors.
 
  The function `start!` successively calls: `_domain_check(stp, x)`,
  `_optimality_check!(stp, x)`, `_null_test(stp, x)` and 
@@ -194,86 +207,89 @@ function start!(stp :: AbstractStopping;
                 no_opt_check :: Bool = false,
                 kwargs...)
 
- state = stp.current_state
- src   = stp.stop_remote
+  state = stp.current_state
+  src   = stp.stop_remote
 
- #Initialize the time counter
- if src.tired_check && isnan(stp.meta.start_time)
-  stp.meta.start_time = time()
- end
- #and synchornize with the State
- if src.tired_check && isnan(state.current_time)
-   _update_time!(state, stp.meta.start_time)
- end
+  #Initialize the time counter
+  if src.tired_check && isnan(stp.meta.start_time)
+    stp.meta.start_time = time()
+  end
+  #and synchornize with the State
+  if src.tired_check && isnan(state.current_time)
+    _update_time!(state, stp.meta.start_time)
+  end
 
- if !no_opt_check
-  stp.meta.domainerror = if src.domain_check
-                          #don't check current_score
-                            _domain_check(stp.current_state, current_score = true)
-                        else 
-                            stp.meta.domainerror
-                        end
-  if !stp.meta.domainerror && src.optimality_check
-    # Optimality check
-    optimality0          = _optimality_check!(stp; kwargs...)
-    norm_optimality0     = norm(optimality0, Inf)
-    if src.domain_check && isnan(norm_optimality0)
-      stp.meta.domainerror = true
-    elseif norm_optimality0 == Inf
-      stp.meta.optimality0 = one(typeof(norm_optimality0))
-    else
-      stp.meta.optimality0 = norm_optimality0
+  if !no_opt_check
+    stp.meta.domainerror = if src.domain_check
+                              #don't check current_score
+                              _domain_check(stp.current_state, 
+                                            current_score = true)
+                            else 
+                              stp.meta.domainerror
+                            end
+    if !stp.meta.domainerror && src.optimality_check
+      optimality0          = _optimality_check!(stp; kwargs...)
+      norm_optimality0     = norm(optimality0, Inf)
+      if src.domain_check && isnan(norm_optimality0)
+        stp.meta.domainerror = true
+      elseif norm_optimality0 == Inf
+        stp.meta.optimality0 = one(typeof(norm_optimality0))
+      else
+        stp.meta.optimality0 = norm_optimality0
+      end
+
+      if _null_test(stp, optimality0) stp.meta.optimal = true end
     end
-
-    if _null_test(stp, optimality0) stp.meta.optimal = true end
-   end
- end
+  end
  
- src.user_start_check && _user_check!(stp, state.x, true)
+  src.user_start_check && _user_check!(stp, state.x, true)
 
- OK = OK_check(stp.meta)
+  OK = OK_check(stp.meta)
 
- return OK
+  #do nothing if typeof(stp.listofstates) == VoidListofStates
+  add_to_list!(stp.listofstates, stp.current_state)
+
+  return OK
 end
 
 """
- reinit!: reinitialize the MetaData in the Stopping.
+ reinit!: reinitialize the meta-data in the Stopping.
 
  `reinit!(:: AbstractStopping; rstate :: Bool = false, kwargs...)`
 
  Note:
-- If *rstate* is set as true it reinitializes the current State
+- If `rstate` is set as `true` it reinitializes the current State
 (with the kwargs).
-- If *rlist* is set as true the list of states is also reinitialized, either
-set as nothing if *rstate* is true, and a list containing only the current
-state if *rstate* is false.
+- If `rlist` is set as true the list of states is also reinitialized, either
+set as a `VoidListofStates` if `rstate` is `true` or a list containing only the current
+state otherwise.
 """
 function reinit!(stp    :: AbstractStopping;
                  rstate :: Bool = false,
                  rlist  :: Bool = true,
                  kwargs...)
 
- stp.meta.start_time  = NaN
- stp.meta.optimality0 = 1.0
+  stp.meta.start_time  = NaN
+  stp.meta.optimality0 = 1.0
 
- #reinitialize the boolean status
- reinit!(stp.meta)
+  #reinitialize the boolean status
+  reinit!(stp.meta)
 
- #reinitialize the counter of stop
- stp.meta.nb_of_stop = 0
+  #reinitialize the counter of stop
+  stp.meta.nb_of_stop = 0
 
- #reinitialize the list of states
- if rlist && (typeof(stp.listofstates) != VoidListStates)
-  #TODO: Warning we cannot change the type of ListStates 
-  stp.listofstates = rstate ? VoidListStates() : ListStates(stp.current_state)
- end
+  #reinitialize the list of states
+  if rlist && (typeof(stp.listofstates) != VoidListofStates)
+    #TODO: Warning we cannot change the type of ListofStates 
+    stp.listofstates = rstate ? VoidListofStates() : ListofStates(stp.current_state)
+  end
 
- #reinitialize the state
- if rstate
-  reinit!(stp.current_state; kwargs...)
- end
+  #reinitialize the state
+  if rstate
+    reinit!(stp.current_state; kwargs...)
+  end
 
- return stp
+  return stp
 end
 
 """
@@ -282,7 +298,7 @@ return the optimality status of the problem as a boolean.
 
 `update_and_stop!(stp :: AbstractStopping; kwargs...)`
 
-Note: Kwargs are forwarded to the *update!* call.
+Note: Kwargs are forwarded to the `update!` call.
 """
 function update_and_stop!(stp :: AbstractStopping; kwargs...)
     
@@ -290,7 +306,7 @@ function update_and_stop!(stp :: AbstractStopping; kwargs...)
     _smart_update!(stp.current_state; kwargs...)
     OK = cheap_stop!(stp)
   else
-    update!(stp.current_state; kwargs...)
+    update!(stp; kwargs...)
     OK = stop!(stp)
   end
 
@@ -302,61 +318,61 @@ stop!: update the Stopping and return a boolean true if we must stop.
 
 `stop!(:: AbstractStopping; kwargs...)`
 
-It serves the same purpose as *start!* in an algorithm; telling us if we
+It serves the same purpose as `start!` in an algorithm; telling us if we
 stop the algorithm (because we have reached optimality or we loop infinitely,
 etc).
 
-The function *stop!* successively calls: *\\_domain\\_check*, *\\_optimality\\_check*,
-*\\_null\\_test*, *\\_unbounded\\_check!*, *\\_tired\\_check!*, *\\_resources\\_check!*,
-*\\_stalled\\_check!*, *\\_iteration\\_check!*, *\\_main\\_pb\\_check!*, add\\_to\\_list!
+The function `stop!` successively calls: `_domain_check`, `_optimality_check`,
+`_null_test`, `_unbounded_check!`, `_tired_check!`, `_resources_check!`,
+`_stalled_check!`, `_iteration_check!`, `_main_pb_check!`, `add_to_list!`
 
 Note:
-- Kwargs are sent to the *\\_optimality\\_check!* call.
-- If listofstates != VoidListStates, call add\\_to\\_list! to update the list of State.
+- kwargs are sent to the `_optimality_check!` call.
+- If `listofstates != VoidListofStates`, call `add_to_list!`.
 """
-function stop!(stp :: AbstractStopping; 
+function stop!(stp          :: AbstractStopping; 
                no_opt_check :: Bool = false, 
                kwargs...)
 
- x   = stp.current_state.x
- src = stp.stop_remote
+  x   = stp.current_state.x
+  src = stp.stop_remote
 
- src.unbounded_and_domain_x_check && _unbounded_and_domain_x_check!(stp, x)
- stp.meta.domainerror = if src.domain_check
-                           #don't check x and current_score
-                           _domain_check(stp.current_state, x = true, 
-                                                            current_score = true)
-                       else 
-                           stp.meta.domainerror
-                       end
- if !no_opt_check && !stp.meta.domainerror
-   # Optimality check
-   if src.optimality_check
+  src.unbounded_and_domain_x_check && _unbounded_and_domain_x_check!(stp, x)
+  stp.meta.domainerror = if src.domain_check
+                            #don't check x and current_score
+                            _domain_check(stp.current_state, x = true, 
+                                                          current_score = true)
+                          else 
+                            stp.meta.domainerror
+                          end
+  if !no_opt_check && !stp.meta.domainerror
+    # Optimality check
+    if src.optimality_check
       score = _optimality_check!(stp; kwargs...)
       if any(isnan, score)
-       stp.meta.domainerror = true
+        stp.meta.domainerror = true
       end
       if _null_test(stp, score) stp.meta.optimal = true end
-   end
+    end
 
-   src.infeasibility_check     && _infeasibility_check!(stp, x)
-   src.unbounded_problem_check && _unbounded_problem_check!(stp, x)
-   src.tired_check             && _tired_check!(stp, x)
-   src.resources_check         && _resources_check!(stp, x)
-   src.stalled_check           && _stalled_check!(stp, x)
-   src.iteration_check         && _iteration_check!(stp, x)
-   src.main_pb_check           && _main_pb_check!(stp, x)
-   src.user_check              && _user_check!(stp, x)
- end
+    src.infeasibility_check     && _infeasibility_check!(stp, x)
+    src.unbounded_problem_check && _unbounded_problem_check!(stp, x)
+    src.tired_check             && _tired_check!(stp, x)
+    src.resources_check         && _resources_check!(stp, x)
+    src.stalled_check           && _stalled_check!(stp, x)
+    src.iteration_check         && _iteration_check!(stp, x)
+    src.main_pb_check           && _main_pb_check!(stp, x)
+    src.user_check              && _user_check!(stp, x)
+  end
 
- OK = OK_check(stp.meta)
+  OK = OK_check(stp.meta)
  
- _add_stop!(stp)
+  _add_stop!(stp)
 
-  #do nothing if typeof(stp.listofstates) == VoidListStates
+  #do nothing if typeof(stp.listofstates) == VoidListofStates
   add_to_list!(stp.listofstates, stp.current_state)
 
- return OK
+  return OK
 end
 
 """
@@ -364,44 +380,43 @@ stop!: update the Stopping and return a boolean true if we must stop.
 
 `cheap_stop!(:: AbstractStopping; kwargs...)`
 
-It serves the same purpose as *stop!*, but avoids any potentially expensive checks.
-We no longer browse *x* and *res* in the State, and no check on the main_stp.
-Check only the updated entries in the Meta.
+It serves the same purpose as `stop!`, but avoids any potentially expensive checks.
+We no longer browse `x` and `res` in the State, and no check on the `main_stp`.
+Check only the updated entries in the meta.
 
-The function *cheap_stop!* successively calls:
-*\\_null\\_test*, *\\_unbounded\\_check!*, *\\_tired\\_check!*, *\\_resources\\_check!*,
-*\\_stalled\\_check!*, *\\_iteration\\_check!*, *add\\_to\\_list!*
-
+The function `cheap_stop!` successively calls:
+`_null_test`, `_unbounded_check!`, `_tired_check!`, `_resources_check!`,
+`_stalled_check!`, `_iteration_check!`, `add_to_list!`
 
 Note:
-- Kwargs are sent to the *\\_optimality\\_check!* call.
-- If listofstates != VoidListStates, call add\\_to\\_list! to update the list of State.
+- kwargs are sent to the `_optimality_check!` call.
+- If `listofstates != VoidListofStates`, call `add_to_list!`.
 """
 function cheap_stop!(stp :: AbstractStopping; kwargs...)
 
- x   = stp.current_state.x
- src = stp.stop_remote
+  x   = stp.current_state.x
+  src = stp.stop_remote
 
- # Optimality check
- if src.optimality_check
+  # Optimality check
+  if src.optimality_check
     score = _optimality_check!(stp; kwargs...) #update state.current_score
     if _null_test(stp, score) stp.meta.optimal = true end
- end
- OK = stp.meta.optimal
+  end
+  OK = stp.meta.optimal
 
- OK = OK || (src.infeasibility_check     && _infeasibility_check!(stp, x))
- OK = OK || (src.unbounded_problem_check && _unbounded_problem_check!(stp, x))
- OK = OK || (src.tired_check             && _tired_check!(stp, x))
- OK = OK || (src.resources_check         && _resources_check!(stp, x))
- OK = OK || (src.iteration_check         && _iteration_check!(stp, x))
- OK = OK || (src.user_check              && _user_check!(stp, x))
+  OK = OK || (src.infeasibility_check     && _infeasibility_check!(stp, x))
+  OK = OK || (src.unbounded_problem_check && _unbounded_problem_check!(stp, x))
+  OK = OK || (src.tired_check             && _tired_check!(stp, x))
+  OK = OK || (src.resources_check         && _resources_check!(stp, x))
+  OK = OK || (src.iteration_check         && _iteration_check!(stp, x))
+  OK = OK || (src.user_check              && _user_check!(stp, x))
 
- _add_stop!(stp)
+  _add_stop!(stp)
 
- #do nothing if typeof(stp.listofstates) == VoidListStates
- add_to_list!(stp.listofstates, stp.current_state)
+  #do nothing if typeof(stp.listofstates) == VoidListofStates
+  add_to_list!(stp.listofstates, stp.current_state)
 
- return OK
+  return OK
 end
 
 """
@@ -409,118 +424,118 @@ end
 
 `_add_stop!(:: AbstractStopping)`
 
-Fonction called everytime *stop!* is called. In theory should be called once 
+Fonction called everytime `stop!` is called. In theory should be called once 
 every iteration of an algorithm.
 
-Note: update *meta.nb\\_of\\_stop*.
+Note: update `meta.nb_of_stop`.
 """
 function _add_stop!(stp :: AbstractStopping)
 
- stp.meta.nb_of_stop += 1
+  stp.meta.nb_of_stop += 1
 
- return stp
+  return stp
 end
 
 """
 \\_iteration\\_check!: check if the optimization algorithm has reached the 
 iteration limit.
 
-`_iteration_check!(:: AbstractStopping,  :: Union{Number, AbstractVector})`
+`_iteration_check!(:: AbstractStopping,  :: T)`
 
-Note: Compare *meta.iteration_limit* with *meta.nb\\_of\\_stop*.
+Note: Compare `meta.iteration_limit` with `meta.nb_of_stop`.
 """
 function _iteration_check!(stp :: AbstractStopping,
                            x   :: T) where T
 
- max_iter = stp.meta.nb_of_stop >= stp.meta.max_iter
- if max_iter stp.meta.iteration_limit = true end
+  max_iter = stp.meta.nb_of_stop >= stp.meta.max_iter
+  if max_iter stp.meta.iteration_limit = true end
 
- return stp.meta.iteration_limit
+  return stp.meta.iteration_limit
 end
 
 """
 \\_stalled\\_check!: check if the optimization algorithm is stalling.
 
-`_stalled_check!(:: AbstractStopping, :: Union{Number, AbstractVector})`
+`_stalled_check!(:: AbstractStopping, :: T)`
 
-Note: By default *meta.stalled* is false by default for Abstract/Generic Stopping.
+Note: Do nothing by default for AbstractStopping.
 """
 function _stalled_check!(stp :: AbstractStopping,
                          x   :: T) where T
-
- return stp.meta.stalled
+  return stp.meta.stalled
 end
 
 """
-\\_tired\\_check!: check if the optimization algorithm has been running for too long.
+\\_tired\\_check!: check if the optimization algorithm has been running
+ for too long.
 
-`_tired_check!(:: AbstractStopping, :: Union{Number, AbstractVector})`
+`_tired_check!(:: AbstractStopping, :: T)`
 
-Note: - Return false if *meta.start_time* is NaN (by default).
-  - Update *meta.tired*.
+Note: 
+  - Return `false` if `meta.start_time` is `NaN` (by default).  
+  - Update `meta.tired`.  
 """
 function _tired_check!(stp :: AbstractStopping,
                        x   :: T) where T
 
- stime = stp.meta.start_time #can be NaN
- ctime = time()
+  stime = stp.meta.start_time #can be NaN
+  ctime = time()
 
- #Keep the current_state updated
- _update_time!(stp.current_state, ctime)
+  #Keep the current_state updated
+  _update_time!(stp.current_state, ctime)
 
- elapsed_time = ctime - stime
- max_time     = elapsed_time > stp.meta.max_time #NaN > 1. is false
+  elapsed_time = ctime - stime
+  max_time     = elapsed_time > stp.meta.max_time #NaN > 1. is false
 
- if max_time stp.meta.tired = true end
+  if max_time stp.meta.tired = true end
 
- return stp.meta.tired
+  return stp.meta.tired
 end
 
 function _tired_check!(stp :: VoidStopping,
                        x   :: T) where T
- return false
+  return false
 end
 
 """
-\\_resources\\_check!: check if the optimization algorithm has exhausted the resources.
+\\_resources\\_check!: check if the optimization algorithm has exhausted
+ the resources.
 
-`_resources_check!(:: AbstractStopping, :: Union{Number, AbstractVector})`
+`_resources_check!(:: AbstractStopping, :: T)`
 
-Note: By default *meta.resources* is false for Abstract/Generic Stopping.
+Note: Do nothing by default `meta.resources` for AbstractStopping.
 """
 function _resources_check!(stp :: AbstractStopping,
                            x   :: T) where T
-
- return stp.meta.resources #false
+  return stp.meta.resources
 end
 
 function _resources_check!(stp :: VoidStopping,
                            x   :: T) where T
-
- return false
+  return false
 end
 
 """
-\\_main\\_pb\\_check!: check the resources and the time of the upper problem (if main_stp != VoidStopping.
+\\_main\\_pb\\_check!: check the resources and the time of the upper problem
+ if `main_stp != VoidStopping`.
 
-`_main_pb_check!(:: AbstractStopping, :: Union{Number, AbstractVector})`
+`_main_pb_check!(:: AbstractStopping, :: T)`
 
-Note: - Modify the meta of the *main_stp*.
-      - By default `meta.main_pb = false`.
-      - return `false` for VoidStopping.
+Note: - Modify the meta of the `main_stp`.   
+      - return `false` for `VoidStopping`.
 """
 function _main_pb_check!(stp :: AbstractStopping,
                          x   :: T) where T
 
- max_time     = _tired_check!(stp.main_stp, x)
- resources    = _resources_check!(stp.main_stp, x)
- main_main_pb = _main_pb_check!(stp.main_stp, x)
+  max_time     = _tired_check!(stp.main_stp, x)
+  resources    = _resources_check!(stp.main_stp, x)
+  main_main_pb = _main_pb_check!(stp.main_stp, x)
 
- check = max_time || resources || main_main_pb
+  check = max_time || resources || main_main_pb
 
- if check stp.meta.main_pb = true end
+  if check stp.meta.main_pb = true end
 
- return stp.meta.main_pb
+  return stp.meta.main_pb
 end
 
 function _main_pb_check!(stp :: VoidStopping,
@@ -529,21 +544,22 @@ function _main_pb_check!(stp :: VoidStopping,
 end
 
 """
-\\_unbounded\\_and\\_domain\\_x\\_check!: check if x gets too big, and if it has NaN or missing values.
+\\_unbounded\\_and\\_domain\\_x\\_check!: check if x gets too big, 
+and if it has NaN or missing values.
 
-`_unbounded_and_domain_x_check!(:: AbstractStopping, :: Union{Number, AbstractVector})`
+`_unbounded_and_domain_x_check!(:: AbstractStopping, :: T)`
 
 Note:
-- compare ||x||_∞ with *meta.unbounded_x* and update *meta.unbounded*.
-- it also checks *NaN* and *missing* and update *meta.domainerror*.
-- short-circuiting if one of the two is true.
+- compare `||x||_∞` with `meta.unbounded_x` and update `meta.unbounded`.   
+- it also checks `NaN` and `missing` and update `meta.domainerror`.    
+- short-circuiting if one of the two is `true`.
 """
 function _unbounded_and_domain_x_check!(stp :: AbstractStopping,
                                         x   :: T) where T
 
- bigX(z :: eltype(T)) = (abs(z) >= stp.meta.unbounded_x)
- (stp.meta.unbounded, stp.meta.domainerror) = _large_and_domain_check(bigX, x)
- return stp.meta.unbounded || stp.meta.domainerror
+  bigX(z :: eltype(T)) = (abs(z) >= stp.meta.unbounded_x)
+  (stp.meta.unbounded, stp.meta.domainerror) = _large_and_domain_check(bigX, x)
+  return stp.meta.unbounded || stp.meta.domainerror
 end
 
 function _large_and_domain_check(f, itr)
@@ -551,9 +567,9 @@ function _large_and_domain_check(f, itr)
         v   = f(x)
         w   = ismissing(x) || isnan(x)
         if w
-            return (false, true)
+          return (false, true)
         elseif v
-            return (true, false)
+          return (true, false)
         end
     end
     return (false, false)
@@ -562,9 +578,9 @@ end
 """
 \\_unbounded\\_problem!: check if problem relative informations are unbounded
 
-`_unbounded_problem_check!(:: AbstractStopping, :: Union{Number, AbstractVector})`
+`_unbounded_problem_check!(:: AbstractStopping, :: T)`
 
-Note: *meta.unbounded_pb* is false by default.
+Note: Do nothing by default.
 """
 function _unbounded_problem_check!(stp :: AbstractStopping,
                                    x   :: T) where T
@@ -575,9 +591,9 @@ end
 """
 \\_infeasibility\\_check!: check if problem is infeasible
 
-`_infeasibility_check!(:: AbstractStopping, :: Union{Number, AbstractVector})`
+`_infeasibility_check!(:: AbstractStopping, :: T)`
 
-Note: *meta.infeasible* is false by default.
+Note: `meta.infeasible` is `false` by default.
 """
 function _infeasibility_check!(stp :: AbstractStopping,
                                x   :: T) where T
@@ -591,33 +607,34 @@ end
 `_optimality_check!(:: AbstractStopping; kwargs...)`
 
 """
-function _optimality_check!(stp :: AbstractStopping{Pb, M, SRC, T, MStp, LoS, Uss};
+function _optimality_check!(stp :: AbstractStopping{Pb, M, SRC, T, 
+                                                    MStp, LoS, Uss};
                            kwargs...) where {Pb, M, SRC, T, MStp, LoS, Uss}
 
- setfield!(stp.current_state, :current_score,
-           stp.meta.optimality_check(stp.pb, stp.current_state; kwargs...))
+  setfield!(stp.current_state, :current_score,
+            stp.meta.optimality_check(stp.pb, stp.current_state; kwargs...))
 
- return stp.current_state.current_score
+  return stp.current_state.current_score
 end
 
 """
 \\_null\\_test: check if the score is close enough to zero
 (up to some precisions found in the meta).
 
-`_null_test(:: AbstractStopping, :: Union{Number,AbstractVector})`
+`_null_test(:: AbstractStopping, :: T)`
 
-Note:
-- the second argument is compared with `meta.tol_check(meta.atol, meta.rtol, meta.optimality0)`
-and `meta.tol_check_neg(meta.atol, meta.rtol, meta.optimality0)`.
-- Compatible size is not verified.
+Note:   
+- the second argument is compared with 
+`meta.tol_check(meta.atol, meta.rtol, meta.optimality0)`,
+and `meta.tol_check_neg(meta.atol, meta.rtol, meta.optimality0)`.    
+- Compatible sizes is not verified.
 """
 function _null_test(stp  :: AbstractStopping, optimality :: T) where T
 
-    check_pos, check_neg = tol_check(stp.meta)
+  check_pos, check_neg = tol_check(stp.meta)
+  optimal = _inequality_check(optimality, check_pos, check_neg)
 
-    optimal = _inequality_check(optimality, check_pos, check_neg)
-
-    return optimal
+  return optimal
 end
 
 #remove the Missing option here
@@ -637,33 +654,49 @@ function _inequality_check(opt :: T, check_pos :: T, check_neg :: T) where T
     throw(ErrorException("Error: incompatible size in _null_test wrong size of optimality, tol_check and tol_check_neg"))
   end
 
-    for (o, cp, cn) in zip(opt, check_pos, check_neg)
-        v = o > cp || o < cn
-        if v
-            return false
-        end
+  for (o, cp, cn) in zip(opt, check_pos, check_neg)
+    v = o > cp || o < cn
+    if v
+      return false
     end
+  end
 
-   return true
+  return true
 end
 
 """
 \\_user\\_check: nothing by default.
 
-`_user_check!( :: AbstractStopping, x :: Union{Number, AbstractVector}, start :: Bool)`
+`_user_check!( :: AbstractStopping, x :: T, start :: Bool)`
 
+Call the `user_check_func!(:: AbstractStopping, :: Bool)` from the meta.
 The boolean `start` is `true` when called from the `start!` function.
 """
 function _user_check!(stp :: AbstractStopping, x :: T, start :: Bool) where T
- #callback function furnished by the user
- stp.meta.user_check_func!(stp, start)
+  #callback function furnished by the user
+  stp.meta.user_check_func!(stp, start)
  
- return stp.meta.stopbyuser
+  return stp.meta.stopbyuser
 end
 
 function _user_check!(stp :: AbstractStopping, x :: T) where T
- return _user_check!(stp, x, false)
+  return _user_check!(stp, x, false)
 end
+
+const status_meta_list = Dict([(:Optimal, :optimal),
+             (:SubProblemFailure, :fail_sub_pb),
+             (:SubOptimal, :suboptimal),
+             (:Unbounded, :unbounded),
+             (:UnboundedPb, :unbounded_pb),
+             (:Stalled, :stalled),
+             (:IterationLimit, :iteration_limit),
+             (:TimeLimit, :tired),
+             (:EvaluationLimit, :resources),
+             (:ResourcesOfMainProblemExhausted, :main_pb),
+             (:Infeasible, :infeasible),
+             (:StopByUser, :stopbyuser),
+             (:Exception, :exception),
+             (:DomainError, :domainerror)])
 
 """
 status: returns the status of the algorithm:
@@ -691,33 +724,29 @@ The different statuses are:
 - Unknwon: if stopped for reasons unknown by Stopping.
 
 Note:
-  - Set keyword argument *list* to true, to get an Array with all the status.
-  - The different status correspond to boolean values in the MetaData, see *StoppingMeta*.
+- Set keyword argument `list` to true, to get an `Array` with all the statuses.   
+- The different statuses correspond to boolean values in the meta.   
 """
 function status(stp :: AbstractStopping; list = false)
 
-  tt = Dict([(:Optimal, :optimal),
-             (:SubProblemFailure, :fail_sub_pb),
-             (:SubOptimal, :suboptimal),
-             (:Unbounded, :unbounded),
-             (:UnboundedPb, :unbounded_pb),
-             (:Stalled, :stalled),
-             (:IterationLimit, :iteration_limit),
-             (:TimeLimit, :tired),
-             (:EvaluationLimit, :resources),
-             (:ResourcesOfMainProblemExhausted, :main_pb),
-             (:Infeasible, :infeasible),
-             (:StopByUser, :stopbyuser),
-             (:Exception, :exception),
-             (:DomainError, :domainerror)])
-
   if list
-    list_status = findall(x -> getfield(stp.meta, x), tt)
+    list_status = findall(x -> getfield(stp.meta, x), status_meta_list)
     if list_status == zeros(0) list_status = [:Unknown] end
   else
-    list_status = findfirst(x -> getfield(stp.meta, x), tt)
+    list_status = findfirst(x -> getfield(stp.meta, x), status_meta_list)
     if isnothing(list_status) list_status = :Unknown end
   end
 
   return list_status
+end
+
+"""
+elapsed_time: returns the elapsed time.
+
+`elapsed_time(:: AbstractStopping)`
+
+`current_time` and `start_time` are NaN if not initialized.
+"""
+function elapsed_time(stp :: AbstractStopping)
+  return stp.current_state.current_time - stp.meta.start_time
 end

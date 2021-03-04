@@ -5,21 +5,21 @@ Turn a boolean to false to cancel this check in the functions stop! and start!.
 """
 struct StopRemoteControl <: AbstractStopRemoteControl
     
-    unbounded_and_domain_x_check :: Bool
-    domain_check                 :: Bool
-    optimality_check             :: Bool
-    infeasibility_check          :: Bool
-    unbounded_problem_check      :: Bool
-    tired_check                  :: Bool
-    resources_check              :: Bool
-    stalled_check                :: Bool
-    iteration_check              :: Bool
-    main_pb_check                :: Bool
-    user_check                   :: Bool
-    user_start_check             :: Bool
+  unbounded_and_domain_x_check :: Bool
+  domain_check                 :: Bool
+  optimality_check             :: Bool
+  infeasibility_check          :: Bool
+  unbounded_problem_check      :: Bool
+  tired_check                  :: Bool
+  resources_check              :: Bool
+  stalled_check                :: Bool
+  iteration_check              :: Bool
+  main_pb_check                :: Bool
+  user_check                   :: Bool
+  user_start_check             :: Bool
     
-    cheap_check                  :: Bool #`stop!` and `start!` stop whenever one check worked 
-                                         #not used now
+  cheap_check                  :: Bool #`stop!` and `start!` stop whenever one check worked 
+                                       #not used now
     
 end
 
@@ -37,13 +37,13 @@ function StopRemoteControl(;unbounded_and_domain_x_check :: Bool = true, #O(n)
                             user_start_check             :: Bool = true,
                             cheap_check                  :: Bool = false)
                             
- return StopRemoteControl(unbounded_and_domain_x_check, domain_check, 
-                          optimality_check, infeasibility_check, 
-                          unbounded_problem_check, tired_check, 
-                          resources_check, stalled_check,
-                          iteration_check, main_pb_check, 
-                          user_check, user_start_check,
-                          cheap_check)
+  return StopRemoteControl(unbounded_and_domain_x_check, domain_check, 
+                           optimality_check, infeasibility_check, 
+                           unbounded_problem_check, tired_check, 
+                           resources_check, stalled_check,
+                           iteration_check, main_pb_check, 
+                           user_check, user_start_check,
+                           cheap_check)
 end
 
 """
@@ -78,7 +78,7 @@ import Base.show
 function show(io :: IO, src :: StopRemoteControl)
   varlines = "$(typeof(src)) controls the following checks \n"
   for f in fieldnames(typeof(src)) 
-      varlines=string(varlines, @sprintf("%28s: %s \n", f, getfield(src,f))) 
+    varlines=string(varlines, @sprintf("%28s: %s \n", f, getfield(src,f))) 
   end
   println(io, varlines)
 end

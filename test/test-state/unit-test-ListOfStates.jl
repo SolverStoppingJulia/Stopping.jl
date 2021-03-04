@@ -4,20 +4,22 @@
     s1 = GenericState(ones(10))
     s2 = GenericState(NaN*ones(10), current_time = 1.0, current_score = 0.0)
     
-    @test typeof(ListStates(s0)) <: AbstractListStates
-    @test typeof(ListStates(-1)) <: AbstractListStates
-    @test typeof(ListStates(1)) <: AbstractListStates
-    @test typeof(ListStates(-1, 3, [])) <: AbstractListStates
-    @test typeof(ListStates(-1, [])) <: AbstractListStates
+    @test typeof(ListofStates(s0)) <: AbstractListofStates
+    @test typeof(ListofStates(-1, Val{GenericState}())) <: AbstractListofStates
+    @test typeof(ListofStates(1, Val{GenericState}())) <: AbstractListofStates
+    #@test typeof(ListofStates(-1, 3, [])) <: AbstractListofStates
+    #@test typeof(ListofStates(-1, [])) <: AbstractListofStates
 
-    stest = ListStates(s0, max_vector_size = 2, pnorm = Inf)
+    stest = ListofStates(s0, max_vector_size = 2, pnorm = Inf)
+
+    @test state_type(stest) == GenericState{Float64,Array{Float64,1}}
 
     add_to_list!(stest, s1, max_vector_size = 2, pnorm = Inf)
     add_to_list!(stest, s2, max_vector_size = 2, pnorm = Inf)
 
     @test length(stest) == 3
 
-    stest2 = ListStates(s0, n = 2, max_vector_size = 2, pnorm = Inf)
+    stest2 = ListofStates(s0, n = 2, max_vector_size = 2, pnorm = Inf)
 
     add_to_list!(stest2, s1, max_vector_size = 2, pnorm = Inf)
     add_to_list!(stest2, s2, max_vector_size = 2, pnorm = Inf)
@@ -32,18 +34,22 @@
 
     @test typeof(df2) <: DataFrame
 
-    stest3 = ListStates(-1, 3, [(s0, VoidListStates()), (s1, VoidListStates()), (s2, VoidListStates())])
+    stest3 = ListofStates(-1, 3, [(s0, VoidListofStates()), (s1, VoidListofStates()), (s2, VoidListofStates())])
 
     @test stest3[2,1] == s1
     
-    stest4 = ListStates(-1, [(s0, VoidListStates()), (s1, VoidListStates()), (s2, VoidListStates())])
+    stest4 = ListofStates(-1, [(s0, VoidListofStates()), (s1, VoidListofStates()), (s2, VoidListofStates())])
     
     @test length(stest4) == 3
 
     #nested lists
 
-    stest5 = ListStates(-1, [(s0, stest3)])
+    stest5 = ListofStates(-1, [(s0, stest3)])
 
     df5 = print(stest5[1,2], verbose = false)
+    
+    stest7 = ListofStates(-1, [s0, s1, s2])
+    
+    @test length(stest7) == 3
 
 end

@@ -195,9 +195,9 @@ Return true if one of the decision boolean is true.
 """
 function OK_check(meta :: StoppingMeta{TolType, CheckType, MUS, IntType}
                   ) where {TolType, CheckType, MUS, IntType}
- #13 checks
- OK = meta.optimal || meta.tired || meta.iteration_limit || meta.resources || meta.unbounded || meta.unbounded_pb || meta.main_pb || meta.domainerror || meta.suboptimal || meta.fail_sub_pb || meta.stalled || meta.infeasible || meta.stopbyuser                  
- return OK
+  #13 checks
+  OK = meta.optimal || meta.tired || meta.iteration_limit || meta.resources || meta.unbounded || meta.unbounded_pb || meta.main_pb || meta.domainerror || meta.suboptimal || meta.fail_sub_pb || meta.stalled || meta.infeasible || meta.stopbyuser                  
+  return OK
 end
 
 """
@@ -208,13 +208,13 @@ Return the pair of tolerances, recomputed if `meta.retol` is true.
 function tol_check(meta :: StoppingMeta{TolType, CheckType, MUS, IntType}
                   ) where {TolType, CheckType, MUS, IntType}
 
- if meta.retol
-   atol, rtol, opt0 = meta.atol, meta.rtol, meta.optimality0
-   setfield!(meta, :check_pos, meta.tol_check(atol, rtol, opt0))
-   setfield!(meta, :check_neg, meta.tol_check_neg(atol, rtol, opt0))
- end
+  if meta.retol
+    atol, rtol, opt0 = meta.atol, meta.rtol, meta.optimality0
+    setfield!(meta, :check_pos, meta.tol_check(atol, rtol, opt0))
+    setfield!(meta, :check_neg, meta.tol_check_neg(atol, rtol, opt0))
+  end
 
- return (meta.check_pos, meta.check_neg)
+  return (meta.check_pos, meta.check_neg)
 end
 
 """
@@ -228,22 +228,22 @@ function update_tol!(meta     :: StoppingMeta{TolType, CheckType, MUS, IntType};
                      optimality0 :: TolType = meta.optimality0
                      ) where {TolType, CheckType, MUS, IntType}
 
- setfield!(meta, :retol, true)
- setfield!(meta, :atol, atol)
- setfield!(meta, :rtol, rtol)
- setfield!(meta, :optimality0, optimality0)
+  setfield!(meta, :retol, true)
+  setfield!(meta, :atol, atol)
+  setfield!(meta, :rtol, rtol)
+  setfield!(meta, :optimality0, optimality0)
 
- return meta
+  return meta
 end
 
 function reinit!(meta :: StoppingMeta{TolType, CheckType, MUS, IntType}
                 ) where {TolType, CheckType, MUS, IntType}
                 
- for k in meta_statuses
-     setfield!(meta, k, false)
- end
+  for k in meta_statuses
+    setfield!(meta, k, false)
+  end
  
- return meta
+  return meta
 end
 
 function checktype(meta :: StoppingMeta{TolType, CheckType, MUS, IntType}
@@ -268,36 +268,36 @@ end
 
 import Base.show
 function show(io :: IO, meta :: AbstractStoppingMeta)
-    varlines = "$(typeof(meta)) has"
-    if OK_check(meta)
-      ntrue = 0
-      for f in meta_statuses
-        if getfield(meta, f) && ntrue == 0
-          ntrue += 1
-          varlines=string(varlines, @sprintf(" %s", f)) 
-        elseif getfield(meta, f)
-          ntrue += 1
-          varlines=string(varlines, @sprintf(",\n %s", f)) 
-        end
+  varlines = "$(typeof(meta)) has"
+  if OK_check(meta)
+    ntrue = 0
+    for f in meta_statuses
+      if getfield(meta, f) && ntrue == 0
+        ntrue += 1
+        varlines=string(varlines, @sprintf(" %s", f)) 
+      elseif getfield(meta, f)
+        ntrue += 1
+        varlines=string(varlines, @sprintf(",\n %s", f)) 
       end
-      varlines= ntrue == 1 ? string(varlines, " as only true status.\n") : string(varlines, " as true statuses.\n")
-    else
-      varlines=string(varlines, " now no true statuses.\n")
     end
-    varlines=string(varlines,  "The return type of tol check functions is $(checktype(meta))")
-    if meta.retol
-        varlines=string(varlines, ", and these functions are reevaluated at each stop!.\n")
-    else
-        varlines=string(varlines, ".\n")
-    end
-    varlines=string(varlines,  "Current tolerances are: \n")
-    for k in [:atol, :rtol, :optimality0, :unbounded_threshold, :unbounded_x, :max_f, :max_eval, :max_iter, :max_time]
-        varlines=string(varlines,  @sprintf("%19s: %s (%s) \n", k, getfield(meta, k), typeof(getfield(meta, k))))
-    end
-    if metausertype(meta) != Nothing
-       varlines=string(varlines,  "The user defined structure in the meta is a $(metausertype(meta)).\n")
-    else 
-       varlines=string(varlines,  "There is no user defined structure in the meta.\n")
-    end
-    println(io, varlines)
+    varlines= ntrue == 1 ? string(varlines, " as only true status.\n") : string(varlines, " as true statuses.\n")
+  else
+    varlines=string(varlines, " now no true statuses.\n")
+  end
+  varlines=string(varlines,  "The return type of tol check functions is $(checktype(meta))")
+  if meta.retol
+    varlines=string(varlines, ", and these functions are reevaluated at each stop!.\n")
+  else
+    varlines=string(varlines, ".\n")
+  end
+  varlines=string(varlines,  "Current tolerances are: \n")
+  for k in [:atol, :rtol, :optimality0, :unbounded_threshold, :unbounded_x, :max_f, :max_eval, :max_iter, :max_time]
+    varlines=string(varlines,  @sprintf("%19s: %s (%s) \n", k, getfield(meta, k), typeof(getfield(meta, k))))
+  end
+  if metausertype(meta) != Nothing
+    varlines=string(varlines,  "The user defined structure in the meta is a $(metausertype(meta)).\n")
+  else 
+    varlines=string(varlines,  "There is no user defined structure in the meta.\n")
+  end
+  println(io, varlines)
 end
