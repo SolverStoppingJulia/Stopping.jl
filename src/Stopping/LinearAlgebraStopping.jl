@@ -126,22 +126,29 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
                     main_stp, list, stopping_user_struct, zero_start)
  end
 
-function LAStopping(A      :: TA,
-                    b      :: Tb;
-                    x      :: Tb = zeros(eltype(Tb), size(A,2)),
-                    sparse :: Bool = true,
+function LAStopping(A              :: TA,
+                    b              :: Tb;
+                    x              :: Tb = zeros(eltype(Tb), size(A,2)),
+                    sparse         :: Bool = true,
+                    n_listofstates :: Int = 0,
                     kwargs...) where {TA <: Any, Tb <: AbstractVector}
   pb = sparse ? LLSModel(A,b) : LinearSystem(A,b)
+  state = GenericState(x)
 
   mcntrs = sparse ? _init_max_counters_NLS() : _init_max_counters_linear_operators()
 
-  return LAStopping(pb, GenericState(x), max_cntrs = mcntrs; kwargs...)
+  if n_listofstates > 0 && :list ∉ keys(kwargs)
+    list = ListofStates(n_listofstates, Val{typeof(state)}())
+    return LAStopping(pb, state, max_cntrs = mcntrs, list = list; kwargs...)
+  end
+
+  return LAStopping(pb, state, max_cntrs = mcntrs; kwargs...)
 end
 
-function LAStopping(A      :: TA,
-                    b      :: Tb,
-                    state  :: S;
-                    sparse :: Bool = true,
+function LAStopping(A              :: TA,
+                    b              :: Tb,
+                    state          :: S;
+                    sparse         :: Bool = true,
                     kwargs...) where {TA <: Any, Tb <: AbstractVector, S <: AbstractState}
 
   pb = sparse ? LLSModel(A,b) : LinearSystem(A,b)

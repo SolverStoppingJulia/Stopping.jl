@@ -134,8 +134,18 @@ function GenericStopping(pb            :: Pb,
                         main_stp, list, stopping_user_struct)
 end
 
-function GenericStopping(pb :: Any, x :: T; kwargs...) where T
-  return GenericStopping(pb, GenericState(x); kwargs...)
+"""
+`GenericStopping(pb :: Any, x :: T; n_listofstates :: Int = 0, kwargs...)`
+
+Setting the keyword argument `n_listofstates > 0` initialize a ListofStates of length `n_listofstates`.
+"""
+function GenericStopping(pb :: Any, x :: T; n_listofstates :: Int = 0, kwargs...) where T
+  state = GenericState(x)
+  if n_listofstates > 0 && :list ∉ keys(kwargs)
+    list = ListofStates(n_listofstates, Val{typeof(state)}())
+    return GenericStopping(pb, state, list = list; kwargs...)
+  end
+  return GenericStopping(pb, state; kwargs...)
 end
 
 """

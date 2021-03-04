@@ -114,11 +114,18 @@ function NLPStopping(pb             :: Pb,
                      main_stp, list, stopping_user_struct)
 end
 
-function NLPStopping(pb :: AbstractNLPModel; kwargs...)
+function NLPStopping(pb :: AbstractNLPModel;
+                     n_listofstates :: Int = 0,
+                     kwargs...)
   #Create a default NLPAtX
   nlp_at_x = NLPAtX(pb.meta.x0)
 
-  return NLPStopping(pb, nlp_at_x; optimality_check = KKT, kwargs...)
+  if n_listofstates > 0 && :list ∉ keys(kwargs)
+    list = ListofStates(n_listofstates, Val{typeof(nlp_at_x)}())
+    return NLPStopping(pb, nlp_at_x, list = list, optimality_check = KKT; kwargs...)
+  end
+
+  return NLPStopping(pb, nlp_at_x, optimality_check = KKT; kwargs...)
 end
 
 """
