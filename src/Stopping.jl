@@ -66,12 +66,12 @@ module Stopping
 
   # State
   include("State/GenericStatemod.jl")
-  include("State/LSAtTmod.jl")
+  include("State/OneDAtXmod.jl")
   include("State/NLPAtXmod.jl")
 
   export scoretype, xtype
   export AbstractState, GenericState, update!, copy, compress_state!, copy_compress_state
-  export LSAtT, update!
+  export OneDAtX, update!
   export NLPAtX, update!
 
   include("State/ListOfStates.jl")
@@ -192,13 +192,11 @@ module Stopping
 
   # Stopping
   include("Stopping/GenericStoppingmod.jl")
-  include("Stopping/LineSearchStoppingmod.jl")
   include("Stopping/NLPStoppingmod.jl")
 
   export GenericStopping, start!, stop!, cheap_stop!, update_and_start!
   export update_and_stop!, cheap_update_and_stop!, cheap_update_and_start!
   export fill_in!, reinit!, status, elapsed_time
-  export LS_Stopping
   export NLPStopping, unconstrained_check, unconstrained2nd_check, max_evals!
   export optim_check_bounded, KKT
 

@@ -135,7 +135,7 @@ function print(list :: AbstractListofStates;
   for k in fieldnames(typeof(list.list[1,1]))
     tab = vcat(tab, [getfield(i[1], k) for i in list.list]');
   end
-  df = DataFrame(tab, :auto)
+  df = DataFrame(tab) #DataFrame(tab, :auto)
 
   if isnothing(print_sym)
     verbose && print(df)
