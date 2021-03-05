@@ -81,7 +81,7 @@ function NLPStopping(pb             :: Pb,
                               M  <: AbstractStoppingMeta,
                               T  <: AbstractState}
     
-  stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
+  stop_remote = StopRemoteControl() #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
 
   return NLPStopping(pb, meta, stop_remote, current_state, 
                      main_stp, list, stopping_user_struct)
@@ -108,7 +108,7 @@ function NLPStopping(pb             :: Pb,
   end
 
     meta = StoppingMeta(;max_cntrs = mcntrs, optimality_check = oc, kwargs...)
-    stop_remote = StopRemoteControl() #main_stp == nothing ? StopRemoteControl() : cheap_stop_remote_control()
+    stop_remote = StopRemoteControl() #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
 
   return NLPStopping(pb, meta, stop_remote, current_state, 
                      main_stp, list, stopping_user_struct)
