@@ -91,7 +91,7 @@ The function compares the kwargs and the entries of the State.
 If the type of the kwargs is the same as the entry, then
 it is updated.
 
-Set kargs *convert* to true to update even incompatible types.
+Set kargs `convert` to true to update even incompatible types.
 
 Examples:
 update!(state1)
@@ -152,18 +152,18 @@ function _update_time!(stateatx     :: T,
 end
 
 """
-reinit!: function that set all the entries at *\\_init\\_field* except the mandatory *x*.
+reinit!: function that set all the entries at `_init_field` except the mandatory `x`.
 
 `reinit!(:: AbstractState, :: T; kwargs...)`
 
-Note: If *x* is given as a kargs it will be prioritized over
+Note: If `x` is given as a kargs it will be prioritized over
 the second argument.
 
 Examples:
 reinit!(state2, zeros(2))
 reinit!(state2, zeros(2), current_time = 1.0)
 
-There is a shorter version of reinit! reusing the *x* in the state
+There is a shorter version of reinit! reusing the `x` in the state
 
 `reinit!(:: AbstractState; kwargs...)`
 
@@ -203,7 +203,7 @@ function reinit!(stateatx :: T; kwargs...) where T <: AbstractState
 end
 
 """
-\\_domain\\_check: returns true if there is a *NaN* or a *Missing* in the state entries (short-circuiting), false otherwise.
+\\_domain\\_check: returns true if there is a `NaN` or a `Missing` in the state entries (short-circuiting), false otherwise.
 
 `_domain_check(:: AbstractState; kwargs...)`
 
@@ -293,7 +293,7 @@ function compress_state!(stateatx        :: T;
       if save_matrix
         katt = getfield(stateatx, k)
         if maximum(size(katt)) > max_vector_size 
-          setfield!(stateatx, k, norm(getfield(stateatx, k))*ones(1,1)) 
+          setfield!(stateatx, k, norm(getfield(stateatx, k)) * ones(1,1)) 
         end
       else #save_matrix is false
         setfield!(stateatx, k, _init_field(typeof(getfield(stateatx, k))))

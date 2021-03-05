@@ -16,7 +16,7 @@ or
 Attributes:
 - pb         : a problem using LLSModel (designed for linear least square problem, see https://github.com/JuliaSmoothOptimizers/NLPModels.jl/blob/master/src/lls_model.jl )
 - state      : The information relative to the problem, see GenericState
-- (opt) meta : Metadata relative to stopping criterion, see *StoppingMeta*.
+- (opt) meta : Metadata relative to stopping criterion, see `StoppingMeta`.
 - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
                           of a subproblem.
                           If not a subproblem, then nothing.
@@ -251,8 +251,8 @@ end
 exhausted the resources. This is the Linear Algebra specialized version.
 
  Note:
- * function does _not_ keep track of the evals in the state
- * check `:nprod`, `:ntprod`, and `:nctprod` in the `LinearOperator` entries
+ - function does _not_ keep track of the evals in the state
+ - check `:nprod`, `:ntprod`, and `:nctprod` in the `LinearOperator` entries
  """
  function _resources_check!(stp :: LAStopping,
                             x   :: T) where T

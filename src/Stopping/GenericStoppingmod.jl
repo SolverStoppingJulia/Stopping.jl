@@ -9,11 +9,11 @@
 
  Tracked data include:
 - pb         : A problem
-- state      : The information relative to the problem, see *GenericState*
-- (opt) meta : Metadata relative to a stopping criterion, see *StoppingMeta*.
+- state      : The information relative to the problem, see `GenericState`.
+- (opt) meta : Metadata relative to a stopping criterion, see `StoppingMeta`.
 - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
                        of a subproblem.
-                       If not a subproblem, then *nothing*.
+                       If not a subproblem, then `nothing`.
 - (opt) listofstates : ListofStates designed to store the history of States.
 - (opt) stopping_user_struct : Contains any structure designed by the user.
 

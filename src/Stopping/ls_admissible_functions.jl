@@ -9,7 +9,7 @@ Armijo criterion: f(x + θd) - f(x) - τ₀ θ ∇f(x+θd)d < 0
 
 Note: fx, f₀ and g₀ are required in the OneDAtX
 
-See also *wolfe*, *armijo_wolfe*, *shamanskii_stop*, *goldstein*
+See also `wolfe`, `armijo_wolfe`, `shamanskii_stop`, `goldstein`
 """
 function armijo(h      :: Any,
                 h_at_t :: OneDAtX;
@@ -38,7 +38,7 @@ Strong Wolfe criterion: |∇f(x+θd)| < τ₁||∇f(x)||.
 
 Note: gx and g₀ are required in the OneDAtX
 
-See also *armijo*, *armijo_wolfe*, *shamanskii_stop*, *goldstein*
+See also `armijo`, `armijo_wolfe`, `shamanskii_stop`, `goldstein`
 """
 function wolfe(h      :: Any,
                h_at_t :: OneDAtX;
@@ -63,7 +63,7 @@ armijo_wolfe: check if a step size is admissible according to the Armijo and Wol
 
 Note: fx, f₀, gx and g₀ are required in the OneDAtX
 
-See also *armijo*, *wolfe*, *shamanskii_stop*, *goldstein*
+See also `armijo`, `wolfe`, `shamanskii_stop`, `goldstein`
 """
 function armijo_wolfe(h      :: Any,
                       h_at_t :: OneDAtX;
@@ -89,10 +89,11 @@ Journal of optimization theory and applications, 111(2), 341-358.
 
 `shamanskii_stop(h :: Any, h_at_t :: OneDAtX; γ :: Float64 = 1.0e-09, kwargs...)`
 
-Note: * h.d accessible (specific LineModel)
-      * fx, f₀ are required in the OneDAtX
+Note: 
+- h.d accessible (specific LineModel)
+- fx, f₀ are required in the OneDAtX
 
-See also *armijo*, *wolfe*, *armijo_wolfe*, *goldstein*
+See also `armijo`, `wolfe`, `armijo_wolfe`, `goldstein`
 """
 function shamanskii_stop(h      :: Any,
                          h_at_t :: OneDAtX;
@@ -110,7 +111,7 @@ goldstein: check if a step size is admissible according to the Goldstein criteri
 
 Note: fx, f₀ and g₀ are required in the OneDAtX
 
-See also *armijo*, *wolfe*, *armijo_wolfe*, *shamanskii_stop*
+See also `armijo`, `wolfe`, `armijo_wolfe`, `shamanskii_stop`
 """
 function goldstein(h      :: Any,
                    h_at_t :: OneDAtX;

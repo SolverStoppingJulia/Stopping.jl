@@ -9,7 +9,7 @@ Specialization of GenericStopping. Stopping structure for non-linear programming
 Attributes:
 - pb         : an AbstractNLPModel
 - state      : The information relative to the problem, see GenericState
-- (opt) meta : Metadata relative to stopping criterion, see *StoppingMeta*.
+- (opt) meta : Metadata relative to stopping criterion, see `StoppingMeta`.
 - (opt) main_stp : Stopping of the main loop in case we consider a Stopping
                           of a subproblem.
                           If not a subproblem, then nothing.
@@ -19,11 +19,11 @@ Attributes:
 `NLPStopping(:: AbstractNLPModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), max_cntrs :: Dict = _init_max_counters(), main_stp :: Union{AbstractStopping, Nothing} = nothing, list :: Union{ListofStates, Nothing} = nothing, stopping_user_struct :: Any = nothing, kwargs...)`
 
  Note:
-- designed for *NLPAtX* State. Constructor checks that the State has the
+- designed for `NLPAtX` State. Constructor checks that the State has the
  required entries.
 
  There is an additional default constructor creating a Stopping where the State is by default and the
- optimality function is the function *KKT()*.
+ optimality function is the function `KKT()``.
 
  `NLPStopping(pb :: AbstractNLPModel; kwargs...)`
 
@@ -198,7 +198,7 @@ function _init_max_counters_NLS(; allevals        :: T = 20000,
 end
 
 """
-fill_in!: (NLPStopping version) a function that fill in the required values in the *NLPAtX*
+fill_in!: (NLPStopping version) a function that fill in the required values in the `NLPAtX`.
 
 `fill_in!( :: NLPStopping, :: Union{AbstractVector, Nothing}; fx :: Union{AbstractVector, Nothing} = nothing, gx :: Union{AbstractVector, Nothing} = nothing, Hx :: Union{MatrixType, Nothing} = nothing, cx :: Union{AbstractVector, Nothing} = nothing, Jx :: Union{MatrixType, Nothing} = nothing, lambda :: Union{AbstractVector, Nothing} = nothing, mu :: Union{AbstractVector, Nothing} = nothing, matrix_info :: Bool = true, kwargs...)`
 """
@@ -421,7 +421,7 @@ Note:
 function _infeasibility_check!(stp  :: NLPStopping,
                                x    :: T) where T
 #=
-#- evaluate the constraint function if *state.cx* is *nothing* and store in *state*.
+#- evaluate the constraint function if `state.cx` is `nothing` and store in `state`.
 #- check the Inf-norm of the violation ≤ stp.meta.atol
  if stp.pb.meta.ncon != 0 #if the problems has constraints, check |c(x)|
   cx = stp.current_state.cx

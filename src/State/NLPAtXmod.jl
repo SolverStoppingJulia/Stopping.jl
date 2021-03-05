@@ -140,8 +140,8 @@ reinit!: function that set all the entries at void except the mandatory x
 
 `reinit!(:: NLPAtX; kwargs...)`
 
-Note: if *x*, *lambda* or *evals* are given as keyword arguments they will be
-prioritized over the existing *x*, *lambda* and the default *Counters*.
+Note: if `x`, `lambda` or `evals` are given as keyword arguments they will be
+prioritized over the existing `x`, `lambda` and the default `Counters`.
 """
 function reinit!(stateatx :: NLPAtX{S, T, MT}, 
                  x        :: T, 

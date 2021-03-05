@@ -7,8 +7,8 @@ Attributes:
 - atol: absolute tolerance.
 - rtol: relative tolerance.
 - optimality0: optimality score at the initial guess.
-- tol_check: Function of *atol*, *rtol* and *optimality0* testing a score to zero.
-- tol_check_neg: Function of *atol*, *rtol* and *optimality0* testing a score to zero.
+- tol_check: Function of `atol`, `rtol` and `optimality0` testing a score to zero.
+- tol_check_neg: Function of `atol`, `rtol` and `optimality0` testing a score to zero.
 - check_pos: pre-allocation for positive tolerance
 - check_neg: pre-allocation for negative tolerance
 - recomp_tol: true if tolerances are updated
