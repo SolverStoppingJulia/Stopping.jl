@@ -63,14 +63,14 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
 
  end
  
- function LAStopping(pb             :: Pb,
-                     meta           :: M,
-                     stop_remote    :: SRC,
-                     current_state  :: T;
-                     main_stp       :: AbstractStopping = VoidStopping(),
-                     list           :: AbstractListofStates = VoidListofStates(),
+ function LAStopping(pb            :: Pb,
+                     meta          :: M,
+                     stop_remote   :: SRC,
+                     current_state :: T;
+                     main_stp      :: AbstractStopping = VoidStopping(),
+                     list          :: AbstractListofStates = VoidListofStates(),
                      stopping_user_struct :: Any = nothing,
-                     zero_start     :: Bool = false
+                     zero_start    :: Bool = false
                      ) where {Pb  <: Any, 
                               M   <: AbstractStoppingMeta, 
                               SRC <: AbstractStopRemoteControl,
@@ -80,29 +80,33 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
                     main_stp, list, stopping_user_struct, zero_start)
  end
  
- function LAStopping(pb             :: Pb,
-                     meta           :: M,
-                     current_state  :: T;
-                     main_stp       :: AbstractStopping = VoidStopping(),
-                     list           :: AbstractListofStates = VoidListofStates(),
+ function LAStopping(pb            :: Pb,
+                     meta          :: M,
+                     current_state :: T;
+                     main_stp      :: AbstractStopping = VoidStopping(),
+                     list          :: AbstractListofStates = VoidListofStates(),
                      stopping_user_struct :: Any = nothing,
-                     zero_start     :: Bool = false
+                     zero_start    :: Bool = false
                      ) where {Pb <: Any, 
                               M  <: AbstractStoppingMeta,
                               T  <: AbstractState}
      
-  stop_remote = StopRemoteControl() #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
+  stop_remote = if main_stp == VoidStopping() 
+                  StopRemoteControl() 
+                else 
+                  cheap_stop_remote_control()
+                end
      
   return LAStopping(pb, meta, stop_remote, current_state, 
                     main_stp, list, stopping_user_struct, zero_start)
  end
  
- function LAStopping(pb             :: Pb,
-                     current_state  :: T;
-                     main_stp       :: AbstractStopping = VoidStopping(),
-                     list           :: AbstractListofStates = VoidListofStates(),
+ function LAStopping(pb            :: Pb,
+                     current_state :: T;
+                     main_stp      :: AbstractStopping = VoidStopping(),
+                     list          :: AbstractListofStates = VoidListofStates(),
                      stopping_user_struct :: Any = nothing,
-                     zero_start     :: Bool = false,
+                     zero_start    :: Bool = false,
                      kwargs...) where {Pb <: Any, T <: AbstractState}
                      
   if :max_cntrs in keys(kwargs)
@@ -120,7 +124,11 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
   end
 
   meta = StoppingMeta(;max_cntrs =  mcntrs, optimality_check = oc, kwargs...)
-  stop_remote = StopRemoteControl() #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
+  stop_remote = if main_stp == VoidStopping() 
+                  StopRemoteControl() 
+                else 
+                  cheap_stop_remote_control()
+                end
 
   return LAStopping(pb, meta, stop_remote, current_state, 
                     main_stp, list, stopping_user_struct, zero_start)
@@ -145,10 +153,10 @@ function LAStopping(A              :: TA,
   return LAStopping(pb, state, max_cntrs = mcntrs; kwargs...)
 end
 
-function LAStopping(A              :: TA,
-                    b              :: Tb,
-                    state          :: S;
-                    sparse         :: Bool = true,
+function LAStopping(A      :: TA,
+                    b      :: Tb,
+                    state  :: S;
+                    sparse :: Bool = true,
                     kwargs...) where {TA <: Any, Tb <: AbstractVector, S <: AbstractState}
 
   pb = sparse ? LLSModel(A,b) : LinearSystem(A,b)
@@ -168,10 +176,10 @@ mutable struct  LACounters{T <: Int}
   nctprod :: T
   sum     :: T
 
-  function LACounters(nprod :: T, 
-                      ntprod :: T, 
+  function LACounters(nprod   :: T, 
+                      ntprod  :: T, 
                       nctprod :: T, 
-                      sum :: T) where T <: Int
+                      sum     :: T) where T <: Int
     return new{T}(nprod, ntprod, nctprod, sum)
   end
 end

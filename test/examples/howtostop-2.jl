@@ -22,7 +22,7 @@ subsubpb = nothing
 main_stop = GenericStopping(pb, x0)
 #We can then, initialize another stopping to the subproblem, and providing
 #the main_stop as a keyword argument:
-sub_stop = GenericStopping(subpb, x0, main_stp = main_stop, tol_check = (atol, rtol, opt0) -> atol)
+sub_stop = GenericStopping(subpb, StopRemoteControl(), GenericState(x0), main_stp = main_stop, tol_check = (atol, rtol, opt0) -> atol)
 #Note that by default main_stp is void
 @test main_stop.main_stp == VoidStopping()
 
@@ -42,7 +42,7 @@ stop!(sub_stop)
 #The same applies if there is now a third subproblem
 reinit!(main_stop)
 reinit!(sub_stop)
-subsub_stop = GenericStopping(subsubpb, x0, main_stp = sub_stop, tol_check = (atol, rtol, opt0) -> atol)
+subsub_stop = GenericStopping(subsubpb, StopRemoteControl(), GenericState(x0), main_stp = sub_stop, tol_check = (atol, rtol, opt0) -> atol)
 main_stop.meta.start_time = 0.0 #force a timing failure in the main problem
 stop!(subsub_stop)
 

@@ -53,45 +53,49 @@ mutable struct NLPStopping{Pb, M, SRC, T, MStp, LoS, Uss
 
 end
 
-function NLPStopping(pb             :: Pb,
-                     meta           :: M,
-                     stop_remote    :: SRC,
-                     current_state  :: T;
-                     main_stp       :: AbstractStopping = VoidStopping(),
-                     list           :: AbstractListofStates = VoidListofStates(),
-                     stopping_user_struct  :: Any = nothing,
+function NLPStopping(pb            :: Pb,
+                     meta          :: M,
+                     stop_remote   :: SRC,
+                     current_state :: T;
+                     main_stp      :: AbstractStopping = VoidStopping(),
+                     list          :: AbstractListofStates = VoidListofStates(),
+                     stopping_user_struct :: Any = nothing,
                      kwargs...
                      ) where {Pb  <: AbstractNLPModel, 
                               M   <: AbstractStoppingMeta, 
                               SRC <: AbstractStopRemoteControl,
                               T   <: AbstractState}
 
-    return NLPStopping(pb, meta, stop_remote, current_state, 
-                       main_stp, list, stopping_user_struct)
+  return NLPStopping(pb, meta, stop_remote, current_state, 
+                      main_stp, list, stopping_user_struct)
 end
 
-function NLPStopping(pb             :: Pb,
-                     meta           :: M,
-                     current_state  :: T;
-                     main_stp       :: AbstractStopping = VoidStopping(),
-                     list           :: AbstractListofStates = VoidListofStates(),
-                     stopping_user_struct  :: Any = nothing,
+function NLPStopping(pb            :: Pb,
+                     meta          :: M,
+                     current_state :: T;
+                     main_stp      :: AbstractStopping = VoidStopping(),
+                     list          :: AbstractListofStates = VoidListofStates(),
+                     stopping_user_struct :: Any = nothing,
                      kwargs...
                      ) where {Pb <: AbstractNLPModel, 
                               M  <: AbstractStoppingMeta,
                               T  <: AbstractState}
     
-  stop_remote = StopRemoteControl() #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
+  stop_remote = if main_stp == VoidStopping() 
+                  StopRemoteControl() 
+                else 
+                  cheap_stop_remote_control()
+                end
 
   return NLPStopping(pb, meta, stop_remote, current_state, 
                      main_stp, list, stopping_user_struct)
 end
 
-function NLPStopping(pb             :: Pb,
-                     current_state  :: T;
-                     main_stp       :: AbstractStopping = VoidStopping(),
-                     list           :: AbstractListofStates = VoidListofStates(),
-                     stopping_user_struct  :: Any = nothing,
+function NLPStopping(pb            :: Pb,
+                     current_state :: T;
+                     main_stp      :: AbstractStopping = VoidStopping(),
+                     list          :: AbstractListofStates = VoidListofStates(),
+                     stopping_user_struct :: Any = nothing,
                      kwargs...
                      ) where {Pb <: AbstractNLPModel, T <: AbstractState}
     
@@ -107,8 +111,12 @@ function NLPStopping(pb             :: Pb,
     oc = KKT
   end
 
-    meta = StoppingMeta(;max_cntrs = mcntrs, optimality_check = oc, kwargs...)
-    stop_remote = StopRemoteControl() #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
+  meta = StoppingMeta(;max_cntrs = mcntrs, optimality_check = oc, kwargs...)
+  stop_remote = if main_stp == VoidStopping() 
+                  StopRemoteControl() 
+                else 
+                  cheap_stop_remote_control()
+                end
 
   return NLPStopping(pb, meta, stop_remote, current_state, 
                      main_stp, list, stopping_user_struct)
