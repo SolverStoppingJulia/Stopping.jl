@@ -46,8 +46,8 @@ the Stopping to reuse for another call.
 """
 module Stopping
 
-  using LinearAlgebra, SparseArrays, DataFrames, Printf
-  using LinearOperators, NLPModels
+  using LinearAlgebra, LinearOperators, SparseArrays
+  using DataFrames, NLPModels, Printf
 
   """
   AbstractState: 
@@ -57,7 +57,6 @@ module Stopping
   """
   abstract type AbstractState{S,T} end
 
-  # State
   include("State/GenericStatemod.jl")
   include("State/OneDAtXmod.jl")
   include("State/NLPAtXmod.jl")
@@ -71,7 +70,6 @@ module Stopping
 
   export AbstractListofStates, ListofStates, VoidListofStates
   export add_to_list!, length, print, getindex, state_type
-
 
   function _instate(stt :: Symbol, es :: Symbol)
     for t in fieldnames(GenericState)
@@ -183,7 +181,6 @@ module Stopping
     end
   end
 
-  # Stopping
   include("Stopping/GenericStoppingmod.jl")
   include("Stopping/NLPStoppingmod.jl")
 
@@ -192,8 +189,6 @@ module Stopping
   export fill_in!, reinit!, status, elapsed_time
   export NLPStopping, unconstrained_check, unconstrained2nd_check, max_evals!
   export optim_check_bounded, KKT
-
-  using LinearAlgebra, SparseArrays, LinearOperators #v.1.0.1
 
   include("Stopping/LinearAlgebraStopping.jl")
 

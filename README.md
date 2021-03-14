@@ -20,12 +20,12 @@ When a solver is called on an optimization model, four outcomes may happen:
 This tool eases the first three items above. It defines a type
 
     mutable struct GenericStopping <: AbstractStopping
-        problem       :: Any                  # an arbitrary instance of a problem
-        meta          :: AbstractStoppingMeta # contains the used parameters and stopping status
-        current_state :: AbstractState        # Current information on the problem
-        main_stp :: Union{AbstractStopping, Nothing} # Stopping of the main problem, or nothing
-        listofstates :: Union{ListStates, Nothing}   # History of states
-        user_specific_struct :: Any                  # User-specific structure
+        problem              :: Any                  # an arbitrary instance of a problem
+        meta                 :: AbstractStoppingMeta # contains the used parameters and stopping status
+        current_state        :: AbstractState        # Current information on the problem
+        main_stp             :: Union{AbstractStopping, Nothing} # Stopping of the main problem, or nothing
+        listofstates         :: Union{ListStates, Nothing} # History of states
+        user_specific_struct :: Dict                  # User-specific structure
 
 The [StoppingMeta](https://github.com/vepiteski/Stopping.jl/blob/master/src/Stopping/StoppingMetamod.jl) provides default tolerances, maximum resources, ...  as well as (boolean) information on the result.
 
@@ -36,10 +36,8 @@ Then, depending on the problem structure, you can specialize a new Stopping by
 redefining a State and some functions specific to your problem.
 
 We provide some specialization of the GenericStopping for optimization:
-  * [NLPStopping](https://github.com/vepiteski/Stopping.jl/blob/master/src/Stopping/NLPStoppingmod.jl) with [NLPAtX](https://github.com/vepiteski/Stopping.jl/blob/master/src/State/NLPAtXmod.jl) as a specialized State: for non-linear programming (based on [NLPModels](https://github.com/JuliaSmoothOptimizers/NLPModels.jl));
+  * [NLPStopping](https://github.com/vepiteski/Stopping.jl/blob/master/src/Stopping/NLPStoppingmod.jl) with [NLPAtX](https://github.com/vepiteski/Stopping.jl/blob/master/src/State/NLPAtXmod.jl) as a specialized State for non-linear programming (based on [NLPModels](https://github.com/JuliaSmoothOptimizers/NLPModels.jl)), or with [OneDAtX](https://github.com/vepiteski/Stopping.jl/blob/master/src/State/OneDAtXmod.jl) as a specialized State for 1d optimization;
   * [LAStopping](https://github.com/vepiteski/Stopping.jl/blob/master/src/Stopping/LinearAlgebraStopping.jl) with [GenericState](https://github.com/vepiteski/Stopping.jl/blob/master/src/State/GenericStatemod.jl): for linear algebra problems.
-  * [LS_Stopping](https://github.com/vepiteski/Stopping.jl/blob/master/src/Stopping/LineSearchStoppingmod.jl) with [LSAtT](https://github.com/vepiteski/Stopping.jl/blob/master/src/State/LSAtTmod.jl) as a specialized State: for 1d optimization;
-  * more to come...
 
 ## Functions
 
@@ -60,6 +58,7 @@ You can also access other examples of algorithms in the [test/examples](https://
 * Consult the [OptimSolver tutorial](https://github.com/vepiteski/Stopping.jl/blob/master/test/examples/run-optimsolver.jl) for more on how to use Stopping with nested algorithms.
 * Check the [Benchmark tutorial](https://github.com/vepiteski/Stopping.jl/blob/master/test/examples/benchmark.jl) to see how Stopping can combined with [SolverBenchmark.jl](https://juliasmoothoptimizers.github.io/SolverBenchmark.jl/).
 * Stopping can be adapted to closed solvers via a buffer function as in [Buffer tutorial](https://github.com/vepiteski/Stopping.jl/blob/master/test/examples/buffer.jl) for an instance with [Ipopt](https://github.com/JuliaOpt/Ipopt.jl) via [NLPModelsIpopt](https://github.com/JuliaSmoothOptimizers/NLPModelsIpopt.jl).
+* Consult the [WarmStart](https://github.com/vepiteski/Stopping.jl/blob/master/test/examples/gradient-lbfgs.jl) to use Stopping in a warm-start context using internal user-defined structure and the list of states.
 
 ## How to install
 Install and test the Stopping package with the Julia package manager:
@@ -75,50 +74,33 @@ pkg> status Stopping
 ```
 ## Example
 
-As an example, a naive version of the Newton method is provided [here](https://github.com/vepiteski/Stopping.jl/blob/master/test/examples/newton.jl). First we import the packages:
 ```
-using LinearAlgebra, NLPModels, Stopping
+using NLPModels, Stopping #import the packages
+nlp = ADNLPModel(x -> sum(x),  ones(2)) #initialize an NLPModel with automatic differentiation
 ```
-We consider a quadratic test function, and create an uncontrained quadratic optimization problem using [NLPModels](https://github.com/JuliaSmoothOptimizers/NLPModels.jl):
+We now initialize the `NLPStopping`. 
 ```
-A = rand(5, 5); Q = A' * A;
-f(x) = 0.5 * x' * Q * x
-nlp = ADNLPModel(f,  ones(5))
-```
-
-We now initialize the *NLPStopping*. First create a State.
-```
-nlp_at_x = NLPAtX(ones(5))
+nlp_at_x = NLPAtX(ones(5)) #First create a State.
 ```
 We use [unconstrained_check](https://github.com/vepiteski/Stopping.jl/blob/master/src/Stopping/nlp_admissible_functions.jl) as an optimality function
 ```
 stop_nlp = NLPStopping(nlp, nlp_at_x, optimality_check = unconstrained_check)
 ```
-Note that, since we used a default State, an alternative would have been:
-```
-stop_nlp = NLPStopping(nlp)
-```
+The following algorithm shows the most basic features of Stopping. It does many checks for you. In this innocent-looking algorithm, the call to `update_and_start!` and `update_and_stop!` will verifies unboundedness of `x`, the time spent in the algorithm, the number of iterations (= number of call to `stop!`), and the domain of `x` (in case some of its components become `NaN` for instance).
+```julia
+function rand_solver(stp :: AbstractStopping, x0 :: AbstractVector)
 
-Now a basic version of Newton to illustrate how to use Stopping.
-```
-function newton(stp :: NLPStopping)
-
-    #Notations
-    pb = stp.pb; state = stp.current_state;
-    #Initialization
-    xt = state.x
-
+    x = x0
     #First, call start! to check optimality and set an initial configuration
-    #(start the time counter, set relative error ...)
-    OK = update_and_start!(stp, x = xt, gx = grad(pb, xt), Hx = hess(pb, xt))
+    OK = update_and_start!(stp, x = x)
 
     while !OK
-        #Compute the Newton direction (state.Hx only has the lower triangular)
-        d = (state.Hx + state.Hx' - diagm(0 => diag(state.Hx))) \ (- state.gx)
-        #Update the iterate
-        xt = xt + d
+        #Run some computations and update the iterate
+        d = rand(length(x))
+        x += d
+
         #Update the State and call the Stopping with stop!
-        OK = update_and_stop!(stp, x = xt, gx = grad(pb, xt), Hx = hess(pb, xt))
+        OK = update_and_stop!(stp, x = x, d = d)
     end
 
     return stp
@@ -126,13 +108,11 @@ end
 ```
 Finally, we can call the algorithm with our Stopping:
 ```
-stop_nlp = newton(stop_nlp)
+stop_nlp = rand_solver(stop_nlp, )
 ```
-and consult the Stopping to know what happened
+and consult it to know what happened
 ```
-#We can then ask stop_nlp the final status
-@test :Optimal in status(stop_nlp, list = true)
-#Explore the final values in stop_nlp.current_state
+status(stop_nlp, list = true)
 printstyled("Final solution is $(stop_nlp.current_state.x)", color = :green)
 ```
 We reached optimality, and thanks to the Stopping structure this simple looking
