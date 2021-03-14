@@ -202,17 +202,17 @@ fill_in!: (NLPStopping version) a function that fill in the required values in t
 
 `fill_in!( :: NLPStopping, :: Union{AbstractVector, Nothing}; fx :: Union{AbstractVector, Nothing} = nothing, gx :: Union{AbstractVector, Nothing} = nothing, Hx :: Union{MatrixType, Nothing} = nothing, cx :: Union{AbstractVector, Nothing} = nothing, Jx :: Union{MatrixType, Nothing} = nothing, lambda :: Union{AbstractVector, Nothing} = nothing, mu :: Union{AbstractVector, Nothing} = nothing, matrix_info :: Bool = true, kwargs...)`
 """
-function fill_in!(stp         :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS},
-                  x           :: AbstractVector;
-                  fx          :: Union{AbstractVector, Nothing} = nothing,
-                  gx          :: Union{AbstractVector, Nothing} = nothing,
-                  Hx          :: Union{MatrixType, Nothing}     = nothing,
-                  cx          :: Union{AbstractVector, Nothing} = nothing,
-                  Jx          :: Union{MatrixType, Nothing}     = nothing,
-                  lambda      :: Union{AbstractVector, Nothing} = nothing,
-                  mu          :: Union{AbstractVector, Nothing} = nothing,
-                  matrix_info :: Bool    = true,
-                  kwargs...) where {Pb, M, SRC, Stt <: NLPAtX, MStp, LoS}
+function fill_in!(stp         :: NLPStopping{Pb, M, SRC, NLPAtX{S, T, MT}, MStp, LoS},
+                  x           :: T;
+                  fx          :: Union{eltype(T), Nothing} = nothing,
+                  gx          :: Union{T, Nothing}         = nothing,
+                  Hx          :: Union{MT, Nothing}        = nothing,
+                  cx          :: Union{T, Nothing}         = nothing,
+                  Jx          :: Union{MT, Nothing}        = nothing,
+                  lambda      :: Union{T, Nothing}         = nothing,
+                  mu          :: Union{T, Nothing}         = nothing,
+                  matrix_info :: Bool                      = true,
+                  kwargs...) where {Pb, M, SRC, MStp, LoS, S, T, MT}
 
   gfx = isnothing(fx)  ? obj(stp.pb, x)   : fx
   ggx = isnothing(gx)  ? grad(stp.pb, x)  : gx
@@ -314,7 +314,8 @@ Note:
 - all the NLPModels have an attribute `counters` and a function `sum_counters(nlp)`.  
 """
 function _resources_check!(stp    :: NLPStopping,
-                           x      :: T) where T <: Union{AbstractVector, Number}
+                           x      :: T
+                           ) where T <: Union{AbstractVector, Number}
 
   cntrs = stp.pb.counters
   update!(stp, evals = cntrs)
@@ -370,9 +371,9 @@ Note:
 otherwise check `state.fx ≥ meta.unbounded_threshold`.
 - `state.cx` is unbounded if larger than `|meta.unbounded_threshold|`.
 """
-function _unbounded_problem_check!(stp  :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS},
+function _unbounded_problem_check!(stp  :: NLPStopping{Pb, M, SRC, NLPAtX{S, T, MT}, MStp, LoS},
                                    x    :: AbstractVector
-                                  ) where {Pb, M, SRC, Stt <: NLPAtX, MStp, LoS}
+                                  ) where {Pb, M, SRC, MStp, LoS, S, T, MT}
 
   if isnan(stp.current_state.fx)
 	  stp.current_state.fx = obj(stp.pb, x)
@@ -395,9 +396,9 @@ function _unbounded_problem_check!(stp  :: NLPStopping{Pb, M, SRC, Stt, MStp, Lo
   return stp.meta.unbounded_pb
 end
 
-function _unbounded_problem_check!(stp  :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS},
+function _unbounded_problem_check!(stp  :: NLPStopping{Pb, M, SRC, OneDAtX{S,T}, MStp, LoS},
                                    x    :: Union{AbstractVector, Number}
-                                  ) where {Pb, M, SRC, Stt <: OneDAtX, MStp, LoS}
+                                  ) where {Pb, M, SRC, MStp, LoS, S, T}
   if isnan(stp.current_state.fx)
 	  stp.current_state.fx = obj(stp.pb, x)
   end  

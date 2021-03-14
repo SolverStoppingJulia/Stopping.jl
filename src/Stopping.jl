@@ -49,13 +49,6 @@ module Stopping
   using LinearAlgebra, SparseArrays, DataFrames, Printf
   using LinearOperators, NLPModels
 
-  const MatrixType = Union{Number, 
-                           AbstractArray, 
-                           AbstractMatrix, 
-                           Nothing, 
-                           AbstractLinearOperator} 
-                           #Krylov.PreallocatedLinearOperator,
-
   """
   AbstractState: 
 

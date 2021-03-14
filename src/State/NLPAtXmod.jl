@@ -71,7 +71,7 @@ mutable struct 	NLPAtX{S, T <: AbstractVector,
   current_score  :: S
   evals          :: Counters
 
-  function NLPAtX(x             :: T,
+  function NLPAtX(x            :: T,
                  lambda        :: T,
                  current_score :: S;
                  fx            :: eltype(T) = _init_field(eltype(T)),
