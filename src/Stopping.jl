@@ -137,16 +137,16 @@ module Stopping
                                 SRC  <: AbstractStopRemoteControl,
                                 T    <: AbstractState,
                                 MStp <: Any, #AbstractStopping
-                                LoS  <: AbstractListofStates,
-                                Uss  <: Any} end
+                                LoS  <: AbstractListofStates} end
 
   include("Stopping/StoppingMetamod.jl")
 
   export AbstractStoppingMeta, StoppingMeta, tol_check, update_tol!, OK_check
 
-  struct VoidStopping{Pb, M, SRC, T, MStp, LoS, Uss} <: AbstractStopping{Pb, M, SRC, T, MStp, LoS, Uss} end
+  struct VoidStopping{Pb, M, SRC, T, MStp, LoS} <: AbstractStopping{Pb, M, SRC, T, MStp, LoS} end
   function VoidStopping() 
-    return VoidStopping{Any, StoppingMeta, StopRemoteControl, GenericState, Nothing, VoidListofStates, Nothing}() 
+    return VoidStopping{Any, StoppingMeta, StopRemoteControl, 
+                        GenericState, Nothing, VoidListofStates}() 
   end
 
   export AbstractStopping, VoidStopping

@@ -29,8 +29,8 @@ Attributes:
 
  Note: Kwargs are forwarded to the classical constructor.
  """
-mutable struct NLPStopping{Pb, M, SRC, T, MStp, LoS, Uss
-                          }  <: AbstractStopping{Pb, M, SRC, T, MStp, LoS, Uss}
+mutable struct NLPStopping{Pb, M, SRC, T, MStp, LoS
+                          }  <: AbstractStopping{Pb, M, SRC, T, MStp, LoS}
 
   # problem
   pb                   :: Pb
@@ -49,7 +49,7 @@ mutable struct NLPStopping{Pb, M, SRC, T, MStp, LoS, Uss
   listofstates         :: LoS
 
   # User-specific structure
-  stopping_user_struct :: Uss
+  stopping_user_struct :: AbstractDict
 
 end
 
@@ -59,7 +59,7 @@ function NLPStopping(pb             :: Pb,
                      current_state  :: T;
                      main_stp       :: AbstractStopping = VoidStopping(),
                      list           :: AbstractListofStates = VoidListofStates(),
-                     stopping_user_struct  :: Any = nothing,
+                     user_struct    :: AbstractDict = Dict(),
                      kwargs...
                      ) where {Pb  <: AbstractNLPModel, 
                               M   <: AbstractStoppingMeta, 
@@ -67,7 +67,7 @@ function NLPStopping(pb             :: Pb,
                               T   <: AbstractState}
 
     return NLPStopping(pb, meta, stop_remote, current_state, 
-                       main_stp, list, stopping_user_struct)
+                       main_stp, list, user_struct)
 end
 
 function NLPStopping(pb             :: Pb,
@@ -75,7 +75,7 @@ function NLPStopping(pb             :: Pb,
                      current_state  :: T;
                      main_stp       :: AbstractStopping = VoidStopping(),
                      list           :: AbstractListofStates = VoidListofStates(),
-                     stopping_user_struct  :: Any = nothing,
+                     user_struct    :: AbstractDict = Dict(),
                      kwargs...
                      ) where {Pb <: AbstractNLPModel, 
                               M  <: AbstractStoppingMeta,
@@ -84,14 +84,14 @@ function NLPStopping(pb             :: Pb,
   stop_remote = StopRemoteControl() #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
 
   return NLPStopping(pb, meta, stop_remote, current_state, 
-                     main_stp, list, stopping_user_struct)
+                     main_stp, list, user_struct)
 end
 
 function NLPStopping(pb             :: Pb,
                      current_state  :: T;
                      main_stp       :: AbstractStopping = VoidStopping(),
                      list           :: AbstractListofStates = VoidListofStates(),
-                     stopping_user_struct  :: Any = nothing,
+                     user_struct    :: AbstractDict = Dict(),
                      kwargs...
                      ) where {Pb <: AbstractNLPModel, T <: AbstractState}
     
@@ -108,10 +108,10 @@ function NLPStopping(pb             :: Pb,
   end
 
     meta = StoppingMeta(;max_cntrs = mcntrs, optimality_check = oc, kwargs...)
-    stop_remote = StopRemoteControl() #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
+    stop_remote = StopRemoteControl()
 
   return NLPStopping(pb, meta, stop_remote, current_state, 
-                     main_stp, list, stopping_user_struct)
+                     main_stp, list, user_struct)
 end
 
 function NLPStopping(pb :: AbstractNLPModel;
@@ -202,7 +202,7 @@ fill_in!: (NLPStopping version) a function that fill in the required values in t
 
 `fill_in!( :: NLPStopping, :: Union{AbstractVector, Nothing}; fx :: Union{AbstractVector, Nothing} = nothing, gx :: Union{AbstractVector, Nothing} = nothing, Hx :: Union{MatrixType, Nothing} = nothing, cx :: Union{AbstractVector, Nothing} = nothing, Jx :: Union{MatrixType, Nothing} = nothing, lambda :: Union{AbstractVector, Nothing} = nothing, mu :: Union{AbstractVector, Nothing} = nothing, matrix_info :: Bool = true, kwargs...)`
 """
-function fill_in!(stp         :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS, Uss},
+function fill_in!(stp         :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS},
                   x           :: AbstractVector;
                   fx          :: Union{AbstractVector, Nothing} = nothing,
                   gx          :: Union{AbstractVector, Nothing} = nothing,
@@ -212,7 +212,7 @@ function fill_in!(stp         :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS, Uss},
                   lambda      :: Union{AbstractVector, Nothing} = nothing,
                   mu          :: Union{AbstractVector, Nothing} = nothing,
                   matrix_info :: Bool    = true,
-                  kwargs...) where {Pb, M, SRC, Stt <: NLPAtX, MStp, LoS, Uss}
+                  kwargs...) where {Pb, M, SRC, Stt <: NLPAtX, MStp, LoS}
 
   gfx = isnothing(fx)  ? obj(stp.pb, x)   : fx
   ggx = isnothing(gx)  ? grad(stp.pb, x)  : gx
@@ -246,13 +246,13 @@ function fill_in!(stp         :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS, Uss},
 end
 
 
-function fill_in!(stp         :: NLPStopping{Pb, M, SRC, OneDAtX{S,T}, MStp, LoS, Uss},
+function fill_in!(stp         :: NLPStopping{Pb, M, SRC, OneDAtX{S,T}, MStp, LoS},
                   x           :: T;
                   fx          :: Union{T, Nothing} = nothing,
                   gx          :: Union{T, Nothing} = nothing,
                   f₀          :: Union{T, Nothing} = nothing,
                   g₀          :: Union{T, Nothing} = nothing,
-                  kwargs...) where {Pb, M, SRC, S, T, MStp, LoS, Uss}
+                  kwargs...) where {Pb, M, SRC, S, T, MStp, LoS}
 
  gfx = isnothing(fx) ? obj(stp.pb, x)    : fx
  ggx = isnothing(gx) ? grad(stp.pb, x)   : gx
@@ -370,9 +370,9 @@ Note:
 otherwise check `state.fx ≥ meta.unbounded_threshold`.
 - `state.cx` is unbounded if larger than `|meta.unbounded_threshold|`.
 """
-function _unbounded_problem_check!(stp  :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS, Uss},
+function _unbounded_problem_check!(stp  :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS},
                                    x    :: AbstractVector
-                                  ) where {Pb, M, SRC, Stt <: NLPAtX, MStp, LoS, Uss}
+                                  ) where {Pb, M, SRC, Stt <: NLPAtX, MStp, LoS}
 
   if isnan(stp.current_state.fx)
 	  stp.current_state.fx = obj(stp.pb, x)
@@ -395,9 +395,9 @@ function _unbounded_problem_check!(stp  :: NLPStopping{Pb, M, SRC, Stt, MStp, Lo
   return stp.meta.unbounded_pb
 end
 
-function _unbounded_problem_check!(stp  :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS, Uss},
+function _unbounded_problem_check!(stp  :: NLPStopping{Pb, M, SRC, Stt, MStp, LoS},
                                    x    :: Union{AbstractVector, Number}
-                                  ) where {Pb, M, SRC, Stt <: OneDAtX, MStp, LoS, Uss}
+                                  ) where {Pb, M, SRC, Stt <: OneDAtX, MStp, LoS}
   if isnan(stp.current_state.fx)
 	  stp.current_state.fx = obj(stp.pb, x)
   end  

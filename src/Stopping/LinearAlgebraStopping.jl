@@ -42,7 +42,7 @@ There is additional constructors:
 
 See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, normal\\_equation\\_check
  """
- mutable struct LAStopping{Pb, M, SRC, T, MStp, LoS, Uss} <: AbstractStopping{Pb, M, SRC, T, MStp, LoS, Uss}
+ mutable struct LAStopping{Pb, M, SRC, T, MStp, LoS} <: AbstractStopping{Pb, M, SRC, T, MStp, LoS}
 
   # problem
   pb                   :: Pb
@@ -56,7 +56,7 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
   # History of states
   listofstates         :: LoS
   # User-specific structure
-  stopping_user_struct :: Uss
+  stopping_user_struct :: AbstractDict
 
   #zero is initial point
   zero_start           :: Bool
@@ -69,7 +69,7 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
                      current_state  :: T;
                      main_stp       :: AbstractStopping = VoidStopping(),
                      list           :: AbstractListofStates = VoidListofStates(),
-                     stopping_user_struct :: Any = nothing,
+                     user_struct    :: AbstractDict = Dict(),
                      zero_start     :: Bool = false
                      ) where {Pb  <: Any, 
                               M   <: AbstractStoppingMeta, 
@@ -77,7 +77,7 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
                               T   <: AbstractState}
      
   return LAStopping(pb, meta, stop_remote, current_state, 
-                    main_stp, list, stopping_user_struct, zero_start)
+                    main_stp, list, user_struct, zero_start)
  end
  
  function LAStopping(pb             :: Pb,
@@ -85,7 +85,7 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
                      current_state  :: T;
                      main_stp       :: AbstractStopping = VoidStopping(),
                      list           :: AbstractListofStates = VoidListofStates(),
-                     stopping_user_struct :: Any = nothing,
+                     user_struct    :: AbstractDict = Dict(),
                      zero_start     :: Bool = false
                      ) where {Pb <: Any, 
                               M  <: AbstractStoppingMeta,
@@ -94,14 +94,14 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
   stop_remote = StopRemoteControl() #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
      
   return LAStopping(pb, meta, stop_remote, current_state, 
-                    main_stp, list, stopping_user_struct, zero_start)
+                    main_stp, list, user_struct, zero_start)
  end
  
  function LAStopping(pb             :: Pb,
                      current_state  :: T;
                      main_stp       :: AbstractStopping = VoidStopping(),
                      list           :: AbstractListofStates = VoidListofStates(),
-                     stopping_user_struct :: Any = nothing,
+                     user_struct    :: AbstractDict = Dict(),
                      zero_start     :: Bool = false,
                      kwargs...) where {Pb <: Any, T <: AbstractState}
                      
@@ -123,7 +123,7 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
   stop_remote = StopRemoteControl() #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
 
   return LAStopping(pb, meta, stop_remote, current_state, 
-                    main_stp, list, stopping_user_struct, zero_start)
+                    main_stp, list, user_struct, zero_start)
  end
 
 function LAStopping(A              :: TA,

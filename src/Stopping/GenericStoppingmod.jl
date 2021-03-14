@@ -45,7 +45,7 @@
  Examples:
  GenericStopping(pb, x0, rtol = 1e-1)
 """
-mutable struct GenericStopping{Pb, M, SRC, T, MStp, LoS, Uss} <: AbstractStopping{Pb, M, SRC, T, MStp, LoS, Uss}
+mutable struct GenericStopping{Pb, M, SRC, T, MStp, LoS} <: AbstractStopping{Pb, M, SRC, T, MStp, LoS}
 
   # Problem
   pb                   :: Pb
@@ -64,7 +64,7 @@ mutable struct GenericStopping{Pb, M, SRC, T, MStp, LoS, Uss} <: AbstractStoppin
   listofstates         :: LoS
 
   # User-specific structure
-  stopping_user_struct :: Uss
+  stopping_user_struct :: AbstractDict
 
 end
 
@@ -74,7 +74,7 @@ function GenericStopping(pb            :: Pb,
                          current_state :: T;
                          main_stp      :: AbstractStopping = VoidStopping(),
                          list          :: AbstractListofStates = VoidListofStates(),
-                         stopping_user_struct :: Any = nothing,
+                         user_struct   :: AbstractDict = Dict(),
                          kwargs...
                          ) where {Pb  <: Any, 
                                   M   <: AbstractStoppingMeta, 
@@ -82,7 +82,7 @@ function GenericStopping(pb            :: Pb,
                                   T   <: AbstractState}
 
   return GenericStopping(pb, meta, stop_remote, current_state, 
-                        main_stp, list, stopping_user_struct)
+                        main_stp, list, user_struct)
 end
 
 function GenericStopping(pb            :: Pb,
@@ -90,7 +90,7 @@ function GenericStopping(pb            :: Pb,
                          current_state :: T;
                          main_stp      :: AbstractStopping = VoidStopping(),
                          list          :: AbstractListofStates = VoidListofStates(),
-                         stopping_user_struct :: Any = nothing,
+                         user_struct   :: AbstractDict = Dict(),
                          kwargs...
                          ) where {Pb <: Any, 
                                   M  <: AbstractStoppingMeta,
@@ -99,14 +99,14 @@ function GenericStopping(pb            :: Pb,
   stop_remote = StopRemoteControl() #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
  
   return GenericStopping(pb, meta, stop_remote, current_state, 
-                        main_stp, list, stopping_user_struct)
+                        main_stp, list, user_struct)
 end
 
 function GenericStopping(pb            :: Pb,
                          current_state :: T;
                          main_stp      :: AbstractStopping = VoidStopping(),
                          list          :: AbstractListofStates = VoidListofStates(),
-                         stopping_user_struct :: Any = nothing,
+                         user_struct   :: AbstractDict = Dict(),
                          kwargs...
                          ) where {Pb <: Any, T <: AbstractState}
 
@@ -114,7 +114,7 @@ function GenericStopping(pb            :: Pb,
   stop_remote = StopRemoteControl() #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
 
   return GenericStopping(pb, meta, stop_remote, current_state, 
-                        main_stp, list, stopping_user_struct)
+                        main_stp, list, user_struct)
 end
 
 function GenericStopping(pb            :: Pb,
@@ -122,7 +122,7 @@ function GenericStopping(pb            :: Pb,
                          current_state :: T;
                          main_stp      :: AbstractStopping = VoidStopping(),
                          list          :: AbstractListofStates = VoidListofStates(),
-                         stopping_user_struct :: Any = nothing,
+                         user_struct   :: AbstractDict = Dict(),
                          kwargs...
                          ) where {Pb  <: Any, 
                                   SRC <: AbstractStopRemoteControl,
@@ -131,7 +131,7 @@ function GenericStopping(pb            :: Pb,
   meta = StoppingMeta(; kwargs...)
  
   return GenericStopping(pb, meta, stop_remote, current_state, 
-                        main_stp, list, stopping_user_struct)
+                        main_stp, list, user_struct)
 end
 
 """
@@ -618,8 +618,8 @@ end
 
 """
 function _optimality_check!(stp :: AbstractStopping{Pb, M, SRC, T, 
-                                                    MStp, LoS, Uss};
-                           kwargs...) where {Pb, M, SRC, T, MStp, LoS, Uss}
+                                                    MStp, LoS};
+                           kwargs...) where {Pb, M, SRC, T, MStp, LoS}
 
   setfield!(stp.current_state, :current_score,
             stp.meta.optimality_check(stp.pb, stp.current_state; kwargs...))

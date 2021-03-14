@@ -21,19 +21,14 @@
                         ncon = 1, y0 = [0.0], lcon = [-Inf], ucon = [6.])
     nlp  = ADNLPModel(meta, Counters(), x->x[1],  x-> [sum(x)])
 
-    #We create a new structure with two information not available by default in NLPStopping
-    mutable struct PenaltyNonlinear
-        feasible :: Bool    #boolean, true if current iterate is feasible.
-        rho      :: Float64 #penalty parameter
-    end
-
-    structtest = PenaltyNonlinear(true, 1e-1)
-    stop_bnd = NLPStopping(nlp, stopping_user_struct = structtest)
+    structtest = Dict(:feasible => true,
+                      :rho      => 1e-1)
+    stop_bnd = NLPStopping(nlp, user_struct = structtest)
 
     show(stop_bnd)
 
-    @test stop_bnd.stopping_user_struct.feasible == true
-    @test stop_bnd.stopping_user_struct.rho == 1e-1
+    @test stop_bnd.stopping_user_struct[:feasible] == true
+    @test stop_bnd.stopping_user_struct[:rho] == 1e-1
 
     ##############################################################################
     function uss_func(stp :: NLPStopping, start :: Bool)
@@ -43,8 +38,8 @@
                      cx - stp.pb.meta.ucon,
                      stp.pb.meta.lvar - x,
                      x - stp.pb.meta.uvar )
-        tol = max(stp.meta.atol, stp.stopping_user_struct.rho)
-        stp.stopping_user_struct.feasible = norm(feas, Inf) <= tol
+        tol = max(stp.meta.atol, stp.stopping_user_struct[:rho])
+        stp.stopping_user_struct[:feasible] = norm(feas, Inf) <= tol
     end
 
     stop_bnd.meta.user_check_func! = uss_func
@@ -70,13 +65,13 @@
     sol = 2*ones(6)
     fill_in!(stop_bnd, sol)
     stop!(stop_bnd)
-    @test stop_bnd.stopping_user_struct.feasible == false
+    @test stop_bnd.stopping_user_struct[:feasible] == false
 
     sol2 = ones(6); sol2[1] = 1.0 + 1e-1
     reinit!(stop_bnd, rstate = true)
     fill_in!(stop_bnd, sol2)
     stop!(stop_bnd)
     #since violation of the constraints smaller than rho.
-    @test stop_bnd.stopping_user_struct.feasible == true
+    @test stop_bnd.stopping_user_struct[:feasible] == true
 
 end

@@ -90,6 +90,7 @@ function bfgs_quasi_newton_armijo(stp :: NLPStopping; Hk = nothing)
     OK = update_and_stop!(stp, x = xk, fx = fk, gx = gk)
     @printf "%2d %7.1e %7.1e %7.1e %7.1e\n" stp.meta.nb_of_stop fk norm(stp.current_state.current_score) t slope
   end
+  stp.stopping_user_struct = Dict( :Hk => Hk)
   return stp
 end
 using Test
