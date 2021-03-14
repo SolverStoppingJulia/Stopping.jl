@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>A fixed point algorithm · Stopping.jl</title><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script><link href="../assets/style.css" rel="stylesheet" type="text/css"/></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit">Stopping.jl</span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li><a class="tocitem" href="../api/">API</a></li><li><a class="tocitem" href="../idcard/">Stopping&#39;s ID</a></li><li><a class="tocitem" href="../idcard-state/">State&#39;s ID</a></li><li><a class="tocitem" href="../idcard-stoppingmeta/">Meta&#39;s ID</a></li><li><a class="tocitem" href="../howstopcheckoptimality/">Optimality in Stopping</a></li><li><a class="tocitem" href="../example-basic-Newton/">Stopping in action</a></li><li><a class="tocitem" href="../idcard-stopremote/">Stop remote control</a></li><li><a class="tocitem" href="../stop-workflow/">Stopping workflow</a></li><li><a class="tocitem" href="../nlpstopping/">NLPStopping</a></li><li><a class="tocitem" href="../lastopping/">LAStopping</a></li><li><a class="tocitem" href="../index_tuto/">Readme</a></li><li><a class="tocitem" href="../tutorial/">Examples and tutorials</a></li><li><a class="tocitem" href="../howtostate/">How to State</a></li><li><a class="tocitem" href="../howtostate-nlp/">How to State for NLPs</a></li><li><a class="tocitem" href="../howtostop/">How to Stop</a></li><li><a class="tocitem" href="../howtostop-2/">How to Stop 2</a></li><li><a class="tocitem" href="../howtostop-nlp/">How to Stop for NLPs</a></li><li><a class="tocitem" href="../linear-algebra/">Solve linear algebra</a></li><li><a class="tocitem" href="../buffer/">Use a buffer function</a></li><li class="is-active"><a class="tocitem" href>A fixed point algorithm</a><ul class="internal"><li><a class="tocitem" href="#Example-of-a-fixed-point-algorithm"><span>Example of a fixed point algorithm</span></a></li></ul></li><li><a class="tocitem" href="../backls/">Backtracking linesearch algorithm</a></li><li><a class="tocitem" href="../uncons/">Unconstrained optimization algorithm</a></li><li><a class="tocitem" href="../active-set/">Active set algorithm</a></li><li><a class="tocitem" href="../penalty/">Quadratic penalty algorithm</a></li><li><a class="tocitem" href="../run-optimsolver/">Run optimization algorithms</a></li><li><a class="tocitem" href="../benchmark/">Benchmark optimization algorithms</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>A fixed point algorithm</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>A fixed point algorithm</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/vepiteski/Stopping.jl/blob/master/docs/src/fixed-point.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h2 id="Example-of-a-fixed-point-algorithm"><a class="docs-heading-anchor" href="#Example-of-a-fixed-point-algorithm">Example of a fixed point algorithm</a><a id="Example-of-a-fixed-point-algorithm-1"></a><a class="docs-heading-anchor-permalink" href="#Example-of-a-fixed-point-algorithm" title="Permalink"></a></h2><p>Stopping can also be used for fixed point methods Example here concerns the AlternatingDirections Algorithm to find a feasible point in the intersection of 2 convex sets A and B. This algorithm relies on a fixed point argument, hence it stopped if it finds a fixed point.</p><p>Example: A={ (x,y) | x=y} and B = {(x,y) | y=0} Clearly the unique intersection point is (0,0)</p><p>Note that in this case the projection on A and the projection on B are trivial</p><p>Takeaway: the 2nd scenario illustrates a situation where the algorithm stalls as it reached a personal success. (optimal<em>sub</em>pb is true)</p><p>The Julia file corresponding to this tutorial can be found <a href="https://github.com/Goysa2/Stopping.jl/tree/master/test/examples/fixed-point.jl">here</a>.</p><pre><code class="language-none">using LinearAlgebra, NLPModels, Stopping, Test</code></pre><p>Main algorithm</p><pre><code class="language-none">function AlternatingDirections(stp)
+
+ xk = stp.current_state.x
+ OK = update_and_start!(stp, cx = cons(stp.pb, x0))
+ @show OK, xk
+
+ while !OK
+
+  #First projection
+  xk1 = 0.5 * (xk[1] + xk[2]) * ones(2)
+  #Second projection
+  xk2 = [xk1[1],0.0]
+
+  #check if we have a fixed point
+  Fix = dot(xk-xk2,xk-xk2)
+  if Fix &lt;= min(eps(Float64),stp.meta.atol) stp.meta.suboptimal = true end
+  #call the stopping
+  OK = update_and_stop!(stp, x = xk2, cx = cons(stp.pb, xk2))
+
+  xk = xk2
+  @show OK, xk
+ end
+
+ return stp
+end</code></pre><p>We model the problem using the NLPModels without objective function Formulate the problem with NLPModels</p><pre><code class="language-none">c(x) = [x[1] - x[2], x[2]]
+lcon = [0.0, 0.0]
+ucon = [0.0, 0.0]
+nlp = ADNLPModel(x-&gt;0.0, zeros(2), c=c, lcon=lcon, ucon=ucon)</code></pre><p>1st scenario: we solve the problem</p><pre><code class="language-none">printstyled(&quot;1st scenario:\n&quot;)
+#Prepare the Stopping
+x0 = [0.0, 5.0]
+state = NLPAtX(x0)
+#Recall that for the optimality_check function x is the pb and y is the state
+#Here we take the infinite norm of the residual.
+stop = NLPStopping(nlp, (x,y) -&gt; norm(y.cx,Inf), state)
+
+AlternatingDirections(stop)
+@show status(stop)
+@test status(stop) == :Optimal</code></pre><p>2nd scenario: the user gives an irrealistic optimality condition</p><pre><code class="language-none">printstyled(&quot;2nd scenario:\n&quot;)
+reinit!(stop, rstate = true, x = x0)
+stop.optimality_check = (x,y) -&gt; norm(y.cx,Inf)+0.5
+
+AlternatingDirections(stop)
+#In this scenario, the algorithm stops because it attains a fixed point
+#Hence, status is :SubOptimal.
+@show status(stop)
+@test status(stop) == :SubOptimal</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../buffer/">« Use a buffer function</a><a class="docs-footer-nextpage" href="../backls/">Backtracking linesearch algorithm »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Sunday 14 March 2021 16:54">Sunday 14 March 2021</span>. Using Julia version 1.5.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

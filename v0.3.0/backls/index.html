@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Backtracking linesearch algorithm · Stopping.jl</title><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script><link href="../assets/style.css" rel="stylesheet" type="text/css"/></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit">Stopping.jl</span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li><a class="tocitem" href="../api/">API</a></li><li><a class="tocitem" href="../idcard/">Stopping&#39;s ID</a></li><li><a class="tocitem" href="../idcard-state/">State&#39;s ID</a></li><li><a class="tocitem" href="../idcard-stoppingmeta/">Meta&#39;s ID</a></li><li><a class="tocitem" href="../howstopcheckoptimality/">Optimality in Stopping</a></li><li><a class="tocitem" href="../example-basic-Newton/">Stopping in action</a></li><li><a class="tocitem" href="../idcard-stopremote/">Stop remote control</a></li><li><a class="tocitem" href="../stop-workflow/">Stopping workflow</a></li><li><a class="tocitem" href="../nlpstopping/">NLPStopping</a></li><li><a class="tocitem" href="../lastopping/">LAStopping</a></li><li><a class="tocitem" href="../index_tuto/">Readme</a></li><li><a class="tocitem" href="../tutorial/">Examples and tutorials</a></li><li><a class="tocitem" href="../howtostate/">How to State</a></li><li><a class="tocitem" href="../howtostate-nlp/">How to State for NLPs</a></li><li><a class="tocitem" href="../howtostop/">How to Stop</a></li><li><a class="tocitem" href="../howtostop-2/">How to Stop 2</a></li><li><a class="tocitem" href="../howtostop-nlp/">How to Stop for NLPs</a></li><li><a class="tocitem" href="../linear-algebra/">Solve linear algebra</a></li><li><a class="tocitem" href="../buffer/">Use a buffer function</a></li><li><a class="tocitem" href="../fixed-point/">A fixed point algorithm</a></li><li class="is-active"><a class="tocitem" href>Backtracking linesearch algorithm</a><ul class="internal"><li><a class="tocitem" href="#Backtracking-Linesearch"><span>Backtracking Linesearch</span></a></li></ul></li><li><a class="tocitem" href="../uncons/">Unconstrained optimization algorithm</a></li><li><a class="tocitem" href="../active-set/">Active set algorithm</a></li><li><a class="tocitem" href="../penalty/">Quadratic penalty algorithm</a></li><li><a class="tocitem" href="../run-optimsolver/">Run optimization algorithms</a></li><li><a class="tocitem" href="../benchmark/">Benchmark optimization algorithms</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Backtracking linesearch algorithm</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Backtracking linesearch algorithm</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/vepiteski/Stopping.jl/blob/master/docs/src/backls.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h2 id="Backtracking-Linesearch"><a class="docs-heading-anchor" href="#Backtracking-Linesearch">Backtracking Linesearch</a><a id="Backtracking-Linesearch-1"></a><a class="docs-heading-anchor-permalink" href="#Backtracking-Linesearch" title="Permalink"></a></h2><p>In this test problem, we consider a backtracking algorithm for 1D optimization. The scenario considers three different stopping criterion to solve a specific problem.</p><p>This example illustrates how to use a &quot;structure&quot; to handle the algorithmic parameters and unify the input. The function backtracking<em>ls(stp :: LS</em>Stopping, prms) serves as a buffer for the real algorithm in the function backtracking<em>ls(stp :: LS</em>Stopping; back_update :: Float64 = 0.5, prms = nothing)</p><p>It also shows that obsolete information in the State (after an update of x) must be removed by the algorithm. Otherwise, the optimality_check function cannot make the difference between valid and invalid entries.</p><p>The Julia file corresponding to this tutorial can be found <a href="https://github.com/Goysa2/Stopping.jl/tree/master/test/examples/backls.jl">here</a>.</p><p>We create a basic structure to handle 1D optimization.</p><p>We can also use the LineModel available in https://github.com/JuliaSmoothOptimizers/SolverTools.jl</p><pre><code class="language-none">mutable struct onedoptim
+    f :: Function
+    g :: Function
+end</code></pre><p>We specialize three optimality_check functions for 1D optimization to the onedoptim type of problem.</p><p>The default functions do not fill in automatically the necessary entries.</p><pre><code class="language-none">import Stopping: armijo, wolfe, armijo_wolfe
+
+function armijo(h :: onedoptim, h_at_t :: LSAtT; τ₀ :: Float64 = 0.01, kwargs...)
+
+ h_at_t.ht = h_at_t.ht == nothing ? h.f(h_at_t.x) : h_at_t.ht
+ h_at_t.h₀ = h_at_t.h₀ == nothing ? h.f(0) : h_at_t.h₀
+ h_at_t.g₀ = h_at_t.g₀ == nothing ? h.g(0) : h_at_t.g₀
+
+ hgoal = h_at_t.ht - h_at_t.h₀ - h_at_t.g₀ * h_at_t.x * τ₀
+
+ return max(hgoal, 0.0)
+end
+
+function wolfe(h :: onedoptim, h_at_t :: LSAtT; τ₁ :: Float64 = 0.99, kwargs...)
+
+ h_at_t.gt = h_at_t.gt == nothing ? h.g(h_at_t.x) : h_at_t.gt
+ h_at_t.g₀ = h_at_t.g₀ == nothing ? h.g(0) : h_at_t.g₀
+
+ wolfe = τ₁ .* h_at_t.g₀ - abs(h_at_t.gt)
+ return max(wolfe, 0.0)
+end
+
+function armijo_wolfe(h :: onedoptim, h_at_t :: LSAtT; τ₀ :: Float64 = 0.01, τ₁ :: Float64 = 0.99, kwargs...)
+
+ h_at_t.ht = h_at_t.ht == nothing ? h.f(h_at_t.x) : h_at_t.ht
+ h_at_t.h₀ = h_at_t.h₀ == nothing ? h.f(0) : h_at_t.h₀
+ h_at_t.gt = h_at_t.gt == nothing ? h.g(h_at_t.x) : h_at_t.gt
+ h_at_t.g₀ = h_at_t.g₀ == nothing ? h.g(0) : h_at_t.g₀
+
+ return max(armijo(h, h_at_t, τ₀ = τ₀),wolfe(h, h_at_t, τ₁ = τ₁), 0.0)
+end</code></pre><h3 id="backtracking-LineSearch"><a class="docs-heading-anchor" href="#backtracking-LineSearch">backtracking LineSearch</a><a id="backtracking-LineSearch-1"></a><a class="docs-heading-anchor-permalink" href="#backtracking-LineSearch" title="Permalink"></a></h3><p>The problem (stp.pb) is the 1d objective function</p><p>Requirement: g0 and h0 have been filled in the State.</p><pre><code class="language-none">function backtracking_ls(stp :: LS_Stopping;
+                         back_update :: Float64 = 0.5,
+                         prms = nothing)
+
+ state = stp.current_state; xt = state.x;
+
+ #First call to stopping
+ OK = start!(stp)
+
+ #main loop
+ while !OK
+
+  xt = xt * back_update
+
+  #after update the infos in the State are no longer valid (except h₀, g₀)
+  reinit!(state, xt, h₀ = stp.current_state.h₀, g₀ = stp.current_state.g₀)
+
+  #we call the stop!
+  OK = stop!(stp)
+
+ end
+
+ return stp
+end</code></pre><h3 id="Buffer-to-handle-a-structure-containing-the-algorithmic-parameters."><a class="docs-heading-anchor" href="#Buffer-to-handle-a-structure-containing-the-algorithmic-parameters.">Buffer to handle a structure containing the algorithmic parameters.</a><a id="Buffer-to-handle-a-structure-containing-the-algorithmic-parameters.-1"></a><a class="docs-heading-anchor-permalink" href="#Buffer-to-handle-a-structure-containing-the-algorithmic-parameters." title="Permalink"></a></h3><pre><code class="language-none">function backtracking_ls(stp :: LS_Stopping, prms)
+
+ #extract required values in the prms file
+ bu = :back_update   ∈ fieldnames(typeof(prms)) ? prms.back_update : 0.5
+
+ return backtracking_ls(stp :: LS_Stopping, back_update = bu; prms = prms)
+end</code></pre><p>Scenario: optimization of the rosenbrock function at x0 along the opposite of the gradient.</p><p>We also store all the algorithmic parameters in a structure.</p><pre><code class="language-none">mutable struct ParamLS
+
+    #parameters of the 1d minimization
+    back_update :: Float64 #backtracking update
+
+    function ParamLS(;back_update :: Float64 = 0.1)
+        return new(back_update)
+    end
+end</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../fixed-point/">« A fixed point algorithm</a><a class="docs-footer-nextpage" href="../uncons/">Unconstrained optimization algorithm »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Sunday 14 March 2021 16:54">Sunday 14 March 2021</span>. Using Julia version 1.5.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
