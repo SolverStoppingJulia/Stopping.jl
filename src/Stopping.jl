@@ -169,7 +169,7 @@ module Stopping
     catch
       print("Problem is $(typeof(stp.pb)). ")
     end
-    if !isnothing(stp.stopping_user_struct)
+    if stp.stopping_user_struct != Dict()
       try
         print("The user-defined structure is ")
         show(io, stp.stopping_user_struct)
