@@ -47,7 +47,7 @@ the Stopping to reuse for another call.
 module Stopping
 
   using LinearAlgebra, LinearOperators, SparseArrays
-  using DataFrames, NLPModels, Printf
+  using DataFrames, LLSModels, NLPModels, Printf
 
   """
   AbstractState: 
