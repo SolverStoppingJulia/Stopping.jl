@@ -57,10 +57,10 @@ uuid = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 version = "0.21.8"
 
 [[DataStructures]]
-deps = ["InteractiveUtils", "OrderedCollections"]
-git-tree-sha1 = "88d48e133e6d3dd68183309877eac74393daa7eb"
+deps = ["Compat", "InteractiveUtils", "OrderedCollections"]
+git-tree-sha1 = "4437b64df1e0adccc3e5d1adbc3ac741095e4677"
 uuid = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
-version = "0.17.20"
+version = "0.18.9"
 
 [[DataValueInterfaces]]
 git-tree-sha1 = "bfc1187b79289637fa0ef6d4436ebdfe6905cbd6"
@@ -96,12 +96,6 @@ git-tree-sha1 = "acebe244d53ee1b461970f8910c235b259e772ef"
 uuid = "9aa1b823-49e4-5ca5-8b0f-3971ec8bab6a"
 version = "0.3.2"
 
-[[FileIO]]
-deps = ["Pkg", "Requires", "UUIDs"]
-git-tree-sha1 = "9cdfbf5c0ed88ad0dcdb02544416c8e5a73addef"
-uuid = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
-version = "1.6.4"
-
 [[ForwardDiff]]
 deps = ["CommonSubexpressions", "DiffResults", "DiffRules", "NaNMath", "Random", "SpecialFunctions", "StaticArrays"]
 git-tree-sha1 = "c68fb7481b71519d313114dca639b35262ff105f"
@@ -128,10 +122,10 @@ uuid = "82899510-4779-5014-852e-03e436cf321d"
 version = "1.0.0"
 
 [[JLD2]]
-deps = ["CodecZlib", "DataStructures", "FileIO", "Mmap", "Pkg", "Printf", "UUIDs"]
-git-tree-sha1 = "9353b717ee4e27beab4e902c92a06bb5f160d2cf"
+deps = ["CodecZlib", "DataStructures", "MacroTools", "Mmap", "Pkg", "Printf", "Requires", "UUIDs"]
+git-tree-sha1 = "b8343a7f96591404ade118b3a7014e1a52062465"
 uuid = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
-version = "0.1.14"
+version = "0.4.2"
 
 [[JLLWrappers]]
 git-tree-sha1 = "a431f5f2ca3f4feef3bd7a5e94b8b8d4f2f647a0"
@@ -145,7 +139,6 @@ uuid = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 version = "0.21.1"
 
 [[LibGit2]]
-deps = ["Printf"]
 uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
 
 [[Libdl]]
@@ -157,9 +150,9 @@ uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
 [[LinearOperators]]
 deps = ["FastClosures", "LinearAlgebra", "Printf", "SparseArrays", "TimerOutputs"]
-git-tree-sha1 = "d703a857d22df99caa0c923b7fcea1419169b5ab"
+git-tree-sha1 = "cda4478875ce04a2719162090e4f046f64fa7b60"
 uuid = "5c8ed15e-5a4c-59e4-a42b-c7e8811fb125"
-version = "1.2.0"
+version = "1.2.1"
 
 [[Logging]]
 uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
@@ -212,7 +205,7 @@ uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
 version = "1.0.16"
 
 [[Pkg]]
-deps = ["Dates", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "UUIDs"]
+deps = ["Dates", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Test", "UUIDs"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 
 [[PooledArrays]]
@@ -260,9 +253,9 @@ uuid = "6462fe0b-24de-5631-8697-dd941f90decc"
 
 [[SolverTools]]
 deps = ["DataFrames", "JLD2", "LinearAlgebra", "LinearOperators", "Logging", "NLPModels", "Printf"]
-git-tree-sha1 = "8216c91c968e0df3702015777e0c8167f240c09c"
+git-tree-sha1 = "06c88810a679bbca1016e759eef74016b4c9318c"
 uuid = "b5612192-2639-5dc1-abfe-fbedd65fab29"
-version = "0.3.0"
+version = "0.3.2"
 
 [[SortingAlgorithms]]
 deps = ["DataStructures", "Random", "Test"]
