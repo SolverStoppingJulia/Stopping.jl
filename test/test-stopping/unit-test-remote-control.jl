@@ -33,6 +33,7 @@
         end
     end
 
-  show(src)
+    io = IOBuffer()
+    show(io, src)
 
 end

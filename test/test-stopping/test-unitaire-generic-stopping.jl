@@ -6,7 +6,8 @@
     state0 = GenericState(x0)
     stop0 = GenericStopping(rosenbrock, state0, tol_check = (atol,rtol,opt0) -> atol + rtol * opt0, list = ListofStates(state0) )
 
-    show(stop0)
+    io = IOBuffer()
+    show(io, stop0)
     stop0.listofstates[1]
 
     meta = StoppingMeta(tol_check = (atol,rtol,opt0) -> atol + rtol * opt0)
@@ -45,7 +46,8 @@
     stop = GenericStopping(rosenbrock, state, max_time = 2.0, rtol = 0.0)
     #If rtol != 0, any point is a solution as optimality0 = Inf.
 
-    @show(stop)
+    io = IOBuffer()
+    show(io, stop)
 
     @test start!(stop) == false
     @test stop.meta.start_time != NaN
@@ -59,7 +61,8 @@
     substop.stop_remote = StopRemoteControl()
     #If rtol != 0, any point is a solution as optimality0 = Inf.
 
-    show(substop)
+    io = IOBuffer()
+    show(io, substop)
 
     @test start!(substop) == false
     @test stop!(substop) == false

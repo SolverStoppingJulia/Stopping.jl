@@ -3,5 +3,6 @@
 
   @test typeof(stp) <: AbstractStopping
 
-  show(stp)
+  io = IOBuffer()
+  show(io, stp)
 end

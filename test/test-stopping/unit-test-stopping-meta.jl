@@ -2,7 +2,9 @@
     #Checked the default constructor
     test_meta = StoppingMeta()
     
-    print(test_meta) #improve coverage
+    
+    io = IOBuffer()
+    show(io, test_meta) #improve coverage
     
     @test Stopping.checktype(test_meta) == Float64
     @test Stopping.toltype(test_meta)   == Float64
@@ -54,7 +56,8 @@
     test_meta.suboptimal = true
     @test OK_check(test_meta)
     
-    show(test_meta)
+    io = IOBuffer()
+    show(io, test_meta)
     
     reinit!(test_meta)
     @test !test_meta.suboptimal

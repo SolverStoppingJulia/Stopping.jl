@@ -2,7 +2,8 @@
 x0 = ones(6)
 state0 = GenericState(x0)
 
-show(state0)
+io = IOBuffer()
+show(io, state0)
 
 @test scoretype(state0) == Float64
 @test xtype(state0) == Array{Float64,1}

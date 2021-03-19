@@ -163,18 +163,18 @@ module Stopping
       println(io, "It doesn't keep track of the state history.")
     end
     try
-      print("Problem is ")
+      print(io, "Problem is ")
       show(io, stp.pb)
-      print(" ")
+      print(io, " ")
     catch
-      print("Problem is $(typeof(stp.pb)). ")
+      print(io, "Problem is $(typeof(stp.pb)). ")
     end
     if stp.stopping_user_struct != Dict()
       try
-        print("The user-defined structure is ")
+        print(io, "The user-defined structure is ")
         show(io, stp.stopping_user_struct)
       catch
-        print("The user-defined structure is  of type $(typeof(stp.stopping_user_struct)).\n")
+        print(io, "The user-defined structure is  of type $(typeof(stp.stopping_user_struct)).\n")
       end
     else
       print(io, "No user-defined structure is furnished.\n")

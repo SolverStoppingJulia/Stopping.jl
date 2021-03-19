@@ -7,8 +7,7 @@ using Stopping: _init_field
 
 using SolverTools: LineModel
 
-printstyled("State tests...\n")
-
+#"State tests...\n"
 include("test-state/unit-test-GenericStatemod.jl")
 include("test-state/unit-test-OneDAtXmod.jl")
 include("test-state/unit-test-NLPAtXmod.jl")
@@ -19,28 +18,17 @@ include("test-stopping/test-users-struct-function.jl")
 include("test-stopping/unit-test-stopping-meta.jl")
 include("test-stopping/unit-test-remote-control.jl")
 
-printstyled("Stopping tests...\n")
-
+#"Stopping tests...\n"
 include("test-stopping/test-unitaire-generic-stopping.jl")
-#printstyled("passed ✓ \n", color = :green)
-#printstyled("LineSearch stopping tests... ")
 include("test-stopping/test-unitaire-ls-stopping.jl")
 include("test-stopping/unit-test-line-model.jl")
-#printstyled(" passed ✓ \n", color = :green)
-printstyled("Unconsmin tests... ")
 include("test-stopping/test-unitaire-nlp-stopping.jl")
-include("test-stopping/test-unitaire-nlp-evals.jl")
-printstyled(" passed ✓ \n", color = :green)
-#printstyled("Consmin tests... ")
+include("test-stopping/test-unitaire-nlp-evals.jl") #not in an environment
 include("test-stopping/test-unitaire-nlp-stopping_2.jl")
 include("test-stopping/strong-epsilon-check.jl")
-#printstyled("passed ✓ \n", color = :green)
-#printstyled("LAStopping tests... ")
 include("test-stopping/test-unitaire-linearalgebrastopping.jl")
-#printstyled("passed ✓ \n", color = :green)
 
-printstyled("HowTo tests...\n")
-
+#"HowTo tests..."
 include("examples/runhowto.jl")
 
 #printstyled("Run OptimSolver tests...\n")
