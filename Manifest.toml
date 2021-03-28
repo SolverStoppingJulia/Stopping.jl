@@ -115,9 +115,7 @@ version = "0.21.1"
 
 [[LLSModels]]
 deps = ["NLPModels", "NLPModelsModifiers", "SparseArrays"]
-git-tree-sha1 = "accdf286e81f3ec1ad1ad82ad56e3ff346f90b5d"
-repo-rev = "master"
-repo-url = "https://github.com/JuliaSmoothOptimizers/LLSModels.jl"
+git-tree-sha1 = "ab5f7ef00ae6e2466f636f75bfc42b51c9581ba3"
 uuid = "39f5bc3e-5160-4bf8-ac48-504fd2534d24"
 version = "0.1.0"
 
