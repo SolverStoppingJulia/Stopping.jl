@@ -19,7 +19,7 @@ DataFrames = "^0.21, 0.22"
 LLSModels = "0.1"
 LinearOperators = "^1"
 NLPModels = "0.14"
-SolverTools = "0.4"
+SolverTools = "0.4, 0.5"
 julia = "^1.3.0"
 
 [extras]
