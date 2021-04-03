@@ -1,0 +1,7 @@
+[deps]
+IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+NLPModels = "a4795742-8479-5a88-8948-cc11e1c8c1a6"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+Stopping = "c4fe5a9e-e7fb-5c3d-89d5-7f405ab2214f"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
