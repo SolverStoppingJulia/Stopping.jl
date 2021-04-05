@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Benchmark optimization algorithms · Stopping.jl</title><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script><link href="../assets/style.css" rel="stylesheet" type="text/css"/></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit">Stopping.jl</span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li><a class="tocitem" href="../api/">API</a></li><li><a class="tocitem" href="../idcard/">Stopping&#39;s ID</a></li><li><a class="tocitem" href="../idcard-state/">State&#39;s ID</a></li><li><a class="tocitem" href="../idcard-stoppingmeta/">Meta&#39;s ID</a></li><li><a class="tocitem" href="../howstopcheckoptimality/">Optimality in Stopping</a></li><li><a class="tocitem" href="../example-basic-Newton/">Stopping in action</a></li><li><a class="tocitem" href="../idcard-stopremote/">Stop remote control</a></li><li><a class="tocitem" href="../stop-workflow/">Stopping workflow</a></li><li><a class="tocitem" href="../nlpstopping/">NLPStopping</a></li><li><a class="tocitem" href="../lastopping/">LAStopping</a></li><li><a class="tocitem" href="../index_tuto/">Readme</a></li><li><a class="tocitem" href="../tutorial/">Examples and tutorials</a></li><li><a class="tocitem" href="../howtostate/">How to State</a></li><li><a class="tocitem" href="../howtostate-nlp/">How to State for NLPs</a></li><li><a class="tocitem" href="../howtostop/">How to Stop</a></li><li><a class="tocitem" href="../howtostop-2/">How to Stop 2</a></li><li><a class="tocitem" href="../howtostop-nlp/">How to Stop for NLPs</a></li><li><a class="tocitem" href="../linear-algebra/">Solve linear algebra</a></li><li><a class="tocitem" href="../buffer/">Use a buffer function</a></li><li><a class="tocitem" href="../fixed-point/">A fixed point algorithm</a></li><li><a class="tocitem" href="../backls/">Backtracking linesearch algorithm</a></li><li><a class="tocitem" href="../uncons/">Unconstrained optimization algorithm</a></li><li><a class="tocitem" href="../active-set/">Active set algorithm</a></li><li><a class="tocitem" href="../penalty/">Quadratic penalty algorithm</a></li><li><a class="tocitem" href="../run-optimsolver/">Run optimization algorithms</a></li><li class="is-active"><a class="tocitem" href>Benchmark optimization algorithms</a><ul class="internal"><li><a class="tocitem" href="#Benchmark"><span>Benchmark</span></a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Benchmark optimization algorithms</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Benchmark optimization algorithms</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/vepiteski/Stopping.jl/blob/master/docs/src/benchmark.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h2 id="Benchmark"><a class="docs-heading-anchor" href="#Benchmark">Benchmark</a><a id="Benchmark-1"></a><a class="docs-heading-anchor-permalink" href="#Benchmark" title="Permalink"></a></h2><p>https://juliasmoothoptimizers.github.io/SolverBenchmark.jl/latest/tutorial/ In this tutorial we illustrate the main uses of SolverBenchmark.</p><p>The Julia file corresponding to this tutorial can be found <a href="https://github.com/Goysa2/Stopping.jl/tree/master/test/examples/benchmark.jl">here</a>.</p><pre><code class="language-none">using LinearAlgebra, NLPModels, Stopping
+
+include(&quot;backls.jl&quot;)
+include(&quot;uncons.jl&quot;)</code></pre><pre><code class="language-none">using DataFrames, Printf, SolverBenchmark</code></pre><p>CUTEst is a collection of test problems</p><pre><code class="language-none">using CUTEst</code></pre><pre><code class="language-none">problems_unconstrained = CUTEst.select(contype=&quot;unc&quot;)
+n = length(problems_unconstrained) #240</code></pre><pre><code class="language-none">printstyled(&quot;Benchmark solvers: \n&quot;, color = :green)
+
+#Names of 3 solvers:
+names = [:armijo, :wolfe, :armijo_wolfe]
+p1 = PrmUn(); p2 = PrmUn(ls_func = wolfe); p3 = PrmUn(ls_func = armijo_wolfe)
+paramDict = Dict(:armijo =&gt; p1, :wolfe =&gt; p2, :armijo_wolfe =&gt; p3)
+#Initialization of the DataFrame for n problems.
+stats = Dict(name =&gt; DataFrame(:id =&gt; 1:n,
+         :name =&gt; [@sprintf(&quot;prob%s&quot;, problems_unconstrained[i]) for i = 1:n],
+         :nvar =&gt; zeros(Int64, n),
+         :status =&gt; [:Unknown for i = 1:n],
+         :f =&gt; NaN*ones(n),
+         :t =&gt; NaN*ones(n),
+         :iter =&gt; zeros(Int64, n),
+         :eval_f =&gt; zeros(Int64, n),
+         :eval_g =&gt; zeros(Int64, n),
+         :eval_H =&gt; zeros(Int64, n),
+         :score =&gt; NaN*ones(n)) for name in names)</code></pre><pre><code class="language-none">for i=1:n
+  nlp_cutest = CUTEst.CUTEstModel(problems_unconstrained[i])
+  @show i, problems_unconstrained[i], nlp_cutest.meta.nvar
+  #update the stopping with the new problem
+  stop_nlp = NLPStopping(nlp_cutest,
+                         unconstrained_check,
+                         NLPAtX(nlp_cutest.meta.x0),
+                         max_iter = 20)
+
+  for name in names
+
+    #solve the problem
+    global_newton(stop_nlp, paramDict[name])
+
+    #update the stats from the Stopping
+    stats[name].nvar[i] = nlp_cutest.meta.nvar
+    stats[name].status[i] = status(stop_nlp)
+    stats[name].f[i] = stop_nlp.current_state.fx == nothing ? NaN : stop_nlp.current_state.fx
+    stats[name].t[i] = stop_nlp.current_state.current_time == nothing ? NaN : stop_nlp.current_state.current_time - stop_nlp.meta.start_time
+    stats[name].iter[i] = stop_nlp.meta.nb_of_stop
+    stats[name].score[i] = unconstrained_check(nlp_cutest, stop_nlp.current_state)
+    stats[name].eval_f[i] = getfield(stop_nlp.current_state.evals, :neval_obj)
+    stats[name].eval_g[i] = getfield(stop_nlp.current_state.evals, :neval_grad)
+    stats[name].eval_H[i] = getfield(stop_nlp.current_state.evals, :neval_hess)
+
+    #reinitialize the Stopping and the nlp
+    reinit!(stop_nlp, rstate = true, x = nlp_cutest.meta.x0)
+    reset!(stop_nlp.pb)
+  end
+
+  #finalize nlp
+  finalize(nlp_cutest)
+end #end of main loop</code></pre><pre><code class="language-none">for name in names
+@show stats[name]
+end</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../run-optimsolver/">« Run optimization algorithms</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Monday 5 April 2021 20:39">Monday 5 April 2021</span>. Using Julia version 1.5.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
