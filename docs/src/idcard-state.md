@@ -1,6 +1,6 @@
 ## State
 
-As discussed before each Stopping contains a `current_state :: AbstractState` attribute containing the current information/state of the problem. When running the iterative loop, the `State` is updated and the `Stopping` make a decision based on this information.
+As discussed before each Stopping contains a `current_state <: AbstractState` attribute containing the current information/state of the problem. When running the iterative loop, the `State` is updated and the `Stopping` make a decision based on this information.
 
 The `current_state` contains all the information relative to a problem. We implemented three instances as an illustration:
 - `GenericState` ;

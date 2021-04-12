@@ -15,10 +15,10 @@ makedocs(
              "Stopping in action" => "example-basic-Newton.md",
              "Stop remote control" => "idcard-stopremote.md",
              "Stopping workflow" => "stop-workflow.md",
+             "Speak to stopping" => "speak-to-stopping.md",
              "NLPStopping" => "nlpstopping.md",
              "LAStopping" => "lastopping.md",
              "Readme" => "index_tuto.md",
-             "Examples and tutorials" => "tutorial.md",
              "How to State" => "howtostate.md",
              "How to State for NLPs" => "howtostate-nlp.md",
              "How to Stop" => "howtostop.md",
@@ -32,7 +32,10 @@ makedocs(
              "Active set algorithm" => "active-set.md",
              "Quadratic penalty algorithm" => "penalty.md",
              "Run optimization algorithms" => "run-optimsolver.md",
-             "Benchmark optimization algorithms" => "benchmark.md"
+             "Benchmark optimization algorithms" => "benchmark.md",
+             "Overfitting" => "overfitting.md",
+             "Checkpointing" => "checkpointing.md",
+             "Mix algorithms" => "gradient-lbfgs.md",
             ]
 )
 

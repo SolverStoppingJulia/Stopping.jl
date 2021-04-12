@@ -1,6 +1,6 @@
 ## Stopping's attributes ID: StoppingMeta
 
-Usual instances of `AbstractStopping` contains a `StoppingMeta <: <: AbstractStoppingMeta` (`stp.meta`), which controls the various tolerances and thresholds used by the functions `start!` and `stop!`.
+Usual instances of `AbstractStopping` contains a `StoppingMeta <: AbstractStoppingMeta` (`stp.meta`), which controls the various tolerances and thresholds used by the functions `start!` and `stop!`.
 - `atol                :: Number   = 1.0e-6`
 - `rtol                :: Number   = 1.0e-15`
 - `optimality0         :: Number   = 1.0`

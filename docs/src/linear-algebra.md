@@ -4,14 +4,17 @@ The Stopping structure eases the implementation of algorithms and the
 stopping criterion.
 
 The following examples illustrate solver for linear algebra:
-Ax = b with A an m x n matrix.
+```math
+Ax = b 
+```
+where A is an m x n matrix and b a vector of size m.
 
 This tutorial illustrates the different step in preparing the resolution of a
 new problem.
- - we create a LinearAlgebraPRoblem (that stores A, b)
- - we use the GennericState storing x and the current_time
- - we create a LinearAlgebraStopping
- - the optimality function linear_system_check!
+ - we create a `LinearAlgebraProblem` (that stores A, b)
+ - we use the `GenericState` storing x and the `current_time`
+ - we create a `LinearAlgebraStopping`
+ - the optimality function `linear_system_check!`
 
 The Julia file corresponding to this tutorial can be found [here](https://github.com/Goysa2/Stopping.jl/tree/master/test/examples/linear-algebra.jl).
 

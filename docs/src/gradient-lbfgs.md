@@ -1,17 +1,19 @@
-## ListofStates tutorial
+## Mixed-algorithms: a ListofStates tutorial
 
-We illustrate here the use of ListofStates in dealing with a warm start
+We illustrate here the use of `ListofStates` in dealing with a warm start
 procedure. The full code of this tutorial can be found [here](https://github.com/vepiteski/Stopping.jl/blob/master/test/examples/gradient-lbfgs.jl).
-ListofStates can also prove the user history over the iteration process.
-We compare the resolution of a convex unconstrained problem with 3 variants:
+
+`ListofStates` is designed to store the of the iteration process.
+In this tutorial, we compare the resolution of a convex unconstrained problem with 3 variants:
  - a steepest descent method
  - an inverse-BFGS method
- - a mix with 5 steps of steepest descent and then switching to BFGS with
-the history (using the strength of the ListofStates).
+ - a mix of 5 steps of steepest descent and then switching to a BFGS initialized with the 5 previous steps.
 
 ```
 using Stopping, NLPModels, LinearAlgebra, Test, Printf
 ```
+
+First, we introduce our two implementations that both uses an backtracking Armijo linesearch.
 
 ```
 import Stopping.armijo
@@ -24,10 +26,7 @@ function armijo(xk, dk, fk, slope, f)
   end
   return t, fk_new
 end
-```
 
-```
-#Newton's method for optimization:
 function steepest_descent(stp :: NLPStopping)
 
   xk = stp.current_state.x
@@ -50,9 +49,7 @@ function steepest_descent(stp :: NLPStopping)
   end
   return stp
 end
-```
 
-```
 function bfgs_quasi_newton_armijo(stp :: NLPStopping; Hk = nothing)
 
   xk = stp.current_state.x
@@ -97,15 +94,16 @@ function bfgs_quasi_newton_armijo(stp :: NLPStopping; Hk = nothing)
 end
 ```
 
-```
-using Test
+We consider the following convex unconstrained problem model using `ADNLPModels.jl` and defines a related `NLPStopping`.
 
-############ PROBLEM TEST #############################################
+```
 fH(x) = (x[2]+x[1].^2-11).^2+(x[1]+x[2].^2-7).^2
 nlp = ADNLPModel(fH, [10., 20.])
 stp = NLPStopping(nlp, optimality_check = unconstrained_check, 
                  atol = 1e-6, rtol = 0.0, max_iter = 100)
+```
 
+```
 reinit!(stp, rstate = true, x = nlp.meta.x0)
 steepest_descent(stp)
 

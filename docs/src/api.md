@@ -2,9 +2,9 @@
 ## Types
 ```@docs
 Stopping.GenericState
-Stopping.ListStates
+Stopping.ListofStates
 Stopping.NLPAtX
-Stopping.LSAtT
+Stopping.OneDAtX
 ```
 
 ## General Functions
@@ -24,7 +24,6 @@ Stopping.print
 ```@docs
 Stopping.GenericStopping
 Stopping.NLPStopping
-Stopping.LS_Stopping
 Stopping.LAStopping
 Stopping.LACounters
 Stopping.StoppingMeta
