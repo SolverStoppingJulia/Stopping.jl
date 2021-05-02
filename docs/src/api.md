@@ -38,6 +38,9 @@ Stopping.update_and_stop!
 Stopping.reinit!
 Stopping.fill_in!
 Stopping.status
+Stopping.init_max_counters
+Stopping.init_max_counters_NLS
+Stopping.init_max_counters_linear_operators
 ```
 
 ## Non-linear admissibility functions

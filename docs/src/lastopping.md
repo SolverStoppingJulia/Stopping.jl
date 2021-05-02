@@ -22,11 +22,11 @@ x0 = zeros(n)
 la_stop = LAStopping(A, b, GenericState(x0), 
                      max_iter = 150000, 
                      rtol = 1e-6, 
-                     max_cntrs = Stopping._init_max_counters_NLS(residual = 150000))
+                     max_cntrs = init_max_counters_NLS(residual = 150000))
 #2) for a linear operator:
 op_stop = LAStopping(LinearSystem(LinearOperator(A), b), 
                      GenericState(x0), 
                      max_iter = 150000, 
                      rtol = 1e-6, 
-                     max_cntrs = Stopping._init_max_counters_linear_operators(nprod = 150000))
+                     max_cntrs = init_max_counters_linear_operators(nprod = 150000))
 ```
