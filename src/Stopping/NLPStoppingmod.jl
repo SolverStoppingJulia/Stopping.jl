@@ -129,31 +129,24 @@ function NLPStopping(pb :: AbstractNLPModel;
 end
 
 """
-\\_init\\_max\\_counters(): initialize the maximum number of evaluations on each of
-                        the functions present in the Counters (NLPModels).
+\\_init\\_max\\_counters: 
+initialize the maximum number of evaluations on each of
+the functions present in the NLPModels.Counters, e.g.
 
-`_init_max_counters(; obj :: Int64 = 20000, grad :: Int64 = 20000, cons :: Int64 = 20000, jcon :: Int64 = 20000, jgrad :: Int64 = 20000, jac :: Int64 = 20000, jprod :: Int64 = 20000, jtprod :: Int64 = 20000, hess :: Int64 = 20000, hprod :: Int64 = 20000, jhprod :: Int64 = 20000, sum :: Int64 = 20000*11)`
+    `_init_max_counters(; allevals :: T = 20000, obj = allevals, grad = allevals, cons = allevals, jcon = allevals, jgrad = allevals, jac = allevals, jprod = allevals, jtprod = allevals, hess = allevals, hprod = allevals, jhprod = allevals, sum = 11 * allevals, kwargs...)`
+
+`:neval_sum` is by default limited to `|Counters| * allevals`.
 """
-function _init_max_counters(; allevals :: T = 20000,
-                              obj      :: T = allevals,
-                              grad     :: T = allevals,
-                              cons     :: T = allevals,
-                              jcon     :: T = allevals,
-                              jgrad    :: T = allevals,
-                              jac      :: T = allevals,
-                              jprod    :: T = allevals,
-                              jtprod   :: T = allevals,
-                              hess     :: T = allevals,
-                              hprod    :: T = allevals,
-                              jhprod   :: T = allevals,
-                              sum      :: T = allevals*11) where {T <: Int}
+function _init_max_counters(; allevals :: T = 20000, kwargs...) where {T <: Int}
 
-  cntrs = Dict{Symbol,T}([(:neval_obj,       obj), (:neval_grad,   grad),
-                          (:neval_cons,     cons), (:neval_jcon,   jcon),
-                          (:neval_jgrad,   jgrad), (:neval_jac,    jac),
-                          (:neval_jprod,   jprod), (:neval_jtprod, jtprod),
-                          (:neval_hess,     hess), (:neval_hprod,  hprod),
-                          (:neval_jhprod, jhprod), (:neval_sum,    sum)])
+  entries = [Meta.parse(split("$(f)", '_')[2]) for f in fieldnames(Counters)]
+  lim_fields = keys(kwargs)
+  cntrs = Dict{Symbol,T}([
+    (Meta.parse("neval_$(t)"), t in lim_fields ? kwargs[t] : allevals) for t in entries
+  ])
+  push!(cntrs, 
+    (:neval_sum => :sum in lim_fields ? kwargs[:sum] : length(entries) * allevals )
+  )
 
   return cntrs
 end
@@ -169,30 +162,21 @@ function max_evals!(stp :: NLPStopping; allevals :: T = 20000, kwargs...) where 
 end
 
 """
-\\_init\\_max\\_counters\\_NLS(): initialize the maximum number of evaluations on each of
-                          the functions present in the NLSCounters (NLPModels).
-https://github.com/JuliaSmoothOptimizers/NLPModels.jl/blob/master/src/NLSModels.jl
+\\_init\\_max\\_counters\\_NLS: 
+initialize the maximum number of evaluations on each of
+the functions present in the NLPModels.NLSCounters, e.g.
 
-`_init_max_counters_NLS(; residual :: Int = 20000, jac_residual :: Int = 20000, jprod_residual :: Int = 20000, jtprod_residual :: Int = 20000, hess_residual :: Int = 20000, jhess_residual :: Int = 20000, hprod_residual :: Int = 20000, kwargs...)`
+    `_init_max_counters_NLS(; allevals = 20000, residual = allevals, jac_residual = allevals, jprod_residual = allevals, jtprod_residual = allevals, hess_residual = allevals, jhess_residual = allevals, hprod_residual = allevals, kwargs...)`
 """
-function _init_max_counters_NLS(; allevals        :: T = 20000,
-                                  residual        :: T = allevals,
-                                  jac_residual    :: T = allevals,
-                                  jprod_residual  :: T = allevals,
-                                  jtprod_residual :: T = allevals,
-                                  hess_residual   :: T = allevals,
-                                  jhess_residual  :: T = allevals,
-                                  hprod_residual  :: T = allevals,
-                                  kwargs...) where {T <: Int}
+function _init_max_counters_NLS(; allevals :: T = 20000, kwargs...) where {T <: Int}
 
-  cntrs_nlp = _init_max_counters(;kwargs...)
-  cntrs = Dict{Symbol,T}([(:neval_residual, residual),
-                          (:neval_jac_residual, jac_residual),
-                          (:neval_jprod_residual, jprod_residual),
-                          (:neval_jtprod_residual, jtprod_residual),
-                          (:neval_hess_residual, hess_residual),
-                          (:neval_jhess_residual, jhess_residual),
-                          (:neval_hprod_residual, hprod_residual)])
+  cntrs_nlp = _init_max_counters(; allevals = allevals, kwargs...)
+
+  entries = [Meta.parse(split("$(f)", '_')[2]) for f in setdiff(fieldnames(NLSCounters),[:counters])]
+  lim_fields = keys(kwargs)
+  cntrs = Dict{Symbol,T}([
+    (Meta.parse("neval_$(t)"), t in lim_fields ? kwargs[t] : allevals) for t in entries
+  ])
 
   return merge(cntrs_nlp, cntrs)
 end

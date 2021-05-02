@@ -30,11 +30,11 @@
 
     max_evals!(nlp_stop_evals, 10)
     @test nlp_stop_evals.meta.max_cntrs[:neval_obj] == 10
-    @test nlp_stop_evals.meta.max_cntrs[:neval_sum] == 110
+    @test nlp_stop_evals.meta.max_cntrs[:neval_sum] == 10 * length(fieldnames(Counters))
 
     max_evals!(nlp_stop_evals, allevals = 10, obj = 2)
     @test nlp_stop_evals.meta.max_cntrs[:neval_cons] == 10
-    @test nlp_stop_evals.meta.max_cntrs[:neval_sum]  == 110
+    @test nlp_stop_evals.meta.max_cntrs[:neval_sum]  == 10 * length(fieldnames(Counters))
     @test nlp_stop_evals.meta.max_cntrs[:neval_obj] == 2
 
     #Test the case with a counters different from Counters and NLSCounters in NLPStopping
