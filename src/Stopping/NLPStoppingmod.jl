@@ -16,7 +16,7 @@ Attributes:
 - (opt) listofstates : ListofStates designed to store the history of States.
 - (opt) stopping_user_struct : Contains any structure designed by the user.
 
-`NLPStopping(:: AbstractNLPModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), max_cntrs :: Dict = _init_max_counters(), main_stp :: Union{AbstractStopping, Nothing} = nothing, list :: Union{ListofStates, Nothing} = nothing, stopping_user_struct :: Any = nothing, kwargs...)`
+`NLPStopping(:: AbstractNLPModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), max_cntrs :: Dict = init_max_counters(), main_stp :: Union{AbstractStopping, Nothing} = nothing, list :: Union{ListofStates, Nothing} = nothing, stopping_user_struct :: Any = nothing, kwargs...)`
 
  Note:
 - designed for `NLPAtX` State. Constructor checks that the State has the
@@ -98,7 +98,7 @@ function NLPStopping(pb             :: Pb,
   if :max_cntrs in keys(kwargs)
     mcntrs = kwargs[:max_cntrs]
   else
-    mcntrs = _init_max_counters()
+    mcntrs = init_max_counters()
   end
     
   if :optimality_check in keys(kwargs)
@@ -129,15 +129,15 @@ function NLPStopping(pb :: AbstractNLPModel;
 end
 
 """
-\\_init\\_max\\_counters: 
+init\\_max\\_counters: 
 initialize the maximum number of evaluations on each of
-the functions present in the NLPModels.Counters, e.g.
+the functions present in the `NLPModels.Counters`, e.g.
 
-    `_init_max_counters(; allevals :: T = 20000, obj = allevals, grad = allevals, cons = allevals, jcon = allevals, jgrad = allevals, jac = allevals, jprod = allevals, jtprod = allevals, hess = allevals, hprod = allevals, jhprod = allevals, sum = 11 * allevals, kwargs...)`
+`init_max_counters(; allevals :: T = 20000, obj = allevals, grad = allevals, cons = allevals, jcon = allevals, jgrad = allevals, jac = allevals, jprod = allevals, jtprod = allevals, hess = allevals, hprod = allevals, jhprod = allevals, sum = 11 * allevals, kwargs...)`
 
 `:neval_sum` is by default limited to `|Counters| * allevals`.
 """
-function _init_max_counters(; allevals :: T = 20000, kwargs...) where {T <: Int}
+function init_max_counters(; allevals :: T = 20000, kwargs...) where {T <: Int}
 
   entries = [Meta.parse(split("$(f)", '_')[2]) for f in fieldnames(Counters)]
   lim_fields = keys(kwargs)
@@ -152,25 +152,25 @@ function _init_max_counters(; allevals :: T = 20000, kwargs...) where {T <: Int}
 end
 
 function max_evals!(stp :: NLPStopping, allevals :: Int)
-  stp.meta.max_cntrs = _init_max_counters(allevals = allevals)
+  stp.meta.max_cntrs = init_max_counters(allevals = allevals)
   return stp
 end
 
 function max_evals!(stp :: NLPStopping; allevals :: T = 20000, kwargs...) where {T <: Int}
-  stp.meta.max_cntrs = _init_max_counters(allevals = allevals; kwargs...)
+  stp.meta.max_cntrs = init_max_counters(allevals = allevals; kwargs...)
   return stp
 end
 
 """
-\\_init\\_max\\_counters\\_NLS: 
+init\\_max\\_counters\\_NLS: 
 initialize the maximum number of evaluations on each of
-the functions present in the NLPModels.NLSCounters, e.g.
+the functions present in the `NLPModels.NLSCounters`, e.g.
 
-    `_init_max_counters_NLS(; allevals = 20000, residual = allevals, jac_residual = allevals, jprod_residual = allevals, jtprod_residual = allevals, hess_residual = allevals, jhess_residual = allevals, hprod_residual = allevals, kwargs...)`
+`init_max_counters_NLS(; allevals = 20000, residual = allevals, jac_residual = allevals, jprod_residual = allevals, jtprod_residual = allevals, hess_residual = allevals, jhess_residual = allevals, hprod_residual = allevals, kwargs...)`
 """
-function _init_max_counters_NLS(; allevals :: T = 20000, kwargs...) where {T <: Int}
+function init_max_counters_NLS(; allevals :: T = 20000, kwargs...) where {T <: Int}
 
-  cntrs_nlp = _init_max_counters(; allevals = allevals, kwargs...)
+  cntrs_nlp = init_max_counters(; allevals = allevals, kwargs...)
 
   entries = [Meta.parse(split("$(f)", '_')[2]) for f in setdiff(fieldnames(NLSCounters),[:counters])]
   lim_fields = keys(kwargs)

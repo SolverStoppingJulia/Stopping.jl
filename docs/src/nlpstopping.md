@@ -10,7 +10,7 @@ The Stopping-structure can be adapted to any problem solved by iterative methods
 ```julia
 nlp = ADNLPModel(x->sum(x.^2), zeros(5))
 nlp_at_x = NLPAtX(zeros(5))
-meta  = StoppingMeta(max_cntrs = _init_max_counters())
+meta  = StoppingMeta(max_cntrs = init_max_counters())
 stp   = NLPStopping(pb, meta, state)
 ```
 

@@ -31,7 +31,7 @@ Note:
 - State don't necessarily keep track of evals
 - Evals are checked only for pb.A being a LinearOperator
 - zero_start is true if 0 is the initial guess (not check automatically)
-- LLSModel counter follow NLSCounters (see _init_max_counters_NLS in NLPStoppingmod.jl)
+- LLSModel counter follow NLSCounters (see init_max_counters_NLS in NLPStoppingmod.jl)
 - By default, meta.max\\_cntrs is initialized with an NLSCounters
 
 There is additional constructors:
@@ -108,9 +108,9 @@ See also GenericStopping, NLPStopping, LS\\_Stopping, linear\\_system\\_check, n
   if :max_cntrs in keys(kwargs)
     mcntrs = kwargs[:max_cntrs]
   elseif Pb <: LLSModel
-    mcntrs = _init_max_counters_NLS()
+    mcntrs = init_max_counters_NLS()
   else
-    mcntrs = _init_max_counters_linear_operators()
+    mcntrs = init_max_counters_linear_operators()
   end
      
   if :optimality_check in keys(kwargs)
@@ -135,7 +135,7 @@ function LAStopping(A              :: TA,
   pb = sparse ? LLSModel(A,b) : LinearSystem(A,b)
   state = GenericState(x)
 
-  mcntrs = sparse ? _init_max_counters_NLS() : _init_max_counters_linear_operators()
+  mcntrs = sparse ? init_max_counters_NLS() : init_max_counters_linear_operators()
 
   if n_listofstates > 0 && :list ∉ keys(kwargs)
     list = ListofStates(n_listofstates, Val{typeof(state)}())
@@ -153,7 +153,7 @@ function LAStopping(A              :: TA,
 
   pb = sparse ? LLSModel(A,b) : LinearSystem(A,b)
 
-  mcntrs = sparse ? _init_max_counters_NLS() : _init_max_counters_linear_operators()
+  mcntrs = sparse ? init_max_counters_NLS() : init_max_counters_linear_operators()
 
   return LAStopping(pb, state, max_cntrs = mcntrs; kwargs...)
 end
@@ -182,11 +182,11 @@ function LACounters(;nprod :: Int64 = 0, ntprod :: Int64 = 0,
 end
 
 """
-\\_init\\_max\\_counters\\_linear\\_operators(): counters for LinearOperator
+init\\_max\\_counters\\_linear\\_operators: counters for LinearOperator
 
-`_init_max_counters_linear_operators(;nprod :: Int = 20000, ntprod  :: Int = 20000, nctprod :: Int = 20000, sum :: Int = 20000*11)`
+`init_max_counters_linear_operators(;nprod :: Int = 20000, ntprod  :: Int = 20000, nctprod :: Int = 20000, sum :: Int = 20000*11)`
 """
-function _init_max_counters_linear_operators(;quick   :: T = 20000,
+function init_max_counters_linear_operators(; quick   :: T = 20000,
                                               nprod   :: T = quick,
                                               ntprod  :: T = quick,
                                               nctprod :: T = quick,
@@ -242,7 +242,7 @@ function LAStopping(A     :: TA,
                     )  where {TA <: AbstractLinearOperator, 
                               Tb <: AbstractVector}
   return LAStopping(LinearSystem(A,b), state,
-                    max_cntrs =  _init_max_counters_linear_operators(),
+                    max_cntrs =  init_max_counters_linear_operators(),
                     kwargs...)
 end
 

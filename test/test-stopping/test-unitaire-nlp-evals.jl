@@ -3,11 +3,11 @@
     x0 = zeros(2)
 
     nlp = ADNLPModel(x -> norm(x.^2), x0)
-    max_nlp = Stopping._init_max_counters(obj = 2)
+    max_nlp = init_max_counters(obj = 2)
     nlp_stop_evals = NLPStopping(nlp, max_cntrs = max_nlp)
 
     nls = ADNLSModel(x -> x.^2, x0, 2)
-    max_nls = Stopping._init_max_counters_NLS(obj = 2, residual = 1)
+    max_nls = init_max_counters_NLS(obj = 2, residual = 1)
     nls_stop_evals = NLPStopping(nls, max_cntrs = max_nls)
 
     @test typeof(nlp_stop_evals.pb.counters) == Counters

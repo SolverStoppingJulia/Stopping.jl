@@ -24,16 +24,16 @@ opA = LinearOperator(A)
 mLO = LinearSystem(A, b)
 sLO = LLSModel(sA, b)
 opLO = LinearSystem(opA, b)
-meta = StoppingMeta(max_cntrs =  Stopping._init_max_counters_linear_operators())
+meta = StoppingMeta(max_cntrs = init_max_counters_linear_operators())
 mLOstp_meta = LAStopping(mLO, meta, GenericState(x0)) #this is different because of optimality_check
-mLOstp = LAStopping(mLO, GenericState(x0), max_cntrs =  Stopping._init_max_counters_linear_operators())
+mLOstp = LAStopping(mLO, GenericState(x0), max_cntrs = init_max_counters_linear_operators())
 sLOstp = LAStopping(sLO, GenericState(x0))
 short_stop = LAStopping(A,b, sparse = true) #note that sparse is true by default
-maxcn = Stopping._init_max_counters_linear_operators(nprod = 1)
+maxcn = init_max_counters_linear_operators(nprod = 1)
 opLOstp = LAStopping(opLO, GenericState(x0), max_cntrs = maxcn)
 
 opLOstp2 = LAStopping(opLO, GenericState(x0), optimality_check = linear_system_check)
-@test opLOstp2.meta.max_cntrs == Stopping._init_max_counters_linear_operators()
+@test opLOstp2.meta.max_cntrs == init_max_counters_linear_operators()
 @test opLOstp2.meta.optimality_check == opLOstp.meta.optimality_check
 
 mLOstp_src = LAStopping(mLO, meta, StopRemoteControl(), GenericState(x0))
@@ -110,19 +110,19 @@ x0 = zeros(n)
 la_stop = LAStopping(A, b, GenericState(x0), 
                      max_iter = 150000, 
                      rtol = 1e-6, 
-                     max_cntrs = Stopping._init_max_counters_NLS(residual = 150000))
+                     max_cntrs = init_max_counters_NLS(residual = 150000))
 #Be careful using GenericState(x0) would not work here without forcing convert = true
 #in the update function. As the iterate will be a SparseVector to the contrary of initial guess.
 #Tangi: maybe start! should send a Warning for such problem !?
 sa_stop = LAStopping(sparse(A), b, GenericState(sparse(x0)), 
                      max_iter = 150000, 
                      rtol = 1e-6,
-                     max_cntrs = Stopping._init_max_counters_NLS(residual = 150000))
+                     max_cntrs = init_max_counters_NLS(residual = 150000))
 op_stop = LAStopping(LinearSystem(LinearOperator(A), b), 
                      GenericState(x0), 
                      max_iter = 150000, 
                      rtol = 1e-6, 
-                     max_cntrs = Stopping._init_max_counters_linear_operators(nprod = 150000))
+                     max_cntrs = init_max_counters_linear_operators(nprod = 150000))
 opbis_stop = LAStopping(LinearOperator(A), b)
 
 try

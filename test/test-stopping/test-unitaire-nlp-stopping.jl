@@ -8,7 +8,7 @@
   nlp = ADNLPModel(f, zeros(5))
   nlp_at_x = NLPAtX(zeros(5))
   meta = StoppingMeta(optimality0 = 0.0, 
-                      max_cntrs   = Stopping._init_max_counters(),
+                      max_cntrs   = init_max_counters(),
                       optimality_check = (x,y) -> unconstrained_check(x,y))
   stop_nlp = NLPStopping(nlp, meta, nlp_at_x)
 
@@ -35,7 +35,7 @@
   @test stop_nlp.meta.nb_of_stop == 0
 
   #We know test how to initialize the counter:
-  test_max_cntrs = Stopping._init_max_counters(obj = 2)
+  test_max_cntrs = init_max_counters(obj = 2)
   stop_nlp_cntrs = NLPStopping(nlp, max_cntrs = test_max_cntrs)
   @test stop_nlp_cntrs.meta.max_cntrs[:neval_obj] == 2
   @test stop_nlp_cntrs.meta.max_cntrs[:neval_grad] == 20000
