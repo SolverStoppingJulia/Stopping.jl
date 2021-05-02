@@ -131,7 +131,7 @@ end
 """
 init\\_max\\_counters: 
 initialize the maximum number of evaluations on each of
-the functions present in the `NLPModels.Counters`, e.g.
+the functions present in the NLPModels.Counters, e.g.
 
 `init_max_counters(; allevals :: T = 20000, obj = allevals, grad = allevals, cons = allevals, jcon = allevals, jgrad = allevals, jac = allevals, jprod = allevals, jtprod = allevals, hess = allevals, hprod = allevals, jhprod = allevals, sum = 11 * allevals, kwargs...)`
 

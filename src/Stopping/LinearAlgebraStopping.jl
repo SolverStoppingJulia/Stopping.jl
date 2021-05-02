@@ -184,13 +184,13 @@ end
 """
 init\\_max\\_counters\\_linear\\_operators: counters for LinearOperator
 
-`init_max_counters_linear_operators(;nprod :: Int = 20000, ntprod  :: Int = 20000, nctprod :: Int = 20000, sum :: Int = 20000*11)`
+`init_max_counters_linear_operators(; allevals :: T = 20000, nprod = allevals, ntprod = allevals, nctprod = allevals, sum = 11 * allevals)`
 """
-function init_max_counters_linear_operators(; quick   :: T = 20000,
-                                              nprod   :: T = quick,
-                                              ntprod  :: T = quick,
-                                              nctprod :: T = quick,
-                                              sum     :: T = quick*11
+function init_max_counters_linear_operators(; allevals :: T = 20000,
+                                              nprod    :: T = allevals,
+                                              ntprod   :: T = allevals,
+                                              nctprod  :: T = allevals,
+                                              sum      :: T = allevals * 11
                                             ) where T <: Int
 
   cntrs = Dict{Symbol,T}([(:nprod,   nprod),

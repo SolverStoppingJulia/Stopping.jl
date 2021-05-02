@@ -87,7 +87,7 @@ mutable struct StoppingMeta{TolType <: Number,
 
   # fine grain control on ressources
   max_f               :: IntType    # max function evaluations allowed TODO: used?
-  max_cntrs           :: Dict{Symbol,Int64} #contains the detailed max number of evaluations
+  max_cntrs           :: Dict{Symbol, Int} #contains the detailed max number of evaluations
 
   # global control on ressources
   max_eval            :: IntType    # max evaluations (f+g+H+Hv) allowed TODO: used?
@@ -130,7 +130,7 @@ function StoppingMeta(tol_check           :: CheckType,
                       unbounded_threshold :: Number   = 1.0e50, #typemax(Float64)
                       unbounded_x         :: Number   = 1.0e50,
                       max_f               :: Int      = typemax(Int),
-                      max_cntrs           :: Dict{Symbol,Int} = Dict{Symbol,Int64}(),
+                      max_cntrs           :: Dict{Symbol, Int} = Dict{Symbol, Int}(),
                       max_eval            :: Int      = 20000,
                       max_iter            :: Int      = 5000,
                       max_time            :: Float64  = 300.0,
@@ -187,7 +187,7 @@ function StoppingMeta(;atol               :: Number   = 1.0e-6,
                       unbounded_threshold :: Number   = 1.0e50, #typemax(Float64)
                       unbounded_x         :: Number   = 1.0e50,
                       max_f               :: Int      = typemax(Int),
-                      max_cntrs           :: Dict{Symbol,Int} = Dict{Symbol,Int64}(),
+                      max_cntrs           :: Dict{Symbol, Int} = Dict{Symbol, Int}(),
                       max_eval            :: Int      = 20000,
                       max_iter            :: Int      = 5000,
                       max_time            :: Float64  = 300.0,
