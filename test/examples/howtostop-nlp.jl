@@ -71,8 +71,8 @@ fill_in!(stop_nlp_lazy, x1)
 @test stop_nlp.meta.max_cntrs[:neval_obj] == 20000
 @test stop_nlp.meta.max_cntrs[:neval_grad] == 20000
 
-#Limit can be set using _init_max_counters function:
-stop_nlp.meta.max_cntrs = Stopping._init_max_counters(obj = 3, grad = 0, hess = 0)
+#Limit can be set using init_max_counters function:
+stop_nlp.meta.max_cntrs = init_max_counters(obj = 3, grad = 0, hess = 0)
 @test stop_nlp.meta.max_cntrs[:neval_obj] == 3
 @test stop_nlp.meta.max_cntrs[:neval_grad] == 0
 

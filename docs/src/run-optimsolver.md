@@ -129,7 +129,7 @@ nlp2 = ADNLPModel(rosenbrock,  x0,
 
 nlp_at_x_c = NLPAtX(x0, zeros(nlp2.meta.ncon))
 stop_nlp_c = NLPStopping(nlp2, (x,y) -> KKT(x,y), nlp_at_x_c, atol = 1e-3,
-                                max_cntrs = Main.Stopping._init_max_counters(obj = 400000, cons = 800000, sum = 1000000))
+                                max_cntrs = init_max_counters(obj = 400000, cons = 800000, sum = 1000000))
 
 penalty(stop_nlp_c)
 @show status(stop_nlp_c)

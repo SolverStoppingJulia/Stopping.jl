@@ -188,10 +188,11 @@ module Stopping
   export update_and_stop!, cheap_update_and_stop!, cheap_update_and_start!
   export fill_in!, reinit!, status, elapsed_time
   export NLPStopping, unconstrained_check, unconstrained2nd_check, max_evals!
-  export optim_check_bounded, KKT
+  export optim_check_bounded, KKT, init_max_counters, init_max_counters_NLS
 
   include("Stopping/LinearAlgebraStopping.jl")
 
   export LAStopping, LinearSystem, LACounters, linear_system_check, normal_equation_check
+  export init_max_counters_linear_operators
 
 end # end of module
