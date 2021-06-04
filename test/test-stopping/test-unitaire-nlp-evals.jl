@@ -30,11 +30,11 @@
 
     max_evals!(nlp_stop_evals, 10)
     @test nlp_stop_evals.meta.max_cntrs[:neval_obj] == 10
-    @test nlp_stop_evals.meta.max_cntrs[:neval_sum] == 10 * length(fieldnames(Counters))
+    @test nlp_stop_evals.meta.max_cntrs[:neval_sum] == typemax(Int)
 
     max_evals!(nlp_stop_evals, allevals = 10, obj = 2)
     @test nlp_stop_evals.meta.max_cntrs[:neval_cons] == 10
-    @test nlp_stop_evals.meta.max_cntrs[:neval_sum]  == 10 * length(fieldnames(Counters))
+    @test nlp_stop_evals.meta.max_cntrs[:neval_sum]  == typemax(Int)
     @test nlp_stop_evals.meta.max_cntrs[:neval_obj] == 2
 
 end

@@ -68,8 +68,8 @@ fill_in!(stop_nlp_lazy, x1)
 #evaluations:
 @test typeof(stop_nlp.meta.max_cntrs) <: Dict
 #For instance the limit in evaluations of objective and gradient:
-@test stop_nlp.meta.max_cntrs[:neval_obj] == 20000
-@test stop_nlp.meta.max_cntrs[:neval_grad] == 20000
+@test stop_nlp.meta.max_cntrs[:neval_obj] == typemax(Int)
+@test stop_nlp.meta.max_cntrs[:neval_grad] == typemax(Int)
 
 #Limit can be set using init_max_counters function:
 stop_nlp.meta.max_cntrs = init_max_counters(obj = 3, grad = 0, hess = 0)

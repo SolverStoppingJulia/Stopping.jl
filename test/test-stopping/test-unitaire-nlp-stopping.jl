@@ -38,8 +38,8 @@
   test_max_cntrs = init_max_counters(obj = 2)
   stop_nlp_cntrs = NLPStopping(nlp, max_cntrs = test_max_cntrs)
   @test stop_nlp_cntrs.meta.max_cntrs[:neval_obj] == 2
-  @test stop_nlp_cntrs.meta.max_cntrs[:neval_grad] == 20000
-  @test stop_nlp_cntrs.meta.max_cntrs[:neval_sum] == 20000 * length(fieldnames(Counters))
+  @test stop_nlp_cntrs.meta.max_cntrs[:neval_grad] == typemax(Int)
+  @test stop_nlp_cntrs.meta.max_cntrs[:neval_sum] == typemax(Int)
 
   reinit!(stop_nlp.current_state)
   @test unconstrained_check(stop_nlp.pb, stop_nlp.current_state) >= 0.0
