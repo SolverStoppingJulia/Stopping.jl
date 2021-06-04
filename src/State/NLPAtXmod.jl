@@ -25,18 +25,17 @@ Tracked data include:
 
  - current_time  : time
  - current_score : score
- - evals [opt]   : number of evaluations of the function
  (import the type NLPModels.Counters)
 
 Constructors:
- `NLPAtX(:: T, :: T, :: S; fx :: eltype(T) = _init_field(eltype(T)), gx :: T = _init_field(T), Hx :: Matrix{eltype(T)} = _init_field(Matrix{eltype(T)}), mu :: T = _init_field(T), cx :: T = _init_field(T), Jx :: Matrix{eltype(T)} = _init_field(Matrix{eltype(T)}), d :: T = _init_field(T), res :: T = _init_field(T), current_time :: Float64 = NaN, evals :: Counters = Counters()) where {S, T <: AbstractVector}`
+ `NLPAtX(:: T, :: T, :: S; fx :: eltype(T) = _init_field(eltype(T)), gx :: T = _init_field(T), Hx :: Matrix{eltype(T)} = _init_field(Matrix{eltype(T)}), mu :: T = _init_field(T), cx :: T = _init_field(T), Jx :: Matrix{eltype(T)} = _init_field(Matrix{eltype(T)}), d :: T = _init_field(T), res :: T = _init_field(T), current_time :: Float64 = NaN) where {S, T <: AbstractVector}`
 
- `NLPAtX(:: T; fx :: eltype(T) = _init_field(eltype(T)), gx :: T = _init_field(T), Hx :: Matrix{eltype(T)} = _init_field(Matrix{eltype(T)}), mu :: T = _init_field(T), current_time :: Float64 = NaN, current_score :: Union{T,eltype(T)} = _init_field(eltype(T)), evals :: Counters  = Counters()) where {T <: AbstractVector}`
+ `NLPAtX(:: T; fx :: eltype(T) = _init_field(eltype(T)), gx :: T = _init_field(T), Hx :: Matrix{eltype(T)} = _init_field(Matrix{eltype(T)}), mu :: T = _init_field(T), current_time :: Float64 = NaN, current_score :: Union{T,eltype(T)} = _init_field(eltype(T))) where {T <: AbstractVector}`
 
- `NLPAtX(:: T, :: T; fx :: eltype(T) = _init_field(eltype(T)), gx :: T = _init_field(T), Hx :: Matrix{eltype(T)} = _init_field(Matrix{eltype(T)}), mu :: T = _init_field(T), cx :: T = _init_field(T), Jx :: Matrix{eltype(T)} = _init_field(Matrix{eltype(T)}), d :: T = _init_field(T), res :: T = _init_field(T), current_time :: Float64  = NaN, current_score :: Union{T,eltype(T)} = _init_field(eltype(T)), evals :: Counters = Counters()) where T <: AbstractVector`
+ `NLPAtX(:: T, :: T; fx :: eltype(T) = _init_field(eltype(T)), gx :: T = _init_field(T), Hx :: Matrix{eltype(T)} = _init_field(Matrix{eltype(T)}), mu :: T = _init_field(T), cx :: T = _init_field(T), Jx :: Matrix{eltype(T)} = _init_field(Matrix{eltype(T)}), d :: T = _init_field(T), res :: T = _init_field(T), current_time :: Float64  = NaN, current_score :: Union{T,eltype(T)} = _init_field(eltype(T))) where T <: AbstractVector`
 
 Note:
- - By default, unknown entries are set using `_init_field` (except evals).  
+ - By default, unknown entries are set using `_init_field`.  
  - By default the type of `current_score` is `eltype(x)` and cannot be changed once the State is created.  
     To have a vectorized `current_score` of length n, try something like `GenericState(x, Array{eltype(x),1}(undef, n))`.  
  - All these information (except for `x` and `lambda`) are optionnal and need to be update when
@@ -69,7 +68,6 @@ mutable struct 	NLPAtX{S, T <: AbstractVector,
   #Resources State
   current_time   :: Float64
   current_score  :: S
-  evals          :: Counters
 
   function NLPAtX(x            :: T,
                  lambda        :: T,
@@ -83,13 +81,12 @@ mutable struct 	NLPAtX{S, T <: AbstractVector,
                  d             :: T = _init_field(T),
                  res           :: T = _init_field(T),
                  current_time  :: Float64 = NaN,
-                 evals         :: Counters = Counters()
                  ) where {S, T <: AbstractVector}
 
     _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
 
     return new{S, T, Matrix{eltype(T)}}(x, fx, gx, Hx, mu, cx, Jx, lambda, d, 
-                                        res, current_time, current_score, evals)
+                                        res, current_time, current_score)
   end
 end
 
@@ -105,14 +102,12 @@ function NLPAtX(x             :: T,
                 res           :: T = _init_field(T),
                 current_time  :: Float64  = NaN,
                 current_score :: Union{T,eltype(T)} = _init_field(eltype(T)),
-                evals         :: Counters     = Counters()
                 ) where T <: AbstractVector
 
   _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
 
   return NLPAtX(x, lambda, current_score, fx = fx, gx = gx,
-               Hx = Hx, mu = mu, current_time = current_time,
-               evals = evals)
+               Hx = Hx, mu = mu, current_time = current_time)
 end
 
 function NLPAtX(x             :: T;
@@ -122,15 +117,13 @@ function NLPAtX(x             :: T;
                 mu            :: T = _init_field(T),
                 current_time  :: Float64 = NaN,
                 current_score :: Union{T,eltype(T)} = _init_field(eltype(T)),
-                evals         :: Counters     = Counters()
                 ) where {T <: AbstractVector}
 
   _size_check(x, zeros(eltype(T),0), fx, gx, Hx, mu, 
                 _init_field(T), _init_field(Matrix{eltype(T)}))
 
 	return NLPAtX(x, zeros(eltype(T),0), current_score, fx = fx, gx = gx,
-                  Hx = Hx, mu = mu, current_time = current_time,
-                  evals = evals)
+                  Hx = Hx, mu = mu, current_time = current_time)
 end
 
 """
@@ -140,7 +133,7 @@ reinit!: function that set all the entries at void except the mandatory x
 
 `reinit!(:: NLPAtX; kwargs...)`
 
-Note: if `x`, `lambda` or `evals` are given as keyword arguments they will be
+Note: if `x` or `lambda` are given as keyword arguments they will be
 prioritized over the existing `x`, `lambda` and the default `Counters`.
 """
 function reinit!(stateatx :: NLPAtX{S, T, MT}, 

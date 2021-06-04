@@ -300,10 +300,6 @@ Note:
 function _resources_check!(stp    :: NLPStopping,
                            x      :: T
                            ) where T <: Union{AbstractVector, Number}
-
-  cntrs = stp.pb.counters
-  update!(stp, evals = cntrs)
-
   max_cntrs = stp.meta.max_cntrs
 
   if max_cntrs == Dict{Symbol,Int64}()
