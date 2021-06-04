@@ -314,18 +314,14 @@ function _resources_check!(stp    :: NLPStopping,
   max_f = false
   if typeof(stp.pb.counters) == Counters
     for f in intersect(fieldnames(Counters), keys(max_cntrs))
-      max_f = max_f || (getfield(cntrs, f) > max_cntrs[f])
+      max_f = max_f || (eval(f)(stp.pb) > max_cntrs[f])
     end
   elseif typeof(stp.pb.counters) == NLSCounters
     for f in intersect(fieldnames(NLSCounters), keys(max_cntrs))
-      max_f = f != :counters ? (max_f || (getfield(cntrs, f) > max_cntrs[f])) : max_f
+      max_f = f != :counters ? (max_f || (eval(f)(stp.pb) > max_cntrs[f])) : max_f
     end
     for f in intersect(fieldnames(Counters), keys(max_cntrs))
-      max_f = max_f || (getfield(cntrs.counters, f) > max_cntrs[f])
-    end
-  else #Unknown counters type
-    for f in intersect(fieldnames(typeof(stp.pb.counters)), keys(max_cntrs))
-      max_f = max_f || (getfield(cntrs, f) > max_cntrs[f])
+      max_f = max_f || (eval(f)(stp.pb) > max_cntrs[f])
     end
   end
 
