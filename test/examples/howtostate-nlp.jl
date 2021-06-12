@@ -46,8 +46,6 @@ state_con = NLPAtX(x0, y0)
 #From the default initialization, all the other entries are void:
 @test state_unc.mu == [] && state_con.mu == []
 @test isnan(state_unc.fx) && isnan(state_con.fx)
-#exception is the counters which is initialized as a default Counters:
-@test (sum_counters(state_unc.evals) + sum_counters(state_con.evals)) == 0
 
 #Note that the constructor proceeds to a size checking on gx, Hx, mu, cx, Jx.
 #It returns an error if this test fails.
@@ -79,12 +77,7 @@ reinit!(state_bnd, mu = ones(6))
 #However, we can specify both entries
 reinit!(state_bnd, 2 * ones(6), zeros(0))
 @test state_bnd.x == 2*ones(6) && state_bnd.lambda == zeros(0)
-@test state_bnd.mu == [] && sum_counters(state_bnd.evals) == 0
-#Giving a new Counters update as well:
-test = Counters(); setfield!(test, :neval_obj, 102)
-reinit!(state_bnd, evals = test)
-@test getfield(state_bnd.evals, :neval_obj) == 102
-@test sum_counters(state_bnd.evals) - 102 == 0
+@test state_bnd.mu == []
 
 ###############################################################################
 #III. Domain Error

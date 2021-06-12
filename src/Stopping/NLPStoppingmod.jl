@@ -115,7 +115,7 @@ function NLPStopping(pb             :: Pb,
 end
 
 function NLPStopping(pb :: AbstractNLPModel;
-                     n_listofstates :: Int = 0,
+                     n_listofstates :: Integer = 0,
                      kwargs...)
   #Create a default NLPAtX
   nlp_at_x = NLPAtX(pb.meta.x0)
@@ -133,11 +133,11 @@ init\\_max\\_counters:
 initialize the maximum number of evaluations on each of
 the functions present in the NLPModels.Counters, e.g.
 
-`init_max_counters(; allevals :: T = 20000, obj = allevals, grad = allevals, cons = allevals, jcon = allevals, jgrad = allevals, jac = allevals, jprod = allevals, jtprod = allevals, hess = allevals, hprod = allevals, jhprod = allevals, sum = 11 * allevals, kwargs...)`
+`init_max_counters(; allevals :: T = typemax(T), obj = allevals, grad = allevals, cons = allevals, jcon = allevals, jgrad = allevals, jac = allevals, jprod = allevals, jtprod = allevals, hess = allevals, hprod = allevals, jhprod = allevals, sum = 11 * allevals, kwargs...)`
 
 `:neval_sum` is by default limited to `|Counters| * allevals`.
 """
-function init_max_counters(; allevals :: T = 20000, kwargs...) where {T <: Int}
+function init_max_counters(; allevals :: T = typemax(Int), kwargs...) where {T <: Integer}
 
   entries = [Meta.parse(split("$(f)", '_')[2]) for f in fieldnames(Counters)]
   lim_fields = keys(kwargs)
@@ -145,18 +145,18 @@ function init_max_counters(; allevals :: T = 20000, kwargs...) where {T <: Int}
     (Meta.parse("neval_$(t)"), t in lim_fields ? kwargs[t] : allevals) for t in entries
   ])
   push!(cntrs, 
-    (:neval_sum => :sum in lim_fields ? kwargs[:sum] : length(entries) * allevals )
+    (:neval_sum => :sum in lim_fields ? kwargs[:sum] : typemax(T) )
   )
 
   return cntrs
 end
 
-function max_evals!(stp :: NLPStopping, allevals :: Int)
+function max_evals!(stp :: NLPStopping, allevals :: Integer)
   stp.meta.max_cntrs = init_max_counters(allevals = allevals)
   return stp
 end
 
-function max_evals!(stp :: NLPStopping; allevals :: T = 20000, kwargs...) where {T <: Int}
+function max_evals!(stp :: NLPStopping; allevals :: T = typemax(Int), kwargs...) where {T <: Integer}
   stp.meta.max_cntrs = init_max_counters(allevals = allevals; kwargs...)
   return stp
 end
@@ -166,9 +166,9 @@ init\\_max\\_counters\\_NLS:
 initialize the maximum number of evaluations on each of
 the functions present in the `NLPModels.NLSCounters`, e.g.
 
-`init_max_counters_NLS(; allevals = 20000, residual = allevals, jac_residual = allevals, jprod_residual = allevals, jtprod_residual = allevals, hess_residual = allevals, jhess_residual = allevals, hprod_residual = allevals, kwargs...)`
+`init_max_counters_NLS(; allevals = typemax(T), residual = allevals, jac_residual = allevals, jprod_residual = allevals, jtprod_residual = allevals, hess_residual = allevals, jhess_residual = allevals, hprod_residual = allevals, kwargs...)`
 """
-function init_max_counters_NLS(; allevals :: T = 20000, kwargs...) where {T <: Int}
+function init_max_counters_NLS(; allevals :: T = typemax(Int), kwargs...) where {T <: Integer}
 
   cntrs_nlp = init_max_counters(; allevals = allevals, kwargs...)
 
@@ -300,10 +300,6 @@ Note:
 function _resources_check!(stp    :: NLPStopping,
                            x      :: T
                            ) where T <: Union{AbstractVector, Number}
-
-  cntrs = stp.pb.counters
-  update!(stp, evals = cntrs)
-
   max_cntrs = stp.meta.max_cntrs
 
   if max_cntrs == Dict{Symbol,Int64}()
@@ -314,18 +310,14 @@ function _resources_check!(stp    :: NLPStopping,
   max_f = false
   if typeof(stp.pb.counters) == Counters
     for f in intersect(fieldnames(Counters), keys(max_cntrs))
-      max_f = max_f || (getfield(cntrs, f) > max_cntrs[f])
+      max_f = max_f || (eval(f)(stp.pb) > max_cntrs[f])
     end
   elseif typeof(stp.pb.counters) == NLSCounters
     for f in intersect(fieldnames(NLSCounters), keys(max_cntrs))
-      max_f = f != :counters ? (max_f || (getfield(cntrs, f) > max_cntrs[f])) : max_f
+      max_f = f != :counters ? (max_f || (eval(f)(stp.pb) > max_cntrs[f])) : max_f
     end
     for f in intersect(fieldnames(Counters), keys(max_cntrs))
-      max_f = max_f || (getfield(cntrs.counters, f) > max_cntrs[f])
-    end
-  else #Unknown counters type
-    for f in intersect(fieldnames(typeof(stp.pb.counters)), keys(max_cntrs))
-      max_f = max_f || (getfield(cntrs, f) > max_cntrs[f])
+      max_f = max_f || (eval(f)(stp.pb) > max_cntrs[f])
     end
   end
 

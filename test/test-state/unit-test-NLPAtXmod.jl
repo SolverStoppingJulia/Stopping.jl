@@ -13,7 +13,6 @@ uncons_nlp_at_x = NLPAtX(zeros(10))
 @test uncons_nlp_at_x.lambda == zeros(0)
 @test isnan(uncons_nlp_at_x.current_time)
 @test isnan(uncons_nlp_at_x.current_score)
-@test (!(uncons_nlp_at_x.evals == zeros(0,0)))
 
 #check constrained NLPAtX
 cons_nlp_at_x = NLPAtX(zeros(10), zeros(10))
