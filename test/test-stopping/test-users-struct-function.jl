@@ -19,7 +19,7 @@
     #Let us consider an NLPStopping:
     meta = NLPModelMeta(6, x0=ones(6), lvar = -Inf*ones(6), uvar = Inf*ones(6),
                         ncon = 1, y0 = [0.0], lcon = [-Inf], ucon = [6.])
-    nlp  = ADNLPModel(meta, Counters(), ADNLPModels.ForwardDiffAD(), x->x[1],  x-> [sum(x)])
+    nlp  = ADNLPModel(meta, Counters(), ADNLPModels.ForwardDiffAD(1, 1), x->x[1],  x-> [sum(x)])
 
     structtest = Dict(:feasible => true,
                       :rho      => 1e-1)
