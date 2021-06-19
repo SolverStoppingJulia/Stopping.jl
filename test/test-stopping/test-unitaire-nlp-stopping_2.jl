@@ -7,7 +7,7 @@ x0 = ones(6)
 c(x) = [sum(x)]
 meta = NLPModelMeta(6, x0=x0, lvar = fill(-10.0,size(x0)), uvar = fill(10.0,size(x0)),
                     ncon = 1, y0 = [0.0], lcon = [-Inf], ucon = [6.])
-nlp2 = ADNLPModel(meta, Counters(), ADNLPModels.ForwardDiffAD(), rosenbrock,  c)
+nlp2 = ADNLPModel(meta, Counters(), ADNLPModels.ForwardDiffAD(6, 1), rosenbrock,  c)
 
 nlp_at_x_c = NLPAtX(x0, NaN*ones(nlp2.meta.ncon))
 stop_nlp_c = NLPStopping(nlp2, nlp_at_x_c)
