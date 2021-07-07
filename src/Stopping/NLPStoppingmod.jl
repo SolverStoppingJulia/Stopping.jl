@@ -202,7 +202,7 @@ function fill_in!(stp         :: NLPStopping{Pb, M, SRC, NLPAtX{S, T, MT}, MStp,
   ggx = isnothing(gx)  ? grad(stp.pb, x)  : gx
 
   if isnothing(Hx) && matrix_info
-    gHx = hess(stp.pb, x)
+    gHx = hess(stp.pb, x).data
   else
     gHx = Hx
   end

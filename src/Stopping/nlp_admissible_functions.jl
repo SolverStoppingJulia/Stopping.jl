@@ -40,7 +40,7 @@ function unconstrained2nd_check(pb    :: AbstractNLPModel,
     update!(state, gx = grad(pb, state.x))
   end
   if state.Hx == _init_field(typeof(state.Hx))
-    update!(state, Hx = hess(pb, state.x))
+    update!(state, Hx = hess(pb, state.x).data)
   end
 
   res = max(norm(state.gx, pnorm),
