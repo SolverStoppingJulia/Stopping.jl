@@ -1,6 +1,7 @@
 using Test
 
 using ADNLPModels, DataFrames, LinearAlgebra, LLSModels, NLPModels, Printf, SparseArrays
+using NLPModelsModifiers
 
 using Stopping
 using Stopping: _init_field
