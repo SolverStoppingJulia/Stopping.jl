@@ -229,7 +229,6 @@ function fill_in!(stp         :: NLPStopping{Pb, M, SRC, NLPAtX{S, T, MT}, MStp,
                              lambda = lc)
 end
 
-
 function fill_in!(stp         :: NLPStopping{Pb, M, SRC, OneDAtX{S,T}, MStp, LoS},
                   x           :: T;
                   fx          :: Union{T, Nothing} = nothing,
@@ -308,14 +307,14 @@ function _resources_check!(stp    :: NLPStopping,
 
   # check all the entries in the counter
   max_f = false
-  if typeof(stp.pb.counters) == Counters
-    for f in intersect(fieldnames(Counters), keys(max_cntrs))
-      max_f = max_f || (eval(f)(stp.pb) > max_cntrs[f])
-    end
-  elseif typeof(stp.pb.counters) == NLSCounters
+  if typeof(stp.pb) <: AbstractNLSModel || (:counters in fieldnames(typeof(stp.pb)) && typeof(stp.pb.counters) == NLSCounters)
     for f in intersect(fieldnames(NLSCounters), keys(max_cntrs))
       max_f = f != :counters ? (max_f || (eval(f)(stp.pb) > max_cntrs[f])) : max_f
     end
+    for f in intersect(fieldnames(Counters), keys(max_cntrs))
+      max_f = max_f || (eval(f)(stp.pb) > max_cntrs[f])
+    end
+  elseif typeof(stp.pb) <: AbstractNLPModel || (:counters in fieldnames(typeof(stp.pb)) && typeof(stp.pb.counters) == Counters)
     for f in intersect(fieldnames(Counters), keys(max_cntrs))
       max_f = max_f || (eval(f)(stp.pb) > max_cntrs[f])
     end
