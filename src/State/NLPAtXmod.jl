@@ -45,21 +45,23 @@ Note:
 
 See also: `GenericState`, `update!`, `update_and_start!`, `update_and_stop!`, `reinit!`
 """
-mutable struct 	NLPAtX{S, T <: AbstractVector, 
-                       MT <: AbstractMatrix}  <: AbstractState{S, T}
+mutable struct 	NLPAtX{S, 
+                       T  <: AbstractVector, 
+                       HT <: AbstractMatrix,
+                       JT <: AbstractMatrix}  <: AbstractState{S, T}
 
   #Unconstrained State
   x            :: T     # current point
   fx           :: eltype(T) # objective function
   gx           :: T  # gradient size: x
-  Hx           :: MT  # hessian size: |x| x |x|
+  Hx           :: HT  # hessian size: |x| x |x|
 
   #Bounds State
   mu           :: T # Lagrange multipliers with bounds size of |x|
 
   #Constrained State
   cx           :: T # vector of constraints lc <= c(x) <= uc
-  Jx           :: MT  # jacobian matrix, size: |lambda| x |x|
+  Jx           :: JT  # jacobian matrix, size: |lambda| x |x|
   lambda       :: T    # Lagrange multipliers
 
   d            :: T #search direction
@@ -85,8 +87,20 @@ mutable struct 	NLPAtX{S, T <: AbstractVector,
 
     _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
 
-    return new{S, T, Matrix{eltype(T)}}(x, fx, gx, Hx, mu, cx, Jx, lambda, d, 
-                                        res, current_time, current_score)
+    return new{S, T, typeof(Hx), typeof(Jx)}(
+      x,
+      fx,
+      gx,
+      Hx,
+      mu,
+      cx,
+      Jx,
+      lambda,
+      d, 
+      res,
+      current_time,
+      current_score,
+    )
   end
 end
 
@@ -106,8 +120,13 @@ function NLPAtX(x             :: T,
 
   _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
 
-  return NLPAtX(x, lambda, current_score, fx = fx, gx = gx,
-               Hx = Hx, mu = mu, current_time = current_time)
+  return NLPAtX(
+    x, lambda, current_score,
+    fx = fx, gx = gx, Hx = Hx,
+    mu = mu, cx = cx, Jx = Jx,
+    d = d, res = res,
+    current_time = current_time,
+  )
 end
 
 function NLPAtX(x             :: T;
