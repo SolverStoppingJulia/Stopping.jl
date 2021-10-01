@@ -134,6 +134,8 @@ function NLPAtX(x             :: T;
                 gx            :: T = _init_field(T),
                 Hx            :: AbstractMatrix = _init_field(Matrix{eltype(T)}),
                 mu            :: T = _init_field(T),
+                d             :: T = _init_field(T),
+                res           :: T = _init_field(T),
                 current_time  :: Float64 = NaN,
                 current_score :: Union{T,eltype(T)} = _init_field(eltype(T)),
                 ) where {T <: AbstractVector}
@@ -141,8 +143,11 @@ function NLPAtX(x             :: T;
   _size_check(x, zeros(eltype(T),0), fx, gx, Hx, mu, 
                 _init_field(T), _init_field(Matrix{eltype(T)}))
 
-	return NLPAtX(x, zeros(eltype(T),0), current_score, fx = fx, gx = gx,
-                  Hx = Hx, mu = mu, current_time = current_time)
+  return NLPAtX(x, zeros(eltype(T),0), current_score,
+                fx = fx, gx = gx,
+                Hx = Hx, mu = mu,
+                d = d, res = res,
+                current_time = current_time)
 end
 
 """
