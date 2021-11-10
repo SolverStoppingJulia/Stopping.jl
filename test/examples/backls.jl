@@ -23,8 +23,8 @@
 # https://github.com/JuliaSmoothOptimizers/SolverTools.jl
 
 mutable struct onedoptim
-    f :: Function
-    g :: Function
+  f::Function
+  g::Function
 end
 
 #############################################################################
@@ -36,34 +36,37 @@ end
 #
 import Stopping: armijo, wolfe, armijo_wolfe
 
-function armijo(h :: onedoptim, h_at_t :: LSAtT; τ₀ :: Float64 = 0.01, kwargs...)
+function armijo(h::onedoptim, h_at_t::LSAtT; τ₀::Float64 = 0.01, kwargs...)
+  h_at_t.ht = isnan(h_at_t.ht) ? h.f(h_at_t.x) : h_at_t.ht
+  h_at_t.h₀ = isnan(h_at_t.h₀) ? h.f(0) : h_at_t.h₀
+  h_at_t.g₀ = isnan(h_at_t.g₀) ? h.g(0) : h_at_t.g₀
 
- h_at_t.ht = isnan(h_at_t.ht) ? h.f(h_at_t.x) : h_at_t.ht
- h_at_t.h₀ = isnan(h_at_t.h₀) ? h.f(0) : h_at_t.h₀
- h_at_t.g₀ = isnan(h_at_t.g₀) ? h.g(0) : h_at_t.g₀
+  hgoal = h_at_t.ht - h_at_t.h₀ - h_at_t.g₀ * h_at_t.x * τ₀
 
- hgoal = h_at_t.ht - h_at_t.h₀ - h_at_t.g₀ * h_at_t.x * τ₀
-
- return max(hgoal, 0.0)
+  return max(hgoal, 0.0)
 end
 
-function wolfe(h :: onedoptim, h_at_t :: LSAtT; τ₁ :: Float64 = 0.99, kwargs...)
+function wolfe(h::onedoptim, h_at_t::LSAtT; τ₁::Float64 = 0.99, kwargs...)
+  h_at_t.gt = isnan(h_at_t.gt) ? h.g(h_at_t.x) : h_at_t.gt
+  h_at_t.g₀ = isnan(h_at_t.g₀) ? h.g(0) : h_at_t.g₀
 
- h_at_t.gt = isnan(h_at_t.gt) ? h.g(h_at_t.x) : h_at_t.gt
- h_at_t.g₀ = isnan(h_at_t.g₀) ? h.g(0) : h_at_t.g₀
-
- wolfe = τ₁ .* h_at_t.g₀ - abs(h_at_t.gt)
- return max(wolfe, 0.0)
+  wolfe = τ₁ .* h_at_t.g₀ - abs(h_at_t.gt)
+  return max(wolfe, 0.0)
 end
 
-function armijo_wolfe(h :: onedoptim, h_at_t :: LSAtT; τ₀ :: Float64 = 0.01, τ₁ :: Float64 = 0.99, kwargs...)
+function armijo_wolfe(
+  h::onedoptim,
+  h_at_t::LSAtT;
+  τ₀::Float64 = 0.01,
+  τ₁::Float64 = 0.99,
+  kwargs...,
+)
+  h_at_t.ht = isnan(h_at_t.ht) ? h.f(h_at_t.x) : h_at_t.ht
+  h_at_t.h₀ = isnan(h_at_t.h₀) ? h.f(0) : h_at_t.h₀
+  h_at_t.gt = isnan(h_at_t.gt) ? h.g(h_at_t.x) : h_at_t.gt
+  h_at_t.g₀ = isnan(h_at_t.g₀) ? h.g(0) : h_at_t.g₀
 
- h_at_t.ht = isnan(h_at_t.ht) ? h.f(h_at_t.x) : h_at_t.ht
- h_at_t.h₀ = isnan(h_at_t.h₀) ? h.f(0) : h_at_t.h₀
- h_at_t.gt = isnan(h_at_t.gt) ? h.g(h_at_t.x) : h_at_t.gt
- h_at_t.g₀ = isnan(h_at_t.g₀) ? h.g(0) : h_at_t.g₀
-
- return max(armijo(h, h_at_t, τ₀ = τ₀),wolfe(h, h_at_t, τ₁ = τ₁), 0.0)
+  return max(armijo(h, h_at_t, τ₀ = τ₀), wolfe(h, h_at_t, τ₁ = τ₁), 0.0)
 end
 
 ##############################################################################
@@ -74,29 +77,25 @@ end
 # Requirement: g0 and h0 have been filled in the State.
 #
 #############################################################################
-function backtracking_ls(stp :: LS_Stopping;
-                         back_update :: Float64 = 0.5,
-                         prms = nothing)
+function backtracking_ls(stp::LS_Stopping; back_update::Float64 = 0.5, prms = nothing)
+  state = stp.current_state
+  xt = state.x
 
- state = stp.current_state; xt = state.x;
+  #First call to stopping
+  OK = start!(stp)
 
- #First call to stopping
- OK = start!(stp)
+  #main loop
+  while !OK
+    xt = xt * back_update
 
- #main loop
- while !OK
+    #after update the infos in the State are no longer valid (except h₀, g₀)
+    reinit!(state, xt, h₀ = stp.current_state.h₀, g₀ = stp.current_state.g₀)
 
-  xt = xt * back_update
+    #we call the stop!
+    OK = stop!(stp)
+  end
 
-  #after update the infos in the State are no longer valid (except h₀, g₀)
-  reinit!(state, xt, h₀ = stp.current_state.h₀, g₀ = stp.current_state.g₀)
-
-  #we call the stop!
-  OK = stop!(stp)
-
- end
-
- return stp
+  return stp
 end
 
 ##############################################################################
@@ -104,12 +103,12 @@ end
 # Buffer to handle a structure containing the algorithmic parameters.
 #
 #############################################################################
-function backtracking_ls(stp :: LS_Stopping, prms)
+function backtracking_ls(stp::LS_Stopping, prms)
 
- #extract required values in the prms file
- bu = :back_update   ∈ fieldnames(typeof(prms)) ? prms.back_update : 0.5
+  #extract required values in the prms file
+  bu = :back_update ∈ fieldnames(typeof(prms)) ? prms.back_update : 0.5
 
- return backtracking_ls(stp :: LS_Stopping, back_update = bu; prms = prms)
+  return backtracking_ls(stp::LS_Stopping, back_update = bu; prms = prms)
 end
 
 ##############################################################################
@@ -120,11 +119,11 @@ end
 # We also store all the algorithmic parameters in a structure.
 mutable struct ParamLS
 
-    #parameters of the 1d minimization
-    back_update :: Float64 #backtracking update
+  #parameters of the 1d minimization
+  back_update::Float64 #backtracking update
 
-    function ParamLS(;back_update :: Float64 = 0.1)
-        return new(back_update)
-    end
+  function ParamLS(; back_update::Float64 = 0.1)
+    return new(back_update)
+  end
 end
 #############################################################################

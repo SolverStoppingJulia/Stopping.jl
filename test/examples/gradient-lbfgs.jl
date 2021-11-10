@@ -28,8 +28,7 @@ function armijo(xk, dk, fk, slope, f)
 end
 
 #Newton's method for optimization:
-function steepest_descent(stp :: NLPStopping)
-
+function steepest_descent(stp::NLPStopping)
   xk = stp.current_state.x
   fk, gk = objgrad(stp.pb, xk)
 
@@ -38,26 +37,27 @@ function steepest_descent(stp :: NLPStopping)
   @printf "%2s %9s %7s %7s %7s\n" "k" "fk" "||∇f(x)||" "t" "λ"
   @printf "%2d %7.1e %7.1e\n" stp.meta.nb_of_stop fk norm(stp.current_state.current_score)
   while !OK
-    dk = - gk
+    dk = -gk
     slope = dot(dk, gk)
-    t, fk = armijo(xk, dk, fk, slope, x->obj(stp.pb, x))
+    t, fk = armijo(xk, dk, fk, slope, x -> obj(stp.pb, x))
     xk += t * dk
     fk, gk = objgrad(stp.pb, xk)
-    
+
     OK = update_and_stop!(stp, x = xk, fx = fk, gx = gk)
 
-    @printf "%2d %9.2e %7.1e %7.1e %7.1e\n" stp.meta.nb_of_stop fk norm(stp.current_state.current_score) t slope
+    @printf "%2d %9.2e %7.1e %7.1e %7.1e\n" stp.meta.nb_of_stop fk norm(
+      stp.current_state.current_score,
+    ) t slope
   end
   return stp
 end
 
-function bfgs_quasi_newton_armijo(stp :: NLPStopping; Hk = nothing)
-
+function bfgs_quasi_newton_armijo(stp::NLPStopping; Hk = nothing)
   xk = stp.current_state.x
   fk, gk = objgrad(stp.pb, xk)
   gm = gk
 
-  dk, t = similar(gk), 1.
+  dk, t = similar(gk), 1.0
   if isnothing(Hk)
     Hk = I #start from identity matrix
   end
@@ -71,7 +71,7 @@ function bfgs_quasi_newton_armijo(stp :: NLPStopping; Hk = nothing)
     if stp.meta.nb_of_stop != 0
       sk = t * dk
       yk = gk - gm
-      ρk = 1/dot(yk, sk)
+      ρk = 1 / dot(yk, sk)
       #we need yk'*sk > 0 for instance yk'*sk ≥ 1.0e-2 * sk' * Hk * sk
       Hk = ρk ≤ 0.0 ? Hk : (I - ρk * sk * yk') * Hk * (I - ρk * yk * sk') + ρk * sk * sk'
       if norm(sk) ≤ 1e-14
@@ -79,27 +79,29 @@ function bfgs_quasi_newton_armijo(stp :: NLPStopping; Hk = nothing)
       end
       #H2 = Hk + sk * sk' * (dot(sk,yk) + yk'*Hk*yk )*ρk^2 - ρk*(Hk * yk * sk' + sk * yk'*Hk)
     end
-    dk = - Hk * gk
+    dk = -Hk * gk
     slope = dot(dk, gk) # ≤ -1.0e-4 * norm(dk) * gnorm
-    t, fk = armijo(xk, dk, fk, slope, x->obj(stp.pb, x))
+    t, fk = armijo(xk, dk, fk, slope, x -> obj(stp.pb, x))
 
     xk = xk + t * dk
     gm = copy(gk)
     gk = grad(stp.pb, xk)
 
     OK = update_and_stop!(stp, x = xk, fx = fk, gx = gk)
-    @printf "%2d %7.1e %7.1e %7.1e %7.1e\n" stp.meta.nb_of_stop fk norm(stp.current_state.current_score) t slope
+    @printf "%2d %7.1e %7.1e %7.1e %7.1e\n" stp.meta.nb_of_stop fk norm(
+      stp.current_state.current_score,
+    ) t slope
   end
-  stp.stopping_user_struct = Dict( :Hk => Hk)
+  stp.stopping_user_struct = Dict(:Hk => Hk)
   return stp
 end
 using Test
 
 ############ PROBLEM TEST #############################################
-fH(x) = (x[2]+x[1].^2-11).^2+(x[1]+x[2].^2-7).^2
-nlp = ADNLPModel(fH, [10., 20.])
-stp = NLPStopping(nlp, optimality_check = unconstrained_check, 
-                 atol = 1e-6, rtol = 0.0, max_iter = 100)
+fH(x) = (x[2] + x[1] .^ 2 - 11) .^ 2 + (x[1] + x[2] .^ 2 - 7) .^ 2
+nlp = ADNLPModel(fH, [10.0, 20.0])
+stp =
+  NLPStopping(nlp, optimality_check = unconstrained_check, atol = 1e-6, rtol = 0.0, max_iter = 100)
 
 reinit!(stp, rstate = true, x = nlp.meta.x0)
 steepest_descent(stp)
@@ -120,18 +122,23 @@ bfgs_quasi_newton_armijo(stp)
 @show nlp.counters
 
 NLPModels.reset!(nlp)
-stp_warm = NLPStopping(nlp, optimality_check = unconstrained_check, 
-                      atol = 1e-6, rtol = 0.0, max_iter = 5, 
-                      n_listofstates = 5) #shortcut for list = ListofStates(5, Val{NLPAtX{Float64,Array{Float64,1},Array{Float64,2}}}()))
+stp_warm = NLPStopping(
+  nlp,
+  optimality_check = unconstrained_check,
+  atol = 1e-6,
+  rtol = 0.0,
+  max_iter = 5,
+  n_listofstates = 5,
+) #shortcut for list = ListofStates(5, Val{NLPAtX{Float64,Array{Float64,1},Array{Float64,2}}}()))
 steepest_descent(stp_warm)
 @test status(stp_warm) == :IterationLimit
 @test length(stp_warm.listofstates) == 5
 
 Hwarm = I
-for i=2:5
-  sk = stp_warm.listofstates.list[i][1].x - stp_warm.listofstates.list[i-1][1].x 
-  yk = stp_warm.listofstates.list[i][1].gx - stp_warm.listofstates.list[i-1][1].gx 
-  ρk = 1/dot(yk, sk)
+for i = 2:5
+  sk = stp_warm.listofstates.list[i][1].x - stp_warm.listofstates.list[i - 1][1].x
+  yk = stp_warm.listofstates.list[i][1].gx - stp_warm.listofstates.list[i - 1][1].gx
+  ρk = 1 / dot(yk, sk)
   if ρk > 0.0
     global Hwarm = (I - ρk * sk * yk') * Hwarm * (I - ρk * yk * sk') + ρk * sk * sk'
   end
@@ -247,6 +254,5 @@ nlp.counters =   Counters:
             jcon: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0                jgrad: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0                  jac: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0     
            jprod: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0               jtprod: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0                 hess: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0     
            hprod: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0               jhprod: ⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅ 0     
-
 
 =#

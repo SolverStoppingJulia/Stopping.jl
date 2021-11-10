@@ -9,11 +9,7 @@ Require `state.gx` (filled if not provided)
 
 See also `unconstrained2nd_check`, `optim_check_bounded`, `KKT`
 """
-function unconstrained_check(pb    :: AbstractNLPModel,
-                             state :: NLPAtX;
-                             pnorm :: Float64 = Inf,
-                             kwargs...)
-
+function unconstrained_check(pb::AbstractNLPModel, state::NLPAtX; pnorm::Float64 = Inf, kwargs...)
   if state.gx == _init_field(typeof(state.gx)) # should be filled if empty
     update!(state, gx = grad(pb, state.x))
   end
@@ -31,11 +27,12 @@ Require are `state.gx`, `state.Hx` (filled if not provided).
 
 See also `unconstrained_check`, `optim_check_bounded`, `KKT`
 """
-function unconstrained2nd_check(pb    :: AbstractNLPModel,
-                                state :: NLPAtX;
-                                pnorm :: Float64 = Inf,
-                                kwargs...)
-
+function unconstrained2nd_check(
+  pb::AbstractNLPModel,
+  state::NLPAtX;
+  pnorm::Float64 = Inf,
+  kwargs...,
+)
   if state.gx == _init_field(typeof(state.gx)) # should be filled if empty
     update!(state, gx = grad(pb, state.x))
   end
@@ -43,8 +40,7 @@ function unconstrained2nd_check(pb    :: AbstractNLPModel,
     update!(state, Hx = hess(pb, state.x).data)
   end
 
-  res = max(norm(state.gx, pnorm),
-            max(- eigmin(Symmetric(state.Hx, :L)), 0.0))
+  res = max(norm(state.gx, pnorm), max(-eigmin(Symmetric(state.Hx, :L)), 0.0))
 
   return res
 end
@@ -58,11 +54,7 @@ Require `state.gx` (filled if not provided).
 
 See also `unconstrained_check`, `unconstrained2nd_check`, `KKT`
 """
-function optim_check_bounded(pb    :: AbstractNLPModel,
-                             state :: NLPAtX;
-                             pnorm :: Float64 = Inf,
-                             kwargs...)
-
+function optim_check_bounded(pb::AbstractNLPModel, state::NLPAtX; pnorm::Float64 = Inf, kwargs...)
   if state.gx == _init_field(typeof(state.gx)) # should be filled if void
     update!(state, gx = grad(pb, state.x))
   end
@@ -77,9 +69,7 @@ end
 constrained: return the violation of the KKT conditions
 length(lambda) > 0
 """
-function _grad_lagrangian(pb    :: AbstractNLPModel,
-                          state :: NLPAtX)
-
+function _grad_lagrangian(pb::AbstractNLPModel, state::NLPAtX)
   if (pb.meta.ncon == 0) & !has_bounds(pb)
     return state.gx
   elseif pb.meta.ncon == 0
@@ -89,36 +79,38 @@ function _grad_lagrangian(pb    :: AbstractNLPModel,
   end
 end
 
-function _sign_multipliers_bounds(pb    :: AbstractNLPModel,
-                                  state :: NLPAtX)
+function _sign_multipliers_bounds(pb::AbstractNLPModel, state::NLPAtX)
   if has_bounds(pb)
-    return vcat(min.(max.( state.mu,0.0), - state.x + pb.meta.uvar),
-                min.(max.(-state.mu,0.0),   state.x - pb.meta.lvar))
+    return vcat(
+      min.(max.(state.mu, 0.0), -state.x + pb.meta.uvar),
+      min.(max.(-state.mu, 0.0), state.x - pb.meta.lvar),
+    )
   else
     return zeros(0)
   end
 end
 
-function _sign_multipliers_nonlin(pb    :: AbstractNLPModel,
-                                  state :: NLPAtX)
+function _sign_multipliers_nonlin(pb::AbstractNLPModel, state::NLPAtX)
   if pb.meta.ncon == 0
     return zeros(0)
   else
-    return vcat(min.(max.( state.lambda,0.0), - state.cx + pb.meta.ucon),
-                min.(max.(-state.lambda,0.0),   state.cx - pb.meta.lcon))
+    return vcat(
+      min.(max.(state.lambda, 0.0), -state.cx + pb.meta.ucon),
+      min.(max.(-state.lambda, 0.0), state.cx - pb.meta.lcon),
+    )
   end
 end
 
-function _feasibility(pb    :: AbstractNLPModel,
-                      state :: NLPAtX)
+function _feasibility(pb::AbstractNLPModel, state::NLPAtX)
   if pb.meta.ncon == 0
-    return vcat(max.(  state.x  - pb.meta.uvar,0.0),
-              max.(- state.x  + pb.meta.lvar,0.0))
+    return vcat(max.(state.x - pb.meta.uvar, 0.0), max.(-state.x + pb.meta.lvar, 0.0))
   else
-    return vcat(max.(  state.cx - pb.meta.ucon,0.0),
-                max.(- state.cx + pb.meta.lcon,0.0),
-                max.(  state.x  - pb.meta.uvar,0.0),
-                max.(- state.x  + pb.meta.lvar,0.0))
+    return vcat(
+      max.(state.cx - pb.meta.ucon, 0.0),
+      max.(-state.cx + pb.meta.lcon, 0.0),
+      max.(state.x - pb.meta.uvar, 0.0),
+      max.(-state.x + pb.meta.lvar, 0.0),
+    )
   end
 end
 
@@ -131,19 +123,16 @@ Note: `state.gx` is mandatory + if bounds `state.mu` + if constraints `state.cx`
 
 See also `unconstrained_check`, `unconstrained2nd_check`, `optim_check_bounded`
 """
-function KKT(pb    :: AbstractNLPModel,
-             state :: NLPAtX;
-             pnorm :: Float64 = Inf,
-             kwargs...)
+function KKT(pb::AbstractNLPModel, state::NLPAtX; pnorm::Float64 = Inf, kwargs...)
 
   #Check the gradient of the Lagrangian
-  gLagx      = _grad_lagrangian(pb, state)
+  gLagx = _grad_lagrangian(pb, state)
   #Check the complementarity condition for the bounds
   dual_res_bounds = _sign_multipliers_bounds(pb, state)
   #Check the complementarity condition for the constraints
   res_nonlin = _sign_multipliers_nonlin(pb, state)
   #Check the feasibility
-  feas       = _feasibility(pb, state)
+  feas = _feasibility(pb, state)
 
   res = vcat(gLagx, feas, dual_res_bounds, res_nonlin)
 

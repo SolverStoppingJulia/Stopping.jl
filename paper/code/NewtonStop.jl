@@ -1,39 +1,38 @@
-function Newton_Stop(nlp :: AbstractNLPModel,
-                     x₀  :: AbstractVector;
-                     τ₀  :: Float64 = 0.0005,
-                     stp :: NLPStopping = NLPStopping(nlp,
-                                                      NLPAtX(x₀)),
-                                                      optimality_check =  unconstrained_check,
-                                                      atol = 1e-6,
-                                                      max_iter = 200)
+function Newton_Stop(
+  nlp::AbstractNLPModel,
+  x₀::AbstractVector;
+  τ₀::Float64 = 0.0005,
+  stp::NLPStopping = NLPStopping(nlp, NLPAtX(x₀)),
+  optimality_check = unconstrained_check,
+  atol = 1e-6,
+  max_iter = 200,
+)
+  x = copy(x₀)
+  f, g = obj(nlp, x), grad(nlp, x)
 
+  OK = update_and_start!(stp, x = x, fx = f, gx = g)
 
-    x = copy(x₀)
-    f, g = obj(nlp,x), grad(nlp, x)
+  while !OK
+    Hx = hess(nlp, x)
+    H = Matrix(Symmetric(Hx, :L))
+    Δ, O = eigen(H)
 
-    OK = update_and_start!(stp, x = x, fx = f, gx = g)
+    # Boost negative values of Δ to 1e-8
+    D = Δ .+ max.((1e-8 .- Δ), 0.0)
 
-    while !OK
-        Hx   = hess(nlp, x)
-        H    = Matrix(Symmetric(Hx,:L))
-        Δ, O = eigen(H)
+    d = -O * diagm(1.0 ./ D) * O' * g
 
-        # Boost negative values of Δ to 1e-8
-        D = Δ .+ max.((1e-8 .- Δ), 0.0)
+    # Armijo bactracking
+    t, f, g = Armijo(nlp, f, g, x, d, τ₀)
 
-        d = - O*diagm(1.0 ./ D)*O'*g
+    x += t * d
+    OK = update_and_stop!(stp, x = x, gx = g, Hx = H)
+  end
 
-        # Armijo bactracking
-        t, f, g = Armijo(nlp, f, g, x, d, τ₀)
+  if !stp.meta.optimal
+    @warn "Optimality not reached"
+    @info status(stp, list = true)
+  end
 
-        x += t*d
-        OK = update_and_stop!(stp, x = x, gx = g, Hx = H)
-    end
-
-    if !stp.meta.optimal
-        @warn "Optimality not reached"
-        @info status(stp,list=true)
-    end
-
-    return x, f, norm(g), stp
+  return x, f, norm(g), stp
 end

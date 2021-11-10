@@ -16,8 +16,8 @@
 using Ipopt, NLPModels, NLPModelsIpopt, Stopping
 
 include("../test-stopping/rosenbrock.jl")
-x0  = 1.5 * ones(6)
-nlp = ADNLPModel(rosenbrock,  x0)
+x0 = 1.5 * ones(6)
+nlp = ADNLPModel(rosenbrock, x0)
 
 #The traditional way to solve an optimization problem using NLPModelsIpopt
 #https://github.com/JuliaSmoothOptimizers/NLPModelsIpopt.jl
@@ -29,37 +29,52 @@ stats = ipopt(nlp, print_level = 0, x0 = x0)
 @show stats.solution, stats.status
 
 #Using Stopping, the idea is to create a buffer function
-function solveIpopt(stp :: NLPStopping)
+function solveIpopt(stp::NLPStopping)
 
- #xk = solveIpopt(stop.pb, stop.current_state.x)
- stats = ipopt(nlp, print_level     = 0,
-                    tol             = stp.meta.rtol,
-                    x0              = stp.current_state.x,
-                    max_iter        = stp.meta.max_iter,
-                    max_cpu_time    = stp.meta.max_time,
-                    dual_inf_tol    = stp.meta.atol,
-                    constr_viol_tol = stp.meta.atol,
-                    compl_inf_tol   = stp.meta.atol)
+  #xk = solveIpopt(stop.pb, stop.current_state.x)
+  stats = ipopt(
+    nlp,
+    print_level = 0,
+    tol = stp.meta.rtol,
+    x0 = stp.current_state.x,
+    max_iter = stp.meta.max_iter,
+    max_cpu_time = stp.meta.max_time,
+    dual_inf_tol = stp.meta.atol,
+    constr_viol_tol = stp.meta.atol,
+    compl_inf_tol = stp.meta.atol,
+  )
 
- #Update the meta boolean with the output message
- if stats.status == :first_order stp.meta.suboptimal      = true end
- if stats.status == :acceptable  stp.meta.suboptimal      = true end
- if stats.status == :infeasible  stp.meta.infeasible      = true end
- if stats.status == :small_step  stp.meta.stalled         = true end
- if stats.status == :max_iter    stp.meta.iteration_limit = true end
- if stats.status == :max_time    stp.meta.tired           = true end
+  #Update the meta boolean with the output message
+  if stats.status == :first_order
+    stp.meta.suboptimal = true
+  end
+  if stats.status == :acceptable
+    stp.meta.suboptimal = true
+  end
+  if stats.status == :infeasible
+    stp.meta.infeasible = true
+  end
+  if stats.status == :small_step
+    stp.meta.stalled = true
+  end
+  if stats.status == :max_iter
+    stp.meta.iteration_limit = true
+  end
+  if stats.status == :max_time
+    stp.meta.tired = true
+  end
 
- stp.meta.nb_of_stop = stats.iter
- #stats.elapsed_time
+  stp.meta.nb_of_stop = stats.iter
+  #stats.elapsed_time
 
- x = stats.solution
+  x = stats.solution
 
- #Not mandatory, but in case some entries of the State are used to stop
- fill_in!(stp, x)
+  #Not mandatory, but in case some entries of the State are used to stop
+  fill_in!(stp, x)
 
- stop!(stp)
+  stop!(stp)
 
- return stp
+  return stp
 end
 
 nlp_at_x = NLPAtX(x0)
@@ -75,7 +90,7 @@ nbiter = stop.meta.nb_of_stop
 printstyled("2nd scenario:\n")
 #rstate is set as true to allow reinit! modifying the State
 reinit!(stop, rstate = true, x = x0)
-stop.meta.max_iter = max(nbiter-4,1)
+stop.meta.max_iter = max(nbiter - 4, 1)
 
 solveIpopt(stop)
 #Final status is :IterationLimit
