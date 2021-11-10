@@ -3,14 +3,13 @@ using LinearAlgebra, NLPModels, Stopping
 include("backls.jl")
 include("uncons.jl")
 
-
 #https://juliasmoothoptimizers.github.io/SolverBenchmark.jl/latest/tutorial/
 #In this tutorial we illustrate the main uses of SolverBenchmark.
 using DataFrames, Printf, SolverBenchmark
 #CUTEst is a collection of test problems
 using CUTEst
 
-problems_unconstrained = CUTEst.select(contype="unc")
+problems_unconstrained = CUTEst.select(contype = "unc")
 n = length(problems_unconstrained) #240
 #problems_boundconstrained = CUTEst.select(contype="bounds")
 #n = length(problems_boundconstrained) #124
@@ -21,29 +20,37 @@ n = min(n, 3)
 
 #Names of 3 solvers:
 names = [:armijo, :wolfe, :armijo_wolfe]
-p1 = PrmUn(); p2 = PrmUn(ls_func = wolfe); p3 = PrmUn(ls_func = armijo_wolfe)
+p1 = PrmUn();
+p2 = PrmUn(ls_func = wolfe);
+p3 = PrmUn(ls_func = armijo_wolfe);
 paramDict = Dict(:armijo => p1, :wolfe => p2, :armijo_wolfe => p3)
 #Initialization of the DataFrame for n problems.
-stats = Dict(name => DataFrame(:id => 1:n,
-         :name => [@sprintf("prob%s", problems_unconstrained[i]) for i = 1:n],
-         :nvar => zeros(Int64, n),
-         :status => [:Unknown for i = 1:n],
-         :f => NaN*ones(n),
-         :t => NaN*ones(n),
-         :iter => zeros(Int64, n),
-         :eval_f => zeros(Int64, n),
-         :eval_g => zeros(Int64, n),
-         :eval_H => zeros(Int64, n),
-         :score => NaN*ones(n)) for name in names)
+stats = Dict(
+  name => DataFrame(
+    :id => 1:n,
+    :name => [@sprintf("prob%s", problems_unconstrained[i]) for i = 1:n],
+    :nvar => zeros(Int64, n),
+    :status => [:Unknown for i = 1:n],
+    :f => NaN * ones(n),
+    :t => NaN * ones(n),
+    :iter => zeros(Int64, n),
+    :eval_f => zeros(Int64, n),
+    :eval_g => zeros(Int64, n),
+    :eval_H => zeros(Int64, n),
+    :score => NaN * ones(n),
+  ) for name in names
+)
 
-for i=1:n
+for i = 1:n
   nlp_cutest = CUTEst.CUTEstModel(problems_unconstrained[i])
   @show i, problems_unconstrained[i], nlp_cutest.meta.nvar
   #update the stopping with the new problem
-  stop_nlp = NLPStopping(nlp_cutest,
-                         NLPAtX(nlp_cutest.meta.x0),
-                         max_iter = 20,
-                         optimality_check = unconstrained_check)
+  stop_nlp = NLPStopping(
+    nlp_cutest,
+    NLPAtX(nlp_cutest.meta.x0),
+    max_iter = 20,
+    optimality_check = unconstrained_check,
+  )
 
   for name in names
 
@@ -71,7 +78,7 @@ for i=1:n
 end #end of main loop
 
 for name in names
-@show stats[name]
+  @show stats[name]
 end
 
 #You can export the table in Latex

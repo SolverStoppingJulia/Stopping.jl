@@ -1,16 +1,16 @@
-_init_field(t :: Type) = _init_field(Val{t}())
-_init_field(::Val{T}) where T <: AbstractMatrix = zeros(eltype(T),0,0)
-_init_field(::Val{T}) where T <: SparseMatrixCSC = sparse(zeros(eltype(T),0,0))
-_init_field(::Val{T}) where T <: AbstractVector = zeros(eltype(T),0)
-_init_field(::Val{T}) where T <: SparseVector = sparse(zeros(eltype(T),0))
+_init_field(t::Type) = _init_field(Val{t}())
+_init_field(::Val{T}) where {T <: AbstractMatrix} = zeros(eltype(T), 0, 0)
+_init_field(::Val{T}) where {T <: SparseMatrixCSC} = sparse(zeros(eltype(T), 0, 0))
+_init_field(::Val{T}) where {T <: AbstractVector} = zeros(eltype(T), 0)
+_init_field(::Val{T}) where {T <: SparseVector} = sparse(zeros(eltype(T), 0))
 _init_field(::Val{BigFloat}) = BigFloat(NaN)
-_init_field(::Val{Float64})  = NaN
-_init_field(::Val{Float32})  = NaN32
-_init_field(::Val{Float16})  = NaN16
-_init_field(::Val{Missing})  = missing
-_init_field(::Val{Nothing})  = nothing
-_init_field(::Val{Bool})     = false #unfortunately no way to differentiate
-_init_field(::Val{T}) where T<:Number = typemin(T)
+_init_field(::Val{Float64}) = NaN
+_init_field(::Val{Float32}) = NaN32
+_init_field(::Val{Float16}) = NaN16
+_init_field(::Val{Missing}) = missing
+_init_field(::Val{Nothing}) = nothing
+_init_field(::Val{Bool}) = false #unfortunately no way to differentiate
+_init_field(::Val{T}) where {T <: Number} = typemin(T)
 _init_field(::Val{Counters}) = Counters()
 
 """
@@ -45,42 +45,40 @@ Examples:
 
 See also: Stopping, NLPAtX
 """
-mutable struct GenericState{S, T <: Union{AbstractFloat,AbstractVector}} <: AbstractState{S, T}
+mutable struct GenericState{S, T <: Union{AbstractFloat, AbstractVector}} <: AbstractState{S, T}
+  x::T
 
-  x   :: T
-
-  d   :: T
-  res :: T
+  d::T
+  res::T
 
   #Current time
-  current_time  :: Float64
+  current_time::Float64
   #Current score
-  current_score :: S
+  current_score::S
 
-  function GenericState(x             :: T,
-                        current_score :: S;
-                        d             :: T = _init_field(T),
-                        res           :: T = _init_field(T),
-                        current_time  :: Float64    = NaN
-                        ) where {S, T <: AbstractVector}
-
-    return new{S,T}(x, d, res, current_time, current_score)
+  function GenericState(
+    x::T,
+    current_score::S;
+    d::T = _init_field(T),
+    res::T = _init_field(T),
+    current_time::Float64 = NaN,
+  ) where {S, T <: AbstractVector}
+    return new{S, T}(x, d, res, current_time, current_score)
   end
 end
 
-function GenericState(x             :: T;
-                      d             :: T = _init_field(T),
-                      res           :: T = _init_field(T),
-                      current_time  :: Float64    = NaN,
-                      current_score :: Union{T,eltype(T)} = _init_field(eltype(T))
-                      ) where T <: AbstractVector
-
-  return GenericState(x, current_score, 
-                      d = d, res = res, current_time = current_time)
+function GenericState(
+  x::T;
+  d::T = _init_field(T),
+  res::T = _init_field(T),
+  current_time::Float64 = NaN,
+  current_score::Union{T, eltype(T)} = _init_field(eltype(T)),
+) where {T <: AbstractVector}
+  return GenericState(x, current_score, d = d, res = res, current_time = current_time)
 end
 
-scoretype(typestate :: AbstractState{S,T}) where {S, T} = S
-xtype(typestate :: AbstractState{S,T}) where {S, T} = T
+scoretype(typestate::AbstractState{S, T}) where {S, T} = S
+xtype(typestate::AbstractState{S, T}) where {S, T} = T
 
 """
 update!: generic update function for the State
@@ -100,10 +98,7 @@ update!(state1, convert = true, current\\_time = 2.0)
 
 See also: GenericState, reinit!, update\\_and\\_start!, update\\_and\\_stop!
 """
-function update!(stateatx :: T; 
-                 convert  :: Bool = false, 
-                 kwargs...) where T <: AbstractState
-
+function update!(stateatx::T; convert::Bool = false, kwargs...) where {T <: AbstractState}
   fnames = fieldnames(T)
   for k ∈ keys(kwargs)
     #check if k is in fieldnames and type compatibility
@@ -132,9 +127,7 @@ So, affecting a value to nothing or a different type will return an error.
 
 See also: update!, GenericState, reinit!, update\\_and\\_start!, update\\_and\\_stop!
 """
-function _smart_update!(stateatx :: T; 
-                        kwargs...) where T <: AbstractState
-
+function _smart_update!(stateatx::T; kwargs...) where {T <: AbstractState}
   for k ∈ keys(kwargs)
     setfield!(stateatx, k, kwargs[k])
   end
@@ -143,9 +136,7 @@ function _smart_update!(stateatx :: T;
 end
 #https://github.com/JuliaLang/julia/blob/f3252bf50599ba16640ef08eb1e43c632eacf264/base/Base.jl#L34
 
-function _update_time!(stateatx     :: T, 
-                       current_time :: Float64) where T <: AbstractState
-
+function _update_time!(stateatx::T, current_time::Float64) where {T <: AbstractState}
   setfield!(stateatx, :current_time, current_time)
 
   return stateatx
@@ -171,34 +162,31 @@ Examples:
 reinit!(state2)
 reinit!(state2, current_time = 1.0)
 """
-function reinit!(stateatx :: St, 
-                 x        :: T; 
-                 kwargs...)  where {S, T, St <: AbstractState{S,T}}
+function reinit!(stateatx::St, x::T; kwargs...) where {S, T, St <: AbstractState{S, T}}
 
   #for k not in the kwargs
   for k ∈ setdiff(fieldnames(St), keys(kwargs))
-    if k != :x 
-      setfield!(stateatx, k, _init_field(typeof(getfield(stateatx, k)))) 
+    if k != :x
+      setfield!(stateatx, k, _init_field(typeof(getfield(stateatx, k))))
     end
   end
- 
+
   setfield!(stateatx, :x, x)
- 
-  if length(kwargs)==0 
+
+  if length(kwargs) == 0
     return stateatx #save the update! call if no other kwargs than x
   end
 
   return update!(stateatx; kwargs...)
 end
 
-function reinit!(stateatx :: T; kwargs...) where T <: AbstractState
- 
+function reinit!(stateatx::T; kwargs...) where {T <: AbstractState}
   for k ∈ setdiff(fieldnames(T), keys(kwargs))
-    if k != :x 
-      setfield!(stateatx, k, _init_field(typeof(getfield(stateatx, k)))) 
+    if k != :x
+      setfield!(stateatx, k, _init_field(typeof(getfield(stateatx, k))))
     end
   end
- 
+
   return update!(stateatx; kwargs...)
 end
 
@@ -214,10 +202,8 @@ Examples:
 \\_domain\\_check(state1)
 \\_domain\\_check(state1, x = true)
 """
-function _domain_check(stateatx :: T; kwargs...) where T <: AbstractState
-
+function _domain_check(stateatx::T; kwargs...) where {T <: AbstractState}
   for k ∈ setdiff(fieldnames(T), keys(kwargs))
-
     gf = getfield(stateatx, k)
     if _check_nan_miss(gf)
       return true
@@ -227,15 +213,16 @@ function _domain_check(stateatx :: T; kwargs...) where T <: AbstractState
   return false
 end
 
-_check_nan_miss(field :: Any) = false #Nothing or Counters
-_check_nan_miss(field :: SparseMatrixCSC) = any(isnan, field.nzval) #because checking in sparse matrices is too slow
-_check_nan_miss(field :: Union{AbstractVector,AbstractMatrix}) = any(isnan, field)
+_check_nan_miss(field::Any) = false #Nothing or Counters
+_check_nan_miss(field::SparseMatrixCSC) = any(isnan, field.nzval) #because checking in sparse matrices is too slow
+_check_nan_miss(field::Union{AbstractVector, AbstractMatrix}) = any(isnan, field)
 #We don't check for NaN's in Float as they are the _init_field
-_check_nan_miss(field :: AbstractFloat) = ismissing(field)
+_check_nan_miss(field::AbstractFloat) = ismissing(field)
 
 import Base.copy
-ex=:(_genobj(typ)=$(Expr(:new, :typ))); eval(ex)
-function copy(state :: T) where T <: AbstractState
+ex = :(_genobj(typ) = $(Expr(:new, :typ)));
+eval(ex);
+function copy(state::T) where {T <: AbstractState}
 
   #ex=:(_genobj(typ)=$(Expr(:new, :typ))); eval(ex)
   cstate = _genobj(T)
@@ -262,13 +249,14 @@ corresponding entries are replaced by a vector of size 1 containing its pnorm-no
 
 see also: copy, copy\\_compress\\_state, ListofStates
 """
-function compress_state!(stateatx        :: T;
-                         save_matrix     :: Bool    = false,
-                         max_vector_size :: Int     = length(stateatx.x),
-                         pnorm           :: Float64 = Inf,
-                         keep            :: Bool    = false,
-                         kwargs...)  where T <: AbstractState
-
+function compress_state!(
+  stateatx::T;
+  save_matrix::Bool = false,
+  max_vector_size::Int = length(stateatx.x),
+  pnorm::Float64 = Inf,
+  keep::Bool = false,
+  kwargs...,
+) where {T <: AbstractState}
   for k ∈ fieldnames(T)
     if k ∈ keys(kwargs) && !keep
       try
@@ -286,14 +274,14 @@ function compress_state!(stateatx        :: T;
     end
     if typeof(getfield(stateatx, k)) <: AbstractVector
       katt = getfield(stateatx, k)
-      if (length(katt) > max_vector_size)  
-        setfield!(stateatx, k, [norm(katt, pnorm)]) 
+      if (length(katt) > max_vector_size)
+        setfield!(stateatx, k, [norm(katt, pnorm)])
       end
     elseif typeof(getfield(stateatx, k)) <: Union{AbstractArray, AbstractMatrix}
       if save_matrix
         katt = getfield(stateatx, k)
-        if maximum(size(katt)) > max_vector_size 
-          setfield!(stateatx, k, norm(getfield(stateatx, k)) * ones(1,1)) 
+        if maximum(size(katt)) > max_vector_size
+          setfield!(stateatx, k, norm(getfield(stateatx, k)) * ones(1, 1))
         end
       else #save_matrix is false
         setfield!(stateatx, k, _init_field(typeof(getfield(stateatx, k))))
@@ -313,19 +301,25 @@ copy\\_compress\\_state: copy the State and then compress it.
 
 see also: copy, compress_state!, ListofStates
 """
-function copy_compress_state(stateatx        :: AbstractState;
-                             save_matrix     :: Bool    = false,
-                             max_vector_size :: Int     = length(stateatx.x),
-                             pnorm           :: Float64 = Inf,
-                             kwargs...)
+function copy_compress_state(
+  stateatx::AbstractState;
+  save_matrix::Bool = false,
+  max_vector_size::Int = length(stateatx.x),
+  pnorm::Float64 = Inf,
+  kwargs...,
+)
   cstate = copy(stateatx)
-  return compress_state!(cstate; save_matrix = save_matrix, 
-                                 max_vector_size = max_vector_size, 
-                                 pnorm = pnorm, kwargs...)
+  return compress_state!(
+    cstate;
+    save_matrix = save_matrix,
+    max_vector_size = max_vector_size,
+    pnorm = pnorm,
+    kwargs...,
+  )
 end
 
 import Base.show
-function show(io :: IO, state :: AbstractState)
+function show(io::IO, state::AbstractState)
   varlines = "$(typeof(state)) with an iterate of type $(xtype(state)) and a score of type $(scoretype(state))."
   println(io, varlines)
 end

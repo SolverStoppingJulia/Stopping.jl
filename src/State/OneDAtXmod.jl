@@ -29,43 +29,53 @@ Note:
    To have a vectorized `current_score` of length n, use `OneDAtX(x, Array{eltype(x),1}(undef, n))`.
 """
 mutable struct OneDAtX{S, T <: Number} <: AbstractState{S, T}
+  x::T
+  fx::T  # h(θ)
+  gx::T  # h'(θ)
+  f₀::T  # h(0)
+  g₀::T  # h'(0)
 
-    x             :: T
-    fx            :: T  # h(θ)
-    gx            :: T  # h'(θ)
-    f₀            :: T  # h(0)
-    g₀            :: T  # h'(0)
+  d::T
+  res::T
 
-    d             :: T
-    res           :: T
+  current_time::Float64
+  current_score::S
 
-    current_time  :: Float64
-    current_score :: S
-
- function OneDAtX(t             :: T,
-                  current_score :: S;
-                  fx            :: T = _init_field(T),
-                  gx            :: T = _init_field(T),
-                  f₀            :: T = _init_field(T),
-                  g₀            :: T = _init_field(T),
-                  d             :: T = _init_field(T),
-                  res           :: T = _init_field(T),
-                  current_time  :: Float64 = NaN) where {S, T <: Number}
-
-  return new{S, T}(t, fx, gx, f₀, g₀, d, res, current_time, current_score)
- end
+  function OneDAtX(
+    t::T,
+    current_score::S;
+    fx::T = _init_field(T),
+    gx::T = _init_field(T),
+    f₀::T = _init_field(T),
+    g₀::T = _init_field(T),
+    d::T = _init_field(T),
+    res::T = _init_field(T),
+    current_time::Float64 = NaN,
+  ) where {S, T <: Number}
+    return new{S, T}(t, fx, gx, f₀, g₀, d, res, current_time, current_score)
+  end
 end
 
-function OneDAtX(t             :: T;
-                 fx            :: T = _init_field(T),
-                 gx            :: T = _init_field(T),
-                 f₀            :: T = _init_field(T),
-                 g₀            :: T = _init_field(T),
-                 d             :: T = _init_field(T),
-                 res           :: T = _init_field(T),
-                 current_time  :: Float64 = NaN,
-                 current_score :: T = _init_field(T))  where T <: Number
-
- return OneDAtX(t, current_score, fx = fx, gx = gx, f₀ = f₀, g₀ = g₀, 
-                                 d = d, res = res, current_time = current_time)
+function OneDAtX(
+  t::T;
+  fx::T = _init_field(T),
+  gx::T = _init_field(T),
+  f₀::T = _init_field(T),
+  g₀::T = _init_field(T),
+  d::T = _init_field(T),
+  res::T = _init_field(T),
+  current_time::Float64 = NaN,
+  current_score::T = _init_field(T),
+) where {T <: Number}
+  return OneDAtX(
+    t,
+    current_score,
+    fx = fx,
+    gx = gx,
+    f₀ = f₀,
+    g₀ = g₀,
+    d = d,
+    res = res,
+    current_time = current_time,
+  )
 end

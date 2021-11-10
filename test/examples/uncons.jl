@@ -26,56 +26,51 @@
 # Newton method with LineSearch
 #
 #############################################################################
-function global_newton(stp       :: NLPStopping,
-                       onedsolve :: Function,
-                       ls_func   :: Function;
-                       prms = nothing)
+function global_newton(stp::NLPStopping, onedsolve::Function, ls_func::Function; prms = nothing)
 
-    #Notations
-    state = stp.current_state; nlp = stp.pb
-    #Initialization
-    xt = state.x; d = zeros(size(xt))
+  #Notations
+  state = stp.current_state
+  nlp = stp.pb
+  #Initialization
+  xt = state.x
+  d = zeros(size(xt))
 
-    #First call
-    OK = update_and_start!(stp, x = xt, fx = obj(nlp, xt),
-                                gx = grad(nlp, xt), Hx = hess(nlp, xt))
+  #First call
+  OK = update_and_start!(stp, x = xt, fx = obj(nlp, xt), gx = grad(nlp, xt), Hx = hess(nlp, xt))
 
-    #Initialize the sub-Stopping with the main Stopping as keyword argument
-    h = onedoptim(x -> obj(nlp, xt + x * d),
-                  x -> dot(d, grad(nlp, xt + x * d)))
-    lsstp = LS_Stopping(h, LSAtT(1.0), main_stp = stp, optimality_check = ls_func)
+  #Initialize the sub-Stopping with the main Stopping as keyword argument
+  h = onedoptim(x -> obj(nlp, xt + x * d), x -> dot(d, grad(nlp, xt + x * d)))
+  lsstp = LS_Stopping(h, LSAtT(1.0), main_stp = stp, optimality_check = ls_func)
 
-    #main loop
-    while !OK
-        #Compute the Newton direction
-        d = Symmetric(state.Hx, :L) \ (-state.gx)
+  #main loop
+  while !OK
+    #Compute the Newton direction
+    d = Symmetric(state.Hx, :L) \ (-state.gx)
 
-        #Prepare the substopping
-        #We reinitialize the stopping before each new use
-        #rstate = true, force a reinialization of the State as well
-        reinit!(lsstp, rstate = true, x = 1.0, g₀=-dot(state.gx,d), h₀=state.fx)
-        lsstp.pb = onedoptim(x -> obj(nlp, xt + x * d),
-                             x -> dot(d, grad(nlp, xt + x * d)))
+    #Prepare the substopping
+    #We reinitialize the stopping before each new use
+    #rstate = true, force a reinialization of the State as well
+    reinit!(lsstp, rstate = true, x = 1.0, g₀ = -dot(state.gx, d), h₀ = state.fx)
+    lsstp.pb = onedoptim(x -> obj(nlp, xt + x * d), x -> dot(d, grad(nlp, xt + x * d)))
 
-        #solve subproblem
-        onedsolve(lsstp, prms)
+    #solve subproblem
+    onedsolve(lsstp, prms)
 
-        if status(lsstp) == :Optimal
-         alpha = lsstp.current_state.x
-         #update
-         xt = xt + alpha * d
-         #Since the onedoptim and the nlp have the same objective function,
-         #we save one evaluation.
-         update!(stp.current_state, fx = lsstp.current_state.ht)
-        else
-         stp.meta.fail_sub_pb = true
-        end
-
-        OK = update_and_stop!(stp, x = xt, gx = grad(nlp, xt), Hx = hess(nlp, xt))
-
+    if status(lsstp) == :Optimal
+      alpha = lsstp.current_state.x
+      #update
+      xt = xt + alpha * d
+      #Since the onedoptim and the nlp have the same objective function,
+      #we save one evaluation.
+      update!(stp.current_state, fx = lsstp.current_state.ht)
+    else
+      stp.meta.fail_sub_pb = true
     end
 
-    return stp
+    OK = update_and_stop!(stp, x = xt, gx = grad(nlp, xt), Hx = hess(nlp, xt))
+  end
+
+  return stp
 end
 
 ##############################################################################
@@ -84,12 +79,11 @@ end
 # Buffer version
 #
 #############################################################################
-function global_newton(stp :: NLPStopping, prms)
+function global_newton(stp::NLPStopping, prms)
+  lf = :ls_func ∈ fieldnames(typeof(prms)) ? prms.ls_func : armijo
+  os = :onedsolve ∈ fieldnames(typeof(prms)) ? prms.onedsolve : backtracking_ls
 
- lf = :ls_func   ∈ fieldnames(typeof(prms)) ? prms.ls_func : armijo
- os = :onedsolve ∈ fieldnames(typeof(prms)) ? prms.onedsolve : backtracking_ls
-
- return global_newton(stp, os, lf; prms = prms)
+  return global_newton(stp, os, lf; prms = prms)
 end
 
 ##############################################################################
@@ -98,20 +92,22 @@ end
 #
 mutable struct PrmUn
 
-    #parameters of the unconstrained minimization
-    armijo_prm  :: Float64 #Armijo parameter
-    wolfe_prm   :: Float64 #Wolfe parameter
-    onedsolve   :: Function #1D solver
-    ls_func     :: Function
+  #parameters of the unconstrained minimization
+  armijo_prm::Float64 #Armijo parameter
+  wolfe_prm::Float64 #Wolfe parameter
+  onedsolve::Function #1D solver
+  ls_func::Function
 
-    #parameters of the 1d minimization
-    back_update :: Float64 #backtracking update
+  #parameters of the 1d minimization
+  back_update::Float64 #backtracking update
 
-    function PrmUn(;armijo_prm  :: Float64 = 0.01,
-                    wolfe_prm   :: Float64 = 0.99,
-                    onedsolve   :: Function = backtracking_ls,
-                    ls_func     :: Function = (x,y)-> armijo(x,y, τ₀ = armijo_prm),
-                    back_update :: Float64 = 0.5)
-        return new(armijo_prm,wolfe_prm,onedsolve,ls_func,back_update)
-    end
+  function PrmUn(;
+    armijo_prm::Float64 = 0.01,
+    wolfe_prm::Float64 = 0.99,
+    onedsolve::Function = backtracking_ls,
+    ls_func::Function = (x, y) -> armijo(x, y, τ₀ = armijo_prm),
+    back_update::Float64 = 0.5,
+  )
+    return new(armijo_prm, wolfe_prm, onedsolve, ls_func, back_update)
+  end
 end

@@ -26,20 +26,21 @@ include("backls.jl")
 
 printstyled("1D Optimization: backtracking tutorial.\n", color = :green)
 
-x0 = 1.5*ones(6)
-nlp = ADNLPModel(rosenbrock,  x0)
-g0 = grad(nlp,x0)
-h = onedoptim(x -> obj(nlp, x0 - x * g0), x -> - dot(g0,grad(nlp,x0 - x * g0)))
+x0 = 1.5 * ones(6)
+nlp = ADNLPModel(rosenbrock, x0)
+g0 = grad(nlp, x0)
+h = onedoptim(x -> obj(nlp, x0 - x * g0), x -> -dot(g0, grad(nlp, x0 - x * g0)))
 
 #SCENARIO:
 #We create 3 stopping:
 #Define the LSAtT with mandatory entries g₀ and h₀.
-lsatx  = LSAtT(1.0, h₀ = obj(nlp, x0), g₀ = -dot(grad(nlp, x0),grad(nlp, x0)))
-lsstp  = LS_Stopping(h, lsatx, optimality_check = (x,y)-> armijo(x,y, τ₀ = 0.01))
-lsatx2 = LSAtT(1.0, h₀ = obj(nlp, x0), g₀ = -dot(grad(nlp, x0),grad(nlp, x0)))
-lsstp2 = LS_Stopping(h, lsatx2, optimality_check = (x,y)-> wolfe(x,y, τ₁ = 0.99))
-lsatx3 = LSAtT(1.0, h₀ = obj(nlp, x0), g₀ = -dot(grad(nlp, x0),grad(nlp, x0)))
-lsstp3 = LS_Stopping(h, lsatx3, optimality_check = (x,y)-> armijo_wolfe(x,y, τ₀ = 0.01, τ₁ = 0.99))
+lsatx = LSAtT(1.0, h₀ = obj(nlp, x0), g₀ = -dot(grad(nlp, x0), grad(nlp, x0)))
+lsstp = LS_Stopping(h, lsatx, optimality_check = (x, y) -> armijo(x, y, τ₀ = 0.01))
+lsatx2 = LSAtT(1.0, h₀ = obj(nlp, x0), g₀ = -dot(grad(nlp, x0), grad(nlp, x0)))
+lsstp2 = LS_Stopping(h, lsatx2, optimality_check = (x, y) -> wolfe(x, y, τ₁ = 0.99))
+lsatx3 = LSAtT(1.0, h₀ = obj(nlp, x0), g₀ = -dot(grad(nlp, x0), grad(nlp, x0)))
+lsstp3 =
+  LS_Stopping(h, lsatx3, optimality_check = (x, y) -> armijo_wolfe(x, y, τ₀ = 0.01, τ₁ = 0.99))
 
 parameters = ParamLS(back_update = 0.5)
 
@@ -75,8 +76,8 @@ include("uncons.jl")
 
 printstyled("Unconstrained Optimization: globalized Newton.\n", color = :green)
 
-x0 = 1.5*ones(6)
-nlp = ADNLPModel(rosenbrock,  x0)
+x0 = 1.5 * ones(6)
+nlp = ADNLPModel(rosenbrock, x0)
 
 # We use the default builder using the KKT optimality function (which does not
 # automatically fill in the State)
@@ -93,8 +94,8 @@ global_newton(stop_nlp, parameters)
 printstyled("Newton method with Armijo-Wolfe linesearch.\n", color = :green)
 reinit!(stop_nlp, rstate = true, x = x0)
 reset!(stop_nlp.pb) #reinitialize the counters of the NLP
-parameters.ls_func = (x,y)-> armijo_wolfe(x,y, τ₀ = parameters.armijo_prm,
-                                               τ₁ = parameters.wolfe_prm)
+parameters.ls_func =
+  (x, y) -> armijo_wolfe(x, y, τ₀ = parameters.armijo_prm, τ₁ = parameters.wolfe_prm)
 
 global_newton(stop_nlp, parameters)
 @show status(stop_nlp)
@@ -115,8 +116,9 @@ printstyled("How to solve bound constrained optim problem: \n", color = :red)
 include("activeset.jl")
 
 printstyled("Constrained optimization: active-set algorithm tutorial.\n", color = :green)
-x0 = 1.5*ones(6);x0[6]=1.0
-nlp_bnd = ADNLPModel(rosenbrock,  x0, fill(-10.0,size(x0)), fill(1.5,size(x0)))
+x0 = 1.5 * ones(6);
+x0[6] = 1.0;
+nlp_bnd = ADNLPModel(rosenbrock, x0, fill(-10.0, size(x0)), fill(1.5, size(x0)))
 
 nlp_bnd_at_x = NLPAtX(x0)
 stop_nlp_c = NLPStopping(nlp_bnd, max_iter = 10)
@@ -138,16 +140,19 @@ printstyled("How to solve nonlinear optim problem: \n", color = :red)
 include("penalty.jl")
 
 printstyled("Constrained optimization: quadratic penalty tutorial.\n", color = :green)
-x0 = 1.5*ones(6)
+x0 = 1.5 * ones(6)
 c(x) = [sum(x)]
 # ADNLPModel(f, x0, lvar, uvar, c, lcon, ucon)
-nlp2 = ADNLPModel(rosenbrock,  x0,
-                  fill(-10.0,size(x0)), fill(10.0,size(x0)),
-                   c, [-Inf], [5.])
+nlp2 = ADNLPModel(rosenbrock, x0, fill(-10.0, size(x0)), fill(10.0, size(x0)), c, [-Inf], [5.0])
 
 nlp_at_x_c = NLPAtX(x0, zeros(nlp2.meta.ncon))
-stop_nlp_c = NLPStopping(nlp2, nlp_at_x_c, atol = 1e-3,
-                                max_cntrs = init_max_counters(obj = 400000, cons = 800000, sum = 1000000), optimality_check = (x,y) -> KKT(x,y))
+stop_nlp_c = NLPStopping(
+  nlp2,
+  nlp_at_x_c,
+  atol = 1e-3,
+  max_cntrs = init_max_counters(obj = 400000, cons = 800000, sum = 1000000),
+  optimality_check = (x, y) -> KKT(x, y),
+)
 
 penalty(stop_nlp_c)
 @show status(stop_nlp_c)

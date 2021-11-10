@@ -46,153 +46,161 @@ the Stopping to reuse for another call.
 """
 module Stopping
 
-  using LinearAlgebra, LinearOperators, SparseArrays
-  using DataFrames, LLSModels, NLPModels, Printf
+using LinearAlgebra, LinearOperators, SparseArrays
+using DataFrames, LLSModels, NLPModels, Printf
 
-  """
-  AbstractState: 
+"""
+AbstractState: 
 
-  Abstract type, if specialized state were to be implemented they would need to
-  be subtypes of `AbstractState`.
-  """
-  abstract type AbstractState{S,T} end
+Abstract type, if specialized state were to be implemented they would need to
+be subtypes of `AbstractState`.
+"""
+abstract type AbstractState{S, T} end
 
-  include("State/GenericStatemod.jl")
-  include("State/OneDAtXmod.jl")
-  include("State/NLPAtXmod.jl")
+include("State/GenericStatemod.jl")
+include("State/OneDAtXmod.jl")
+include("State/NLPAtXmod.jl")
 
-  export scoretype, xtype
-  export AbstractState, GenericState, update!, copy, compress_state!, copy_compress_state
-  export OneDAtX, update!
-  export NLPAtX, update!
+export scoretype, xtype
+export AbstractState, GenericState, update!, copy, compress_state!, copy_compress_state
+export OneDAtX, update!
+export NLPAtX, update!
 
-  include("State/ListOfStates.jl")
+include("State/ListOfStates.jl")
 
-  export AbstractListofStates, ListofStates, VoidListofStates
-  export add_to_list!, length, print, getindex, state_type
+export AbstractListofStates, ListofStates, VoidListofStates
+export add_to_list!, length, print, getindex, state_type
 
-  function _instate(stt :: Symbol, es :: Symbol)
-    for t in fieldnames(GenericState)
-      if es == t
-        es = esc(Symbol(stt,".$t"))
-      end
+function _instate(stt::Symbol, es::Symbol)
+  for t in fieldnames(GenericState)
+    if es == t
+      es = esc(Symbol(stt, ".$t"))
     end
-    es
   end
+  es
+end
 
-  function _instate(state :: Symbol, a::Any)
-    a
+function _instate(state::Symbol, a::Any)
+  a
+end
+
+function _instate(state::Symbol, ex::Expr)
+  for i = 1:length(ex.args)
+    ex.args[i] = _instate(state, ex.args[i])
   end
+  ex
+end
 
-  function _instate(state :: Symbol, ex :: Expr)
-    for i=1:length(ex.args)
-      ex.args[i] = _instate(state, ex.args[i])
-    end
-    ex
+"""
+`@instate state expression`
+
+Macro that set the prefix state. to all the variables whose name belong to the 
+field names of the state.
+"""
+macro instate(state::Symbol, ex)
+  if typeof(ex) == Expr
+    ex = _instate(state, ex)
   end
+  ex
+end
 
-  """
-  `@instate state expression`
+export @instate
 
-  Macro that set the prefix state. to all the variables whose name belong to the 
-  field names of the state.
-  """
-  macro instate(state :: Symbol, ex)
-    if typeof(ex) == Expr
-      ex = _instate(state, ex)
-    end
-    ex
+include("Stopping/StopRemoteControl.jl")
+export AbstractStopRemoteControl, StopRemoteControl, cheap_stop_remote_control
+
+"""
+AbstractStoppingMeta
+
+Abstract type, if specialized meta for stopping were to be implemented they
+would need to be subtypes of AbstractStoppingMeta
+"""
+abstract type AbstractStoppingMeta end
+
+"""
+AbstractStopping
+
+Abstract type, if specialized stopping were to be implemented they would need to
+be subtypes of AbstractStopping
+"""
+abstract type AbstractStopping{
+  Pb <: Any,
+  M <: AbstractStoppingMeta,
+  SRC <: AbstractStopRemoteControl,
+  T <: AbstractState,
+  MStp <: Any, #AbstractStopping
+  LoS <: AbstractListofStates,
+} end
+
+include("Stopping/StoppingMetamod.jl")
+
+export AbstractStoppingMeta, StoppingMeta, tol_check, update_tol!, OK_check
+
+struct VoidStopping{Pb, M, SRC, T, MStp, LoS} <: AbstractStopping{Pb, M, SRC, T, MStp, LoS} end
+function VoidStopping()
+  return VoidStopping{
+    Any,
+    StoppingMeta,
+    StopRemoteControl,
+    GenericState,
+    Nothing,
+    VoidListofStates,
+  }()
+end
+
+export AbstractStopping, VoidStopping
+
+import Base.show
+function show(io::IO, stp::VoidStopping)
+  println(io, typeof(stp))
+end
+function show(io::IO, stp::AbstractStopping)
+  println(io, typeof(stp))
+  #print(io, stp.meta) #we can always print stp.meta
+  #print(io, stp.stop_remote) #we can always print stp.stop_remote
+  #print(io, stp.current_state) #we can always print stp.current_state
+  if !(typeof(stp.main_stp) <: VoidStopping)
+    println(io, "It has a main_stp $(typeof(stp.main_stp))")
+  else
+    println(io, "It has no main_stp.")
   end
-
-  export @instate
-
-  include("Stopping/StopRemoteControl.jl")
-  export AbstractStopRemoteControl, StopRemoteControl, cheap_stop_remote_control
-
-  """
-  AbstractStoppingMeta
-
-  Abstract type, if specialized meta for stopping were to be implemented they
-  would need to be subtypes of AbstractStoppingMeta
-  """
-  abstract type AbstractStoppingMeta end
-
-  """
-  AbstractStopping
-
-  Abstract type, if specialized stopping were to be implemented they would need to
-  be subtypes of AbstractStopping
-  """
-  abstract type AbstractStopping{Pb   <: Any, 
-                                M    <: AbstractStoppingMeta, 
-                                SRC  <: AbstractStopRemoteControl,
-                                T    <: AbstractState,
-                                MStp <: Any, #AbstractStopping
-                                LoS  <: AbstractListofStates} end
-
-  include("Stopping/StoppingMetamod.jl")
-
-  export AbstractStoppingMeta, StoppingMeta, tol_check, update_tol!, OK_check
-
-  struct VoidStopping{Pb, M, SRC, T, MStp, LoS} <: AbstractStopping{Pb, M, SRC, T, MStp, LoS} end
-  function VoidStopping() 
-    return VoidStopping{Any, StoppingMeta, StopRemoteControl, 
-                        GenericState, Nothing, VoidListofStates}() 
+  if typeof(stp.listofstates) != VoidListofStates
+    nmax = stp.listofstates.n == -1 ? Inf : stp.listofstates.n
+    println(io, "It handles a list of states $(typeof(stp.listofstates)) of maximum length $(nmax)")
+  else
+    println(io, "It doesn't keep track of the state history.")
   end
-
-  export AbstractStopping, VoidStopping
-
-  import Base.show
-  function show(io :: IO, stp :: VoidStopping)
-    println(io, typeof(stp))
+  try
+    print(io, "Problem is ")
+    show(io, stp.pb)
+    print(io, " ")
+  catch
+    print(io, "Problem is $(typeof(stp.pb)). ")
   end
-  function show(io :: IO, stp :: AbstractStopping)
-    println(io, typeof(stp))
-    #print(io, stp.meta) #we can always print stp.meta
-    #print(io, stp.stop_remote) #we can always print stp.stop_remote
-    #print(io, stp.current_state) #we can always print stp.current_state
-    if !(typeof(stp.main_stp) <: VoidStopping)
-      println(io, "It has a main_stp $(typeof(stp.main_stp))")
-    else
-      println(io, "It has no main_stp.")
-    end
-    if typeof(stp.listofstates) != VoidListofStates
-      nmax = stp.listofstates.n == -1 ? Inf : stp.listofstates.n
-      println(io, "It handles a list of states $(typeof(stp.listofstates)) of maximum length $(nmax)")
-    else
-      println(io, "It doesn't keep track of the state history.")
-    end
+  if stp.stopping_user_struct != Dict()
     try
-      print(io, "Problem is ")
-      show(io, stp.pb)
-      print(io, " ")
+      print(io, "The user-defined structure is ")
+      show(io, stp.stopping_user_struct)
     catch
-      print(io, "Problem is $(typeof(stp.pb)). ")
+      print(io, "The user-defined structure is  of type $(typeof(stp.stopping_user_struct)).\n")
     end
-    if stp.stopping_user_struct != Dict()
-      try
-        print(io, "The user-defined structure is ")
-        show(io, stp.stopping_user_struct)
-      catch
-        print(io, "The user-defined structure is  of type $(typeof(stp.stopping_user_struct)).\n")
-      end
-    else
-      print(io, "No user-defined structure is furnished.\n")
-    end
+  else
+    print(io, "No user-defined structure is furnished.\n")
   end
+end
 
-  include("Stopping/GenericStoppingmod.jl")
-  include("Stopping/NLPStoppingmod.jl")
+include("Stopping/GenericStoppingmod.jl")
+include("Stopping/NLPStoppingmod.jl")
 
-  export GenericStopping, start!, stop!, cheap_stop!, update_and_start!
-  export update_and_stop!, cheap_update_and_stop!, cheap_update_and_start!
-  export fill_in!, reinit!, status, elapsed_time
-  export NLPStopping, unconstrained_check, unconstrained2nd_check, max_evals!
-  export optim_check_bounded, KKT, init_max_counters, init_max_counters_NLS
+export GenericStopping, start!, stop!, cheap_stop!, update_and_start!
+export update_and_stop!, cheap_update_and_stop!, cheap_update_and_start!
+export fill_in!, reinit!, status, elapsed_time
+export NLPStopping, unconstrained_check, unconstrained2nd_check, max_evals!
+export optim_check_bounded, KKT, init_max_counters, init_max_counters_NLS
 
-  include("Stopping/LinearAlgebraStopping.jl")
+include("Stopping/LinearAlgebraStopping.jl")
 
-  export LAStopping, LinearSystem, LACounters, linear_system_check, normal_equation_check
-  export init_max_counters_linear_operators
+export LAStopping, LinearSystem, LACounters, linear_system_check, normal_equation_check
+export init_max_counters_linear_operators
 
 end # end of module
