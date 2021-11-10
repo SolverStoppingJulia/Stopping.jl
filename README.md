@@ -1,10 +1,10 @@
 # Stopping
 
-[![Build Status](https://travis-ci.org/vepiteski/Stopping.jl.svg?branch=master)](https://travis-ci.org/vepiteski/Stopping.jl)
 ![CI](https://github.com/vepiteski/Stopping.jl/workflows/CI/badge.svg?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/vepiteski/Stopping.jl/badge.svg?branch=master)](https://coveralls.io/github/vepiteski/Stopping.jl?branch=master)
 [![codecov](https://codecov.io/gh/vepiteski/Stopping.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/vepiteski/Stopping.jl)
-[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://vepiteski.github.io/Stopping.jl/dev/)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://vepiteski.github.io/Stopping.jl/stable)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://vepiteski.github.io/Stopping.jl/dev/)
 
 ## Purpose
 
