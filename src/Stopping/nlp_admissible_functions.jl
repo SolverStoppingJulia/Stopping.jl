@@ -3,13 +3,13 @@ import NLPModels: grad, cons, jac
 """
 unconstrained_check: return the infinite norm of the gradient of the objective function
 
-`unconstrained_check( :: AbstractNLPModel, :: NLPAtX; pnorm :: Float64 = Inf, kwargs...)`
+`unconstrained_check( :: AbstractNLPModel, :: NLPAtX; pnorm :: Real = Inf, kwargs...)`
 
 Require `state.gx` (filled if not provided)
 
 See also `unconstrained2nd_check`, `optim_check_bounded`, `KKT`
 """
-function unconstrained_check(pb::AbstractNLPModel, state::NLPAtX; pnorm::Float64 = Inf, kwargs...)
+function unconstrained_check(pb::AbstractNLPModel, state::NLPAtX; pnorm::Real = Inf, kwargs...)
   if state.gx == _init_field(typeof(state.gx)) # should be filled if empty
     update!(state, gx = grad(pb, state.x))
   end
@@ -21,7 +21,7 @@ end
 unconstrained2nd_check: check the norm of the gradient and the smallest
                    eigenvalue of the hessian.
 
-`unconstrained2nd_check( :: AbstractNLPModel, :: NLPAtX; pnorm :: Float64 = Inf, kwargs...)`
+`unconstrained2nd_check( :: AbstractNLPModel, :: NLPAtX; pnorm :: Real = Inf, kwargs...)`
 
 Require are `state.gx`, `state.Hx` (filled if not provided).
 
@@ -30,7 +30,7 @@ See also `unconstrained_check`, `optim_check_bounded`, `KKT`
 function unconstrained2nd_check(
   pb::AbstractNLPModel,
   state::NLPAtX;
-  pnorm::Float64 = Inf,
+  pnorm::Real = Inf,
   kwargs...,
 )
   if state.gx == _init_field(typeof(state.gx)) # should be filled if empty
@@ -48,13 +48,13 @@ end
 """
 optim\\_check\\_bounded: gradient of the objective function projected
 
-`optim_check_bounded( :: AbstractNLPModel, :: NLPAtX; pnorm :: Float64 = Inf, kwargs...)`
+`optim_check_bounded( :: AbstractNLPModel, :: NLPAtX; pnorm :: Real = Inf, kwargs...)`
 
 Require `state.gx` (filled if not provided).
 
 See also `unconstrained_check`, `unconstrained2nd_check`, `KKT`
 """
-function optim_check_bounded(pb::AbstractNLPModel, state::NLPAtX; pnorm::Float64 = Inf, kwargs...)
+function optim_check_bounded(pb::AbstractNLPModel, state::NLPAtX; pnorm::Real = Inf, kwargs...)
   if state.gx == _init_field(typeof(state.gx)) # should be filled if void
     update!(state, gx = grad(pb, state.x))
   end
@@ -117,13 +117,13 @@ end
 """
 KKT: verifies the KKT conditions
 
-`KKT( :: AbstractNLPModel, :: NLPAtX; pnorm :: Float64 = Inf, kwargs...)`
+`KKT( :: AbstractNLPModel, :: NLPAtX; pnorm :: Real = Inf, kwargs...)`
 
 Note: `state.gx` is mandatory + if bounds `state.mu` + if constraints `state.cx`, `state.Jx`, `state.lambda`.
 
 See also `unconstrained_check`, `unconstrained2nd_check`, `optim_check_bounded`
 """
-function KKT(pb::AbstractNLPModel, state::NLPAtX; pnorm::Float64 = Inf, kwargs...)
+function KKT(pb::AbstractNLPModel, state::NLPAtX; pnorm::Real = Inf, kwargs...)
 
   #Check the gradient of the Lagrangian
   gLagx = _grad_lagrangian(pb, state)
