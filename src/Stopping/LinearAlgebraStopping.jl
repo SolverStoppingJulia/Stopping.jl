@@ -287,7 +287,7 @@ end
 """
 linear\\_system\\_check: return ||Ax-b||_p
 
-`linear_system_check(:: Union{LinearSystem, LLSModel}, :: AbstractState; pnorm :: Float64 = Inf, kwargs...)`
+`linear_system_check(:: Union{LinearSystem, LLSModel}, :: AbstractState; pnorm :: Real = Inf, kwargs...)`
 
 Note:
 - Returns the p-norm of state.res
@@ -296,7 +296,7 @@ Note:
 function linear_system_check(
   pb::LinearSystem,
   state::AbstractState;
-  pnorm::Float64 = Inf,
+  pnorm::Real = Inf,
   kwargs...,
 )
   pb.counters.nprod += 1
@@ -307,7 +307,7 @@ function linear_system_check(
   return norm(state.res, pnorm)
 end
 
-function linear_system_check(pb::LLSModel, state::AbstractState; pnorm::Float64 = Inf, kwargs...)
+function linear_system_check(pb::LLSModel, state::AbstractState; pnorm::Real = Inf, kwargs...)
   if state.res == _init_field(typeof(state.res))
     Axmb = if xtype(state) <: SparseVector
       sparse(residual(pb, state.x))
@@ -323,14 +323,14 @@ end
 """
 normal\\_equation\\_check: return ||A'Ax-A'b||_p
 
-`normal_equation_check(:: Union{LinearSystem, LLSModel}, :: AbstractState; pnorm :: Float64 = Inf, kwargs...)`
+`normal_equation_check(:: Union{LinearSystem, LLSModel}, :: AbstractState; pnorm :: Real = Inf, kwargs...)`
 
 Note: pb must have A and b entries
 """
 function normal_equation_check(
   pb::LinearSystem,
   state::AbstractState;
-  pnorm::Float64 = Inf,
+  pnorm::Real = Inf,
   kwargs...,
 )
   pb.counters.nprod += 1
@@ -338,7 +338,7 @@ function normal_equation_check(
   return norm(pb.A' * (pb.A * state.x) - pb.A' * pb.b, pnorm)
 end
 
-function normal_equation_check(pb::LLSModel, state::AbstractState; pnorm::Float64 = Inf, kwargs...)
+function normal_equation_check(pb::LLSModel, state::AbstractState; pnorm::Real = Inf, kwargs...)
   nres = jtprod_residual(pb, state.x, residual(pb, state.x))
   return norm(nres, pnorm)
 end

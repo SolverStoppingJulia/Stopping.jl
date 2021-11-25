@@ -245,7 +245,7 @@ corresponding entries are replaced by a vector of size 1 containing its pnorm-no
 - If keep is false and an entry in the State is in the kwargs list, then it is put as _init_field(typeof(getfield(stateatx, k)) if possible.
 
 
-`compress_state!(:: AbstractState; save_matrix :: Bool = false, max_vector_size :: Int = length(stateatx.x), pnorm :: Float64 = Inf, keep :: Bool = false, kwargs...)`
+`compress_state!(:: AbstractState; save_matrix :: Bool = false, max_vector_size :: Int = length(stateatx.x), pnorm :: Real = Inf, keep :: Bool = false, kwargs...)`
 
 see also: copy, copy\\_compress\\_state, ListofStates
 """
@@ -253,7 +253,7 @@ function compress_state!(
   stateatx::T;
   save_matrix::Bool = false,
   max_vector_size::Int = length(stateatx.x),
-  pnorm::Float64 = Inf,
+  pnorm::Real = Inf,
   keep::Bool = false,
   kwargs...,
 ) where {T <: AbstractState}
@@ -297,7 +297,7 @@ end
 """
 copy\\_compress\\_state: copy the State and then compress it.
 
-`copy_compress_state(:: AbstractState; save_matrix :: Bool = false, max_vector_size :: Int = length(stateatx.x), pnorm :: Float64 = Inf, kwargs...)`
+`copy_compress_state(:: AbstractState; save_matrix :: Bool = false, max_vector_size :: Int = length(stateatx.x), pnorm :: Real = Inf, kwargs...)`
 
 see also: copy, compress_state!, ListofStates
 """
@@ -305,7 +305,7 @@ function copy_compress_state(
   stateatx::AbstractState;
   save_matrix::Bool = false,
   max_vector_size::Int = length(stateatx.x),
-  pnorm::Float64 = Inf,
+  pnorm::Real = Inf,
   kwargs...,
 )
   cstate = copy(stateatx)
