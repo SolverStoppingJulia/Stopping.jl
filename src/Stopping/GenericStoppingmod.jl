@@ -90,7 +90,7 @@ function GenericStopping(
   user_struct::AbstractDict = Dict(),
   kwargs...,
 ) where {Pb <: Any, M <: AbstractStoppingMeta, T <: AbstractState}
-  stop_remote = StopRemoteControl() #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
+  stop_remote = StopRemoteControl(;kwargs...) #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
 
   return GenericStopping(pb, meta, stop_remote, current_state, main_stp, list, user_struct)
 end
@@ -98,13 +98,13 @@ end
 function GenericStopping(
   pb::Pb,
   current_state::T;
+  stop_remote::AbstractStopRemoteControl = StopRemoteControl(), #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control(),
   main_stp::AbstractStopping = VoidStopping(),
   list::AbstractListofStates = VoidListofStates(),
   user_struct::AbstractDict = Dict(),
   kwargs...,
 ) where {Pb <: Any, T <: AbstractState}
   meta = StoppingMeta(; kwargs...)
-  stop_remote = StopRemoteControl() #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
 
   return GenericStopping(pb, meta, stop_remote, current_state, main_stp, list, user_struct)
 end

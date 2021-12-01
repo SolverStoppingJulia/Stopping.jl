@@ -78,7 +78,7 @@ function NLPStopping(
   user_struct::AbstractDict = Dict(),
   kwargs...,
 ) where {Pb <: AbstractNLPModel, M <: AbstractStoppingMeta, T <: AbstractState}
-  stop_remote = StopRemoteControl() #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
+  stop_remote = StopRemoteControl(; kwargs...) #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
 
   return NLPStopping(pb, meta, stop_remote, current_state, main_stp, list, user_struct)
 end
@@ -86,6 +86,7 @@ end
 function NLPStopping(
   pb::Pb,
   current_state::T;
+  stop_remote::AbstractStopRemoteControl = StopRemoteControl(),
   main_stp::AbstractStopping = VoidStopping(),
   list::AbstractListofStates = VoidListofStates(),
   user_struct::AbstractDict = Dict(),
@@ -104,7 +105,6 @@ function NLPStopping(
   end
 
   meta = StoppingMeta(; max_cntrs = mcntrs, optimality_check = oc, kwargs...)
-  stop_remote = StopRemoteControl()
 
   return NLPStopping(pb, meta, stop_remote, current_state, main_stp, list, user_struct)
 end
