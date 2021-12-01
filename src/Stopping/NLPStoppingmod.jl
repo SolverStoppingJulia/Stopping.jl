@@ -1,33 +1,34 @@
 """
 Type: NLPStopping
 
-Methods: start!, stop!, update\\_and\\_start!, update\\_and\\_stop!, fill\\_in!, reinit!, status
-KKT, unconstrained\\_check, unconstrained2nd\\_check, optim\\_check\\_bounded
+Methods: `start!`, `stop!`, `update_and_start!`, `update_and_stop!`, `fill_in!`, `reinit!`, `status`, 
+`KKT`, `unconstrained_check`, `unconstrained2nd_check`, `optim_check_bounded`
 
-Specialization of GenericStopping. Stopping structure for non-linear programming problems using NLPModels.
+Specialization of `GenericStopping`. Stopping structure for non-linear optimization models using `NLPModels` ( https://github.com/JuliaSmoothOptimizers/NLPModels.jl ).
 
 Attributes:
-- pb         : an AbstractNLPModel
-- state      : The information relative to the problem, see GenericState
-- (opt) meta : Metadata relative to stopping criterion, see `StoppingMeta`.
-- (opt) main_stp : Stopping of the main loop in case we consider a Stopping
+- `pb`         : An `AbstractNLPModel`.
+- `current_state`      : The information relative to the problem, see `GenericState` or `NLPAtX`.
+- (opt) `meta` : Metadata relative to stopping criteria, see `StoppingMeta`.
+- (opt) `main_stp` : Stopping of the main loop in case we consider a Stopping
                           of a subproblem.
-                          If not a subproblem, then nothing.
-- (opt) listofstates : ListofStates designed to store the history of States.
-- (opt) stopping_user_struct : Contains any structure designed by the user.
+                          If not a subproblem, then `VoidStopping`.
+- (opt) `listofstates` : ListofStates designed to store the history of States.
+- (opt) `stopping_user_struct` : Contains any structure designed by the user.
 
-`NLPStopping(:: AbstractNLPModel, :: AbstractState; meta :: AbstractStoppingMeta = StoppingMeta(), max_cntrs :: Dict = init_max_counters(), main_stp :: Union{AbstractStopping, Nothing} = nothing, list :: Union{ListofStates, Nothing} = nothing, stopping_user_struct :: Any = nothing, kwargs...)`
+Constructors: 
+- `NLPStopping(pb::AbstractNLPModel, meta::AbstractStoppingMeta, stop_remote::AbstractStopRemoteControl, state::AbstractState; main_stp::AbstractStopping=VoidStopping(), list::AbstractListofStates = VoidListofStates(), user_struct::AbstractDict = Dict(), kwargs...)`
+     The default constructor.
+- `NLPStopping(pb::AbstractNLPModel, meta::AbstractStoppingMeta, state::AbstractState; main_stp::AbstractStopping=VoidStopping(), list::AbstractListofStates = VoidListofStates(), user_struct::AbstractDict = Dict(), kwargs...)`
+     The one passing the `kwargs` to the `stop_remote`.
+- `GenericStopping(pb::AbstractNLPModel, state::AbstractState; stop_remote::AbstractStopRemoteControl = StopRemoteControl(), main_stp::AbstractStopping=VoidStopping(), list::AbstractListofStates = VoidListofStates(), user_struct::AbstractDict = Dict(), kwargs...)`
+     The one passing the `kwargs` to the `meta`.
+- `GenericStopping(pb::AbstractNLPModel; n_listofstates=, kwargs...)`
+     The one setting up a default state `NLPAtX` using `pb.meta.x0`, and initializing the list of states if `n_listofstates>0`. The optimality function is the function `KKT` unless `optimality_check` is in the `kwargs`.
 
- Note:
-- designed for `NLPAtX` State. Constructor checks that the State has the
- required entries.
+ Notes:
+- Designed for `NLPAtX` State. Constructor checks that the State has the required entries.
 
- There is an additional default constructor creating a Stopping where the State is by default and the
- optimality function is the function `KKT()``.
-
- `NLPStopping(pb :: AbstractNLPModel; kwargs...)`
-
- Note: Kwargs are forwarded to the classical constructor.
  """
 mutable struct NLPStopping{Pb, M, SRC, T, MStp, LoS} <: AbstractStopping{Pb, M, SRC, T, MStp, LoS}
 
@@ -78,7 +79,7 @@ function NLPStopping(
   user_struct::AbstractDict = Dict(),
   kwargs...,
 ) where {Pb <: AbstractNLPModel, M <: AbstractStoppingMeta, T <: AbstractState}
-  stop_remote = StopRemoteControl() #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
+  stop_remote = StopRemoteControl(; kwargs...) #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
 
   return NLPStopping(pb, meta, stop_remote, current_state, main_stp, list, user_struct)
 end
@@ -86,6 +87,7 @@ end
 function NLPStopping(
   pb::Pb,
   current_state::T;
+  stop_remote::AbstractStopRemoteControl = StopRemoteControl(),
   main_stp::AbstractStopping = VoidStopping(),
   list::AbstractListofStates = VoidListofStates(),
   user_struct::AbstractDict = Dict(),
@@ -104,7 +106,6 @@ function NLPStopping(
   end
 
   meta = StoppingMeta(; max_cntrs = mcntrs, optimality_check = oc, kwargs...)
-  stop_remote = StopRemoteControl()
 
   return NLPStopping(pb, meta, stop_remote, current_state, main_stp, list, user_struct)
 end
