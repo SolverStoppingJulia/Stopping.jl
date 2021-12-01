@@ -65,8 +65,14 @@
   x1 = zeros(6)
   state1 = GenericState(x1)
   # to avoid the stop by counting stop calls
-  substop =
-    GenericStopping(rosenbrock, state1, stop_remote = StopRemoteControl(), main_stp = stop, max_iter = typemax(Int), rtol = 0.0)
+  substop = GenericStopping(
+    rosenbrock,
+    state1,
+    stop_remote = StopRemoteControl(),
+    main_stp = stop,
+    max_iter = typemax(Int),
+    rtol = 0.0,
+  )
   # substop.stop_remote = StopRemoteControl()
   #If rtol != 0, any point is a solution as optimality0 = Inf.
 

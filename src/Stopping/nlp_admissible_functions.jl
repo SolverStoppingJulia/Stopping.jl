@@ -27,12 +27,7 @@ Require are `state.gx`, `state.Hx` (filled if not provided).
 
 See also `unconstrained_check`, `optim_check_bounded`, `KKT`
 """
-function unconstrained2nd_check(
-  pb::AbstractNLPModel,
-  state::NLPAtX;
-  pnorm::Real = Inf,
-  kwargs...,
-)
+function unconstrained2nd_check(pb::AbstractNLPModel, state::NLPAtX; pnorm::Real = Inf, kwargs...)
   if state.gx == _init_field(typeof(state.gx)) # should be filled if empty
     update!(state, gx = grad(pb, state.x))
   end
