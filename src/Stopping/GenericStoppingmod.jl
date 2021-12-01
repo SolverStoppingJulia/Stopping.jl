@@ -101,7 +101,7 @@ function GenericStopping(
   user_struct::AbstractDict = Dict(),
   kwargs...,
 ) where {Pb <: Any, M <: AbstractStoppingMeta, T <: AbstractState}
-  stop_remote = StopRemoteControl(;kwargs...) #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
+  stop_remote = StopRemoteControl(; kwargs...) #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
 
   return GenericStopping(pb, meta, stop_remote, current_state, main_stp, list, user_struct)
 end

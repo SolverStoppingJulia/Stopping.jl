@@ -299,12 +299,7 @@ Note:
 - Returns the p-norm of state.res
 - state.res is filled in if nothing.
 """
-function linear_system_check(
-  pb::LinearSystem,
-  state::AbstractState;
-  pnorm::Real = Inf,
-  kwargs...,
-)
+function linear_system_check(pb::LinearSystem, state::AbstractState; pnorm::Real = Inf, kwargs...)
   pb.counters.nprod += 1
   if state.res == _init_field(typeof(state.res))
     update!(state, res = pb.A * state.x - pb.b)
@@ -333,12 +328,7 @@ normal\\_equation\\_check: return ||A'Ax-A'b||_p
 
 Note: pb must have A and b entries
 """
-function normal_equation_check(
-  pb::LinearSystem,
-  state::AbstractState;
-  pnorm::Real = Inf,
-  kwargs...,
-)
+function normal_equation_check(pb::LinearSystem, state::AbstractState; pnorm::Real = Inf, kwargs...)
   pb.counters.nprod += 1
   pb.counters.ntprod += 1
   return norm(pb.A' * (pb.A * state.x) - pb.A' * pb.b, pnorm)
