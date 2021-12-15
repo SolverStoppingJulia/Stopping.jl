@@ -45,8 +45,7 @@ Note:
 
 See also: `GenericState`, `update!`, `update_and_start!`, `update_and_stop!`, `reinit!`
 """
-mutable struct NLPAtX{S, T <: AbstractVector, HT <: AbstractMatrix, JT <: AbstractMatrix} <:
-               AbstractState{S, T}
+mutable struct NLPAtX{S, T <: AbstractVector, HT, JT} <: AbstractState{S, T}
 
   #Unconstrained State
   x::T     # current point
@@ -75,10 +74,10 @@ mutable struct NLPAtX{S, T <: AbstractVector, HT <: AbstractMatrix, JT <: Abstra
     current_score::S;
     fx::eltype(T) = _init_field(eltype(T)),
     gx::T = _init_field(T),
-    Hx::AbstractMatrix = _init_field(Matrix{eltype(T)}),
+    Hx = _init_field(Matrix{eltype(T)}),
     mu::T = _init_field(T),
     cx::T = _init_field(T),
-    Jx::AbstractMatrix = _init_field(Matrix{eltype(T)}),
+    Jx = _init_field(Matrix{eltype(T)}),
     d::T = _init_field(T),
     res::T = _init_field(T),
     current_time::Float64 = NaN,
@@ -107,10 +106,10 @@ function NLPAtX(
   lambda::T;
   fx::eltype(T) = _init_field(eltype(T)),
   gx::T = _init_field(T),
-  Hx::AbstractMatrix = _init_field(Matrix{eltype(T)}),
+  Hx = _init_field(Matrix{eltype(T)}),
   mu::T = _init_field(T),
   cx::T = _init_field(T),
-  Jx::AbstractMatrix = _init_field(Matrix{eltype(T)}),
+  Jx = _init_field(Matrix{eltype(T)}),
   d::T = _init_field(T),
   res::T = _init_field(T),
   current_time::Float64 = NaN,
@@ -138,7 +137,7 @@ function NLPAtX(
   x::T;
   fx::eltype(T) = _init_field(eltype(T)),
   gx::T = _init_field(T),
-  Hx::AbstractMatrix = _init_field(Matrix{eltype(T)}),
+  Hx = _init_field(Matrix{eltype(T)}),
   mu::T = _init_field(T),
   d::T = _init_field(T),
   res::T = _init_field(T),
