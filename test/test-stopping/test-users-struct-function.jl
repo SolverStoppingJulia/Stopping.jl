@@ -17,9 +17,10 @@
   #using LinearAlgebra, NLPModels, Stopping, Test
 
   #Let us consider an NLPStopping:
+  f, x0 = x -> x[1], ones(6)
   meta = NLPModelMeta(
     6,
-    x0 = ones(6),
+    x0 = x0,
     lvar = -Inf * ones(6),
     uvar = Inf * ones(6),
     ncon = 1,
@@ -27,7 +28,7 @@
     lcon = [-Inf],
     ucon = [6.0],
   )
-  nlp = ADNLPModel(meta, Counters(), ADNLPModels.ForwardDiffAD(1, 1), x -> x[1], x -> [sum(x)])
+  nlp = ADNLPModel(meta, Counters(), ADNLPModels.ForwardDiffAD(1, 1, f, x0), f, x -> [sum(x)])
 
   structtest = Dict(:feasible => true, :rho => 1e-1)
   stop_bnd = NLPStopping(nlp, user_struct = structtest)

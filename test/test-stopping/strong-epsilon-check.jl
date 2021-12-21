@@ -30,7 +30,8 @@
     lcon = -Inf * ones(1),
     ucon = zeros(1),
   )
-  nlp = ADNLPModel(meta, Counters(), ADNLPModels.ForwardDiffAD(1, 1), x -> x[1] + x[2], c)
+  f = x -> x[1] + x[2]
+  nlp = ADNLPModel(meta, Counters(), ADNLPModels.ForwardDiffAD(1, 1, f, x0), f, c)
 
   #We consider a vectorized optimality_check KKT function:
   function KKTvect(pb::AbstractNLPModel, state::NLPAtX; kwargs...)

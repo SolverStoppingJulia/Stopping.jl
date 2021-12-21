@@ -14,7 +14,7 @@
     lcon = [-Inf],
     ucon = [6.0],
   )
-  nlp2 = ADNLPModel(meta, Counters(), ADNLPModels.ForwardDiffAD(6, 1), rosenbrock, c)
+  nlp2 = ADNLPModel(meta, Counters(), ADNLPModels.ForwardDiffAD(6, 1, rosenbrock, x0), rosenbrock, c)
 
   nlp_at_x_c = NLPAtX(x0, NaN * ones(nlp2.meta.ncon))
   stop_nlp_c = NLPStopping(nlp2, nlp_at_x_c)

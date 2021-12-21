@@ -32,10 +32,10 @@
     lcon = lcon,
     ucon = ucon,
   )
-  nlp = ADNLPModel(meta, Counters(), ADNLPModels.ForwardDiffAD(6, 1), rosenbrock, c)
+  nlp = ADNLPModel(meta, Counters(), ADNLPModels.ForwardDiffAD(6, 1, rosenbrock, x0), rosenbrock, c)
   #We can create a NLPAtX for bounds-constrained optimization:
   meta = NLPModelMeta(6, x0 = x0, lvar = zeros(6), uvar = Inf * ones(6))
-  nlp2 = ADNLPModel(meta, Counters(), ADNLPModels.ForwardDiffAD(6), rosenbrock, x -> [])
+  nlp2 = ADNLPModel(meta, Counters(), ADNLPModels.ForwardDiffAD(6, rosenbrock, x0), rosenbrock, x -> [])
   #We can create a NLPAtX for unconstrained optimization:
   nlp3 = ADNLPModel(x -> rosenbrock(x), x0)
 
