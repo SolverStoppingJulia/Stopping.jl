@@ -60,7 +60,7 @@
   nlp_max = ADNLPModel(
     NLPModelMeta(5, minimize = false),
     Counters(),
-    ADNLPModels.ForwardDiffAD(5),
+    ADNLPModels.ForwardDiffAD(5, f, zeros(5)),
     f,
     x -> [],
   )
@@ -74,7 +74,7 @@
   nlp_bnd = ADNLPModel(
     NLPModelMeta(5, x0 = zeros(5), lvar = zeros(5), uvar = zeros(5)),
     Counters(),
-    ADNLPModels.ForwardDiffAD(5),
+    ADNLPModels.ForwardDiffAD(5, f, zeros(5)),
     f,
     x -> [],
   )
