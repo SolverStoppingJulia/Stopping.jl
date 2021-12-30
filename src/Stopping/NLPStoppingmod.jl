@@ -325,19 +325,15 @@ function _resources_check!(stp::NLPStopping, x::T) where {T <: Union{AbstractVec
 end
 
 """
-`_unbounded_problem_check!`: This is the NLP specialized version that takes into account
+    `_unbounded_problem_check!`: This is the NLP specialized version that takes into account
                    that the problem might be unbounded if the objective or the
                    constraint function are unbounded.
 
-`_unbounded_problem_check!(:: NLPStopping, :: AbstractVector)`
+    `_unbounded_problem_check!(:: NLPStopping, :: AbstractVector)`
 
 Note:
 - evaluate the objective function if `state.fx` for NLPAtX or `state.fx` for OneDAtX is `_init_field` and store in `state`.
-- do NOT evaluate the constraint function if `state.cx` is `_init_field` and store in `state`.
-- if minimize problem (i.e. nlp.meta.minimize is true) check if
-`state.fx <= - meta.unbounded_threshold`,
-otherwise check `state.fx ≥ meta.unbounded_threshold`.
-- `state.cx` is unbounded if larger than `|meta.unbounded_threshold|`.
+- if minimize problem (i.e. nlp.meta.minimize is true) check if `state.fx <= - meta.unbounded_threshold`, otherwise check `state.fx ≥ meta.unbounded_threshold`.
 """
 function _unbounded_problem_check!(
   stp::NLPStopping{Pb, M, SRC, NLPAtX{S, T, HT, JT}, MStp, LoS},
@@ -353,13 +349,7 @@ function _unbounded_problem_check!(
     f_too_large = stp.current_state.fx >= stp.meta.unbounded_threshold
   end
 
-  c_too_large = false
-  #we do not evaluate the constraint if not in the state.
-  if stp.pb.meta.ncon != 0 && (stp.current_state.cx != _init_field(typeof(stp.current_state.cx)))
-    c_too_large = norm(stp.current_state.cx) >= abs(stp.meta.unbounded_threshold)
-  end
-
-  if (f_too_large || c_too_large)
+  if f_too_large
     stp.meta.unbounded_pb = true
   end
 
