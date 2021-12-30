@@ -49,17 +49,17 @@
   reinit!(stop_nlp_default, rstate = true)
   update!(stop_nlp_default, x = zeros(6), cx = [Inf])
   stop!(stop_nlp_default)
-  @test status(stop_nlp_default, list=true) == [:Unknown]
+  @test status(stop_nlp_default, list = true) == [:Unknown]
 
   reinit!(stop_nlp_default, rstate = true)
   update!(stop_nlp_default, fx = Inf)
   stop!(stop_nlp_default)
-  @test status(stop_nlp_default, list=true) == [:Unknown]
+  @test status(stop_nlp_default, list = true) == [:Unknown]
 
   reinit!(stop_nlp_default, rstate = true)
   update!(stop_nlp_default, fx = -Inf)
   stop!(stop_nlp_default)
-  @test status(stop_nlp_default, list=true) == [:UnboundedPb]
+  @test status(stop_nlp_default, list = true) == [:UnboundedPb]
 
   #Keywords in the stop! call
   nlp_at_x_kargs = NLPAtX(x0, NaN * ones(nlp2.meta.ncon))
