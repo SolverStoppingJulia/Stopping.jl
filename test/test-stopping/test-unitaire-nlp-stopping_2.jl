@@ -45,6 +45,22 @@
   update_and_stop!(stop_nlp_default, cx = nothing)
   @test stop_nlp_default.current_state.cx != nothing
 
+  @test stop_nlp_default.pb.meta.minimize
+  reinit!(stop_nlp_default, rstate = true)
+  update!(stop_nlp_default, x = zeros(6), cx = [Inf])
+  stop!(stop_nlp_default)
+  @test status(stop_nlp_default, list=true) == [:Unknown]
+
+  reinit!(stop_nlp_default, rstate = true)
+  update!(stop_nlp_default, fx = Inf)
+  stop!(stop_nlp_default)
+  @test status(stop_nlp_default, list=true) == [:Unknown]
+
+  reinit!(stop_nlp_default, rstate = true)
+  update!(stop_nlp_default, fx = -Inf)
+  stop!(stop_nlp_default)
+  @test status(stop_nlp_default, list=true) == [:UnboundedPb]
+
   #Keywords in the stop! call
   nlp_at_x_kargs = NLPAtX(x0, NaN * ones(nlp2.meta.ncon))
   stop_nlp_kargs = NLPStopping(
