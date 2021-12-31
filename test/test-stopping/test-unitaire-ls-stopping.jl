@@ -107,4 +107,19 @@
   #stop.meta.tol_check_neg = (a,b,c) -> 0.5
   #@test !(Stopping._null_test(stop, Stopping._optimality_check!(stop)))
 
+  # Test with a different type
+  T = Float16
+  pb16 = ADNLPModel(x -> zero(T), ones(T, 1))
+  lsatx = OneDAtX(zero(T))
+  stp16 = NLPStopping(pb16, lsatx)
+  update!(stp16.current_state, f₀ = T(1), fx = T(0), g₀ = T(1), gx = T(0)) # convert doesn't work here
+  @test stp16.current_state.f₀ == 1
+  @test stp16.current_state.fx == 0
+  @test stp16.current_state.g₀ == 1
+  @test stp16.current_state.gx == 0
+  @test typeof(armijo(stp16.pb, stp16.current_state)) == T
+  @test typeof(wolfe(stp16.pb, stp16.current_state)) == T
+  @test typeof(armijo_wolfe(stp16.pb, stp16.current_state)) == T
+  @test typeof(goldstein(stp16.pb, stp16.current_state)) == T
+
 end

@@ -103,4 +103,14 @@
   update!(stop_bnd.current_state, fx = NaN, current_score = 0.0)
   stop!(stop_bnd)
   @test !isnan(stop_bnd.current_state.fx)
+
+  # Test with a different type
+  T = Float16
+  pb16 = ADNLPModel(x -> zero(T), ones(T, 5), zeros(T, 5), zeros(T, 5))
+  stp16 = NLPStopping(pb16)
+  update!(stp16, mu = zeros(T, 5), gx = zeros(T, 5))
+  @test typeof(unconstrained_check(stp16.pb, stp16.current_state)) == T
+  @test typeof(unconstrained2nd_check(stp16.pb, stp16.current_state)) == T
+  @test typeof(optim_check_bounded(stp16.pb, stp16.current_state)) == T
+  @test typeof(KKT(stp16.pb, stp16.current_state)) == T
 end
