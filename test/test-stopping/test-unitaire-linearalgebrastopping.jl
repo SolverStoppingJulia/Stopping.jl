@@ -28,6 +28,15 @@
   mLOstp_meta = LAStopping(mLO, meta, GenericState(x0)) #this is different because of optimality_check
   mLOstp = LAStopping(mLO, GenericState(x0), max_cntrs = init_max_counters_linear_operators())
   sLOstp = LAStopping(sLO, GenericState(x0))
+
+  @test get_pb(sLOstp) == sLOstp.pb
+  @test get_meta(sLOstp) == sLOstp.meta
+  @test get_remote(sLOstp) == sLOstp.stop_remote
+  @test get_state(sLOstp) == sLOstp.current_state
+  @test get_main_stp(sLOstp) == sLOstp.main_stp
+  @test get_list_of_states(sLOstp) == sLOstp.listofstates
+  @test get_user_struct(sLOstp) == sLOstp.stopping_user_struct
+
   short_stop = LAStopping(A, b, sparse = true) #note that sparse is true by default
   maxcn = init_max_counters_linear_operators(nprod = 1)
   opLOstp = LAStopping(opLO, GenericState(x0), max_cntrs = maxcn)

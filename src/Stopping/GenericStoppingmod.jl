@@ -79,6 +79,14 @@ mutable struct GenericStopping{Pb, M, SRC, T, MStp, LoS} <:
   stopping_user_struct::AbstractDict
 end
 
+get_pb(stp::GenericStopping) = stp.pb
+get_meta(stp::GenericStopping) = stp.meta
+get_remote(stp::GenericStopping) = stp.stop_remote
+get_state(stp::GenericStopping) = stp.current_state
+get_main_stp(stp::GenericStopping) = stp.main_stp
+get_list_of_states(stp::GenericStopping) = stp.listofstates
+get_user_struct(stp::GenericStopping) = stp.stopping_user_struct
+
 function GenericStopping(
   pb::Pb,
   meta::M,
