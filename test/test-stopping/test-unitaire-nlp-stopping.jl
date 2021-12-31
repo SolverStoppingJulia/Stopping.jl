@@ -14,6 +14,14 @@
   )
   stop_nlp = NLPStopping(nlp, meta, nlp_at_x)
 
+  @test get_pb(stop_nlp) == stop_nlp.pb
+  @test get_meta(stop_nlp) == stop_nlp.meta
+  @test get_remote(stop_nlp) == stop_nlp.stop_remote
+  @test get_state(stop_nlp) == stop_nlp.current_state
+  @test get_main_stp(stop_nlp) == stop_nlp.main_stp
+  @test get_list_of_states(stop_nlp) == stop_nlp.listofstates
+  @test get_user_struct(stop_nlp) == stop_nlp.stopping_user_struct
+
   src = StopRemoteControl()
   stop_nlp_src = NLPStopping(nlp, meta, src, nlp_at_x)
 

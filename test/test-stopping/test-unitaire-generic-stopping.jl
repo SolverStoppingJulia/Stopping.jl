@@ -10,6 +10,14 @@
     list = ListofStates(state0),
   )
 
+  @test get_pb(stop0) == stop0.pb
+  @test get_meta(stop0) == stop0.meta
+  @test get_remote(stop0) == stop0.stop_remote
+  @test get_state(stop0) == stop0.current_state
+  @test get_main_stp(stop0) == stop0.main_stp
+  @test get_list_of_states(stop0) == stop0.listofstates
+  @test get_user_struct(stop0) == stop0.stopping_user_struct
+
   io = IOBuffer()
   show(io, stop0)
   stop0.listofstates[1]

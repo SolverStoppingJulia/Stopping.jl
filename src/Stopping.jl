@@ -132,6 +132,18 @@ abstract type AbstractStopping{
   LoS <: AbstractListofStates,
 } end
 
+for field in [:pb, :meta, :remote, :state, :main_stp, :list_of_states, :user_struct]
+  meth = Symbol("get_", field)
+  @eval begin
+    @doc """
+        $($meth)(stp::AbstractStopping)
+    Return the value $($(QuoteNode(field))) from `stp`.
+    """
+    function $meth end
+  end
+  @eval export $meth
+end
+
 include("Stopping/StoppingMetamod.jl")
 
 export AbstractStoppingMeta, StoppingMeta, tol_check, update_tol!, OK_check

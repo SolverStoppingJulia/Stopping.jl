@@ -42,7 +42,7 @@ Notes:
 - State don't necessarily keep track of evals
 - Evals are checked only for `pb.A` being a LinearOperator
 - `zero_start` is true if 0 is the initial guess (not check automatically)
-- `LLSModel` counter follow `NLSCounters` (see `init_max_counters_NLS` in `NLPStoppingmod.jl`)
+- `LLSModel` counter follow `NLSCounters` (see `init_max_counters_NLS`)
 - By default, `meta.max_cntrs` is initialized with an NLSCounters
 
 See also `GenericStopping`, `NLPStopping`, `linear_system_check`, `normal_equation_check`
@@ -66,6 +66,14 @@ mutable struct LAStopping{Pb, M, SRC, T, MStp, LoS} <: AbstractStopping{Pb, M, S
   #zero is initial point
   zero_start::Bool
 end
+
+get_pb(stp::LAStopping) = stp.pb
+get_meta(stp::LAStopping) = stp.meta
+get_remote(stp::LAStopping) = stp.stop_remote
+get_state(stp::LAStopping) = stp.current_state
+get_main_stp(stp::LAStopping) = stp.main_stp
+get_list_of_states(stp::LAStopping) = stp.listofstates
+get_user_struct(stp::LAStopping) = stp.stopping_user_struct
 
 function LAStopping(
   pb::Pb,

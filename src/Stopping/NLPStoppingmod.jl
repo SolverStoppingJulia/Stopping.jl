@@ -52,6 +52,14 @@ mutable struct NLPStopping{Pb, M, SRC, T, MStp, LoS} <: AbstractStopping{Pb, M, 
   stopping_user_struct::AbstractDict
 end
 
+get_pb(stp::NLPStopping) = stp.pb
+get_meta(stp::NLPStopping) = stp.meta
+get_remote(stp::NLPStopping) = stp.stop_remote
+get_state(stp::NLPStopping) = stp.current_state
+get_main_stp(stp::NLPStopping) = stp.main_stp
+get_list_of_states(stp::NLPStopping) = stp.listofstates
+get_user_struct(stp::NLPStopping) = stp.stopping_user_struct
+
 function NLPStopping(
   pb::Pb,
   meta::M,
