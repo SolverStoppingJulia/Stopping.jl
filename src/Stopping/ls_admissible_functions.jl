@@ -11,17 +11,17 @@ Note: fx, f₀ and g₀ are required in the OneDAtX
 
 See also `wolfe`, `armijo_wolfe`, `shamanskii_stop`, `goldstein`
 """
-function armijo(h::Any, h_at_t::OneDAtX; τ₀::Float64 = 0.01, kwargs...)
+function armijo(h::Any, h_at_t::OneDAtX{S, T}; τ₀::T = T(0.01), kwargs...) where {S, T}
   if isnan(h_at_t.fx) || isnan(h_at_t.f₀) || isnan(h_at_t.g₀)
     return throw(error("Nothing entries in the State. fx, f₀ and g₀ are mandatory."))
   else
-    fact = -0.8
-    Eps = 1e-10
+    fact = -T(0.8)
+    Eps = T(1e-10)
     hgoal = h_at_t.fx - h_at_t.f₀ - h_at_t.g₀ * h_at_t.x * τ₀
     # Armijo = (h_at_t.fx <= hgoal)# || ((h_at_t.fx <= h_at_t.f₀ + Eps * abs(h_at_t.f₀)) & (h_at_t.gx <= fact * h_at_t.g₀))
     # Armijo_HZ =
     # positive = h_at_t.x > 0.0   # positive step
-    return max(hgoal, 0.0)
+    return max(hgoal, zero(T))
   end
 end
 
@@ -36,15 +36,14 @@ Note: gx and g₀ are required in the OneDAtX
 
 See also `armijo`, `armijo_wolfe`, `shamanskii_stop`, `goldstein`
 """
-function wolfe(h::Any, h_at_t::OneDAtX; τ₁::Float64 = 0.99, kwargs...)
+function wolfe(h::Any, h_at_t::OneDAtX{S, T}; τ₁::T = T(0.99), kwargs...) where {S, T}
   if isnan(h_at_t.g₀) || isnan(h_at_t.gx)
     return throw(error("Nothing entries in the State."))
   else
-
     #wolfe = (τ₁ .* h_at_t.g₀) - (abs(h_at_t.gx))
     wolfe = abs(h_at_t.gx) - τ₁ * abs(h_at_t.g₀)
     #positive = h_at_t.x > 0.0   # positive step
-    return max(wolfe, 0.0)
+    return max(wolfe, zero(T))
   end
 end
 
@@ -57,13 +56,13 @@ Note: fx, f₀, gx and g₀ are required in the OneDAtX
 
 See also `armijo`, `wolfe`, `shamanskii_stop`, `goldstein`
 """
-function armijo_wolfe(h::Any, h_at_t::OneDAtX; τ₀::Float64 = 0.01, τ₁::Float64 = 0.99, kwargs...)
+function armijo_wolfe(h::Any, h_at_t::OneDAtX{S, T}; τ₀::T = T(0.01), τ₁::T = T(0.99), kwargs...) where {S, T}
   if isnan(h_at_t.fx) || isnan(h_at_t.gx) || isnan(h_at_t.f₀) || isnan(h_at_t.g₀)
     return throw(error("Nothing entries in the State. fx, f₀, gx and g₀ are mandatory."))
   else
     wolfe = abs(h_at_t.gx) - τ₁ * abs(h_at_t.g₀)
     armijo = h_at_t.fx - h_at_t.f₀ - h_at_t.g₀ * h_at_t.x * τ₀
-    return max(armijo, wolfe, 0.0)
+    return max(armijo, wolfe, zero(T))
   end
 end
 
@@ -82,9 +81,9 @@ Note:
 
 See also `armijo`, `wolfe`, `armijo_wolfe`, `goldstein`
 """
-function shamanskii_stop(h::Any, h_at_t::OneDAtX; γ::Float64 = 1.0e-09, kwargs...)
+function shamanskii_stop(h::Any, h_at_t::OneDAtX{S, T}; γ::T = T(1.0e-09), kwargs...) where {S, T}
   admissible = h_at_t.fx - h_at_t.f₀ - γ * (h_at_t.x)^3 * norm(h.d)^3
-  return max(admissible, 0.0)
+  return max(admissible, zero(T))
 end
 
 """
@@ -96,7 +95,7 @@ Note: fx, f₀ and g₀ are required in the OneDAtX
 
 See also `armijo`, `wolfe`, `armijo_wolfe`, `shamanskii_stop`
 """
-function goldstein(h::Any, h_at_t::OneDAtX; τ₀::Float64 = 0.0001, τ₁::Float64 = 0.9999, kwargs...)
+function goldstein(h::Any, h_at_t::OneDAtX{S, T}; τ₀::T = T(0.0001), τ₁::T = T(0.9999), kwargs...) where {S, T}
   if isnan(h_at_t.fx) || isnan(h_at_t.gx) || isnan(h_at_t.f₀) || isnan(h_at_t.g₀)
     return throw(error("Nothing entries in the State. fx, f₀, gx and g₀ are mandatory."))
   else
@@ -105,6 +104,6 @@ function goldstein(h::Any, h_at_t::OneDAtX; τ₀::Float64 = 0.0001, τ₁::Floa
       h_at_t.fx - (h_at_t.f₀ + h_at_t.x * τ₀ * h_at_t.g₀),
     )
     # positive = h_at_t.x > 0.0   # positive step
-    return max(goldstein, 0.0) #&& positive
+    return max(goldstein, zero(T)) #&& positive
   end
 end
