@@ -51,9 +51,9 @@
   @test length(stop0.listofstates) == 4
 
   #Initialize a GenericStopping by default
-  stop_def = GenericStopping(rosenbrock, x0, atol = 1.0)
+  stop_def = GenericStopping(rosenbrock, x0, atol = 0.1)
   @test stop_def.current_state.x == x0
-  @test stop_def.meta.atol == 1.0
+  @test stop_def.meta.atol == 0.1
   @test start!(stop_def) == false
 
   #We build a first stopping:

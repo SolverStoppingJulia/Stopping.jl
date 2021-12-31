@@ -11,7 +11,7 @@
   @test Stopping.inttype(test_meta) == Int64
 
   @test test_meta.optimality0 == 1.0
-  @test test_meta.optimality_check(1, 1) == Inf
+  @test test_meta.optimality_check(1, 1) == 1
   @test test_meta.unbounded_threshold == 1.0e50
   @test test_meta.unbounded_x == 1.0e50
   @test test_meta.max_f == 9223372036854775807
@@ -75,7 +75,7 @@ end
   @test Stopping.inttype(test_meta) == Int64
 
   @test test_meta.optimality0 == 1.0
-  @test test_meta.optimality_check(1, 1) == Inf
+  @test test_meta.optimality_check(1, 1) == 1
   @test test_meta.unbounded_threshold == 1.0e50
   @test test_meta.unbounded_x == 1.0e50
   @test test_meta.max_f == 9223372036854775807
