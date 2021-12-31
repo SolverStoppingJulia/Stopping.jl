@@ -1,11 +1,11 @@
 import NLPModels: grad, cons, jac
 
 """
-unconstrained_check: return the infinite norm of the gradient of the objective function
+    `unconstrained_check( :: AbstractNLPModel, :: NLPAtX; pnorm :: Real = Inf, kwargs...)`
 
-`unconstrained_check( :: AbstractNLPModel, :: NLPAtX; pnorm :: Real = Inf, kwargs...)`
+Return the `pnorm`-norm of the gradient of the objective function.
 
-Require `state.gx` (filled if not provided)
+Require `state.gx` (filled if not provided).
 
 See also `unconstrained2nd_check`, `optim_check_bounded`, `KKT`
 """
@@ -18,12 +18,11 @@ function unconstrained_check(pb::AbstractNLPModel, state::NLPAtX{S, T, HT, JT}; 
 end
 
 """
-unconstrained2nd_check: check the norm of the gradient and the smallest
-                   eigenvalue of the hessian.
+    `unconstrained2nd_check( :: AbstractNLPModel, :: NLPAtX; pnorm :: Real = Inf, kwargs...)`
 
-`unconstrained2nd_check( :: AbstractNLPModel, :: NLPAtX; pnorm :: Real = Inf, kwargs...)`
+Check the `pnorm`-norm of the gradient and the smallest eigenvalue of the hessian.
 
-Require are `state.gx`, `state.Hx` (filled if not provided).
+Require `state.gx` and `state.Hx` (filled if not provided).
 
 See also `unconstrained_check`, `optim_check_bounded`, `KKT`
 """
@@ -42,9 +41,9 @@ function unconstrained2nd_check(pb::AbstractNLPModel, state::NLPAtX{S, T, HT, JT
 end
 
 """
-optim\\_check\\_bounded: gradient of the objective function projected
+    `optim_check_bounded( :: AbstractNLPModel, :: NLPAtX; pnorm :: Real = Inf, kwargs...)`
 
-`optim_check_bounded( :: AbstractNLPModel, :: NLPAtX; pnorm :: Real = Inf, kwargs...)`
+Check the `pnorm`-norm of the gradient of the objective function projected over the bounds.
 
 Require `state.gx` (filled if not provided).
 
@@ -111,9 +110,9 @@ function _feasibility(pb::AbstractNLPModel, state::NLPAtX{S, T, HT, JT}) where {
 end
 
 """
-KKT: verifies the KKT conditions
+    `KKT( :: AbstractNLPModel, :: NLPAtX; pnorm :: Real = Inf, kwargs...)`
 
-`KKT( :: AbstractNLPModel, :: NLPAtX; pnorm :: Real = Inf, kwargs...)`
+Check the KKT conditions.
 
 Note: `state.gx` is mandatory + if bounds `state.mu` + if constraints `state.cx`, `state.Jx`, `state.lambda`.
 
