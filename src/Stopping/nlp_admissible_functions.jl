@@ -9,7 +9,12 @@ Require `state.gx` (filled if not provided).
 
 See also `unconstrained2nd_check`, `optim_check_bounded`, `KKT`
 """
-function unconstrained_check(pb::AbstractNLPModel, state::NLPAtX{S, T, HT, JT}; pnorm::eltype(T) = eltype(T)(Inf), kwargs...) where {S, T, HT, JT}
+function unconstrained_check(
+  pb::AbstractNLPModel,
+  state::NLPAtX{S, T, HT, JT};
+  pnorm::eltype(T) = eltype(T)(Inf),
+  kwargs...,
+) where {S, T, HT, JT}
   if state.gx == _init_field(typeof(state.gx)) # should be filled if empty
     update!(state, gx = grad(pb, state.x))
   end
@@ -26,7 +31,12 @@ Require `state.gx` and `state.Hx` (filled if not provided).
 
 See also `unconstrained_check`, `optim_check_bounded`, `KKT`
 """
-function unconstrained2nd_check(pb::AbstractNLPModel, state::NLPAtX{S, T, HT, JT}; pnorm::eltype(T) = eltype(T)(Inf), kwargs...) where {S, T, HT, JT}
+function unconstrained2nd_check(
+  pb::AbstractNLPModel,
+  state::NLPAtX{S, T, HT, JT};
+  pnorm::eltype(T) = eltype(T)(Inf),
+  kwargs...,
+) where {S, T, HT, JT}
   if state.gx == _init_field(typeof(state.gx)) # should be filled if empty
     update!(state, gx = grad(pb, state.x))
   end
@@ -49,7 +59,12 @@ Require `state.gx` (filled if not provided).
 
 See also `unconstrained_check`, `unconstrained2nd_check`, `KKT`
 """
-function optim_check_bounded(pb::AbstractNLPModel, state::NLPAtX{S, T, HT, JT}; pnorm::eltype(T) = eltype(T)(Inf), kwargs...) where {S, T, HT, JT}
+function optim_check_bounded(
+  pb::AbstractNLPModel,
+  state::NLPAtX{S, T, HT, JT};
+  pnorm::eltype(T) = eltype(T)(Inf),
+  kwargs...,
+) where {S, T, HT, JT}
   if state.gx == _init_field(typeof(state.gx)) # should be filled if void
     update!(state, gx = grad(pb, state.x))
   end
@@ -74,7 +89,10 @@ function _grad_lagrangian(pb::AbstractNLPModel, state::NLPAtX{S, T, HT, JT}) whe
   end
 end
 
-function _sign_multipliers_bounds(pb::AbstractNLPModel, state::NLPAtX{S, T, HT, JT}) where {S, T, HT, JT}
+function _sign_multipliers_bounds(
+  pb::AbstractNLPModel,
+  state::NLPAtX{S, T, HT, JT},
+) where {S, T, HT, JT}
   if has_bounds(pb)
     return vcat(
       min.(max.(state.mu, zero(eltype(T))), -state.x + pb.meta.uvar),
@@ -85,7 +103,10 @@ function _sign_multipliers_bounds(pb::AbstractNLPModel, state::NLPAtX{S, T, HT, 
   end
 end
 
-function _sign_multipliers_nonlin(pb::AbstractNLPModel, state::NLPAtX{S, T, HT, JT}) where {S, T, HT, JT}
+function _sign_multipliers_nonlin(
+  pb::AbstractNLPModel,
+  state::NLPAtX{S, T, HT, JT},
+) where {S, T, HT, JT}
   if pb.meta.ncon == 0
     return zeros(eltype(T), 0)
   else
@@ -98,7 +119,10 @@ end
 
 function _feasibility(pb::AbstractNLPModel, state::NLPAtX{S, T, HT, JT}) where {S, T, HT, JT}
   if pb.meta.ncon == 0
-    return vcat(max.(state.x - pb.meta.uvar, zero(eltype(T))), max.(-state.x + pb.meta.lvar, zero(eltype(T))))
+    return vcat(
+      max.(state.x - pb.meta.uvar, zero(eltype(T))),
+      max.(-state.x + pb.meta.lvar, zero(eltype(T))),
+    )
   else
     return vcat(
       max.(state.cx - pb.meta.ucon, zero(eltype(T))),
@@ -118,7 +142,12 @@ Note: `state.gx` is mandatory + if bounds `state.mu` + if constraints `state.cx`
 
 See also `unconstrained_check`, `unconstrained2nd_check`, `optim_check_bounded`
 """
-function KKT(pb::AbstractNLPModel, state::NLPAtX{S, T, HT, JT}; pnorm::eltype(T) = eltype(T)(Inf), kwargs...) where {S, T, HT, JT}
+function KKT(
+  pb::AbstractNLPModel,
+  state::NLPAtX{S, T, HT, JT};
+  pnorm::eltype(T) = eltype(T)(Inf),
+  kwargs...,
+) where {S, T, HT, JT}
 
   #Check the gradient of the Lagrangian
   gLagx = _grad_lagrangian(pb, state)
