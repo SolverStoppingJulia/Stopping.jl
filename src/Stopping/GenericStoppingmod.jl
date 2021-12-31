@@ -230,7 +230,7 @@ function start!(stp::AbstractStopping; no_opt_check::Bool = false, kwargs...)
     else
       stp.meta.domainerror
     end
-    if !stp.meta.domainerror && src.optimality_check
+    if src.optimality_check
       optimality0 = _optimality_check!(stp; kwargs...)
       norm_optimality0 = norm(optimality0, Inf)
       if src.domain_check && isnan(norm_optimality0)
@@ -341,11 +341,11 @@ function stop!(stp::AbstractStopping; no_opt_check::Bool = false, kwargs...)
   else
     stp.meta.domainerror
   end
-  if !no_opt_check && !stp.meta.domainerror
+  if !no_opt_check
     # Optimality check
     if src.optimality_check
       score = _optimality_check!(stp; kwargs...)
-      if any(isnan, score)
+      if src.domain_check && any(isnan, score)
         stp.meta.domainerror = true
       end
       if _null_test(stp, score)
