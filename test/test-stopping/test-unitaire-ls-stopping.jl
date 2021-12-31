@@ -121,5 +121,4 @@
   @test typeof(wolfe(stp16.pb, stp16.current_state)) == T
   @test typeof(armijo_wolfe(stp16.pb, stp16.current_state)) == T
   @test typeof(goldstein(stp16.pb, stp16.current_state)) == T
-
 end

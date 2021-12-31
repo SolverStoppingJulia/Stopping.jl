@@ -58,7 +58,13 @@ Note: `fx`, `f₀`, `gx` and `g₀` are required in the `OneDAtX`.
 
 See also `armijo`, `wolfe`, `shamanskii_stop`, `goldstein`
 """
-function armijo_wolfe(h::Any, h_at_t::OneDAtX{S, T}; τ₀::T = T(0.01), τ₁::T = T(0.99), kwargs...) where {S, T}
+function armijo_wolfe(
+  h::Any,
+  h_at_t::OneDAtX{S, T};
+  τ₀::T = T(0.01),
+  τ₁::T = T(0.99),
+  kwargs...,
+) where {S, T}
   if isnan(h_at_t.fx) || isnan(h_at_t.gx) || isnan(h_at_t.f₀) || isnan(h_at_t.g₀)
     return throw(error("fx, f₀, gx and g₀ are mandatory."))
   else
@@ -98,7 +104,13 @@ Note: `fx`, `f₀` and `g₀` are required in the `OneDAtX`.
 
 See also `armijo`, `wolfe`, `armijo_wolfe`, `shamanskii_stop`
 """
-function goldstein(h::Any, h_at_t::OneDAtX{S, T}; τ₀::T = T(0.0001), τ₁::T = T(0.9999), kwargs...) where {S, T}
+function goldstein(
+  h::Any,
+  h_at_t::OneDAtX{S, T};
+  τ₀::T = T(0.0001),
+  τ₁::T = T(0.9999),
+  kwargs...,
+) where {S, T}
   if isnan(h_at_t.fx) || isnan(h_at_t.gx) || isnan(h_at_t.f₀) || isnan(h_at_t.g₀)
     return throw(error("fx, f₀, gx and g₀ are mandatory."))
   else
