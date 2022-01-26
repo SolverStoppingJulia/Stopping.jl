@@ -100,3 +100,9 @@ end
   @test isnothing(test_meta.meta_user_struct)
   @test !test_meta.recomp_tol
 end
+
+@testset "StoppingMeta - with different types" begin
+  meta = StoppingMeta(atol = Float16(1e-5), rtol = Float32(1e-5))
+  # the tolerance type of `atol` is used
+  @test typeof(meta.atol) == Float16
+end

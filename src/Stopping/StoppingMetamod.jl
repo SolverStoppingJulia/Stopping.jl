@@ -139,6 +139,8 @@ function StoppingMeta(
   user_check_func!::Function = (stp::AbstractStopping, start::Bool) -> nothing,
   kwargs...,
 ) where {CheckType}
+  T = typeof(atol)
+
   check_pos = tol_check
   check_neg = tol_check_neg
 
@@ -167,16 +169,16 @@ function StoppingMeta(
   #new{TolType, typeof(check_pos), typeof(meta_user_struct)}
   return StoppingMeta(
     atol,
-    rtol,
-    optimality0,
+    T(rtol),
+    T(optimality0),
     tol_check,
     tol_check_neg,
     check_pos,
     check_neg,
     optimality_check,
     recomp_tol,
-    unbounded_threshold,
-    unbounded_x,
+    T(unbounded_threshold),
+    T(unbounded_x),
     max_f,
     max_cntrs,
     max_eval,
@@ -224,6 +226,8 @@ function StoppingMeta(;
   user_check_func!::Function = (stp::AbstractStopping, start::Bool) -> nothing,
   kwargs...,
 )
+  T = typeof(atol)
+
   check_pos = tol_check(atol, rtol, optimality0)
   check_neg = tol_check_neg(atol, rtol, optimality0)
 
@@ -252,16 +256,16 @@ function StoppingMeta(;
   #new{TolType, typeof(check_pos), typeof(meta_user_struct)}
   return StoppingMeta(
     atol,
-    rtol,
-    optimality0,
+    T(rtol),
+    T(optimality0),
     tol_check,
     tol_check_neg,
     check_pos,
     check_neg,
     optimality_check,
     recomp_tol,
-    unbounded_threshold,
-    unbounded_x,
+    T(unbounded_threshold),
+    T(unbounded_x),
     max_f,
     max_cntrs,
     max_eval,
