@@ -106,7 +106,7 @@
     return stp
   end
 
-  m, n = 200, 100 #size of A: m x n
+  m, n = 200, 10 #size of A: m x n
   A = 100 * rand(m, n) #It's a dense matrix :)
   xref = 100 * rand(n)
   b = A * xref
