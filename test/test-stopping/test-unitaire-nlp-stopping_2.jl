@@ -17,6 +17,10 @@
   nlp2 =
     ADNLPModel(meta, Counters(), ADNLPModels.ForwardDiffAD(6, 1, rosenbrock, x0), rosenbrock, c)
 
+  stp_error = NLPStopping(nlp2)
+  @test stop!(stp_error) # returns a warning "KKT needs stp.current_state.cx, stp.current_state.Jx and stp.current_state.lambda to be filled-in."
+  @test status(stp_error) == :Infeasible
+
   nlp_at_x_c = NLPAtX(x0, NaN * ones(nlp2.meta.ncon))
   stop_nlp_c = NLPStopping(nlp2, nlp_at_x_c)
 
