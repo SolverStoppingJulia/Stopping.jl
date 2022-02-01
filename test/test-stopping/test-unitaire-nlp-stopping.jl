@@ -6,6 +6,11 @@
 
   f(x) = x' * Q * x
   nlp = ADNLPModel(f, zeros(5))
+
+  stp_error = NLPStopping(nlp)
+  @test stop!(stp_error) # returns a warning "KKT needs stp.current_state.gx to be filled-in"
+  @test status(stp_error) == :Infeasible
+
   nlp_at_x = NLPAtX(zeros(5))
   meta = StoppingMeta(
     optimality0 = 0.0,
@@ -86,6 +91,11 @@
     f,
     x -> [],
   )
+
+  stp_error = NLPStopping(nlp_bnd)
+  @test stop!(stp_error) # returns a warning "KKT needs stp.current_state.mu to be filled-in"
+  @test status(stp_error) == :Infeasible
+
   stop_bnd = NLPStopping(nlp_bnd)
   fill_in!(stop_bnd, zeros(5))
   @test KKT(stop_bnd.pb, stop_bnd.current_state) == 0.0
