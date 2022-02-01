@@ -148,14 +148,17 @@ function KKT(
   pnorm::eltype(T) = eltype(T)(Inf),
   kwargs...,
 ) where {S, T, HT, JT}
-
   if unconstrained(pb) && state.gx == _init_field(typeof(state.gx))
     @warn "KKT needs stp.current_state.gx to be filled-in."
     return eltype(T)(Inf)
   elseif has_bounds(pb) && state.mu == _init_field(typeof(state.mu))
     @warn "KKT needs stp.current_state.mu to be filled-in."
     return eltype(T)(Inf)
-  elseif get_ncon(pb) > 0 && (state.cx == _init_field(typeof(state.cx)) || state.Jx == _init_field(typeof(state.Jx)) || state.lambda == _init_field(typeof(state.lambda)))
+  elseif get_ncon(pb) > 0 && (
+    state.cx == _init_field(typeof(state.cx)) ||
+    state.Jx == _init_field(typeof(state.Jx)) ||
+    state.lambda == _init_field(typeof(state.lambda))
+  )
     @warn "KKT needs stp.current_state.cx, stp.current_state.Jx and stp.current_state.lambda to be filled-in."
     return eltype(T)(Inf)
   end
