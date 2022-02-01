@@ -313,9 +313,7 @@ const meta_statuses = [
 
 Return true if one of the decision boolean is true.
 """
-function OK_check(
-  meta::StoppingMeta{TolType, CheckType, MUS},
-) where {TolType, CheckType, MUS}
+function OK_check(meta::StoppingMeta{TolType, CheckType, MUS}) where {TolType, CheckType, MUS}
   #13 checks
   OK =
     meta.optimal ||
@@ -339,9 +337,7 @@ end
 
 Return the pair of tolerances, recomputed if `meta.recomp_tol` is `true`.
 """
-function tol_check(
-  meta::StoppingMeta{TolType, CheckType, MUS},
-) where {TolType, CheckType, MUS}
+function tol_check(meta::StoppingMeta{TolType, CheckType, MUS}) where {TolType, CheckType, MUS}
   if meta.recomp_tol
     atol, rtol, opt0 = meta.atol, meta.rtol, meta.optimality0
     setfield!(meta, :check_pos, meta.tol_check(atol, rtol, opt0))
@@ -370,9 +366,7 @@ function update_tol!(
   return meta
 end
 
-function reinit!(
-  meta::StoppingMeta{TolType, CheckType, MUS},
-) where {TolType, CheckType, MUS}
+function reinit!(meta::StoppingMeta{TolType, CheckType, MUS}) where {TolType, CheckType, MUS}
   for k in meta_statuses
     setfield!(meta, k, false)
   end
@@ -380,21 +374,15 @@ function reinit!(
   return meta
 end
 
-function checktype(
-  meta::StoppingMeta{TolType, CheckType, MUS},
-) where {TolType, CheckType, MUS}
+function checktype(meta::StoppingMeta{TolType, CheckType, MUS}) where {TolType, CheckType, MUS}
   return CheckType
 end
 
-function toltype(
-  meta::StoppingMeta{TolType, CheckType, MUS},
-) where {TolType, CheckType, MUS}
+function toltype(meta::StoppingMeta{TolType, CheckType, MUS}) where {TolType, CheckType, MUS}
   return TolType
 end
 
-function metausertype(
-  meta::StoppingMeta{TolType, CheckType, MUS},
-) where {TolType, CheckType, MUS}
+function metausertype(meta::StoppingMeta{TolType, CheckType, MUS}) where {TolType, CheckType, MUS}
   return MUS
 end
 
