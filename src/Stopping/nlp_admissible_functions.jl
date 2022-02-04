@@ -84,6 +84,8 @@ function _grad_lagrangian(pb::AbstractNLPModel, state::NLPAtX{S, T, HT, JT}) whe
     return state.gx
   elseif pb.meta.ncon == 0
     return state.gx + state.mu
+  elseif !has_bounds(pb)
+    return state.gx + state.Jx' * state.lambda
   else
     return state.gx + state.mu + state.Jx' * state.lambda
   end
