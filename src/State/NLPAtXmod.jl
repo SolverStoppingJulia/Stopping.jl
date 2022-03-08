@@ -45,20 +45,20 @@ Note:
 
 See also: `GenericState`, `update!`, `update_and_start!`, `update_and_stop!`, `reinit!`
 """
-mutable struct NLPAtX{S, T <: AbstractVector, HT, JT} <: AbstractState{S, T}
+mutable struct NLPAtX{S, T <: AbstractVector} <: AbstractState{S, T}
 
   #Unconstrained State
   x::T     # current point
   fx::eltype(T) # objective function
   gx::T  # gradient size: x
-  Hx::HT  # hessian size: |x| x |x|
+  Hx  # hessian size: |x| x |x|
 
   #Bounds State
   mu::T # Lagrange multipliers with bounds size of |x|
 
   #Constrained State
   cx::T # vector of constraints lc <= c(x) <= uc
-  Jx::JT  # jacobian matrix, size: |lambda| x |x|
+  Jx  # jacobian matrix, size: |lambda| x |x|
   lambda::T    # Lagrange multipliers
 
   d::T #search direction
@@ -84,7 +84,7 @@ mutable struct NLPAtX{S, T <: AbstractVector, HT, JT} <: AbstractState{S, T}
   ) where {S, T <: AbstractVector}
     _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
 
-    return new{S, T, typeof(Hx), typeof(Jx)}(
+    return new{S, T}(
       x,
       fx,
       gx,
@@ -179,7 +179,7 @@ reinit!: function that set all the entries at void except the mandatory x
 Note: if `x` or `lambda` are given as keyword arguments they will be
 prioritized over the existing `x`, `lambda` and the default `Counters`.
 """
-function reinit!(stateatx::NLPAtX{S, T, MT}, x::T, l::T; kwargs...) where {S, T, MT}
+function reinit!(stateatx::NLPAtX{S, T}, x::T, l::T; kwargs...) where {S, T}
   for k ∈ fieldnames(NLPAtX)
     if k ∉ [:x, :lambda]
       setfield!(stateatx, k, _init_field(typeof(getfield(stateatx, k))))
@@ -196,7 +196,7 @@ function reinit!(stateatx::NLPAtX{S, T, MT}, x::T, l::T; kwargs...) where {S, T,
   return update!(stateatx; kwargs...)
 end
 
-function reinit!(stateatx::NLPAtX{S, T, MT}, x::T; kwargs...) where {S, T, MT}
+function reinit!(stateatx::NLPAtX{S, T}, x::T; kwargs...) where {S, T}
   for k ∈ fieldnames(NLPAtX)
     if k ∉ [:x, :lambda]
       setfield!(stateatx, k, _init_field(typeof(getfield(stateatx, k))))

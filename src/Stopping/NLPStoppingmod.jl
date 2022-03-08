@@ -186,18 +186,18 @@ fill_in!: (NLPStopping version) a function that fill in the required values in t
 `fill_in!( :: NLPStopping, :: Union{AbstractVector, Nothing}; fx :: Union{AbstractVector, Nothing} = nothing, gx :: Union{AbstractVector, Nothing} = nothing, Hx :: Union{MatrixType, Nothing} = nothing, cx :: Union{AbstractVector, Nothing} = nothing, Jx :: Union{MatrixType, Nothing} = nothing, lambda :: Union{AbstractVector, Nothing} = nothing, mu :: Union{AbstractVector, Nothing} = nothing, matrix_info :: Bool = true, kwargs...)`
 """
 function fill_in!(
-  stp::NLPStopping{Pb, M, SRC, NLPAtX{S, T, HT, JT}, MStp, LoS},
+  stp::NLPStopping{Pb, M, SRC, NLPAtX{S, T}, MStp, LoS},
   x::T;
   fx::Union{eltype(T), Nothing} = nothing,
   gx::Union{T, Nothing} = nothing,
-  Hx::Union{HT, Nothing} = nothing,
+  Hx = nothing,
   cx::Union{T, Nothing} = nothing,
-  Jx::Union{JT, Nothing} = nothing,
+  Jx = nothing,
   lambda::Union{T, Nothing} = nothing,
   mu::Union{T, Nothing} = nothing,
   matrix_info::Bool = true,
   kwargs...,
-) where {Pb, M, SRC, MStp, LoS, S, T, HT, JT}
+) where {Pb, M, SRC, MStp, LoS, S, T}
   gfx = isnothing(fx) ? obj(stp.pb, x) : fx
   ggx = isnothing(gx) ? grad(stp.pb, x) : gx
 
@@ -344,9 +344,9 @@ Note:
 - if minimize problem (i.e. nlp.meta.minimize is true) check if `state.fx <= - meta.unbounded_threshold`, otherwise check `state.fx ≥ meta.unbounded_threshold`.
 """
 function _unbounded_problem_check!(
-  stp::NLPStopping{Pb, M, SRC, NLPAtX{S, T, HT, JT}, MStp, LoS},
+  stp::NLPStopping{Pb, M, SRC, NLPAtX{S, T}, MStp, LoS},
   x::AbstractVector,
-) where {Pb, M, SRC, MStp, LoS, S, T, HT, JT}
+) where {Pb, M, SRC, MStp, LoS, S, T}
   if isnan(stp.current_state.fx)
     stp.current_state.fx = obj(stp.pb, x)
   end
