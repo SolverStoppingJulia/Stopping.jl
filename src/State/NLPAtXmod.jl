@@ -84,20 +84,7 @@ mutable struct NLPAtX{S, T <: AbstractVector} <: AbstractState{S, T}
   ) where {S, T <: AbstractVector}
     _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
 
-    return new{S, T}(
-      x,
-      fx,
-      gx,
-      Hx,
-      mu,
-      cx,
-      Jx,
-      lambda,
-      d,
-      res,
-      current_time,
-      current_score,
-    )
+    return new{S, T}(x, fx, gx, Hx, mu, cx, Jx, lambda, d, res, current_time, current_score)
   end
 end
 

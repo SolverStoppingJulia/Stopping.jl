@@ -91,10 +91,7 @@ function _grad_lagrangian(pb::AbstractNLPModel, state::NLPAtX{S, T}) where {S, T
   end
 end
 
-function _sign_multipliers_bounds(
-  pb::AbstractNLPModel,
-  state::NLPAtX{S, T},
-) where {S, T}
+function _sign_multipliers_bounds(pb::AbstractNLPModel, state::NLPAtX{S, T}) where {S, T}
   if has_bounds(pb)
     return vcat(
       min.(max.(state.mu, zero(eltype(T))), -state.x + pb.meta.uvar),
@@ -105,10 +102,7 @@ function _sign_multipliers_bounds(
   end
 end
 
-function _sign_multipliers_nonlin(
-  pb::AbstractNLPModel,
-  state::NLPAtX{S, T},
-) where {S, T}
+function _sign_multipliers_nonlin(pb::AbstractNLPModel, state::NLPAtX{S, T}) where {S, T}
   if pb.meta.ncon == 0
     return zeros(eltype(T), 0)
   else
