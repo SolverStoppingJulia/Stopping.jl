@@ -84,7 +84,6 @@ xtype(typestate::AbstractState{S, T}) where {S, T} = T
     `update!(:: AbstractState; convert = false, kwargs...)`
 
 Generic update function for the State
-
 The function compares the kwargs and the entries of the State.
 If the type of the kwargs is the same as the entry, then
 it is updated.
@@ -102,7 +101,7 @@ function update!(stateatx::T; convert::Bool = false, kwargs...) where {T <: Abst
   fnames = fieldnames(T)
   for k ∈ keys(kwargs)
     #check if k is in fieldnames and type compatibility
-    if (k ∈ fnames) && typeof(kwargs[k]) <: typeof(getfield(stateatx, k))
+    if (k ∈ fnames) && (convert || typeof(kwargs[k]) <: typeof(getfield(stateatx, k)))
       setfield!(stateatx, k, kwargs[k])
     end
   end
@@ -121,7 +120,6 @@ end
     `_smart_update!(:: AbstractState; kwargs...)`
 
 Generic update function for the State without Type verification.
-
 The function works exactly as update! without type and field verifications.
 So, affecting a value to nothing or a different type will return an error.
 
