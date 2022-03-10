@@ -81,10 +81,9 @@ scoretype(typestate::AbstractState{S, T}) where {S, T} = S
 xtype(typestate::AbstractState{S, T}) where {S, T} = T
 
 """
-update!: generic update function for the State
+    `update!(:: AbstractState; convert = false, kwargs...)`
 
-`update!(:: AbstractState; convert = false, kwargs...)`
-
+Generic update function for the State
 The function compares the kwargs and the entries of the State.
 If the type of the kwargs is the same as the entry, then
 it is updated.
@@ -102,7 +101,7 @@ function update!(stateatx::T; convert::Bool = false, kwargs...) where {T <: Abst
   fnames = fieldnames(T)
   for k ∈ keys(kwargs)
     #check if k is in fieldnames and type compatibility
-    if (k ∈ fnames) && typeof(kwargs[k]) <: typeof(getfield(stateatx, k))
+    if (k ∈ fnames) && (convert || typeof(kwargs[k]) <: typeof(getfield(stateatx, k)))
       setfield!(stateatx, k, kwargs[k])
     end
   end
@@ -118,10 +117,9 @@ end
 #end
 
 """
-\\_smart\\_update!: generic update function for the State without Type verification.
+    `_smart_update!(:: AbstractState; kwargs...)`
 
-`_smart_update!(:: AbstractState; kwargs...)`
-
+Generic update function for the State without Type verification.
 The function works exactly as update! without type and field verifications.
 So, affecting a value to nothing or a different type will return an error.
 
@@ -143,9 +141,9 @@ function _update_time!(stateatx::T, current_time::Float64) where {T <: AbstractS
 end
 
 """
-reinit!: function that set all the entries at `_init_field` except the mandatory `x`.
+    `reinit!(:: AbstractState, :: T; kwargs...)`
 
-`reinit!(:: AbstractState, :: T; kwargs...)`
+Function that set all the entries at `_init_field` except the mandatory `x`.
 
 Note: If `x` is given as a kargs it will be prioritized over
 the second argument.
@@ -191,9 +189,9 @@ function reinit!(stateatx::T; kwargs...) where {T <: AbstractState}
 end
 
 """
-\\_domain\\_check: returns true if there is a `NaN` or a `Missing` in the state entries (short-circuiting), false otherwise.
+    `_domain_check(:: AbstractState; kwargs...)`
 
-`_domain_check(:: AbstractState; kwargs...)`
+Returns true if there is a `NaN` or a `Missing` in the state entries (short-circuiting), false otherwise.
 
 Note:
 - The fields given as keys in kwargs are not checked.
