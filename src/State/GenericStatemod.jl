@@ -14,9 +14,9 @@ _init_field(::Val{T}) where {T <: Number} = typemin(T)
 _init_field(::Val{Counters}) = Counters()
 
 """
-Type: GenericState
+Type: `GenericState`
 
-Methods: update!, reinit!
+Methods: `update!`, `reinit!`
 
 A generic State to describe the state of a problem at a point x.
 
@@ -28,9 +28,9 @@ Tracked data include:
  - current_score : score
 
 Constructors:
- `GenericState(:: T, :: S; d :: T = _init_field(T), res :: T = _init_field(T), current_time :: Float64 = NaN) where {S, T <:AbstractVector}`
+    `GenericState(:: T, :: S; d :: T = _init_field(T), res :: T = _init_field(T), current_time :: Float64 = NaN) where {S, T <:AbstractVector}`
 
- `GenericState(:: T; d :: T = _init_field(T), res :: T = _init_field(T), current_time :: Float64 = NaN, current_score :: Union{T,eltype(T)} = _init_field(eltype(T))) where T <:AbstractVector`
+    `GenericState(:: T; d :: T = _init_field(T), res :: T = _init_field(T), current_time :: Float64 = NaN, current_score :: Union{T,eltype(T)} = _init_field(eltype(T))) where T <:AbstractVector`
 
 Note: 
  - By default, unknown entries are set using `_init_field`.
@@ -38,12 +38,12 @@ Note:
    To have a vectorized `current_score` of length n, try something like `GenericState(x, Array{eltype(x),1}(undef, n))`.
 
 Examples:
-  GenericState(x)  
-  GenericState(x, Array{eltype(x),1}(undef, length(x)))   
-  GenericState(x, current\\_time = 1.0)   
-  GenericState(x, current\\_score = 1.0)   
+  `GenericState(x)`
+  `GenericState(x, Array{eltype(x),1}(undef, length(x)))`
+  `GenericState(x, current_time = 1.0)`   
+  `GenericState(x, current_score = 1.0)`
 
-See also: Stopping, NLPAtX
+See also: `Stopping`, `NLPAtX`
 """
 mutable struct GenericState{S, T <: Union{AbstractFloat, AbstractVector}} <: AbstractState{S, T}
   x::T
@@ -91,11 +91,11 @@ it is updated.
 Set kargs `convert` to true to update even incompatible types.
 
 Examples:
-update!(state1)
-update!(state1, current\\_time = 2.0)
-update!(state1, convert = true, current\\_time = 2.0)
+`update!(state1)`
+`update!(state1, current_time = 2.0)`
+`update!(state1, convert = true, current_time = 2.0)`
 
-See also: GenericState, reinit!, update\\_and\\_start!, update\\_and\\_stop!
+See also: `GenericState`, `reinit!`, `update_and_start!`, `update_and_stop!`
 """
 function update!(stateatx::T; convert::Bool = false, kwargs...) where {T <: AbstractState}
   fnames = fieldnames(T)
@@ -123,7 +123,7 @@ Generic update function for the State without Type verification.
 The function works exactly as update! without type and field verifications.
 So, affecting a value to nothing or a different type will return an error.
 
-See also: update!, GenericState, reinit!, update\\_and\\_start!, update\\_and\\_stop!
+See also: `update!`, `GenericState`, `reinit!`, `update_and_start!`, `update_and_stop!`
 """
 function _smart_update!(stateatx::T; kwargs...) where {T <: AbstractState}
   for k ∈ keys(kwargs)
@@ -149,16 +149,16 @@ Note: If `x` is given as a kargs it will be prioritized over
 the second argument.
 
 Examples:
-reinit!(state2, zeros(2))
-reinit!(state2, zeros(2), current_time = 1.0)
+`reinit!(state2, zeros(2))`
+`reinit!(state2, zeros(2), current_time = 1.0)`
 
 There is a shorter version of reinit! reusing the `x` in the state
 
-`reinit!(:: AbstractState; kwargs...)`
+    `reinit!(:: AbstractState; kwargs...)`
 
 Examples:
-reinit!(state2)
-reinit!(state2, current_time = 1.0)
+`reinit!(state2)`
+`reinit!(state2, current_time = 1.0)`
 """
 function reinit!(stateatx::St, x::T; kwargs...) where {S, T, St <: AbstractState{S, T}}
 
@@ -197,8 +197,8 @@ Note:
 - The fields given as keys in kwargs are not checked.
 
 Examples:
-\\_domain\\_check(state1)
-\\_domain\\_check(state1, x = true)
+`_domain_check(state1)`
+`_domain_check(state1, x = true)`
 """
 function _domain_check(stateatx::T; kwargs...) where {T <: AbstractState}
   for k ∈ setdiff(fieldnames(T), keys(kwargs))
@@ -234,6 +234,8 @@ function copy(state::T) where {T <: AbstractState}
 end
 
 """
+    `compress_state!(:: AbstractState; save_matrix :: Bool = false, max_vector_size :: Int = length(stateatx.x), pnorm :: Real = Inf, keep :: Bool = false, kwargs...)`
+
 compress_state!: compress State with the following rules.
 - If it contains matrices and save_matrix is false, then the corresponding entries
 are set to _init_field(typeof(getfield(stateatx, k)).
@@ -242,10 +244,7 @@ corresponding entries are replaced by a vector of size 1 containing its pnorm-no
 - If keep is true, then only the entries given in kwargs will be saved (the others are set to _init_field(typeof(getfield(stateatx, k))).
 - If keep is false and an entry in the State is in the kwargs list, then it is put as _init_field(typeof(getfield(stateatx, k)) if possible.
 
-
-`compress_state!(:: AbstractState; save_matrix :: Bool = false, max_vector_size :: Int = length(stateatx.x), pnorm :: Real = Inf, keep :: Bool = false, kwargs...)`
-
-see also: copy, copy\\_compress\\_state, ListofStates
+see also: `copy`, `copy_compress_state`, `ListofStates`
 """
 function compress_state!(
   stateatx::T;
@@ -293,9 +292,9 @@ function compress_state!(
 end
 
 """
-copy\\_compress\\_state: copy the State and then compress it.
+    `copy_compress_state(:: AbstractState; save_matrix :: Bool = false, max_vector_size :: Int = length(stateatx.x), pnorm :: Real = Inf, kwargs...)`
 
-`copy_compress_state(:: AbstractState; save_matrix :: Bool = false, max_vector_size :: Int = length(stateatx.x), pnorm :: Real = Inf, kwargs...)`
+Copy the State and then compress it.
 
 see also: copy, compress_state!, ListofStates
 """
