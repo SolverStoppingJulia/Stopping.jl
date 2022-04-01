@@ -1,5 +1,6 @@
 _init_field(t::Type) = _init_field(Val{t}())
 _init_field(::Val{T}) where {T <: AbstractMatrix} = zeros(eltype(T), 0, 0)
+_init_field(::Val{T}) where {T <: LinearOperator} = LinearOperator(eltype(T), 0, 0, true, true, (res, v, α, β) -> zero(eltype(T)))
 _init_field(::Val{T}) where {T <: SparseMatrixCSC} = sparse(zeros(eltype(T), 0, 0))
 _init_field(::Val{T}) where {T <: AbstractVector} = zeros(eltype(T), 0)
 _init_field(::Val{T}) where {T <: SparseVector} = sparse(zeros(eltype(T), 0))
