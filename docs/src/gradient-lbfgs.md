@@ -1,7 +1,7 @@
 ## Mixed-algorithms: a ListofStates tutorial
 
 We illustrate here the use of `ListofStates` in dealing with a warm start
-procedure. The full code of this tutorial can be found [here](https://github.com/vepiteski/Stopping.jl/blob/master/test/examples/gradient-lbfgs.jl).
+procedure. The full code of this tutorial can be found [here](https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/test/examples/gradient-lbfgs.jl).
 
 `ListofStates` is designed to store the of the iteration process.
 In this tutorial, we compare the resolution of a convex unconstrained problem with 3 variants:
