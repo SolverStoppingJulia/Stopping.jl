@@ -1,10 +1,10 @@
 # Stopping
 
-![CI](https://github.com/vepiteski/Stopping.jl/workflows/CI/badge.svg?branch=master)
-[![Coverage Status](https://coveralls.io/repos/github/vepiteski/Stopping.jl/badge.svg?branch=master)](https://coveralls.io/github/vepiteski/Stopping.jl?branch=master)
-[![codecov](https://codecov.io/gh/vepiteski/Stopping.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/vepiteski/Stopping.jl)
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://vepiteski.github.io/Stopping.jl/stable)
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://vepiteski.github.io/Stopping.jl/dev/)
+![CI](https://github.com/SolverStoppingJulia/Stopping.jl/workflows/CI/badge.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/SolverStoppingJulia/Stopping.jl/badge.svg?branch=master)](https://coveralls.io/github/SolverStoppingJulia/Stopping.jl?branch=master)
+[![codecov](https://codecov.io/gh/SolverStoppingJulia/Stopping.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/SolverStoppingJulia/Stopping.jl)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://SolverStoppingJulia.github.io/Stopping.jl/stable)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://SolverStoppingJulia.github.io/Stopping.jl/dev/)
 
 ## Purpose
 
@@ -27,7 +27,7 @@ This tool eases the first three items above. It defines a type
         listofstates         :: Union{ListStates, Nothing} # History of states
         user_specific_struct :: Dict                  # User-specific structure
 
-The [StoppingMeta](https://github.com/vepiteski/Stopping.jl/blob/master/src/Stopping/StoppingMetamod.jl) provides default tolerances, maximum resources, ...  as well as (boolean) information on the result.
+The [StoppingMeta](https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/src/Stopping/StoppingMetamod.jl) provides default tolerances, maximum resources, ...  as well as (boolean) information on the result.
 
 ### Your Stopping your way
 
@@ -36,8 +36,8 @@ Then, depending on the problem structure, you can specialize a new Stopping by
 redefining a State and some functions specific to your problem.
 
 We provide some specialization of the GenericStopping for optimization:
-  * [NLPStopping](https://github.com/vepiteski/Stopping.jl/blob/master/src/Stopping/NLPStoppingmod.jl) with [NLPAtX](https://github.com/vepiteski/Stopping.jl/blob/master/src/State/NLPAtXmod.jl) as a specialized State for non-linear programming (based on [NLPModels](https://github.com/JuliaSmoothOptimizers/NLPModels.jl)), or with [OneDAtX](https://github.com/vepiteski/Stopping.jl/blob/master/src/State/OneDAtXmod.jl) as a specialized State for 1d optimization;
-  * [LAStopping](https://github.com/vepiteski/Stopping.jl/blob/master/src/Stopping/LinearAlgebraStopping.jl) with [GenericState](https://github.com/vepiteski/Stopping.jl/blob/master/src/State/GenericStatemod.jl): for linear algebra problems.
+  * [NLPStopping](https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/src/Stopping/NLPStoppingmod.jl) with [NLPAtX](https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/src/State/NLPAtXmod.jl) as a specialized State for non-linear programming (based on [NLPModels](https://github.com/JuliaSmoothOptimizers/NLPModels.jl)), or with [OneDAtX](https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/src/State/OneDAtXmod.jl) as a specialized State for 1d optimization;
+  * [LAStopping](https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/src/Stopping/LinearAlgebraStopping.jl) with [GenericState](https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/src/State/GenericStatemod.jl): for linear algebra problems.
 
 ## Functions
 
@@ -52,13 +52,13 @@ Stopping uses the informations furnished by the State to evaluate its functions.
 * `reinit!(stp :: AbstractStopping)` reinitialize the entries of
 the Stopping to reuse for another call.
 
-Consult the [HowTo tutorial](https://github.com/vepiteski/Stopping.jl/blob/master/test/examples/runhowto.jl) to learn more about the possibilities offered by Stopping.
+Consult the [HowTo tutorial](https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/test/examples/runhowto.jl) to learn more about the possibilities offered by Stopping.
 
-You can also access other examples of algorithms in the [test/examples](https://github.com/vepiteski/Stopping.jl/blob/master/test/examples/) folder, which for instance illustrate the strenght of Stopping with subproblems:
-* Consult the [OptimSolver tutorial](https://github.com/vepiteski/Stopping.jl/blob/master/test/examples/run-optimsolver.jl) for more on how to use Stopping with nested algorithms.
-* Check the [Benchmark tutorial](https://github.com/vepiteski/Stopping.jl/blob/master/test/examples/benchmark.jl) to see how Stopping can combined with [SolverBenchmark.jl](https://juliasmoothoptimizers.github.io/SolverBenchmark.jl/).
-* Stopping can be adapted to closed solvers via a buffer function as in [Buffer tutorial](https://github.com/vepiteski/Stopping.jl/blob/master/test/examples/buffer.jl) for an instance with [Ipopt](https://github.com/JuliaOpt/Ipopt.jl) via [NLPModelsIpopt](https://github.com/JuliaSmoothOptimizers/NLPModelsIpopt.jl).
-* Consult the [WarmStart](https://github.com/vepiteski/Stopping.jl/blob/master/test/examples/gradient-lbfgs.jl) to use Stopping in a warm-start context using internal user-defined structure and the list of states.
+You can also access other examples of algorithms in the [test/examples](https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/test/examples/) folder, which for instance illustrate the strenght of Stopping with subproblems:
+* Consult the [OptimSolver tutorial](https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/test/examples/run-optimsolver.jl) for more on how to use Stopping with nested algorithms.
+* Check the [Benchmark tutorial](https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/test/examples/benchmark.jl) to see how Stopping can combined with [SolverBenchmark.jl](https://juliasmoothoptimizers.github.io/SolverBenchmark.jl/).
+* Stopping can be adapted to closed solvers via a buffer function as in [Buffer tutorial](https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/test/examples/buffer.jl) for an instance with [Ipopt](https://github.com/JuliaOpt/Ipopt.jl) via [NLPModelsIpopt](https://github.com/JuliaSmoothOptimizers/NLPModelsIpopt.jl).
+* Consult the [WarmStart](https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/test/examples/gradient-lbfgs.jl) to use Stopping in a warm-start context using internal user-defined structure and the list of states.
 
 ## How to install
 Install and test the Stopping package with the Julia package manager:
@@ -68,7 +68,7 @@ pkg> test Stopping
 ```
 You can access the most up-to-date version of the Stopping package using:
 ```julia
-pkg> add https://github.com/vepiteski/Stopping.jl
+pkg> add https://github.com/SolverStoppingJulia/Stopping.jl
 pkg> test Stopping
 pkg> status Stopping
 ```
@@ -82,7 +82,7 @@ We now initialize the `NLPStopping`.
 ```
 nlp_at_x = NLPAtX(ones(5)) #First create a State.
 ```
-We use [unconstrained_check](https://github.com/vepiteski/Stopping.jl/blob/master/src/Stopping/nlp_admissible_functions.jl) as an optimality function
+We use [unconstrained_check](https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/src/Stopping/nlp_admissible_functions.jl) as an optimality function
 ```
 stop_nlp = NLPStopping(nlp, nlp_at_x, optimality_check = unconstrained_check)
 ```

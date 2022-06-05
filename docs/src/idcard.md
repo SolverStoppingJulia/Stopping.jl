@@ -7,7 +7,7 @@ A Stopping is an instance (a subtype) of an `AbstractStopping`. Such instances m
 
 While the `problem` is up to the user, the `meta` and the `current_state` are specific features of Stopping.jl.
 The `meta` contains all the parameters relative to the stopping criteria (tolerances, limits ...). We implemented
-`StoppingMeta()` which offers a set of default parameters that can be easily modified with keyword arguments. See [StoppingMeta](https://github.com/vepiteski/Stopping.jl/blob/master/src/Stopping/StoppingMetamod.jl) for more detailed information. The native instances of `AbstractStopping` (`GenericStopping`, `NLPStoppping`, etc) contains more attributes (`stop_remote`, `main_stp`, `listofstates`, `stopping_user_struct`) that we will developed later on.
+`StoppingMeta()` which offers a set of default parameters that can be easily modified with keyword arguments. See [StoppingMeta](https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/src/Stopping/StoppingMetamod.jl) for more detailed information. The native instances of `AbstractStopping` (`GenericStopping`, `NLPStoppping`, etc) contains more attributes (`stop_remote`, `main_stp`, `listofstates`, `stopping_user_struct`) that we will developed later on.
 
 The `current_state` contains all the information relative to a problem. We implemented a `GenericState` as an
 illustration of the behavior of such object that typically contains:
