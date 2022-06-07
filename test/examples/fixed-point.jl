@@ -51,7 +51,7 @@ end
 c(x) = [x[1] - x[2], x[2]]
 lcon = [0.0, 0.0]
 ucon = [0.0, 0.0]
-nlp = ADNLPModel(x -> 0.0, zeros(2), c = c, lcon = lcon, ucon = ucon)
+nlp = ADNLPModel(x -> 0.0, zeros(2), c, lcon, ucon)
 
 #1st scenario: we solve the problem
 printstyled("1st scenario:\n")

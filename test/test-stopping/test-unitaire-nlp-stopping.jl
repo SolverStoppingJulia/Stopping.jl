@@ -70,27 +70,13 @@
   @test :UnboundedPb in status(stop_nlp, list = true) # the problem is unbounded as fx <= - 1.0e50
   stop_nlp.meta.unbounded_pb = false #reinitialize
   #Let us now consider a maximization problem:
-  nlp_max = ADNLPModel(
-    NLPModelMeta(5, minimize = false),
-    Counters(),
-    ADNLPModels.ForwardDiffAD(5, f, zeros(5)),
-    f,
-    x -> [],
-  )
+  nlp_max = ADNLPModel(f, zeros(5), minimize = false)
   stop_nlp.pb = nlp_max
   @test !stop_nlp.pb.meta.minimize
   stop!(stop_nlp)
   @test !(:UnboundedPb in status(stop_nlp, list = true)) # the problem is NOT unbounded as fx <= 1.0e50
 
-  #Warning: see https://github.com/JuliaSmoothOptimizers/NLPModels.jl/blob/master/src/autodiff_model.jl
-  #for the proper way of defining an ADNLPModel
-  nlp_bnd = ADNLPModel(
-    NLPModelMeta(5, x0 = zeros(5), lvar = zeros(5), uvar = zeros(5)),
-    Counters(),
-    ADNLPModels.ForwardDiffAD(5, f, zeros(5)),
-    f,
-    x -> [],
-  )
+  nlp_bnd = ADNLPModel(f, zeros(5), lvar = zeros(5), uvar = zeros(5))
 
   stp_error = NLPStopping(nlp_bnd)
   @test stop!(stp_error) # returns a warning "KKT needs stp.current_state.mu to be filled-in"

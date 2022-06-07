@@ -1,21 +1,8 @@
 @testset "Test NLP Stopping constrained" begin
   include("rosenbrock.jl")
-  #Warning: see https://github.com/JuliaSmoothOptimizers/NLPModels.jl/blob/master/src/autodiff_model.jl
-  #for the proper way of defining an ADNLPModel
   x0 = ones(6)
   c(x) = [sum(x)]
-  meta = NLPModelMeta(
-    6,
-    x0 = x0,
-    lvar = fill(-10.0, size(x0)),
-    uvar = fill(10.0, size(x0)),
-    ncon = 1,
-    y0 = [0.0],
-    lcon = [-Inf],
-    ucon = [6.0],
-  )
-  nlp2 =
-    ADNLPModel(meta, Counters(), ADNLPModels.ForwardDiffAD(6, 1, rosenbrock, x0), rosenbrock, c)
+  nlp2 = ADNLPModel(rosenbrock, x0, fill(-10.0, size(x0)), fill(10.0, size(x0)), c, [-Inf], [6.0])
 
   stp_error = NLPStopping(nlp2)
   @test stop!(stp_error) # returns a warning "KKT needs stp.current_state.cx, stp.current_state.Jx and stp.current_state.lambda to be filled-in."
