@@ -227,6 +227,9 @@ function StoppingMeta(;
 )
   T = typeof(atol)
 
+  rtol = T(rtol)
+  optimality0 = T(optimality0)
+
   check_pos = tol_check(atol, rtol, optimality0)
   check_neg = tol_check_neg(atol, rtol, optimality0)
 
@@ -255,8 +258,8 @@ function StoppingMeta(;
   #new{TolType, typeof(check_pos), typeof(meta_user_struct)}
   return StoppingMeta(
     atol,
-    T(rtol),
-    T(optimality0),
+    rtol,
+    optimality0,
     tol_check,
     tol_check_neg,
     check_pos,
