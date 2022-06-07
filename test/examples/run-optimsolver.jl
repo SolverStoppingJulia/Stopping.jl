@@ -142,7 +142,6 @@ include("penalty.jl")
 printstyled("Constrained optimization: quadratic penalty tutorial.\n", color = :green)
 x0 = 1.5 * ones(6)
 c(x) = [sum(x)]
-# ADNLPModel(f, x0, lvar, uvar, c, lcon, ucon)
 nlp2 = ADNLPModel(rosenbrock, x0, fill(-10.0, size(x0)), fill(10.0, size(x0)), c, [-Inf], [5.0])
 
 nlp_at_x_c = NLPAtX(x0, zeros(nlp2.meta.ncon))

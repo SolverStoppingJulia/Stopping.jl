@@ -20,18 +20,8 @@
   x0 = ones(2)
   t = 1.0
   c(x) = [(x[1] - t) .* (x[2] - t)]
-  meta = NLPModelMeta(
-    2,
-    x0 = x0,
-    lvar = zeros(2),
-    uvar = Inf * ones(2),
-    ncon = 1,
-    y0 = zeros(1),
-    lcon = -Inf * ones(1),
-    ucon = zeros(1),
-  )
   f = x -> x[1] + x[2]
-  nlp = ADNLPModel(meta, Counters(), ADNLPModels.ForwardDiffAD(1, 1, f, x0), f, c)
+  nlp = ADNLPModel(f, x0, zeros(2), Inf * ones(2), c, -Inf * ones(1), zeros(1))
 
   #We consider a vectorized optimality_check KKT function:
   function KKTvect(pb::AbstractNLPModel, state::NLPAtX; kwargs...)
