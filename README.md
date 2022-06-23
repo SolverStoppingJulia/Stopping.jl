@@ -5,6 +5,11 @@
 [![codecov](https://codecov.io/gh/SolverStoppingJulia/Stopping.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/SolverStoppingJulia/Stopping.jl)
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://SolverStoppingJulia.github.io/Stopping.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://SolverStoppingJulia.github.io/Stopping.jl/dev/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6705082.svg)](https://doi.org/10.5281/zenodo.6705082)
+
+## How to Cite
+
+If you use Stopping.jl in your work, please cite using the format given in [CITATION.bib](https://github.com/SolverStoppingJulia/Stopping.jl/blob/main/CITATION.bib).
 
 ## Purpose
 
