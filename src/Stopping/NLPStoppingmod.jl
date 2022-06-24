@@ -181,7 +181,7 @@ function init_max_counters_NLS(; allevals::T = typemax(Int), kwargs...) where {T
   cntrs_nlp = init_max_counters(; allevals = allevals, kwargs...)
 
   entries =
-    [Meta.parse(split("$(f)", '_')[2]) for f in setdiff(fieldnames(NLSCounters), [:counters])]
+    [Meta.parse(split("$(f)", "neval_")[2]) for f in setdiff(fieldnames(NLSCounters), [:counters])]
   lim_fields = keys(kwargs)
   cntrs = Dict{Symbol, T}([
     (Meta.parse("neval_$(t)"), t in lim_fields ? kwargs[t] : allevals) for t in entries
