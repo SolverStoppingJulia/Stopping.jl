@@ -101,10 +101,12 @@ function NLPStopping(
   user_struct::AbstractDict = Dict(),
   kwargs...,
 ) where {Pb <: AbstractNLPModel, T <: AbstractState}
-  if :max_cntrs in keys(kwargs)
-    mcntrs = kwargs[:max_cntrs]
+  mcntrs = if :max_cntrs in keys(kwargs)
+    kwargs[:max_cntrs]
+  elseif Pb <: AbstractNLSModel
+    init_max_counters_NLS()
   else
-    mcntrs = init_max_counters()
+    init_max_counters()
   end
 
   if :optimality_check in keys(kwargs)
@@ -150,13 +152,21 @@ function init_max_counters(; allevals::T = typemax(Int), kwargs...) where {T <: 
   return cntrs
 end
 
-function max_evals!(stp::NLPStopping, allevals::Integer)
-  stp.meta.max_cntrs = init_max_counters(allevals = allevals)
+function max_evals!(stp::NLPStopping{Pb, M, SRC, T, MStp, LoS}, allevals::Integer) where {Pb, M, SRC, T, MStp, LoS}
+  stp.meta.max_cntrs = if Pb <: AbstractNLSModel
+    init_max_counters_NLS(allevals = allevals)
+  else
+    init_max_counters(allevals = allevals)
+  end
   return stp
 end
 
-function max_evals!(stp::NLPStopping; allevals::T = typemax(Int), kwargs...) where {T <: Integer}
-  stp.meta.max_cntrs = init_max_counters(allevals = allevals; kwargs...)
+function max_evals!(stp::NLPStopping{Pb, M, SRC, T, MStp, LoS}; allevals::I = typemax(Int), kwargs...) where {Pb, M, SRC, T, MStp, LoS, I <: Integer}
+  stp.meta.max_cntrs = if Pb <: AbstractNLSModel
+    init_max_counters_NLS(allevals = allevals; kwargs...)
+  else
+    init_max_counters(allevals = allevals; kwargs...)
+  end
   return stp
 end
 
@@ -171,7 +181,7 @@ function init_max_counters_NLS(; allevals::T = typemax(Int), kwargs...) where {T
   cntrs_nlp = init_max_counters(; allevals = allevals, kwargs...)
 
   entries =
-    [Meta.parse(split("$(f)", '_')[2]) for f in setdiff(fieldnames(NLSCounters), [:counters])]
+    [Meta.parse(split("$(f)", "neval_")[2]) for f in setdiff(fieldnames(NLSCounters), [:counters])]
   lim_fields = keys(kwargs)
   cntrs = Dict{Symbol, T}([
     (Meta.parse("neval_$(t)"), t in lim_fields ? kwargs[t] : allevals) for t in entries
