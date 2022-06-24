@@ -152,7 +152,10 @@ function init_max_counters(; allevals::T = typemax(Int), kwargs...) where {T <: 
   return cntrs
 end
 
-function max_evals!(stp::NLPStopping{Pb, M, SRC, T, MStp, LoS}, allevals::Integer) where {Pb, M, SRC, T, MStp, LoS}
+function max_evals!(
+  stp::NLPStopping{Pb, M, SRC, T, MStp, LoS},
+  allevals::Integer,
+) where {Pb, M, SRC, T, MStp, LoS}
   stp.meta.max_cntrs = if Pb <: AbstractNLSModel
     init_max_counters_NLS(allevals = allevals)
   else
@@ -161,7 +164,11 @@ function max_evals!(stp::NLPStopping{Pb, M, SRC, T, MStp, LoS}, allevals::Intege
   return stp
 end
 
-function max_evals!(stp::NLPStopping{Pb, M, SRC, T, MStp, LoS}; allevals::I = typemax(Int), kwargs...) where {Pb, M, SRC, T, MStp, LoS, I <: Integer}
+function max_evals!(
+  stp::NLPStopping{Pb, M, SRC, T, MStp, LoS};
+  allevals::I = typemax(Int),
+  kwargs...,
+) where {Pb, M, SRC, T, MStp, LoS, I <: Integer}
   stp.meta.max_cntrs = if Pb <: AbstractNLSModel
     init_max_counters_NLS(allevals = allevals; kwargs...)
   else
