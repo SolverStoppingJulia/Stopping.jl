@@ -7,7 +7,7 @@ Return the `pnorm`-norm of the gradient of the objective function.
 
 Require `state.gx` (filled if not provided).
 
-See also `unconstrained2nd_check`, `optim_check_bounded`, `KKT`
+See also `optim_check_bounded`, `KKT`
 """
 function unconstrained_check(
   pb::AbstractNLPModel,
@@ -23,41 +23,13 @@ function unconstrained_check(
 end
 
 """
-    `unconstrained2nd_check( :: AbstractNLPModel, :: NLPAtX; pnorm :: Real = Inf, kwargs...)`
-
-Check the `pnorm`-norm of the gradient and the smallest eigenvalue of the hessian.
-
-Require `state.gx` and `state.Hx` (filled if not provided).
-
-See also `unconstrained_check`, `optim_check_bounded`, `KKT`
-"""
-function unconstrained2nd_check(
-  pb::AbstractNLPModel,
-  state::NLPAtX{S, T};
-  pnorm::eltype(T) = eltype(T)(Inf),
-  kwargs...,
-) where {S, T}
-  if state.gx == _init_field(typeof(state.gx)) # should be filled if empty
-    update!(state, gx = grad(pb, state.x))
-  end
-  if state.Hx == _init_field(typeof(state.Hx))
-    update!(state, Hx = hess(pb, state.x).data)
-  end
-
-  L = eltype(T)
-  res = max(norm(state.gx, pnorm), max(-L(eigmin(Symmetric(state.Hx, :L))), zero(L)))
-
-  return res
-end
-
-"""
     `optim_check_bounded( :: AbstractNLPModel, :: NLPAtX; pnorm :: Real = Inf, kwargs...)`
 
 Check the `pnorm`-norm of the gradient of the objective function projected over the bounds.
 
 Require `state.gx` (filled if not provided).
 
-See also `unconstrained_check`, `unconstrained2nd_check`, `KKT`
+See also `unconstrained_check`, `KKT`
 """
 function optim_check_bounded(
   pb::AbstractNLPModel,
@@ -136,7 +108,7 @@ Check the KKT conditions.
 
 Note: `state.gx` is mandatory + if bounds `state.mu` + if constraints `state.cx`, `state.Jx`, `state.lambda`.
 
-See also `unconstrained_check`, `unconstrained2nd_check`, `optim_check_bounded`
+See also `unconstrained_check`, `optim_check_bounded`
 """
 function KKT(
   pb::AbstractNLPModel,

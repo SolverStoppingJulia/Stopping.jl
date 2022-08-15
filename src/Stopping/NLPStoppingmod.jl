@@ -2,7 +2,7 @@
 Type: NLPStopping
 
 Methods: `start!`, `stop!`, `update_and_start!`, `update_and_stop!`, `fill_in!`, `reinit!`, `status`, 
-`KKT`, `unconstrained_check`, `unconstrained2nd_check`, `optim_check_bounded`
+`KKT`, `unconstrained_check`, `optim_check_bounded`
 
 Specialization of `GenericStopping`. Stopping structure for non-linear optimization models using `NLPModels` ( https://github.com/JuliaSmoothOptimizers/NLPModels.jl ).
 
