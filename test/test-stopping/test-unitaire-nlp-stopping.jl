@@ -60,8 +60,6 @@
   reinit!(stop_nlp.current_state)
   @test unconstrained_check(stop_nlp.pb, stop_nlp.current_state) >= 0.0
   reinit!(stop_nlp.current_state)
-  @test unconstrained2nd_check(stop_nlp.pb, stop_nlp.current_state) >= 0.0
-  @test stop_nlp.current_state.Hx != nothing
 
   #We now test the _unbounded_problem_check:
   @test stop_nlp.pb.meta.minimize #we are minimizing
@@ -114,7 +112,6 @@
   stp16 = NLPStopping(pb16)
   update!(stp16, mu = zeros(T, 5), gx = zeros(T, 5))
   @test typeof(unconstrained_check(stp16.pb, stp16.current_state)) == T
-  @test typeof(unconstrained2nd_check(stp16.pb, stp16.current_state)) == T
   @test typeof(optim_check_bounded(stp16.pb, stp16.current_state)) == T
   @test typeof(KKT(stp16.pb, stp16.current_state)) == T
 end

@@ -207,7 +207,7 @@ include("Stopping/NLPStoppingmod.jl")
 export GenericStopping, start!, stop!, cheap_stop!, update_and_start!
 export update_and_stop!, cheap_update_and_stop!, cheap_update_and_start!
 export fill_in!, reinit!, status, elapsed_time
-export NLPStopping, unconstrained_check, unconstrained2nd_check, max_evals!
+export NLPStopping, unconstrained_check, max_evals!
 export optim_check_bounded, KKT, init_max_counters, init_max_counters_NLS
 
 include("Stopping/LinearAlgebraStopping.jl")
