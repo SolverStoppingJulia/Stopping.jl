@@ -229,7 +229,13 @@ function fill_in!(
   end
 
   if stp.pb.meta.ncon > 0
-    gJx = isnothing(Jx) ? jac(stp.pb, x) : Jx
+    gJx = if !isnothing(Jx)
+      Jx
+    elseif typeof(stp.current_state.Jx) <: LinearOperator
+      jac_op(stp.pb, x)
+    else # typeof(stp.current_state.Jx) <: SparseArrays.SparseMatrixCSC
+      jac(stp.pb, x)
+    end
     gcx = isnothing(cx) ? cons(stp.pb, x) : cx
   else
     gJx = stp.current_state.Jx
