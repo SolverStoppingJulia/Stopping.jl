@@ -217,6 +217,7 @@ function fill_in!(
   lambda::Union{T, Nothing} = nothing,
   mu::Union{T, Nothing} = nothing,
   matrix_info::Bool = true,
+  convert::Bool = true,
   kwargs...,
 ) where {Pb, M, SRC, MStp, LoS, S, T}
   gfx = isnothing(fx) ? obj(stp.pb, x) : fx
@@ -251,7 +252,7 @@ function fill_in!(
     lb, lc = mu, lambda
   end
 
-  return update!(stp, x = x, fx = gfx, gx = ggx, Hx = gHx, cx = gcx, Jx = gJx, mu = lb, lambda = lc)
+  return update!(stp, x = x, fx = gfx, gx = ggx, Hx = gHx, cx = gcx, Jx = gJx, mu = lb, lambda = lc, convert = convert)
 end
 
 function fill_in!(
@@ -261,6 +262,7 @@ function fill_in!(
   gx::Union{T, Nothing} = nothing,
   f₀::Union{T, Nothing} = nothing,
   g₀::Union{T, Nothing} = nothing,
+  convert::Bool = true,
   kwargs...,
 ) where {Pb, M, SRC, S, T, MStp, LoS}
   gfx = isnothing(fx) ? obj(stp.pb, x) : fx
@@ -268,7 +270,7 @@ function fill_in!(
   gf₀ = isnothing(f₀) ? obj(stp.pb, 0.0) : f₀
   gg₀ = isnothing(g₀) ? grad(stp.pb, 0.0) : g₀
 
-  return update!(stp.current_state, x = x, fx = gfx, gx = ggx, f₀ = gf₀, g₀ = gg₀)
+  return update!(stp.current_state, x = x, fx = gfx, gx = ggx, f₀ = gf₀, g₀ = gg₀, convert = convert)
 end
 
 """
