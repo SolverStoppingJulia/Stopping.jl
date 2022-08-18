@@ -122,7 +122,11 @@ end
 
 function NLPStopping(pb::AbstractNLPModel; n_listofstates::Integer = 0, kwargs...)
   #Create a default NLPAtX
-  nlp_at_x = NLPAtX(pb.meta.x0)
+  if get_ncon(pb) > 0
+    nlp_at_x = NLPAtX(pb.meta.x0, pb.meta.y0)
+  else
+    nlp_at_x = NLPAtX(pb.meta.x0)
+  end
 
   if n_listofstates > 0 && :list ∉ keys(kwargs)
     list = ListofStates(n_listofstates, Val{typeof(nlp_at_x)}())
