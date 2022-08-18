@@ -252,6 +252,7 @@ function fill_in!(
     lb, lc = mu, lambda
   end
 
+      @show x gfx ggx gHx gcx gJx lb lc convert
   return update!(stp, x = x, fx = gfx, gx = ggx, Hx = gHx, cx = gcx, Jx = gJx, mu = lb, lambda = lc, convert = convert)
 end
 
