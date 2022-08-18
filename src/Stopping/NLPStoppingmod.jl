@@ -217,6 +217,7 @@ function fill_in!(
   lambda::Union{T, Nothing} = nothing,
   mu::Union{T, Nothing} = nothing,
   matrix_info::Bool = true,
+  convert::Bool = true,
   kwargs...,
 ) where {Pb, M, SRC, MStp, LoS, S, T}
   gfx = isnothing(fx) ? obj(stp.pb, x) : fx
@@ -225,11 +226,17 @@ function fill_in!(
   if isnothing(Hx) && matrix_info
     gHx = hess(stp.pb, x).data
   else
-    gHx = Hx
+    gHx = isnothing(Hx) ? zeros(eltype(T), 0, 0) : Hx
   end
 
   if stp.pb.meta.ncon > 0
-    gJx = isnothing(Jx) ? jac(stp.pb, x) : Jx
+    gJx = if !isnothing(Jx)
+      Jx
+    elseif typeof(stp.current_state.Jx) <: LinearOperator
+      jac_op(stp.pb, x)
+    else # typeof(stp.current_state.Jx) <: SparseArrays.SparseMatrixCSC
+      jac(stp.pb, x)
+    end
     gcx = isnothing(cx) ? cons(stp.pb, x) : cx
   else
     gJx = stp.current_state.Jx
@@ -239,13 +246,18 @@ function fill_in!(
   #update the Lagrange multiplier if one of the 2 is asked
   if (stp.pb.meta.ncon > 0 || has_bounds(stp.pb)) && (isnothing(lambda) || isnothing(mu))
     lb, lc = _compute_mutliplier(stp.pb, x, ggx, gcx, gJx; kwargs...)
-  elseif stp.pb.meta.ncon == 0 && !has_bounds(stp.pb) && isnothing(lambda)
-    lb, lc = mu, stp.current_state.lambda
   else
-    lb, lc = mu, lambda
+    lb = if isnothing(mu) & has_bounds(stp.pb)
+      zeros(eltype(T), get_nvar(stp.pb))
+    elseif isnothing(mu) & !has_bounds(stp.pb)
+      zeros(eltype(T), 0)
+    else
+      mu
+    end
+    lc = isnothing(lambda) ? zeros(eltype(T), get_ncon(stp.pb)) : lambda
   end
 
-  return update!(stp, x = x, fx = gfx, gx = ggx, Hx = gHx, cx = gcx, Jx = gJx, mu = lb, lambda = lc)
+  return update!(stp, x = x, fx = gfx, gx = ggx, Hx = gHx, cx = gcx, Jx = gJx, mu = lb, lambda = lc, convert = convert)
 end
 
 function fill_in!(
@@ -255,6 +267,7 @@ function fill_in!(
   gx::Union{T, Nothing} = nothing,
   f₀::Union{T, Nothing} = nothing,
   g₀::Union{T, Nothing} = nothing,
+  convert::Bool = true,
   kwargs...,
 ) where {Pb, M, SRC, S, T, MStp, LoS}
   gfx = isnothing(fx) ? obj(stp.pb, x) : fx
@@ -262,7 +275,7 @@ function fill_in!(
   gf₀ = isnothing(f₀) ? obj(stp.pb, 0.0) : f₀
   gg₀ = isnothing(g₀) ? grad(stp.pb, 0.0) : g₀
 
-  return update!(stp.current_state, x = x, fx = gfx, gx = ggx, f₀ = gf₀, g₀ = gg₀)
+  return update!(stp.current_state, x = x, fx = gfx, gx = ggx, f₀ = gf₀, g₀ = gg₀, convert = convert)
 end
 
 """
