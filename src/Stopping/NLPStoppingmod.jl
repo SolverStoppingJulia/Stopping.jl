@@ -226,7 +226,7 @@ function fill_in!(
   if isnothing(Hx) && matrix_info
     gHx = hess(stp.pb, x).data
   else
-    gHx = Hx
+    gHx = isnothing(Hx) ? zeros(eltype(T), 0, 0) : Hx
   end
 
   if stp.pb.meta.ncon > 0
@@ -246,13 +246,17 @@ function fill_in!(
   #update the Lagrange multiplier if one of the 2 is asked
   if (stp.pb.meta.ncon > 0 || has_bounds(stp.pb)) && (isnothing(lambda) || isnothing(mu))
     lb, lc = _compute_mutliplier(stp.pb, x, ggx, gcx, gJx; kwargs...)
-  elseif stp.pb.meta.ncon == 0 && !has_bounds(stp.pb) && isnothing(lambda)
-    lb, lc = mu, stp.current_state.lambda
   else
-    lb, lc = mu, lambda
+    lb = if isnothing(mu) & has_bounds(stp.pb)
+      zeros(eltype(T), get_nvar(stp.pb))
+    elseif isnothing(mu) & !has_bounds(stp.pb)
+      zeros(eltype(T), 0)
+    else
+      mu
+    end
+    lc = isnothing(lambda) ? zeros(eltype(T), get_ncon(stp.pb)) : lambda
   end
 
-      @show x gfx ggx gHx gcx gJx lb lc convert
   return update!(stp, x = x, fx = gfx, gx = ggx, Hx = gHx, cx = gcx, Jx = gJx, mu = lb, lambda = lc, convert = convert)
 end
 
