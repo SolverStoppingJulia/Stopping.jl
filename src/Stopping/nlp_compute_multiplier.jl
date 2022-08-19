@@ -33,7 +33,7 @@ function _compute_mutliplier(
 
   mu, lambda = zeros(eltype(T), n), zeros(eltype(T), nc)
   if (Ib != []) || (Ic != [])
-    l = pinv(Jc) * (-gx)
+    l = Jc \ (-gx)
     mu[Ib], lambda[Ic] = l[1:length(Ib)], l[(length(Ib) + 1):length(l)]
   end
 
