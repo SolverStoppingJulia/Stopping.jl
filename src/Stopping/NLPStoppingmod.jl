@@ -257,7 +257,18 @@ function fill_in!(
     lc = isnothing(lambda) ? zeros(eltype(T), get_ncon(stp.pb)) : lambda
   end
 
-  return update!(stp, x = x, fx = gfx, gx = ggx, Hx = gHx, cx = gcx, Jx = gJx, mu = lb, lambda = lc, convert = convert)
+  return update!(
+    stp,
+    x = x,
+    fx = gfx,
+    gx = ggx,
+    Hx = gHx,
+    cx = gcx,
+    Jx = gJx,
+    mu = lb,
+    lambda = lc,
+    convert = convert,
+  )
 end
 
 function fill_in!(
@@ -275,7 +286,15 @@ function fill_in!(
   gf₀ = isnothing(f₀) ? obj(stp.pb, 0.0) : f₀
   gg₀ = isnothing(g₀) ? grad(stp.pb, 0.0) : g₀
 
-  return update!(stp.current_state, x = x, fx = gfx, gx = ggx, f₀ = gf₀, g₀ = gg₀, convert = convert)
+  return update!(
+    stp.current_state,
+    x = x,
+    fx = gfx,
+    gx = ggx,
+    f₀ = gf₀,
+    g₀ = gg₀,
+    convert = convert,
+  )
 end
 
 """
