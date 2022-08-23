@@ -336,44 +336,29 @@ function reinit!(
 end
 
 """
-\\_resources\\_check!: check if the optimization algorithm has exhausted the resources.
+`_resources_check!`: check if the optimization algorithm has exhausted the resources.
                    This is the NLP specialized version that takes into account
-                   the evaluation of the functions following the sum_counters
+                   the evaluation of the functions following the `sum_counters`
                    structure from NLPModels.
 
-`_resources_check!(:: NLPStopping, :: T)`
+    _resources_check!(::NLPStopping, ::T)
 
 Note:
 - function uses counters in `stp.pb`, and update the counters in the state.     
 - function is compatible with `Counters`, `NLSCounters`, and any type whose entries match the entries of `max_cntrs`.   
-- all the NLPModels have an attribute `counters` and a function `sum_counters(nlp)`.  
 """
-function _resources_check!(stp::NLPStopping, x::T) where {T <: Union{AbstractVector, Number}}
+function _resources_check!(stp::NLPStopping{Pb, M, SRC, T, MStp, LoS}, x::S) where {Pb <: AbstractNLPModel, M, SRC, T, MStp, LoS, S}
   max_cntrs = stp.meta.max_cntrs
 
-  if max_cntrs == Dict{Symbol, Int64}()
+  if length(max_cntrs) == 0
     return stp.meta.resources
   end
 
   # check all the entries in the counter
-  max_f = false
-  if typeof(stp.pb) <: AbstractNLSModel ||
-     (:counters in fieldnames(typeof(stp.pb)) && typeof(stp.pb.counters) == NLSCounters)
-    for f in intersect(fieldnames(NLSCounters), keys(max_cntrs))
-      max_f = f != :counters ? (max_f || (eval(f)(stp.pb) > max_cntrs[f])) : max_f
-    end
-    for f in intersect(fieldnames(Counters), keys(max_cntrs))
-      max_f = max_f || (eval(f)(stp.pb) > max_cntrs[f])
-    end
-  elseif typeof(stp.pb) <: AbstractNLPModel ||
-         (:counters in fieldnames(typeof(stp.pb)) && typeof(stp.pb.counters) == Counters)
-    for f in intersect(fieldnames(Counters), keys(max_cntrs))
-      max_f = max_f || (eval(f)(stp.pb) > max_cntrs[f])
-    end
-  end
+  max_f = check_entries_counters(stp.pb, max_cntrs)
 
   # Maximum number of function and derivative(s) computation
-  if :neval_sum in keys(stp.meta.max_cntrs)
+  if :neval_sum in keys(max_cntrs)
     max_evals = sum_counters(stp.pb) > max_cntrs[:neval_sum]
   end
 
@@ -383,6 +368,28 @@ function _resources_check!(stp::NLPStopping, x::T) where {T <: Union{AbstractVec
   end
 
   return stp.meta.resources
+end
+
+function check_entries_counters(nlp::AbstractNLPModel, max_cntrs)
+  max_f = false
+  for f in keys(max_cntrs)
+    if f in fieldnames(Counters)
+      max_f = max_f || (eval(f)(nlp) > max_cntrs[f])
+    end
+  end
+  return max_f
+end
+
+function check_entries_counters(nlp::AbstractNLSModel, max_cntrs)
+  max_f = false
+  for f in keys(max_cntrs)
+    if f in fieldnames(NLSCounters)
+      max_f = f != :counters ? (max_f || (eval(f)(nlp) > max_cntrs[f])) : max_f
+    elseif f in fieldnames(Counters)
+      max_f = max_f || (eval(f)(nlp) > max_cntrs[f])
+    end
+  end
+  return max_f
 end
 
 """
