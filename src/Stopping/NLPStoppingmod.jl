@@ -347,7 +347,10 @@ Note:
 - function uses counters in `stp.pb`, and update the counters in the state.     
 - function is compatible with `Counters`, `NLSCounters`, and any type whose entries match the entries of `max_cntrs`.   
 """
-function _resources_check!(stp::NLPStopping{Pb, M, SRC, T, MStp, LoS}, x::S) where {Pb <: AbstractNLPModel, M, SRC, T, MStp, LoS, S}
+function _resources_check!(
+  stp::NLPStopping{Pb, M, SRC, T, MStp, LoS},
+  x::S,
+) where {Pb <: AbstractNLPModel, M, SRC, T, MStp, LoS, S}
   max_cntrs = stp.meta.max_cntrs
 
   if length(max_cntrs) == 0
