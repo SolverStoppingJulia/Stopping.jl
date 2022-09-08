@@ -225,7 +225,7 @@ function _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
     throw(error("Wrong size of mu in the NLPAtX."))
   end
 
-  if lambda != zeros(0)
+  if length(lambda) != 0
     if length(cx) != 0 && length(cx) != length(lambda)
       throw(error("Wrong size of cx in the NLPAtX."))
     end
