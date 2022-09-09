@@ -318,7 +318,9 @@ const meta_statuses = [
 
 Return true if one of the decision boolean is true.
 """
-function OK_check(meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg}) where {TolType, CheckType, MUS, Ftol, Ftolneg}
+function OK_check(
+  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg},
+) where {TolType, CheckType, MUS, Ftol, Ftolneg}
   #13 checks
   OK =
     meta.optimal ||
@@ -342,7 +344,9 @@ end
 
 Return the pair of tolerances, recomputed if `meta.recomp_tol` is `true`.
 """
-function tol_check(meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg}) where {TolType, CheckType, MUS, Ftol, Ftolneg}
+function tol_check(
+  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg},
+) where {TolType, CheckType, MUS, Ftol, Ftolneg}
   if meta.recomp_tol
     atol, rtol, opt0 = meta.atol, meta.rtol, meta.optimality0
     setfield!(meta, :check_pos, meta.tol_check(atol, rtol, opt0))
@@ -371,7 +375,9 @@ function update_tol!(
   return meta
 end
 
-function reinit!(meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg}) where {TolType, CheckType, MUS, Ftol, Ftolneg}
+function reinit!(
+  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg},
+) where {TolType, CheckType, MUS, Ftol, Ftolneg}
   for k in meta_statuses
     setfield!(meta, k, false)
   end
@@ -379,15 +385,21 @@ function reinit!(meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg}) whe
   return meta
 end
 
-function checktype(meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg}) where {TolType, CheckType, MUS, Ftol, Ftolneg}
+function checktype(
+  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg},
+) where {TolType, CheckType, MUS, Ftol, Ftolneg}
   return CheckType
 end
 
-function toltype(meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg}) where {TolType, CheckType, MUS, Ftol, Ftolneg}
+function toltype(
+  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg},
+) where {TolType, CheckType, MUS, Ftol, Ftolneg}
   return TolType
 end
 
-function metausertype(meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg}) where {TolType, CheckType, MUS, Ftol, Ftolneg}
+function metausertype(
+  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg},
+) where {TolType, CheckType, MUS, Ftol, Ftolneg}
   return MUS
 end
 
