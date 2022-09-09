@@ -45,11 +45,11 @@ Note:
 
 See also: `GenericState`, `update!`, `update_and_start!`, `update_and_stop!`, `reinit!`
 """
-mutable struct NLPAtX{S, T <: AbstractVector} <: AbstractState{S, T}
+mutable struct NLPAtX{Score, S, T <: AbstractVector} <: AbstractState{S, T}
 
   #Unconstrained State
   x::T     # current point
-  fx::eltype(T) # objective function
+  fx::S # objective function
   gx::T  # gradient size: x
   Hx  # hessian size: |x| x |x|
 
@@ -66,12 +66,12 @@ mutable struct NLPAtX{S, T <: AbstractVector} <: AbstractState{S, T}
 
   #Resources State
   current_time::Float64
-  current_score::S
+  current_score::Score
 
   function NLPAtX(
     x::T,
     lambda::T,
-    current_score::S;
+    current_score::Score;
     fx::eltype(T) = _init_field(eltype(T)),
     gx::T = _init_field(T),
     Hx = _init_field(Matrix{eltype(T)}),
@@ -81,10 +81,10 @@ mutable struct NLPAtX{S, T <: AbstractVector} <: AbstractState{S, T}
     d::T = _init_field(T),
     res::T = _init_field(T),
     current_time::Float64 = NaN,
-  ) where {S, T <: AbstractVector}
+  ) where {Score, S, T <: AbstractVector}
     _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
 
-    return new{S, T}(x, fx, gx, Hx, mu, cx, Jx, lambda, d, res, current_time, current_score)
+    return new{Score, eltype(T), T}(x, fx, gx, Hx, mu, cx, Jx, lambda, d, res, current_time, current_score)
   end
 end
 
@@ -166,7 +166,7 @@ reinit!: function that set all the entries at void except the mandatory x
 Note: if `x` or `lambda` are given as keyword arguments they will be
 prioritized over the existing `x`, `lambda` and the default `Counters`.
 """
-function reinit!(stateatx::NLPAtX{S, T}, x::T, l::T; kwargs...) where {S, T}
+function reinit!(stateatx::NLPAtX{Score, S, T}, x::T, l::T; kwargs...) where {Score, S, T}
   for k ∈ fieldnames(NLPAtX)
     if k ∉ [:x, :lambda]
       setfield!(stateatx, k, _init_field(typeof(getfield(stateatx, k))))
@@ -183,7 +183,7 @@ function reinit!(stateatx::NLPAtX{S, T}, x::T, l::T; kwargs...) where {S, T}
   return update!(stateatx; kwargs...)
 end
 
-function reinit!(stateatx::NLPAtX{S, T}, x::T; kwargs...) where {S, T}
+function reinit!(stateatx::NLPAtX{Score, S, T}, x::T; kwargs...) where {Score, S, T}
   for k ∈ fieldnames(NLPAtX)
     if k ∉ [:x, :lambda]
       setfield!(stateatx, k, _init_field(typeof(getfield(stateatx, k))))
