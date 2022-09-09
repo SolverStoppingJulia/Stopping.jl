@@ -70,8 +70,6 @@
   #The test at zero is controlled by the function meta.tol_check which
   #takes 3 arguments: atol, rtol, optimality0. By default it check if the score
   #is less than: max(atol, rtol * opt0)
-  stop1.meta.tol_check = (atol, rtol, opt0) -> atol
-  @test Stopping._null_test(stop1, Inf) == false
   #This can be determined in the initialization of the Stopping
   stop3 = GenericStopping(pb, state1, tol_check = (atol, rtol, opt0) -> atol)
   @test Stopping._null_test(stop3, Inf) == false
