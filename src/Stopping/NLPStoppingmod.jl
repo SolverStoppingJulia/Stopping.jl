@@ -374,25 +374,29 @@ function _resources_check!(
 end
 
 function check_entries_counters(nlp::AbstractNLPModel, max_cntrs)
-  max_f = false
   for f in keys(max_cntrs)
     if f in fieldnames(Counters)
-      max_f = max_f || (eval(f)(nlp) > max_cntrs[f])
+      if eval(f)(nlp)::Int > max_cntrs[f]
+        return true
+      end
     end
   end
-  return max_f
+  return false
 end
 
 function check_entries_counters(nlp::AbstractNLSModel, max_cntrs)
-  max_f = false
   for f in keys(max_cntrs)
-    if f in fieldnames(NLSCounters)
-      max_f = f != :counters ? (max_f || (eval(f)(nlp) > max_cntrs[f])) : max_f
+    if (f in fieldnames(NLSCounters)) && (f != :counters)
+      if eval(f)(nlp)::Int > max_cntrs[f]
+        return true
+      end
     elseif f in fieldnames(Counters)
-      max_f = max_f || (eval(f)(nlp) > max_cntrs[f])
+      if eval(f)(nlp)::Int > max_cntrs[f]
+        return true
+      end
     end
   end
-  return max_f
+  return false
 end
 
 """
