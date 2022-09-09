@@ -376,10 +376,7 @@ end
 function check_entries_counters(nlp::AbstractNLPModel, max_cntrs)
   for f in keys(max_cntrs)
     if f in fieldnames(Counters)
-      max_f = @eval begin
-          $f($(QuoteNode(nlp))) > $(QuoteNode(max_cntrs))[$(QuoteNode(f))]
-      end
-      if max_f
+      if eval(f)(nlp)::Int > max_cntrs[f]
         return true
       end
     end
@@ -390,18 +387,13 @@ end
 function check_entries_counters(nlp::AbstractNLSModel, max_cntrs)
   for f in keys(max_cntrs)
     if (f in fieldnames(NLSCounters)) && (f != :counters)
-      max_f = @eval begin
-        $f($(QuoteNode(nlp))) > $(QuoteNode(max_cntrs))[$(QuoteNode(f))]
+      if eval(f)(nlp)::Int > max_cntrs[f]
+        return true
       end
     elseif f in fieldnames(Counters)
-      max_f = @eval begin
-        $f($(QuoteNode(nlp))) > $(QuoteNode(max_cntrs))[$(QuoteNode(f))]
+      if eval(f)(nlp)::Int > max_cntrs[f]
+        return true
       end
-    else
-      max_f = false
-    end
-    if max_f
-      return true
     end
   end
   return false
