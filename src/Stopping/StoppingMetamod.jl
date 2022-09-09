@@ -66,6 +66,7 @@ mutable struct StoppingMeta{
   MUS, #Meta User Struct
   Ftol <: Union{Function, CheckType},
   Ftolneg <: Union{Function, CheckType},
+  Opt <: Function,
 } <: AbstractStoppingMeta
 
   # problem tolerances
@@ -78,7 +79,7 @@ mutable struct StoppingMeta{
   tol_check_neg::Ftolneg # function of atol, rtol and optimality0
   check_pos::CheckType #pre-allocation for positive tolerance
   check_neg::CheckType #pre-allocation for negative tolerance
-  optimality_check::Function # stopping criterion
+  optimality_check::Opt # stopping criterion
   # Function of (pb, state; kwargs...)
   #return type  :: Union{Number, eltype(stp.meta)}
   recomp_tol::Bool #true if tolerances are updated
@@ -319,8 +320,8 @@ const meta_statuses = [
 Return true if one of the decision boolean is true.
 """
 function OK_check(
-  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg},
-) where {TolType, CheckType, MUS, Ftol, Ftolneg}
+  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg, Opt},
+) where {TolType, CheckType, MUS, Ftol, Ftolneg, Opt}
   #13 checks
   OK =
     meta.optimal ||
@@ -345,8 +346,8 @@ end
 Return the pair of tolerances, recomputed if `meta.recomp_tol` is `true`.
 """
 function tol_check(
-  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg},
-) where {TolType, CheckType, MUS, Ftol, Ftolneg}
+  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg, Opt},
+) where {TolType, CheckType, MUS, Ftol, Ftolneg, Opt}
   if meta.recomp_tol
     atol, rtol, opt0 = meta.atol, meta.rtol, meta.optimality0
     setfield!(meta, :check_pos, meta.tol_check(atol, rtol, opt0))
@@ -362,11 +363,11 @@ end
 Update the tolerances parameters. Set `meta.recomp_tol` as `true`.
 """
 function update_tol!(
-  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg};
+  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg, Opt};
   atol::TolType = meta.atol,
   rtol::TolType = meta.rtol,
   optimality0::TolType = meta.optimality0,
-) where {TolType, CheckType, MUS, Ftol, Ftolneg}
+) where {TolType, CheckType, MUS, Ftol, Ftolneg, Opt}
   setfield!(meta, :recomp_tol, true)
   setfield!(meta, :atol, atol)
   setfield!(meta, :rtol, rtol)
@@ -376,8 +377,8 @@ function update_tol!(
 end
 
 function reinit!(
-  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg},
-) where {TolType, CheckType, MUS, Ftol, Ftolneg}
+  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg, Opt},
+) where {TolType, CheckType, MUS, Ftol, Ftolneg, Opt}
   for k in meta_statuses
     setfield!(meta, k, false)
   end
@@ -386,20 +387,20 @@ function reinit!(
 end
 
 function checktype(
-  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg},
-) where {TolType, CheckType, MUS, Ftol, Ftolneg}
+  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg, Opt},
+) where {TolType, CheckType, MUS, Ftol, Ftolneg, Opt}
   return CheckType
 end
 
 function toltype(
-  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg},
-) where {TolType, CheckType, MUS, Ftol, Ftolneg}
+  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg, Opt},
+) where {TolType, CheckType, MUS, Ftol, Ftolneg, Opt}
   return TolType
 end
 
 function metausertype(
-  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg},
-) where {TolType, CheckType, MUS, Ftol, Ftolneg}
+  meta::StoppingMeta{TolType, CheckType, MUS, Ftol, Ftolneg, Opt},
+) where {TolType, CheckType, MUS, Ftol, Ftolneg, Opt}
   return MUS
 end
 

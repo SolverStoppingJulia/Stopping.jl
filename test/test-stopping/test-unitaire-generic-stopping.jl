@@ -44,11 +44,17 @@
   #We now test that stop! verifies that:
   #- there are no NaN in the score
   #- if the listofstates != nothing, stop! increases the list of states with the current_state.
-  stop0.meta.optimality_check = (a, b) -> NaN
+  stop0 = GenericStopping(
+    rosenbrock,
+    state0,
+    tol_check = (atol, rtol, opt0) -> atol + rtol * opt0,
+    list = ListofStates(state0),
+    optimality_check = (a, b) -> NaN,
+  )
   #stop0.listofstates = ListofStates(state0)
   stop!(stop0)
   @test :DomainError in status(stop0, list = true)
-  @test length(stop0.listofstates) == 4
+  @test length(stop0.listofstates) == 2
 
   #Initialize a GenericStopping by default
   stop_def = GenericStopping(rosenbrock, x0, atol = 0.1)
