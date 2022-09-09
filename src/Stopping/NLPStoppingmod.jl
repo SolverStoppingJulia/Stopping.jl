@@ -377,7 +377,9 @@ function check_entries_counters(nlp::AbstractNLPModel, max_cntrs)
   max_f = false
   for f in keys(max_cntrs)
     if f in fieldnames(Counters)
-      max_f = max_f || (eval(f)(nlp) > max_cntrs[f])
+      @eval begin
+          max_f = max_f || ($f(nlp) > max_cntrs[f])
+      end
     end
   end
   return max_f
@@ -387,9 +389,13 @@ function check_entries_counters(nlp::AbstractNLSModel, max_cntrs)
   max_f = false
   for f in keys(max_cntrs)
     if f in fieldnames(NLSCounters)
-      max_f = f != :counters ? (max_f || (eval(f)(nlp) > max_cntrs[f])) : max_f
+      @eval begin
+        max_f = f != :counters ? (max_f || ($f(nlp) > max_cntrs[f])) : max_f
+      end
     elseif f in fieldnames(Counters)
-      max_f = max_f || (eval(f)(nlp) > max_cntrs[f])
+      @eval begin
+        max_f = max_f || ($f(nlp) > max_cntrs[f])
+      end
     end
   end
   return max_f
