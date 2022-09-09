@@ -414,14 +414,14 @@ function _unbounded_problem_check!(
   stp::NLPStopping{Pb, M, SRC, NLPAtX{Score, S, T}, MStp, LoS},
   x::AbstractVector,
 ) where {Pb, M, SRC, MStp, LoS, Score, S, T}
-  if isnan(stp.current_state.fx)
+  if isnan(get_fx(stp.current_state))
     stp.current_state.fx = obj(stp.pb, x)
   end
 
   if stp.pb.meta.minimize
-    f_too_large = stp.current_state.fx <= -stp.meta.unbounded_threshold
+    f_too_large = get_fx(stp.current_state) <= -stp.meta.unbounded_threshold
   else
-    f_too_large = stp.current_state.fx >= stp.meta.unbounded_threshold
+    f_too_large = get_fx(stp.current_state) >= stp.meta.unbounded_threshold
   end
 
   if f_too_large
@@ -435,14 +435,14 @@ function _unbounded_problem_check!(
   stp::NLPStopping{Pb, M, SRC, OneDAtX{S, T}, MStp, LoS},
   x::Union{AbstractVector, Number},
 ) where {Pb, M, SRC, MStp, LoS, S, T}
-  if isnan(stp.current_state.fx)
+  if isnan(get_fx(stp.current_state))
     stp.current_state.fx = obj(stp.pb, x)
   end
 
   if stp.pb.meta.minimize
-    f_too_large = stp.current_state.fx <= -stp.meta.unbounded_threshold
+    f_too_large = get_fx(stp.current_state) <= -stp.meta.unbounded_threshold
   else
-    f_too_large = stp.current_state.fx >= stp.meta.unbounded_threshold
+    f_too_large = get_fx(stp.current_state) >= stp.meta.unbounded_threshold
   end
 
   return stp.meta.unbounded_pb
