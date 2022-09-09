@@ -203,13 +203,14 @@ Examples:
 `_domain_check(state1, x = true)`
 """
 function _domain_check(stateatx::T; kwargs...) where {T <: AbstractState}
-  for k ∈ setdiff(fieldnames(T), keys(kwargs))
-    gf = getfield(stateatx, k)
-    if _check_nan_miss(gf)
-      return true
+  for k in fieldnames(T)
+    if !(k in keys(kwargs))
+      gf = getfield(stateatx, k)
+      if Stopping._check_nan_miss(gf)
+        return true
+      end
     end
   end
-
   return false
 end
 
