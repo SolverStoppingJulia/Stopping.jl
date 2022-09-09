@@ -156,6 +156,18 @@ function NLPAtX(
   )
 end
 
+for field in fieldnames(NLPAtX)
+  meth = Symbol("get_", field)
+  @eval begin
+    @doc """
+        $($meth)(state)
+    Return the value $($(QuoteNode(field))) from the state.
+    """
+    $meth(state::NLPAtX) = getproperty(state, $(QuoteNode(field)))
+  end
+  @eval export $meth
+end
+
 """
 reinit!: function that set all the entries at void except the mandatory x
 

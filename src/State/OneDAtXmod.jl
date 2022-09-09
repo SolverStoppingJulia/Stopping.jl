@@ -79,3 +79,15 @@ function OneDAtX(
     current_time = current_time,
   )
 end
+
+for field in fieldnames(OneDAtX)
+  meth = Symbol("get_", field)
+  @eval begin
+    @doc """
+        $($meth)(state)
+    Return the value $($(QuoteNode(field))) from the state.
+    """
+    $meth(state::OneDAtX) = getproperty(state, $(QuoteNode(field)))
+  end
+  @eval export $meth
+end

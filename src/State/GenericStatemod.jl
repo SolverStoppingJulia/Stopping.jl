@@ -82,6 +82,18 @@ end
 scoretype(typestate::AbstractState{S, T}) where {S, T} = S
 xtype(typestate::AbstractState{S, T}) where {S, T} = T
 
+for field in fieldnames(GenericState)
+  meth = Symbol("get_", field)
+  @eval begin
+    @doc """
+        $($meth)(state)
+    Return the value $($(QuoteNode(field))) from the state.
+    """
+    $meth(state::GenericState) = getproperty(state, $(QuoteNode(field)))
+  end
+  @eval export $meth
+end
+
 """
     `update!(:: AbstractState; convert = false, kwargs...)`
 
