@@ -104,7 +104,7 @@ function set_current_score!(state::GenericState{S, T}, current_score::S) where {
   return state
 end
 
-function set_x(state::GenericState{S, T}, x::T) where {S, T}
+function set_x!(state::GenericState{S, T}, x::T) where {S, T}
   if length(state.x) == length(x)
     state.x .= x
   else
@@ -113,7 +113,7 @@ function set_x(state::GenericState{S, T}, x::T) where {S, T}
   return state
 end
 
-function set_d(state::GenericState{S, T}, d::T) where {S, T}
+function set_d!(state::GenericState{S, T}, d::T) where {S, T}
   if length(state.d) == length(d)
     state.d .= d
   else
@@ -122,7 +122,7 @@ function set_d(state::GenericState{S, T}, d::T) where {S, T}
   return state
 end
 
-function set_res(state::GenericState{S, T}, res::T) where {S, T}
+function set_res!(state::GenericState{S, T}, res::T) where {S, T}
   if length(state.res) == length(res)
     state.res .= res
   else

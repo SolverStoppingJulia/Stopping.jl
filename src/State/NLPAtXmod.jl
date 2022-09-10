@@ -191,7 +191,7 @@ function Stopping.set_current_score!(state::NLPAtX{Score, S, T}, current_score::
   return state
 end
 
-function set_x(state::NLPAtX{Score, S, T}, x::T) where {Score, S, T}
+function set_x!(state::NLPAtX{Score, S, T}, x::T) where {Score, S, T}
   if length(state.x) == length(x)
     state.x .= x
   else
@@ -200,7 +200,7 @@ function set_x(state::NLPAtX{Score, S, T}, x::T) where {Score, S, T}
   return state
 end
 
-function set_d(state::NLPAtX{Score, S, T}, d::T) where {Score, S, T}
+function set_d!(state::NLPAtX{Score, S, T}, d::T) where {Score, S, T}
   if length(state.d) == length(d)
     state.d .= d
   else
@@ -209,7 +209,7 @@ function set_d(state::NLPAtX{Score, S, T}, d::T) where {Score, S, T}
   return state
 end
 
-function set_res(state::NLPAtX{Score, S, T}, res::T) where {Score, S, T}
+function set_res!(state::NLPAtX{Score, S, T}, res::T) where {Score, S, T}
   if length(state.res) == length(res)
     state.res .= res
   else
@@ -218,7 +218,7 @@ function set_res(state::NLPAtX{Score, S, T}, res::T) where {Score, S, T}
   return state
 end
 
-function set_lambda(state::NLPAtX{Score, S, T}, lambda::T) where {Score, S, T}
+function set_lambda!(state::NLPAtX{Score, S, T}, lambda::T) where {Score, S, T}
   if length(state.lambda) == length(lambda)
     state.lambda .= lambda
   else
@@ -227,7 +227,7 @@ function set_lambda(state::NLPAtX{Score, S, T}, lambda::T) where {Score, S, T}
   return state
 end
 
-function set_mu(state::NLPAtX{Score, S, T}, mu::T) where {Score, S, T}
+function set_mu!(state::NLPAtX{Score, S, T}, mu::T) where {Score, S, T}
   if length(state.mu) == length(mu)
     state.mu .= mu
   else
@@ -236,12 +236,12 @@ function set_mu(state::NLPAtX{Score, S, T}, mu::T) where {Score, S, T}
   return state
 end
 
-function set_fx(state::NLPAtX{Score, S, T}, fx::S) where {Score, S, T}
+function set_fx!(state::NLPAtX{Score, S, T}, fx::S) where {Score, S, T}
   state.fx = fx
   return state
 end
 
-function set_gx(state::NLPAtX{Score, S, T}, gx::T) where {Score, S, T}
+function set_gx!(state::NLPAtX{Score, S, T}, gx::T) where {Score, S, T}
   if length(state.gx) == length(gx)
     state.gx .= gx
   else
@@ -250,7 +250,7 @@ function set_gx(state::NLPAtX{Score, S, T}, gx::T) where {Score, S, T}
   return state
 end
 
-function set_cx(state::NLPAtX{Score, S, T}, cx::T) where {Score, S, T}
+function set_cx!(state::NLPAtX{Score, S, T}, cx::T) where {Score, S, T}
   if length(state.cx) == length(cx)
     state.cx .= cx
   else
