@@ -86,7 +86,7 @@
   reinit!(stop_bnd.current_state)
   @test optim_check_bounded(stop_bnd.pb, stop_bnd.current_state) == 0.0
 
-  stop_bnd.meta.optimality_check = (x, y) -> NaN
+  stop_bnd = NLPStopping(nlp_bnd, optimality_check = (x, y) -> NaN)
   start!(stop_bnd)
   @test stop_bnd.meta.domainerror == true
   reinit!(stop_bnd, rcounters = true)
@@ -95,7 +95,7 @@
   stop!(stop_bnd)
   @test stop_bnd.meta.domainerror == true
 
-  stop_bnd.meta.optimality_check = (x, y) -> 0.0
+  stop_bnd = NLPStopping(nlp_bnd, optimality_check = (x, y) -> 0.0)
   reinit!(stop_bnd, rcounters = true)
   @test neval_grad(stop_bnd.pb) == 0
   fill_in!(stop_bnd, zeros(5), mu = ones(5), lambda = zeros(0))

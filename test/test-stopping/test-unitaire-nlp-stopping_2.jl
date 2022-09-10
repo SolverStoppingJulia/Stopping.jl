@@ -32,7 +32,7 @@
   @test stop_nlp_default.meta.atol == 1.0
   @test stop!(stop_nlp_default) == true
 
-  stop_nlp_default.meta.optimality_check = unconstrained_check
+  stop_nlp_default = NLPStopping(nlp2, atol = 1.0, optimality_check = unconstrained_check)
   update_and_stop!(stop_nlp_default, cx = nothing)
   @test stop_nlp_default.current_state.cx != nothing
 

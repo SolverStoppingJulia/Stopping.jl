@@ -88,7 +88,7 @@
   #@test shamanskii_stop(stop.pb, stop.current_state) == 0.0 #specific LineModel
   @test goldstein(stop.pb, stop.current_state) >= 0.0
 
-  stop.meta.optimality_check = (x, y) -> 0.0
+  stop = NLPStopping(pb, lsatx, max_iter = 10, optimality_check = (x, y) -> 0.0)
 
   #stop.pb = ADNLPModel(x -> 0.0, [1.0]) #Can't do that
   #stop.meta.max_f = -1
