@@ -309,7 +309,7 @@ Note:
 """
 function linear_system_check(pb::LinearSystem, state::AbstractState; pnorm::Real = Inf, kwargs...)
   pb.counters.nprod += 1
-  if state.res == _init_field(typeof(state.res))
+  if length(state.res) == 0
     update!(state, res = pb.A * state.x - pb.b)
   end
 
@@ -317,7 +317,7 @@ function linear_system_check(pb::LinearSystem, state::AbstractState; pnorm::Real
 end
 
 function linear_system_check(pb::LLSModel, state::AbstractState; pnorm::Real = Inf, kwargs...)
-  if state.res == _init_field(typeof(state.res))
+  if length(state.res) == 0
     Axmb = if xtype(state) <: SparseVector
       sparse(residual(pb, state.x))
     else
