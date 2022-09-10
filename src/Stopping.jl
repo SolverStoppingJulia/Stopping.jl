@@ -65,6 +65,7 @@ export scoretype, xtype
 export AbstractState, GenericState, update!, copy, compress_state!, copy_compress_state
 export OneDAtX, update!
 export NLPAtX, update!
+export set_x!, set_d!, set_res!, set_current_score!, set_fx!, set_gx!, set_cx!, set_lambda!, set_mu!
 
 include("State/ListOfStates.jl")
 

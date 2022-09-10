@@ -181,6 +181,88 @@ for field in fieldnames(NLPAtX)
   @eval export $meth
 end
 
+function set_current_score!(state::NLPAtX{Score, S, T}, current_score::Score) where {Score, S, T}
+  if length(state.current_score) == length(current_score)
+    state.current_score .= current_score
+  else
+    state.current_score = current_score
+  end
+  return state
+end
+
+function Stopping.set_current_score!(state::NLPAtX{Score, S, T}, current_score::Score) where {Score <: Number, S, T}
+  state.current_score = current_score
+  return state
+end
+
+function set_x!(state::NLPAtX{Score, S, T}, x::T) where {Score, S, T}
+  if length(state.x) == length(x)
+    state.x .= x
+  else
+    state.x = x
+  end
+  return state
+end
+
+function set_d!(state::NLPAtX{Score, S, T}, d::T) where {Score, S, T}
+  if length(state.d) == length(d)
+    state.d .= d
+  else
+    state.d = d
+  end
+  return state
+end
+
+function set_res!(state::NLPAtX{Score, S, T}, res::T) where {Score, S, T}
+  if length(state.res) == length(res)
+    state.res .= res
+  else
+    state.res = res
+  end
+  return state
+end
+
+function set_lambda!(state::NLPAtX{Score, S, T}, lambda::T) where {Score, S, T}
+  if length(state.lambda) == length(lambda)
+    state.lambda .= lambda
+  else
+    state.lambda = lambda
+  end
+  return state
+end
+
+function set_mu!(state::NLPAtX{Score, S, T}, mu::T) where {Score, S, T}
+  if length(state.mu) == length(mu)
+    state.mu .= mu
+  else
+    state.mu = mu
+  end
+  return state
+end
+
+function set_fx!(state::NLPAtX{Score, S, T}, fx::S) where {Score, S, T}
+  state.fx = fx
+  return state
+end
+
+function set_gx!(state::NLPAtX{Score, S, T}, gx::T) where {Score, S, T}
+  if length(state.gx) == length(gx)
+    state.gx .= gx
+  else
+    state.gx = gx
+  end
+  return state
+end
+
+function set_cx!(state::NLPAtX{Score, S, T}, cx::T) where {Score, S, T}
+  if length(state.cx) == length(cx)
+    state.cx .= cx
+  else
+    state.cx = cx
+  end
+  return state
+end
+
 """
 reinit!: function that set all the entries at void except the mandatory x
 
