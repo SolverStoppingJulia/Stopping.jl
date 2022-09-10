@@ -599,12 +599,7 @@ function _optimality_check!(
   stp::AbstractStopping{Pb, M, SRC, T, MStp, LoS};
   kwargs...,
 ) where {Pb, M, SRC, T, MStp, LoS}
-  setfield!(
-    stp.current_state,
-    :current_score,
-    stp.meta.optimality_check(stp.pb, stp.current_state; kwargs...),
-  )
-
+  set_current_score!(stp.current_state, stp.meta.optimality_check(stp.pb, stp.current_state; kwargs...))
   return stp.current_state.current_score
 end
 

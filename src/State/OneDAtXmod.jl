@@ -91,3 +91,8 @@ for field in fieldnames(OneDAtX)
   end
   @eval export $meth
 end
+
+function set_current_score!(state::GenericState{S, T}, current_score::S) where {S, T}
+  state.current_score .= current_score
+  return state
+end

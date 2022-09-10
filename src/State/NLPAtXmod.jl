@@ -181,6 +181,11 @@ for field in fieldnames(NLPAtX)
   @eval export $meth
 end
 
+function set_current_score!(state::NLPAtX{Score, S, T}, current_score::Score) where {Score, S, T}
+  state.current_score .= current_score
+  return state
+end
+
 """
 reinit!: function that set all the entries at void except the mandatory x
 
