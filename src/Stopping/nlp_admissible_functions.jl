@@ -15,7 +15,7 @@ function unconstrained_check(
   pnorm::eltype(T) = eltype(T)(Inf),
   kwargs...,
 ) where {S, T}
-  if state.gx == _init_field(typeof(state.gx)) # should be filled if empty
+  if length(state.gx) == 0 # should be filled if empty
     update!(state, gx = grad(pb, state.x))
   end
 
@@ -37,7 +37,7 @@ function optim_check_bounded(
   pnorm::eltype(T) = eltype(T)(Inf),
   kwargs...,
 ) where {S, T}
-  if state.gx == _init_field(typeof(state.gx)) # should be filled if void
+  if length(state.gx) == 0 # should be filled if void
     update!(state, gx = grad(pb, state.x))
   end
 
@@ -116,16 +116,16 @@ function KKT(
   pnorm::eltype(T) = eltype(T)(Inf),
   kwargs...,
 ) where {S, T}
-  if unconstrained(pb) && state.gx == _init_field(typeof(state.gx))
+  if unconstrained(pb) && length(state.gx) == 0
     @warn "KKT needs stp.current_state.gx to be filled-in."
     return eltype(T)(Inf)
-  elseif has_bounds(pb) && state.mu == _init_field(typeof(state.mu))
+  elseif has_bounds(pb) && length(state.mu) == 0
     @warn "KKT needs stp.current_state.mu to be filled-in."
     return eltype(T)(Inf)
   elseif get_ncon(pb) > 0 && (
-    state.cx == _init_field(typeof(state.cx)) ||
-    state.Jx == _init_field(typeof(state.Jx)) ||
-    state.lambda == _init_field(typeof(state.lambda))
+    length(state.cx) == 0 ||
+    size(state.Jx) == (0,0) ||
+    length(state.lambda) == 0
   )
     @warn "KKT needs stp.current_state.cx, stp.current_state.Jx and stp.current_state.lambda to be filled-in."
     return eltype(T)(Inf)

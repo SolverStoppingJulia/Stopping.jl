@@ -14,7 +14,7 @@ function _compute_mutliplier(
   active_prec_b::Real = 1e-6,
 ) where {MT, T}
   n = length(x)
-  nc = cx == _init_field(typeof(cx)) ? 0 : length(cx)
+  nc = length(cx)
 
   #active res_bounds
   Ib = findall(x -> (norm(x) <= active_prec_b), min(abs.(x - pb.meta.lvar), abs.(x - pb.meta.uvar)))
