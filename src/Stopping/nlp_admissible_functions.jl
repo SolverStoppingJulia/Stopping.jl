@@ -122,11 +122,8 @@ function KKT(
   elseif has_bounds(pb) && length(state.mu) == 0
     @warn "KKT needs stp.current_state.mu to be filled-in."
     return eltype(T)(Inf)
-  elseif get_ncon(pb) > 0 && (
-    length(state.cx) == 0 ||
-    size(state.Jx) == (0,0) ||
-    length(state.lambda) == 0
-  )
+  elseif get_ncon(pb) > 0 &&
+         (length(state.cx) == 0 || size(state.Jx) == (0, 0) || length(state.lambda) == 0)
     @warn "KKT needs stp.current_state.cx, stp.current_state.Jx and stp.current_state.lambda to be filled-in."
     return eltype(T)(Inf)
   end
