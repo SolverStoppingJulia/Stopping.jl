@@ -182,7 +182,11 @@ for field in fieldnames(NLPAtX)
 end
 
 function set_current_score!(state::NLPAtX{Score, S, T}, current_score::Score) where {Score, S, T}
-  state.current_score .= current_score
+  if length(state.current_score) == length(current_score)
+    state.current_score .= current_score
+  else
+    state.current_score = current_score
+  end
   return state
 end
 
