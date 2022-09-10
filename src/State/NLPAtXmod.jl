@@ -186,6 +186,11 @@ function set_current_score!(state::NLPAtX{Score, S, T}, current_score::Score) wh
   return state
 end
 
+function Stopping.set_current_score!(state::NLPAtX{Score, S, T}, current_score::Score) where {Score <: Number, S, T}
+  state.current_score = current_score
+  return state
+end
+
 """
 reinit!: function that set all the entries at void except the mandatory x
 

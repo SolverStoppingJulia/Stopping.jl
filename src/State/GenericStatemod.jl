@@ -99,6 +99,11 @@ function set_current_score!(state::GenericState{S, T}, current_score::S) where {
   return state
 end
 
+function set_current_score!(state::GenericState{S, T}, current_score::S) where {S <: Number, T}
+  state.current_score = current_score
+  return state
+end
+
 """
     `update!(:: AbstractState; convert = false, kwargs...)`
 
