@@ -131,23 +131,6 @@ function set_res!(state::GenericState{S, T}, res::T) where {S, T}
   return state
 end
 
-function Stopping._domain_check(stateatx::NLPAtX{Score, S, T}; current_score = false, x = false) where {Score, S, T}
-  if !x && Stopping._check_nan_miss(get_x(stateatx))
-      return true
-  end
-  if !current_score && Stopping._check_nan_miss(get_current_score(stateatx))
-      return true
-  end
-  if Stopping._check_nan_miss(get_d(stateatx))
-      return true
-  end
-  if Stopping._check_nan_miss(get_res(stateatx))
-      return true
-  end
-  return false
-end
-
-
 """
     `update!(:: AbstractState; convert = false, kwargs...)`
 
