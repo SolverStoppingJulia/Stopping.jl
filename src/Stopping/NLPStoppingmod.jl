@@ -219,7 +219,16 @@ function fill_in!(
   matrix_info::Bool = true,
   convert::Bool = true,
   kwargs...,
-) where {Pb, M<:AbstractStoppingMeta, SRC<:AbstractStopRemoteControl, MStp, LoS<:AbstractListofStates, Score, S, T<:AbstractVector}
+) where {
+  Pb,
+  M <: AbstractStoppingMeta,
+  SRC <: AbstractStopRemoteControl,
+  MStp,
+  LoS <: AbstractListofStates,
+  Score,
+  S,
+  T <: AbstractVector,
+}
   gfx = isnothing(fx) ? obj(stp.pb, x) : fx
   ggx = isnothing(gx) ? grad(stp.pb, x) : gx
 
@@ -280,7 +289,16 @@ function fill_in!(
   g₀::Union{T, Nothing} = nothing,
   convert::Bool = true,
   kwargs...,
-) where {Pb, M<:AbstractStoppingMeta, SRC<:AbstractStopRemoteControl, MStp, LoS<:AbstractListofStates, Score, S, T}
+) where {
+  Pb,
+  M <: AbstractStoppingMeta,
+  SRC <: AbstractStopRemoteControl,
+  MStp,
+  LoS <: AbstractListofStates,
+  Score,
+  S,
+  T,
+}
   gfx = isnothing(fx) ? obj(stp.pb, x) : fx
   ggx = isnothing(gx) ? grad(stp.pb, x) : gx
   gf₀ = isnothing(f₀) ? obj(stp.pb, 0.0) : f₀
