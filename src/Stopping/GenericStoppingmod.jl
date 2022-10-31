@@ -174,7 +174,7 @@ fill_in!: fill in the unspecified values of the AbstractState.
 
 Note: NotImplemented for Abstract/Generic-Stopping.
 """
-function fill_in!(stp::AbstractStopping, x::T) where {T}
+function fill_in!(stp::AbstractStopping, x::AbstractVector)
   return throw(error("NotImplemented function"))
 end
 
