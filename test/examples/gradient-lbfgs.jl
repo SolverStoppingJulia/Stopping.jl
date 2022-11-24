@@ -14,7 +14,7 @@
 #the history (using the strength of the ListofStates).
 #
 ###############################################################################
-using Stopping, NLPModels, LinearAlgebra, Test, Printf
+using Stopping, NLPModels, LinearAlgebra, Printf
 
 import Stopping.armijo
 function armijo(xk, dk, fk, slope, f)

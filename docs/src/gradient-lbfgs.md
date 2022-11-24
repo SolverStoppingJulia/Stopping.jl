@@ -1,7 +1,7 @@
 ## Mixed-algorithms: a ListofStates tutorial
 
-We illustrate here the use of `ListofStates` in dealing with a warm start
-procedure. The full code of this tutorial can be found [here](https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/test/examples/gradient-lbfgs.jl).
+We illustrate here the use of `ListofStates` in dealing with a warm start procedure.
+The full code of this tutorial can be found [here](https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/test/examples/gradient-lbfgs.jl).
 
 `ListofStates` is designed to store the of the iteration process.
 In this tutorial, we compare the resolution of a convex unconstrained problem with 3 variants:
@@ -9,13 +9,14 @@ In this tutorial, we compare the resolution of a convex unconstrained problem wi
  - an inverse-BFGS method
  - a mix of 5 steps of steepest descent and then switching to a BFGS initialized with the 5 previous steps.
 
-```
-using Stopping, NLPModels, LinearAlgebra, Test, Printf
+```@example ex1
+using Stopping, ADNLPModels, NLPModels, LinearAlgebra, Printf
 ```
 
 First, we introduce our two implementations that both uses an backtracking Armijo linesearch.
+First, we define a steepest descent method and a BFGS quasi-Newton method both using an elementary backtracking Armijo linesearch.
 
-```
+```@example ex1
 import Stopping.armijo
 function armijo(xk, dk, fk, slope, f)
   t = 1.0
@@ -27,7 +28,7 @@ function armijo(xk, dk, fk, slope, f)
   return t, fk_new
 end
 
-function steepest_descent(stp :: NLPStopping)
+function steepest_descent(stp::NLPStopping)
 
   xk = stp.current_state.x
   fk, gk = objgrad(stp.pb, xk)
@@ -50,16 +51,13 @@ function steepest_descent(stp :: NLPStopping)
   return stp
 end
 
-function bfgs_quasi_newton_armijo(stp :: NLPStopping; Hk = nothing)
+function bfgs_quasi_newton_armijo(stp::NLPStopping; Hk = I)
 
   xk = stp.current_state.x
   fk, gk = objgrad(stp.pb, xk)
   gm = gk
 
   dk, t = similar(gk), 1.
-  if isnothing(Hk)
-    Hk = I #start from identity matrix
-  end
 
   OK = update_and_start!(stp, fx = fk, gx = gk)
 
@@ -89,47 +87,70 @@ function bfgs_quasi_newton_armijo(stp :: NLPStopping; Hk = nothing)
     OK = update_and_stop!(stp, x = xk, fx = fk, gx = gk)
     @printf "%2d %7.1e %7.1e %7.1e %7.1e\n" stp.meta.nb_of_stop fk norm(stp.current_state.current_score) t slope
   end
-  stp.stopping_user_struct = Dict( :Hk => Hk)
+  stp.stopping_user_struct = Dict(:Hk => Hk)
   return stp
 end
 ```
 
 We consider the following convex unconstrained problem model using `ADNLPModels.jl` and defines a related `NLPStopping`.
 
-```
-fH(x) = (x[2]+x[1].^2-11).^2+(x[1]+x[2].^2-7).^2
+```@example ex1
+fH(x) = (x[2] + x[1] .^ 2 - 11) .^ 2 + (x[1] + x[2] .^ 2 - 7) .^ 2
 nlp = ADNLPModel(fH, [10., 20.])
-stp = NLPStopping(nlp, optimality_check = unconstrained_check, 
-                 atol = 1e-6, rtol = 0.0, max_iter = 100)
+stp = NLPStopping(
+  nlp,
+  optimality_check = unconstrained_check, 
+  atol = 1e-6,
+  rtol = 0.0,
+  max_iter = 100,
+)
 ```
 
-```
+Our first elementary runs will use separately the steepest descent method and the quasi-Newton method to solve the problem.
+
+## Steepest descent
+
+```@example ex1
 reinit!(stp, rstate = true, x = nlp.meta.x0)
 steepest_descent(stp)
 
-@test status(stp) == :Optimal
-@test stp.listofstates == VoidListofStates()
+(status(stp), elapsed_time(stp), get_list_of_states(stp), neval_obj(nlp), neval_grad(nlp))
+```
 
-@show elapsed_time(stp)
-@show nlp.counters
+## BFGS quasi-Newton
 
+```@example ex1
 reinit!(stp, rstate = true, x = nlp.meta.x0, rcounters = true)
 bfgs_quasi_newton_armijo(stp)
 
-@test status(stp) == :Optimal
-@test stp.listofstates == VoidListofStates()
+(status(stp), elapsed_time(stp), get_list_of_states(stp), neval_obj(nlp), neval_grad(nlp))
+```
 
-@show elapsed_time(stp)
-@show nlp.counters
+## Mix of Algorithms
 
+```@example ex1
 NLPModels.reset!(nlp)
-stp_warm = NLPStopping(nlp, optimality_check = unconstrained_check, 
-                      atol = 1e-6, rtol = 0.0, max_iter = 5, 
-                      n_listofstates = 5) #shortcut for list = ListofStates(5, Val{NLPAtX{Float64,Array{Float64,1},Array{Float64,2}}}()))
-steepest_descent(stp_warm)
-@test status(stp_warm) == :IterationLimit
-@test length(stp_warm.listofstates) == 5
+stp_warm = NLPStopping(
+  nlp,
+  optimality_check = unconstrained_check, 
+  atol = 1e-6,
+  rtol = 0.0,
+  max_iter = 5, 
+  n_listofstates = 5, #shortcut for list = ListofStates(5, Val{NLPAtX{Float64,Array{Float64,1},Array{Float64,2}}}()))
+)
+get_list_of_states(stp_warm)
+```
 
+```@example ex1
+steepest_descent(stp_warm)
+status(stp_warm) # :IterationLimit
+```
+
+```@example ex1
+length(get_list_of_states(stp_warm)) # 5
+```
+
+```@example ex1
 Hwarm = I
 for i=2:5
   sk = stp_warm.listofstates.list[i][1].x - stp_warm.listofstates.list[i-1][1].x 
@@ -139,12 +160,11 @@ for i=2:5
     global Hwarm = (I - ρk * sk * yk') * Hwarm * (I - ρk * yk * sk') + ρk * sk * sk'
   end
 end
+```
 
+```@example ex1
 reinit!(stp_warm)
 stp_warm.meta.max_iter = 100
 bfgs_quasi_newton_armijo(stp_warm, Hk = Hwarm)
-status(stp_warm)
-
-@show elapsed_time(stp_warm)
-@show nlp.counters
+(status(stp_warm), elapsed_time(stp_warm), get_list_of_states(stp_warm), neval_obj(nlp), neval_grad(nlp))
 ```
