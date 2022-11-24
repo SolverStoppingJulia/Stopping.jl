@@ -1,3 +1,22 @@
+@testset "Test ListofStates in NLPStopping constructors" begin
+  nlp = ADNLPModel(x -> sum(x), zeros(5))
+  n = 7
+  stp = NLPStopping(nlp, n_listofstates = n)
+  @test get_list_of_states(stp).n == 7
+
+  nlp_at_x = NLPAtX(zeros(5))
+  stp = NLPStopping(nlp, nlp_at_x, n_listofstates = n)
+  @test get_list_of_states(stp).n == 7
+
+  meta = StoppingMeta()
+  stp = NLPStopping(nlp, meta, nlp_at_x, n_listofstates = n)
+  @test get_list_of_states(stp).n == 7
+
+  stop_remote = StopRemoteControl()
+  stp = NLPStopping(nlp, meta, stop_remote, nlp_at_x, n_listofstates = n)
+  @test get_list_of_states(stp).n == 7
+end
+
 @testset "Test NLP Stopping unconstrained" begin
 
   # We create a simple function to test

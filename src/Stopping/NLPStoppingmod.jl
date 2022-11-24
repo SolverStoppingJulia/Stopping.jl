@@ -67,6 +67,7 @@ function NLPStopping(
   current_state::T;
   main_stp::AbstractStopping = VoidStopping(),
   list::AbstractListofStates = VoidListofStates(),
+  n_listofstates::Integer = 0,
   user_struct::AbstractDict = Dict(),
   kwargs...,
 ) where {
@@ -75,6 +76,9 @@ function NLPStopping(
   SRC <: AbstractStopRemoteControl,
   T <: AbstractState,
 }
+  if n_listofstates > 0
+    list = ListofStates(n_listofstates, Val{T}())
+  end
   return NLPStopping(pb, meta, stop_remote, current_state, main_stp, list, user_struct)
 end
 
@@ -84,10 +88,15 @@ function NLPStopping(
   current_state::T;
   main_stp::AbstractStopping = VoidStopping(),
   list::AbstractListofStates = VoidListofStates(),
+  n_listofstates::Integer = 0,
   user_struct::AbstractDict = Dict(),
   kwargs...,
 ) where {Pb <: AbstractNLPModel, M <: AbstractStoppingMeta, T <: AbstractState}
   stop_remote = StopRemoteControl(; kwargs...) #main_stp == VoidStopping() ? StopRemoteControl() : cheap_stop_remote_control()
+
+  if n_listofstates > 0
+    list = ListofStates(n_listofstates, Val{T}())
+  end
 
   return NLPStopping(pb, meta, stop_remote, current_state, main_stp, list, user_struct)
 end
@@ -98,6 +107,7 @@ function NLPStopping(
   stop_remote::AbstractStopRemoteControl = StopRemoteControl(),
   main_stp::AbstractStopping = VoidStopping(),
   list::AbstractListofStates = VoidListofStates(),
+  n_listofstates::Integer = 0,
   user_struct::AbstractDict = Dict(),
   kwargs...,
 ) where {Pb <: AbstractNLPModel, T <: AbstractState}
@@ -113,6 +123,10 @@ function NLPStopping(
     oc = kwargs[:optimality_check]
   else
     oc = KKT
+  end
+
+  if n_listofstates > 0
+    list = ListofStates(n_listofstates, Val{T}())
   end
 
   meta = StoppingMeta(; max_cntrs = mcntrs, optimality_check = oc, kwargs...)
