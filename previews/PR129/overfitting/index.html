@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Overfitting · Stopping.jl</title><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script><link href="../assets/style.css" rel="stylesheet" type="text/css"/></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">Stopping.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li><a class="tocitem" href="../api/">API</a></li><li><a class="tocitem" href="../idcard/">Stopping&#39;s ID</a></li><li><a class="tocitem" href="../idcard-state/">State&#39;s ID</a></li><li><a class="tocitem" href="../idcard-stoppingmeta/">Meta&#39;s ID</a></li><li><a class="tocitem" href="../howstopcheckoptimality/">Optimality in Stopping</a></li><li><a class="tocitem" href="../example-basic-Newton/">Stopping in action</a></li><li><a class="tocitem" href="../idcard-stopremote/">Stop remote control</a></li><li><a class="tocitem" href="../stop-workflow/">Stopping workflow</a></li><li><a class="tocitem" href="../speak-to-stopping/">Speak to stopping</a></li><li><a class="tocitem" href="../nlpstopping/">NLPStopping</a></li><li><a class="tocitem" href="../lastopping/">LAStopping</a></li><li><a class="tocitem" href="../index_tuto/">Readme</a></li><li><a class="tocitem" href="../howtostate/">How to State</a></li><li><a class="tocitem" href="../howtostate-nlp/">How to State for NLPs</a></li><li><a class="tocitem" href="../howtostop/">How to Stop</a></li><li><a class="tocitem" href="../howtostop-2/">How to Stop 2</a></li><li><a class="tocitem" href="../howtostop-nlp/">How to Stop for NLPs</a></li><li><a class="tocitem" href="../linear-algebra/">Solve linear algebra</a></li><li><a class="tocitem" href="../buffer/">Use a buffer function</a></li><li><a class="tocitem" href="../fixed-point/">A fixed point algorithm</a></li><li><a class="tocitem" href="../backls/">Backtracking linesearch algorithm</a></li><li><a class="tocitem" href="../uncons/">Unconstrained optimization algorithm</a></li><li><a class="tocitem" href="../active-set/">Active set algorithm</a></li><li><a class="tocitem" href="../penalty/">Quadratic penalty algorithm</a></li><li><a class="tocitem" href="../run-optimsolver/">Run optimization algorithms</a></li><li><a class="tocitem" href="../benchmark/">Benchmark optimization algorithms</a></li><li class="is-active"><a class="tocitem" href>Overfitting</a></li><li><a class="tocitem" href="../checkpointing/">Checkpointing</a></li><li><a class="tocitem" href="../gradient-lbfgs/">Mix algorithms</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Overfitting</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Overfitting</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/docs/src/overfitting.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Handle-unrelated-stopping-criteria"><a class="docs-heading-anchor" href="#Handle-unrelated-stopping-criteria">Handle unrelated stopping criteria</a><a id="Handle-unrelated-stopping-criteria-1"></a><a class="docs-heading-anchor-permalink" href="#Handle-unrelated-stopping-criteria" title="Permalink"></a></h1><p>In this tutorial, we present the use of Stopping to specify an &quot;unrelated&quot; stopping criterion. A typical example is the so-called case of &quot;overfitting&quot;,  where the optimization process is actually designed to approximate another problem.</p><pre><code class="nohighlight hljs">using ADNLPModels, LinearAlgebra, NLPModels, Plots, Printf, Random, Stopping</code></pre><p>In this tutorial, we will use the classical steepest descent method with an Armijo line-search.</p><pre><code class="nohighlight hljs">import Stopping.armijo
+function armijo(xk, dk, fk, slope, f)
+  t = 1.0
+  fk_new = f(xk + dk)
+  while f(xk + t * dk) &gt; fk + 1.0e-4 * t * slope
+    t /= 1.5
+    fk_new = f(xk + t * dk)
+  end
+  return t, fk_new
+end
+
+function steepest_descent(stp :: NLPStopping)
+
+  xk = stp.current_state.x
+  fk, gk = objgrad(stp.pb, xk)
+
+  OK = update_and_start!(stp, fx = fk, gx = gk)
+
+  @printf &quot;%2s %9s %7s %7s %7s\n&quot; &quot;k&quot; &quot;fk&quot; &quot;||∇f(x)||&quot; &quot;t&quot; &quot;λ&quot;
+  @printf &quot;%2d %7.1e %7.1e\n&quot; stp.meta.nb_of_stop fk norm(stp.current_state.current_score)
+  while !OK
+    dk = - gk
+    slope = dot(dk, gk)
+    t, fk = armijo(xk, dk, fk, slope, x-&gt;obj(stp.pb, x))
+    xk += t * dk
+    fk, gk = objgrad(stp.pb, xk)
+    
+    OK = update_and_stop!(stp, x = xk, fx = fk, gx = gk)
+
+    @printf &quot;%2d %9.2e %7.1e %7.1e %7.1e\n&quot; stp.meta.nb_of_stop fk norm(stp.current_state.current_score) t slope
+  end
+  return stp
+end</code></pre><p>We also generate randomly some data.</p><pre><code class="nohighlight hljs">Random.seed!(1234)
+m, n = 50, 10
+A  = rand(m, n)
+b  = A * ones(n)
+D  = vcat(A, A) + vcat(zeros(m,n), rand(m,n))
+Db = vcat(b, b)
+rperm = shuffle(1:2m)
+Dr = D[rperm,:]
+Dbr = Db[rperm,:]</code></pre><p>We initialize two different problems evaluating respectively a training set, and a test set.</p><pre><code class="nohighlight hljs">f(x, A, b, λ) = norm(A * x - b)^2 + λ * norm(x)^2
+train_pb = ADNLPModel(x -&gt; f(x, Dr[1:m,:], Dbr[1:m], 1e-2), zeros(n))
+test_pb = ADNLPModel(x -&gt; f(x, Dr[m+1:2m,:], Dbr[m+1:2m], 0.0), zeros(n))</code></pre><p>In this tutorial, the motivation is to use the solver on the <code>test_pb</code>, and track the efficiency of the computed solution on the <code>train_pb</code>. We specialize the stopping structure to store the objective function of both problems in the <code>stopping_user_struct</code>, and evaluate them in the <code>stp.meta.user_check_func!</code>.</p><pre><code class="nohighlight hljs">train_check(stp, b) = begin 
+  stp.stopping_user_struct[:test_obj][stp.meta.nb_of_stop+1] = obj(stp.stopping_user_struct[:test], stp.current_state.x)
+  stp.stopping_user_struct[:train_obj][stp.meta.nb_of_stop+1] = obj(stp.pb, stp.current_state.x)
+end
+train_obj = NaN * ones(101)
+test_obj  = NaN * ones(101)
+train_stp = NLPStopping(train_pb, user_struct = Dict(:test =&gt; test_pb, :train_obj =&gt; train_obj, :test_obj =&gt; test_obj), user_check_func! = train_check, max_iter = 100)</code></pre><p>We now run the steepest descent algorithm with the <code>train_stp</code> stopping.</p><pre><code class="nohighlight hljs">steepest_descent(train_stp)</code></pre><p>On the following plot in logarithmic scale, we can see that after a number of iterations, the progress made by the solver are no longer improving the other problem.</p><pre><code class="nohighlight hljs">#hcat(log.(train_stp.stopping_user_struct[:train_obj]), log.(train_stp.stopping_user_struct[:test_obj]))
+plot(log.(train_stp.stopping_user_struct[:train_obj]), label=[&quot;train obj&quot;])
+plot!(log.(train_stp.stopping_user_struct[:test_obj]), label=[&quot;test obj&quot;], title=&quot;overfitting&quot;)</code></pre><p><img src="../overfitting.png" alt/></p><p>To overcome this issue, one possibility is to stop the solver when the second is no longer being minimized. The only modification is to set the entry <code>meta.stopbyuser</code> to <code>true</code>.</p><pre><code class="nohighlight hljs">train_check_opt(stp, b) = begin 
+  k = stp.meta.nb_of_stop
+  stp.stopping_user_struct[:test_obj][k+1] = obj(stp.stopping_user_struct[:test], stp.current_state.x)
+  stp.stopping_user_struct[:train_obj][k+1] = obj(stp.pb, stp.current_state.x)
+  diff = k!=0 &amp;&amp; stp.stopping_user_struct[:test_obj][k+1] - stp.stopping_user_struct[:train_obj][k+1] &gt; 10
+  inc  = k!=0 &amp;&amp; stp.stopping_user_struct[:test_obj][k+1] &gt; stp.stopping_user_struct[:test_obj][k]
+  if diff &amp;&amp; inc
+    stp.meta.stopbyuser = true
+  end
+end
+train_stp.meta.user_check_func! = train_check_opt
+reset!(train_stp.pb)
+reinit!(train_stp, rstate=true, x = zeros(10))
+steepest_descent(train_stp)</code></pre><pre><code class="nohighlight hljs">nb_iter = train_stp.meta.nb_of_stop
+hcat(log.(train_stp.stopping_user_struct[:train_obj][1:nb_iter+1]), log.(train_stp.stopping_user_struct[:test_obj][1:nb_iter+1]))
+plot(log.(train_stp.stopping_user_struct[:train_obj][1:nb_iter+1]), label=[&quot;train obj&quot;])
+plot!(log.(train_stp.stopping_user_struct[:test_obj][1:nb_iter+1]), label=[&quot;test obj&quot;], title=&quot;overfitting&quot;)</code></pre><p><img src="../overfitting_cut.png" alt/></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../benchmark/">« Benchmark optimization algorithms</a><a class="docs-footer-nextpage" href="../checkpointing/">Checkpointing »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.24 on <span class="colophon-date" title="Friday 24 March 2023 16:20">Friday 24 March 2023</span>. Using Julia version 1.8.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
