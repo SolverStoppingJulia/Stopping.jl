@@ -309,7 +309,6 @@ function fill_in!(
   SRC <: AbstractStopRemoteControl,
   MStp,
   LoS <: AbstractListofStates,
-  Score,
   S,
   T,
 }
