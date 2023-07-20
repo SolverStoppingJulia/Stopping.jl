@@ -81,7 +81,7 @@ mutable struct NLPAtX{Score, S, T <: AbstractVector} <: AbstractState{S, T}
     d::T = _init_field(T),
     res::T = _init_field(T),
     current_time::Float64 = NaN,
-  ) where {Score, S, T <: AbstractVector}
+  ) where {Score, T <: AbstractVector}
     _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
 
     return new{Score, eltype(T), T}(
