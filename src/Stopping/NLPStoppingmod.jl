@@ -136,10 +136,12 @@ end
 
 function NLPStopping(pb::AbstractNLPModel; n_listofstates::Integer = 0, kwargs...)
   #Create a default NLPAtX
+  initial_guess = copy(pb.meta.x0)
   if get_ncon(pb) > 0
-    nlp_at_x = NLPAtX(pb.meta.x0, pb.meta.y0)
+    initial_lag = copy(pb.meta.y0)
+    nlp_at_x = NLPAtX(initial_guess, initial_lag)
   else
-    nlp_at_x = NLPAtX(pb.meta.x0)
+    nlp_at_x = NLPAtX(initial_guess)
   end
 
   if n_listofstates > 0 && :list ∉ keys(kwargs)
