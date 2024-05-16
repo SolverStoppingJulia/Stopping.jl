@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Quadratic penalty algorithm · Stopping.jl</title><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script><link href="../assets/style.css" rel="stylesheet" type="text/css"/></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">Stopping.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li><a class="tocitem" href="../api/">API</a></li><li><a class="tocitem" href="../idcard/">Stopping&#39;s ID</a></li><li><a class="tocitem" href="../idcard-state/">State&#39;s ID</a></li><li><a class="tocitem" href="../idcard-stoppingmeta/">Meta&#39;s ID</a></li><li><a class="tocitem" href="../howstopcheckoptimality/">Optimality in Stopping</a></li><li><a class="tocitem" href="../example-basic-Newton/">Stopping in action</a></li><li><a class="tocitem" href="../idcard-stopremote/">Stop remote control</a></li><li><a class="tocitem" href="../stop-workflow/">Stopping workflow</a></li><li><a class="tocitem" href="../speak-to-stopping/">Speak to stopping</a></li><li><a class="tocitem" href="../nlpstopping/">NLPStopping</a></li><li><a class="tocitem" href="../lastopping/">LAStopping</a></li><li><a class="tocitem" href="../index_tuto/">Readme</a></li><li><a class="tocitem" href="../howtostate/">How to State</a></li><li><a class="tocitem" href="../howtostate-nlp/">How to State for NLPs</a></li><li><a class="tocitem" href="../howtostop/">How to Stop</a></li><li><a class="tocitem" href="../howtostop-2/">How to Stop 2</a></li><li><a class="tocitem" href="../howtostop-nlp/">How to Stop for NLPs</a></li><li><a class="tocitem" href="../linear-algebra/">Solve linear algebra</a></li><li><a class="tocitem" href="../buffer/">Use a buffer function</a></li><li><a class="tocitem" href="../fixed-point/">A fixed point algorithm</a></li><li><a class="tocitem" href="../backls/">Backtracking linesearch algorithm</a></li><li><a class="tocitem" href="../uncons/">Unconstrained optimization algorithm</a></li><li><a class="tocitem" href="../active-set/">Active set algorithm</a></li><li class="is-active"><a class="tocitem" href>Quadratic penalty algorithm</a><ul class="internal"><li><a class="tocitem" href="#Quadratic-penalty-algorithm"><span>Quadratic penalty algorithm</span></a></li></ul></li><li><a class="tocitem" href="../run-optimsolver/">Run optimization algorithms</a></li><li><a class="tocitem" href="../benchmark/">Benchmark optimization algorithms</a></li><li><a class="tocitem" href="../overfitting/">Overfitting</a></li><li><a class="tocitem" href="../checkpointing/">Checkpointing</a></li><li><a class="tocitem" href="../gradient-lbfgs/">Mix algorithms</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Quadratic penalty algorithm</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Quadratic penalty algorithm</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/docs/src/penalty.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h2 id="Quadratic-penalty-algorithm"><a class="docs-heading-anchor" href="#Quadratic-penalty-algorithm">Quadratic penalty algorithm</a><a id="Quadratic-penalty-algorithm-1"></a><a class="docs-heading-anchor-permalink" href="#Quadratic-penalty-algorithm" title="Permalink"></a></h2><p>In this test problem we consider a quadratic penalty method. This example features an algorithm with the 3 steps: the penalization - the unconstrained min - the 1d min</p><p>Note that there is no optimization of the evaluations here. The penalization gives an approximation of the gradients, multipliers...</p><p>Note the use of a structure for the algorithmic parameters which is forwarded to all the 3 steps. If a parameter is not mentioned, then the default entry in the algorithm will be taken.</p><p>The Julia file corresponding to this tutorial can be found <a href="https://github.com/Goysa2/Stopping.jl/tree/master/test/examples/penalty.jl">here</a>.</p><pre><code class="nohighlight hljs">include(&quot;uncons.jl&quot;)</code></pre><h3 id="Quadratic-penalty-algorithm-2"><a class="docs-heading-anchor" href="#Quadratic-penalty-algorithm-2">Quadratic penalty algorithm</a><a class="docs-heading-anchor-permalink" href="#Quadratic-penalty-algorithm-2" title="Permalink"></a></h3><p>fill_in! used instead of update! (works but usually more costly in evaluations) subproblems are solved via Newton method</p><pre><code class="nohighlight hljs">function penalty(stp :: NLPStopping; rho0 = 1.0, rho_min = 1e-10,
+                                     rho_update = 0.5, prms = nothing)
+
+ #algorithm&#39;s parameters
+ rho = rho0
+
+ #First call to the stopping
+ #Becareful here, some entries must be filled in first.
+ fill_in!(stp, stp.current_state.x)
+ OK = start!(stp)
+
+ #prepare the subproblem stopping:
+ sub_nlp_at_x = NLPAtX(stp.current_state.x)
+ sub_pb  = ADNLPModel(x -&gt; obj(stp.pb, x)
+                      + 1/rho * norm(max.(cons(stp.pb, x) - stp.pb.meta.ucon, 0.0))^2
+                      + 1/rho * norm(max.(- cons(stp.pb, x) + stp.pb.meta.lcon, 0.0))^2,  x0)
+ sub_stp = NLPStopping(sub_pb, unconstrained_check,
+                               sub_nlp_at_x, main_stp = stp)
+
+ #main loop
+ while !OK
+
+  #solve the subproblem
+  reinit!(sub_stp)
+  sub_stp.meta.atol = min(rho, sub_stp.meta.atol)
+  global_newton(sub_stp, prms)
+
+  #Update all the entries of the State
+  fill_in!(stp, sub_stp.current_state.x)
+
+  #Either stop! is true OR the penalty parameter is too small
+  if rho &lt; rho_min stp.meta.suboptimal = true end
+  OK = stop!(stp)
+
+  @show stp.meta.nb_of_stop, OK, rho
+
+  #update the penalty parameter if necessary
+  if !OK
+   rho = rho * rho_update
+   sub_stp.pb  = ADNLPModel(x -&gt; obj(stp.pb, x)
+                            + 1/rho * norm(max.(cons(stp.pb, x) - stp.pb.meta.ucon, 0.0))^2
+                            + 1/rho * norm(max.(- cons(stp.pb, x) + stp.pb.meta.lcon, 0.0))^2,  x0)
+  end
+ end
+
+ return stp
+end</code></pre><h3 id="Quadratic-penalty-algorithm:-buffer-function"><a class="docs-heading-anchor" href="#Quadratic-penalty-algorithm:-buffer-function">Quadratic penalty algorithm: buffer function</a><a id="Quadratic-penalty-algorithm:-buffer-function-1"></a><a class="docs-heading-anchor-permalink" href="#Quadratic-penalty-algorithm:-buffer-function" title="Permalink"></a></h3><pre><code class="nohighlight hljs">function penalty(stp :: NLPStopping, prms)
+
+ #extract required values in the prms file
+ r0 = :rho0       ∈ fieldnames(typeof(prms)) ? prms.rho0       : 1.0
+ rm = :rho_min    ∈ fieldnames(typeof(prms)) ? prms.rho_min    : 1e-10
+ ru = :rho_update ∈ fieldnames(typeof(prms)) ? prms.rho_update : 0.5
+
+ return penalty(stp, rho0 = r0, rho_min = rm, ru = 0.5, prms = prms)
+end</code></pre><h3 id="Algorithmic-parameters-structure"><a class="docs-heading-anchor" href="#Algorithmic-parameters-structure">Algorithmic parameters structure</a><a id="Algorithmic-parameters-structure-1"></a><a class="docs-heading-anchor-permalink" href="#Algorithmic-parameters-structure" title="Permalink"></a></h3><pre><code class="nohighlight hljs">mutable struct Param
+
+    #parameters for the penalty
+    rho0       :: Float64 #initial value of the penalty parameter
+    rho_min    :: Float64 #smallest possible parameter
+    rho_update :: Float64 #update of the penalty parameter
+
+    #parameters of the unconstrained minimization
+    armijo_prm  :: Float64 #Armijo parameter
+    wolfe_prm   :: Float64 #Wolfe parameter
+    onedsolve   :: Function #1D solver
+    ls_func     :: Function
+
+    #parameters of the 1d minimization
+    back_update :: Float64 #backtracking update
+
+    function Param(;rho0        :: Float64 = 1.0,
+                    rho_min     :: Float64 = sqrt(eps(Float64)),
+                    rho_update  :: Float64 = 0.5,
+                    armijo_prm  :: Float64 = 0.01,
+                    wolfe_prm   :: Float64 = 0.99,
+                    onedsolve   :: Function = backtracking_ls,
+                    ls_func     :: Function = (x,y)-&gt; armijo(x,y, τ₀ = armijo_prm),
+                    back_update :: Float64 = 0.5)
+        return new(rho0, rho_min, rho_update,
+                   armijo_prm, wolfe_prm, onedsolve, ls_func,
+                   back_update)
+    end
+end</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../active-set/">« Active set algorithm</a><a class="docs-footer-nextpage" href="../run-optimsolver/">Run optimization algorithms »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Thursday 16 May 2024 20:57">Thursday 16 May 2024</span>. Using Julia version 1.10.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
