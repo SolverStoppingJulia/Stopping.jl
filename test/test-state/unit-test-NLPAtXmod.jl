@@ -33,7 +33,12 @@ list_vectors = CUDA.functional() ? [Vector{Float64}, CuVector{Float64}] : [Vecto
   @test isnan(cons_nlp_at_x.current_time)
   @test isnan(cons_nlp_at_x.current_score)
 
-  update!(cons_nlp_at_x, Hx = ones(20, 20), gx = fill!(T(undef, 2), 1), lambda = fill!(T(undef, 2), 0))
+  update!(
+    cons_nlp_at_x,
+    Hx = ones(20, 20),
+    gx = fill!(T(undef, 2), 1),
+    lambda = fill!(T(undef, 2), 0),
+  )
   compress_state!(cons_nlp_at_x, max_vector_size = 5, lambda = x0, gx = true)
   @test cons_nlp_at_x.Hx == zeros(0, 0)
   @test cons_nlp_at_x.x == [0.0]
@@ -125,7 +130,8 @@ list_vectors = CUDA.functional() ? [Vector{Float64}, CuVector{Float64}] : [Vecto
   end
 
   # Test matrix types
-  state = NLPAtX(fill!(T(undef, 5), 0), fill!(T(undef, 2), 0), Jx = spzeros(2, 5), Hx = spzeros(5, 5))
+  state =
+    NLPAtX(fill!(T(undef, 5), 0), fill!(T(undef, 2), 0), Jx = spzeros(2, 5), Hx = spzeros(5, 5))
   @test typeof(spzeros(2, 5)) == typeof(state.Jx)
   @test typeof(spzeros(5, 5)) == typeof(state.Hx)
   state = NLPAtX(fill!(T(undef, 5), 0), fill!(T(undef, 2), 0), Jx = spzeros(2, 5))
