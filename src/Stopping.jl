@@ -46,7 +46,7 @@ the Stopping to reuse for another call.
 """
 module Stopping
 
-using LinearAlgebra, LinearOperators, SparseArrays
+using GPUArrays, LinearAlgebra, LinearOperators, SparseArrays
 using DataFrames, LLSModels, NLPModels, Printf
 
 """

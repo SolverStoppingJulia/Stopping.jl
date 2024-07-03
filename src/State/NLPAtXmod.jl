@@ -28,11 +28,11 @@ Tracked data include:
  (import the type NLPModels.Counters)
 
 Constructors:
- `NLPAtX(:: T, :: T, :: S; fx :: eltype(T) = _init_field(eltype(T)), gx :: T = _init_field(T), Hx :: Matrix{eltype(T)} = _init_field(Matrix{eltype(T)}), mu :: T = _init_field(T), cx :: T = _init_field(T), Jx :: SparseMatrixCSC{eltype(T), Int64} = _init_field(SparseMatrixCSC{eltype(T), Int64}), d :: T = _init_field(T), res :: T = _init_field(T), current_time :: Float64 = NaN) where {S, T <: AbstractVector}`
+ `NLPAtX(:: T, :: T, :: S; fx :: eltype(T) = _init_field(eltype(T)), gx :: T = _init_field(T), Hx :: Matrix{eltype(T)} = _init_field(Matrix{eltype(T)}), mu :: T = _init_field(T), cx :: T = _init_field(T), Jx :: SparseMatrixCSC{eltype(T), Int64} = _init_field(SparseMatrixCSC{eltype(T), Int64}), d :: T = _init_field(T), res :: T = _init_field(T), current_time :: Float64 = NaN) where {S, T}`
 
- `NLPAtX(:: T; fx :: eltype(T) = _init_field(eltype(T)), gx :: T = _init_field(T), Hx :: Matrix{eltype(T)} = _init_field(Matrix{eltype(T)}), mu :: T = _init_field(T), current_time :: Float64 = NaN, current_score :: Union{T,eltype(T)} = _init_field(eltype(T))) where {T <: AbstractVector}`
+ `NLPAtX(:: T; fx :: eltype(T) = _init_field(eltype(T)), gx :: T = _init_field(T), Hx :: Matrix{eltype(T)} = _init_field(Matrix{eltype(T)}), mu :: T = _init_field(T), current_time :: Float64 = NaN, current_score :: Union{T,eltype(T)} = _init_field(eltype(T))) where {T}`
 
- `NLPAtX(:: T, :: T; fx :: eltype(T) = _init_field(eltype(T)), gx :: T = _init_field(T), Hx :: Matrix{eltype(T)} = _init_field(Matrix{eltype(T)}), mu :: T = _init_field(T), cx :: T = _init_field(T), Jx :: SparseMatrixCSC{eltype(T), Int64} = _init_field(SparseMatrixCSC{eltype(T), Int64}), d :: T = _init_field(T), res :: T = _init_field(T), current_time :: Float64  = NaN, current_score :: Union{T,eltype(T)} = _init_field(eltype(T))) where T <: AbstractVector`
+ `NLPAtX(:: T, :: T; fx :: eltype(T) = _init_field(eltype(T)), gx :: T = _init_field(T), Hx :: Matrix{eltype(T)} = _init_field(Matrix{eltype(T)}), mu :: T = _init_field(T), cx :: T = _init_field(T), Jx :: SparseMatrixCSC{eltype(T), Int64} = _init_field(SparseMatrixCSC{eltype(T), Int64}), d :: T = _init_field(T), res :: T = _init_field(T), current_time :: Float64  = NaN, current_score :: Union{T,eltype(T)} = _init_field(eltype(T))) where T`
 
 Note:
  - By default, unknown entries are set using `_init_field`.  
@@ -45,7 +45,7 @@ Note:
 
 See also: `GenericState`, `update!`, `update_and_start!`, `update_and_stop!`, `reinit!`
 """
-mutable struct NLPAtX{Score, S, T <: AbstractVector} <: AbstractState{S, T}
+mutable struct NLPAtX{Score, S, T} <: AbstractState{S, T}
 
   #Unconstrained State
   x::T     # current point
@@ -81,7 +81,7 @@ mutable struct NLPAtX{Score, S, T <: AbstractVector} <: AbstractState{S, T}
     d::T = _init_field(T),
     res::T = _init_field(T),
     current_time::Float64 = NaN,
-  ) where {Score, T <: AbstractVector}
+  ) where {Score, T}
     _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
 
     return new{Score, eltype(T), T}(
@@ -114,7 +114,7 @@ function NLPAtX(
   res::T = _init_field(T),
   current_time::Float64 = NaN,
   current_score::Union{T, eltype(T)} = _init_field(eltype(T)),
-) where {T <: AbstractVector}
+) where {T}
   _size_check(x, lambda, fx, gx, Hx, mu, cx, Jx)
 
   return NLPAtX(
@@ -143,10 +143,10 @@ function NLPAtX(
   res::T = _init_field(T),
   current_time::Float64 = NaN,
   current_score::Union{T, eltype(T)} = _init_field(eltype(T)),
-) where {T <: AbstractVector}
+) where {T}
   _size_check(
     x,
-    zeros(eltype(T), 0),
+    fill!(T(undef, 0), 0),
     fx,
     gx,
     Hx,
@@ -157,7 +157,7 @@ function NLPAtX(
 
   return NLPAtX(
     x,
-    zeros(eltype(T), 0),
+    fill!(T(undef, 0), 0),
     current_score,
     fx = fx,
     gx = gx,
