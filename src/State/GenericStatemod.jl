@@ -324,10 +324,10 @@ function compress_state!(
         #nothing happens
       end
     end
-    if typeof(getfield(stateatx, k)) <: Union{AbstractVector, AbstractGPUVector} 
+    if typeof(getfield(stateatx, k)) <: Union{AbstractVector, AbstractGPUVector}
       katt = getfield(stateatx, k)
       if (length(katt) > max_vector_size)
-        setfield!(stateatx, k, fill!(typeof(getfield(stateatx, k))(undef, 1),norm(katt, pnorm)))
+        setfield!(stateatx, k, fill!(typeof(getfield(stateatx, k))(undef, 1), norm(katt, pnorm)))
       end
     elseif typeof(getfield(stateatx, k)) <: Union{AbstractArray, AbstractMatrix, AbstractGPUMatrix}
       if save_matrix

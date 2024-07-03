@@ -225,7 +225,10 @@ mutable struct LinearSystem{
     b::Tb;
     counters::LACounters = LACounters(),
     kwargs...,
-  ) where {TA <: Union{AbstractLinearOperator, AbstractMatrix}, Tb <: Union{AbstractGPUVector, AbstractVector}}
+  ) where {
+    TA <: Union{AbstractLinearOperator, AbstractMatrix},
+    Tb <: Union{AbstractGPUVector, AbstractVector},
+  }
     return new{TA, Tb}(A, b, counters)
   end
 end
