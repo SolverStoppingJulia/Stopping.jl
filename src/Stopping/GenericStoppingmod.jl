@@ -168,13 +168,13 @@ function update!(stp::AbstractStopping; kwargs...)
 end
 
 """
-    `fill_in!(stp::AbstractStopping, x::T) where {T}`
+    fill_in!(stp::AbstractStopping, x)
 
-fill_in!: fill in the unspecified values of the AbstractState.
+fill in the unspecified values of the `AbstractState`.
 
-Note: NotImplemented for Abstract/Generic-Stopping.
+Note: NotImplemented for Abstract/Generic Stopping.
 """
-function fill_in!(stp::AbstractStopping, x::AbstractVector)
+function fill_in!(stp::AbstractStopping, x)
   return throw(error("NotImplemented function"))
 end
 

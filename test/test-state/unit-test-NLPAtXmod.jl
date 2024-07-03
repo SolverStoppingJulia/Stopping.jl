@@ -2,7 +2,6 @@
 list_vectors = CUDA.functional() ? [Vector{Float64}, CuVector{Float64}] : [Vector{Float64}]
 @testset "NLPAtX $T" for T in list_vectors
   #Test unconstrained NLPAtX
-  T = CuVector{Float64}
   x10 = fill!(T(undef, 10), 0)
   x10_1 = fill!(T(undef, 10), 1)
   x00 = fill!(T(undef, 0), 0)
