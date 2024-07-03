@@ -8,6 +8,12 @@ using Stopping: _init_field
 
 using SolverTools: LineModel
 
+using CUDA
+
+if CUDA.functional()
+  CUDA.allowscalar()
+end
+
 #"State tests...\n"
 include("test-state/unit-test-GenericStatemod.jl")
 include("test-state/unit-test-OneDAtXmod.jl")

@@ -220,7 +220,7 @@ end
 """
 fill_in!: (NLPStopping version) a function that fill in the required values in the `NLPAtX`.
 
-`fill_in!( :: NLPStopping, :: Union{AbstractVector, Nothing}; fx :: Union{AbstractVector, Nothing} = nothing, gx :: Union{AbstractVector, Nothing} = nothing, Hx :: Union{MatrixType, Nothing} = nothing, cx :: Union{AbstractVector, Nothing} = nothing, Jx :: Union{MatrixType, Nothing} = nothing, lambda :: Union{AbstractVector, Nothing} = nothing, mu :: Union{AbstractVector, Nothing} = nothing, matrix_info :: Bool = true, kwargs...)`
+`fill_in!( :: NLPStopping, :: Union{T, Nothing}; fx :: Union{T, Nothing} = nothing, gx :: Union{T, Nothing} = nothing, Hx :: Union{MatrixType, Nothing} = nothing, cx :: Union{T, Nothing} = nothing, Jx :: Union{MatrixType, Nothing} = nothing, lambda :: Union{T, Nothing} = nothing, mu :: Union{T, Nothing} = nothing, matrix_info :: Bool = true, kwargs...)`
 """
 function fill_in!(
   stp::NLPStopping{Pb, M, SRC, NLPAtX{Score, S, T}, MStp, LoS},
@@ -243,7 +243,7 @@ function fill_in!(
   LoS <: AbstractListofStates,
   Score,
   S,
-  T <: AbstractVector,
+  T,
 }
   gfx = isnothing(fx) ? obj(stp.pb, x) : fx
   ggx = isnothing(gx) ? grad(stp.pb, x) : gx
@@ -437,7 +437,7 @@ end
                    that the problem might be unbounded if the objective or the
                    constraint function are unbounded.
 
-    `_unbounded_problem_check!(:: NLPStopping, :: AbstractVector)`
+    `_unbounded_problem_check!(::NLPStopping, ::T)`
 
 Note:
 - evaluate the objective function if `state.fx` for NLPAtX or `state.fx` for OneDAtX is `_init_field` and store in `state`.
@@ -445,7 +445,7 @@ Note:
 """
 function _unbounded_problem_check!(
   stp::NLPStopping{Pb, M, SRC, NLPAtX{Score, S, T}, MStp, LoS},
-  x::AbstractVector,
+  x,
 ) where {Pb, M, SRC, MStp, LoS, Score, S, T}
   if isnan(get_fx(stp.current_state))
     stp.current_state.fx = obj(stp.pb, x)
@@ -466,7 +466,7 @@ end
 
 function _unbounded_problem_check!(
   stp::NLPStopping{Pb, M, SRC, OneDAtX{S, T}, MStp, LoS},
-  x::Union{AbstractVector, Number},
+  x,
 ) where {Pb, M, SRC, MStp, LoS, S, T}
   if isnan(get_fx(stp.current_state))
     stp.current_state.fx = obj(stp.pb, x)

@@ -5,6 +5,8 @@ _init_field(::Val{T}) where {T <: LinearOperator} =
 _init_field(::Val{T}) where {T <: SparseMatrixCSC} = sparse(zeros(eltype(T), 0, 0))
 _init_field(::Val{T}) where {T <: AbstractVector} = zeros(eltype(T), 0)
 _init_field(::Val{T}) where {T <: SparseVector} = sparse(zeros(eltype(T), 0))
+_init_field(::Val{T}) where {T <: AbstractGPUVector} = fill!(T(undef, 0), 0)
+_init_field(::Val{T}) where {T <: AbstractGPUMatrix} = fill!(T(undef, 0, 0), 0)
 _init_field(::Val{BigFloat}) = BigFloat(NaN)
 _init_field(::Val{Float64}) = NaN
 _init_field(::Val{Float32}) = NaN32
@@ -47,7 +49,7 @@ Examples:
 
 See also: `Stopping`, `NLPAtX`
 """
-mutable struct GenericState{S, T <: Union{AbstractFloat, AbstractVector}} <: AbstractState{S, T}
+mutable struct GenericState{S, T} <: AbstractState{S, T}
   x::T
 
   d::T
@@ -64,7 +66,7 @@ mutable struct GenericState{S, T <: Union{AbstractFloat, AbstractVector}} <: Abs
     d::T = _init_field(T),
     res::T = _init_field(T),
     current_time::Float64 = NaN,
-  ) where {S, T <: AbstractVector}
+  ) where {S, T}
     return new{S, T}(x, d, res, current_time, current_score)
   end
 end
@@ -75,7 +77,7 @@ function GenericState(
   res::T = _init_field(T),
   current_time::Float64 = NaN,
   current_score::Union{T, eltype(T)} = _init_field(eltype(T)),
-) where {T <: AbstractVector}
+) where {T}
   return GenericState(x, current_score, d = d, res = res, current_time = current_time)
 end
 
@@ -266,6 +268,7 @@ end
 _check_nan_miss(field::Any) = false #Nothing or Counters
 _check_nan_miss(field::SparseMatrixCSC) = any(isnan, field.nzval) #because checking in sparse matrices is too slow
 _check_nan_miss(field::Union{AbstractVector, AbstractMatrix}) = any(isnan, field)
+_check_nan_miss(field::Union{AbstractGPUVector, AbstractGPUMatrix}) = any(isnan, field)
 #We don't check for NaN's in Float as they are the _init_field
 _check_nan_miss(field::AbstractFloat) = ismissing(field)
 
@@ -321,12 +324,12 @@ function compress_state!(
         #nothing happens
       end
     end
-    if typeof(getfield(stateatx, k)) <: AbstractVector
+    if typeof(getfield(stateatx, k)) <: Union{AbstractVector, AbstractGPUVector} 
       katt = getfield(stateatx, k)
       if (length(katt) > max_vector_size)
-        setfield!(stateatx, k, [norm(katt, pnorm)])
+        setfield!(stateatx, k, fill!(typeof(getfield(stateatx, k))(undef, 1),norm(katt, pnorm)))
       end
-    elseif typeof(getfield(stateatx, k)) <: Union{AbstractArray, AbstractMatrix}
+    elseif typeof(getfield(stateatx, k)) <: Union{AbstractArray, AbstractMatrix, AbstractGPUMatrix}
       if save_matrix
         katt = getfield(stateatx, k)
         if maximum(size(katt)) > max_vector_size

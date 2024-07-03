@@ -1,7 +1,7 @@
 @testset "Test NLP Evals" begin
   x0 = zeros(2)
 
-  nlp = ADNLPModel(x -> norm(x .^ 2), x0)
+  nlp = ADNLPModel(x -> sum(x .^ 2), x0)
   max_nlp = init_max_counters(obj = 2)
   nlp_stop_evals = NLPStopping(nlp, max_cntrs = max_nlp)
 

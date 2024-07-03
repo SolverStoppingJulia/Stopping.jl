@@ -32,9 +32,9 @@ Constructors:
      The one passing the `kwargs` to the `stop_remote`.
 - `LAStopping(pb, state::AbstractState; stop_remote::AbstractStopRemoteControl = StopRemoteControl(), main_stp::AbstractStopping=VoidStopping(), list::AbstractListofStates = VoidListofStates(), user_struct::AbstractDict = Dict(), zero_start::Bool = false, kwargs...)`
      The one passing the `kwargs` to the `meta`.
-- `LAStopping(:: Union{AbstractLinearOperator, AbstractMatrix}, :: AbstractVector; sparse::Bool = true, n_listofstates::Int = 0, kwargs...)`
+- `LAStopping(:: Union{AbstractLinearOperator, AbstractMatrix}, :: Union{AbstractGPUVector, AbstractVector}; sparse::Bool = true, n_listofstates::Int = 0, kwargs...)`
      The one setting up a default problem (`sparse ? LLSModel(A, b) : LinearSystem(A, b)`), a default `GenericState` using x, and initializing the list of states if `n_listofstates>0`. 
-- `LAStopping(:: Union{AbstractLinearOperator, AbstractMatrix}, :: AbstractVector, :: AbstractState; sparse::Bool = true, kwargs...)`
+- `LAStopping(:: Union{AbstractLinearOperator, AbstractMatrix}, :: Union{AbstractGPUVector, AbstractVector}, :: AbstractState; sparse::Bool = true, kwargs...)`
      The one setting up a default problem (`sparse ? LLSModel(A, b) : LinearSystem(A, b)`). 
 
 Notes:
@@ -139,7 +139,7 @@ function LAStopping(
   sparse::Bool = true,
   n_listofstates::Int = 0,
   kwargs...,
-) where {TA <: Any, Tb <: AbstractVector}
+) where {TA <: Any, Tb <: Union{AbstractGPUVector, AbstractVector}}
   pb = sparse ? LLSModel(A, b) : LinearSystem(A, b)
   state = GenericState(x)
 
@@ -159,7 +159,7 @@ function LAStopping(
   state::S;
   sparse::Bool = true,
   kwargs...,
-) where {TA <: Any, Tb <: AbstractVector, S <: AbstractState}
+) where {TA <: Any, Tb <: Union{AbstractGPUVector, AbstractVector}, S <: AbstractState}
   pb = sparse ? LLSModel(A, b) : LinearSystem(A, b)
 
   mcntrs = sparse ? init_max_counters_NLS() : init_max_counters_linear_operators()
@@ -206,14 +206,14 @@ end
 """
 LinearSystem: Minimal structure to store linear algebra problems
 
-`LinearSystem(:: Union{AbstractLinearOperator, AbstractMatrix}, :: AbstractVector)`
+`LinearSystem(:: Union{AbstractLinearOperator, AbstractMatrix}, :: Union{AbstractGPUVector, AbstractVector})`
 
 Note:
 Another option is to convert the `LinearSystem` as an `LLSModel`.
 """
 mutable struct LinearSystem{
   TA <: Union{AbstractLinearOperator, AbstractMatrix},
-  Tb <: AbstractVector,
+  Tb <: Union{AbstractGPUVector, AbstractVector},
 }
   A::TA
   b::Tb
@@ -225,7 +225,7 @@ mutable struct LinearSystem{
     b::Tb;
     counters::LACounters = LACounters(),
     kwargs...,
-  ) where {TA <: Union{AbstractLinearOperator, AbstractMatrix}, Tb <: AbstractVector}
+  ) where {TA <: Union{AbstractLinearOperator, AbstractMatrix}, Tb <: Union{AbstractGPUVector, AbstractVector}}
     return new{TA, Tb}(A, b, counters)
   end
 end
@@ -235,7 +235,7 @@ function LAStopping(
   b::Tb;
   x::Tb = zeros(eltype(Tb), size(A, 2)),
   kwargs...,
-) where {TA <: AbstractLinearOperator, Tb <: AbstractVector}
+) where {TA <: AbstractLinearOperator, Tb <: Union{AbstractGPUVector, AbstractVector}}
   return LAStopping(A, b, GenericState(x), kwargs...)
 end
 
@@ -244,7 +244,7 @@ function LAStopping(
   b::Tb,
   state::AbstractState;
   kwargs...,
-) where {TA <: AbstractLinearOperator, Tb <: AbstractVector}
+) where {TA <: AbstractLinearOperator, Tb <: Union{AbstractGPUVector, AbstractVector}}
   return LAStopping(
     LinearSystem(A, b),
     state,
