@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Run optimization algorithms · Stopping.jl</title><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script><link href="../assets/style.css" rel="stylesheet" type="text/css"/></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">Stopping.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li><a class="tocitem" href="../api/">API</a></li><li><a class="tocitem" href="../idcard/">Stopping&#39;s ID</a></li><li><a class="tocitem" href="../idcard-state/">State&#39;s ID</a></li><li><a class="tocitem" href="../idcard-stoppingmeta/">Meta&#39;s ID</a></li><li><a class="tocitem" href="../howstopcheckoptimality/">Optimality in Stopping</a></li><li><a class="tocitem" href="../example-basic-Newton/">Stopping in action</a></li><li><a class="tocitem" href="../idcard-stopremote/">Stop remote control</a></li><li><a class="tocitem" href="../stop-workflow/">Stopping workflow</a></li><li><a class="tocitem" href="../speak-to-stopping/">Speak to stopping</a></li><li><a class="tocitem" href="../nlpstopping/">NLPStopping</a></li><li><a class="tocitem" href="../lastopping/">LAStopping</a></li><li><a class="tocitem" href="../index_tuto/">Readme</a></li><li><a class="tocitem" href="../howtostate/">How to State</a></li><li><a class="tocitem" href="../howtostate-nlp/">How to State for NLPs</a></li><li><a class="tocitem" href="../howtostop/">How to Stop</a></li><li><a class="tocitem" href="../howtostop-2/">How to Stop 2</a></li><li><a class="tocitem" href="../howtostop-nlp/">How to Stop for NLPs</a></li><li><a class="tocitem" href="../linear-algebra/">Solve linear algebra</a></li><li><a class="tocitem" href="../buffer/">Use a buffer function</a></li><li><a class="tocitem" href="../fixed-point/">A fixed point algorithm</a></li><li><a class="tocitem" href="../backls/">Backtracking linesearch algorithm</a></li><li><a class="tocitem" href="../uncons/">Unconstrained optimization algorithm</a></li><li><a class="tocitem" href="../active-set/">Active set algorithm</a></li><li><a class="tocitem" href="../penalty/">Quadratic penalty algorithm</a></li><li class="is-active"><a class="tocitem" href>Run optimization algorithms</a><ul class="internal"><li><a class="tocitem" href="#Run-optimization-algorithms"><span>Run optimization algorithms</span></a></li></ul></li><li><a class="tocitem" href="../benchmark/">Benchmark optimization algorithms</a></li><li><a class="tocitem" href="../overfitting/">Overfitting</a></li><li><a class="tocitem" href="../checkpointing/">Checkpointing</a></li><li><a class="tocitem" href="../gradient-lbfgs/">Mix algorithms</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Run optimization algorithms</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Run optimization algorithms</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/SolverStoppingJulia/Stopping.jl/blob/master/docs/src/run-optimsolver.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h2 id="Run-optimization-algorithms"><a class="docs-heading-anchor" href="#Run-optimization-algorithms">Run optimization algorithms</a><a id="Run-optimization-algorithms-1"></a><a class="docs-heading-anchor-permalink" href="#Run-optimization-algorithms" title="Permalink"></a></h2><p>The Stopping structure eases the implementation of algorithms and the stopping criterion.</p><p>The following examples illustrate solver for optimization:</p><ul><li>a backtracking 1D optimization solver</li><li>a globalized Newton for unconstrained optimization solver</li><li>a bound constraint active-set algorithm</li><li>a quadratic penalty algorithm for non-linear optimization</li></ul><p>The Julia file corresponding to this tutorial can be found <a href="https://github.com/Goysa2/Stopping.jl/tree/master/test/examples/run-optimsolver.jl">here</a>.</p><pre><code class="nohighlight hljs">using LinearAlgebra, NLPModels, Stopping, Test
+
+include(&quot;../test-stopping/rosenbrock.jl&quot;)</code></pre><h3 id="Part-1/4"><a class="docs-heading-anchor" href="#Part-1/4">Part 1/4</a><a id="Part-1/4-1"></a><a class="docs-heading-anchor-permalink" href="#Part-1/4" title="Permalink"></a></h3><pre><code class="nohighlight hljs">printstyled(&quot;How to solve 1D optim problem: \n&quot;, color = :red)
+include(&quot;backls.jl&quot;)</code></pre><pre><code class="nohighlight hljs">printstyled(&quot;1D Optimization: backtracking tutorial.\n&quot;, color = :green)
+
+x0 = 1.5*ones(6)
+nlp = ADNLPModel(rosenbrock,  x0)
+g0 = grad(nlp,x0)
+h = onedoptim(x -&gt; obj(nlp, x0 - x * g0), x -&gt; - dot(g0,grad(nlp,x0 - x * g0)))</code></pre><p>SCENARIO: We create 3 stopping: Define the LSAtT with mandatory entries g₀ and h₀.</p><pre><code class="nohighlight hljs">lsatx  = LSAtT(1.0, h₀ = obj(nlp, x0), g₀ = -dot(grad(nlp, x0),grad(nlp, x0)))
+lsstp  = LS_Stopping(h, (x,y)-&gt; armijo(x,y, τ₀ = 0.01), lsatx)
+lsatx2 = LSAtT(1.0, h₀ = obj(nlp, x0), g₀ = -dot(grad(nlp, x0),grad(nlp, x0)))
+lsstp2 = LS_Stopping(h, (x,y)-&gt; wolfe(x,y, τ₁ = 0.99), lsatx2)
+lsatx3 = LSAtT(1.0, h₀ = obj(nlp, x0), g₀ = -dot(grad(nlp, x0),grad(nlp, x0)))
+lsstp3 = LS_Stopping(h, (x,y)-&gt; armijo_wolfe(x,y, τ₀ = 0.01, τ₁ = 0.99), lsatx3)
+
+parameters = ParamLS(back_update = 0.5)
+
+printstyled(&quot;backtracking line search with Armijo:\n&quot;, color = :green)
+backtracking_ls(lsstp, parameters)
+@show status(lsstp)
+@show lsstp.meta.nb_of_stop
+@show lsstp.current_state.x
+
+printstyled(&quot;backtracking line search with Wolfe:\n&quot;, color = :green)
+backtracking_ls(lsstp2, parameters)
+@show status(lsstp2)
+@show lsstp2.meta.nb_of_stop
+@show lsstp2.current_state.x
+
+printstyled(&quot;backtracking line search with Armijo-Wolfe:\n&quot;, color = :green)
+backtracking_ls(lsstp3, parameters)
+@show status(lsstp3)
+@show lsstp3.meta.nb_of_stop
+@show lsstp3.current_state.x</code></pre><h3 id="Part-2/4"><a class="docs-heading-anchor" href="#Part-2/4">Part 2/4</a><a id="Part-2/4-1"></a><a class="docs-heading-anchor-permalink" href="#Part-2/4" title="Permalink"></a></h3><pre><code class="nohighlight hljs">printstyled(&quot;How to solve unconstrained optim problem: \n&quot;, color = :red)
+include(&quot;uncons.jl&quot;)
+
+printstyled(&quot;Unconstrained Optimization: globalized Newton.\n&quot;, color = :green)
+
+x0 = 1.5*ones(6)
+nlp = ADNLPModel(rosenbrock,  x0)
+
+# We use the default builder using the KKT optimality function (which does not
+# automatically fill in the State)
+stop_nlp = NLPStopping(nlp)
+parameters = PrmUn()
+
+printstyled(&quot;Newton method with Armijo linesearch.\n&quot;, color = :green)
+global_newton(stop_nlp, parameters)
+@show status(stop_nlp)
+#We can check afterwards, the score
+@show Stopping.KKT(stop_nlp.pb, stop_nlp.current_state)
+@show stop_nlp.meta.nb_of_stop
+
+printstyled(&quot;Newton method with Armijo-Wolfe linesearch.\n&quot;, color = :green)
+reinit!(stop_nlp, rstate = true, x = x0)
+reset!(stop_nlp.pb) #reinitialize the counters of the NLP
+parameters.ls_func = (x,y)-&gt; armijo_wolfe(x,y, τ₀ = parameters.armijo_prm,
+                                               τ₁ = parameters.wolfe_prm)
+
+global_newton(stop_nlp, parameters)
+@show status(stop_nlp)
+#We can check afterwards, the score
+@show Stopping.KKT(stop_nlp.pb, stop_nlp.current_state)
+@show stop_nlp.meta.nb_of_stop</code></pre><h3 id="Part-3/4"><a class="docs-heading-anchor" href="#Part-3/4">Part 3/4</a><a id="Part-3/4-1"></a><a class="docs-heading-anchor-permalink" href="#Part-3/4" title="Permalink"></a></h3><pre><code class="nohighlight hljs">printstyled(&quot;How to solve bound constrained optim problem: \n&quot;, color = :red)
+include(&quot;activeset.jl&quot;)
+
+printstyled(&quot;Constrained optimization: active-set algorithm tutorial.\n&quot;, color = :green)
+x0 = 1.5*ones(6);x0[6]=1.0
+nlp_bnd = ADNLPModel(rosenbrock,  x0,
+                 lvar = fill(-10.0,size(x0)), uvar = fill(1.5,size(x0)))
+
+nlp_bnd_at_x = NLPAtX(x0)
+stop_nlp_c = NLPStopping(nlp_bnd, max_iter = 10)
+
+activeset(stop_nlp_c)
+@show status(stop_nlp_c)</code></pre><h3 id="Part-4/4"><a class="docs-heading-anchor" href="#Part-4/4">Part 4/4</a><a id="Part-4/4-1"></a><a class="docs-heading-anchor-permalink" href="#Part-4/4" title="Permalink"></a></h3><pre><code class="nohighlight hljs">printstyled(&quot;How to solve nonlinear optim problem: \n&quot;, color = :red)
+include(&quot;penalty.jl&quot;)
+
+printstyled(&quot;Constrained optimization: quadratic penalty tutorial.\n&quot;, color = :green)
+x0 = 1.5*ones(6)
+c(x) = [sum(x)]
+nlp2 = ADNLPModel(rosenbrock,  x0,
+                 lvar = fill(-10.0,size(x0)), uvar = fill(10.0,size(x0)),
+                 y0 = [0.0], c = c, lcon = [-Inf], ucon = [5.])
+
+nlp_at_x_c = NLPAtX(x0, zeros(nlp2.meta.ncon))
+stop_nlp_c = NLPStopping(nlp2, (x,y) -&gt; KKT(x,y), nlp_at_x_c, atol = 1e-3,
+                                max_cntrs = init_max_counters(obj = 400000, cons = 800000, sum = 1000000))
+
+penalty(stop_nlp_c)
+@show status(stop_nlp_c)
+
+#We can check afterwards, the score
+@show KKT(stop_nlp_c.pb, stop_nlp_c.current_state)</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../penalty/">« Quadratic penalty algorithm</a><a class="docs-footer-nextpage" href="../benchmark/">Benchmark optimization algorithms »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Tuesday 27 May 2025 14:43">Tuesday 27 May 2025</span>. Using Julia version 1.11.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
