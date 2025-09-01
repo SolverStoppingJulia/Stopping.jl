@@ -1,7 +1,7 @@
 name = "Stopping"
 uuid = "c4fe5a9e-e7fb-5c3d-89d5-7f405ab2214f"
 authors = ["Jean-Pierre Dussault <Jean-Pierre.Dussault@USherbrooke.CA>", "Tangi Migot <tangi.migot@gmail.com>", "Sam Goyette <samuel.goyette@usherbrooke.ca>"]
-version = "0.6.6"
+version = "0.6.7"
 
 [deps]
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
